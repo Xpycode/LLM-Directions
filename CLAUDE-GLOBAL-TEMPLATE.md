@@ -4,7 +4,28 @@
 
 ---
 
-## Project Detection (Run at Session Start)
+## Session Start: Show Commands Menu
+
+At the start of every session, greet briefly and show available commands:
+
+> **What would you like to do?**
+>
+> | Command | What it does |
+> |---------|--------------|
+> | `/setup` | Detect project state, set up or migrate Directions |
+> | `/status` | Check current phase, focus, blockers, last session |
+> | `/log` | Create or update today's session log |
+> | `/decide` | Record an architectural/design decision |
+> | `/interview` | Run the full discovery interview |
+> | `/update-directions` | Pull latest Directions from GitHub |
+>
+> Or just tell me what you're working on.
+
+Then wait for user input before proceeding with project detection or other actions.
+
+---
+
+## Project Detection (Run on /setup or when user describes work)
 
 Check the project state and act accordingly:
 
