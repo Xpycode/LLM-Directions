@@ -124,6 +124,7 @@ Based on what's happening, suggest these docs:
 | Git, branch, commit, version control | `32_git-workflow.md` |
 | Font, typography, tracking, kerning | `40_typography.md` |
 | What's this UI element called | `41_apple-ui.md` or `42_web-ui.md` |
+| What does [term] mean, what's a [concept] | Auto-offer to log in `44_my-glossary.md` |
 | Ship, release, production ready | `30_production-checklist.md` |
 | Bug, broken, not working, debug | `31_debugging.md` |
 | Planning, multi-session, complex task | `51_planning-patterns.md` |
@@ -157,6 +158,19 @@ When the user seems to be searching for a word or describing something they can'
 > "It sounds like you're describing [term]. Want me to check the terminology reference?"
 
 Offer `40_typography.md`, `41_apple-ui.md`, `42_web-ui.md`, or `43_data-structures.md` as appropriate.
+
+### Learning Log (Glossary)
+
+When you explain a technical term or concept the user asked about:
+> "Want me to add [term] to your glossary (`44_my-glossary.md`) so you have it for reference?"
+
+If they say yes, add an entry with:
+- The term as a heading
+- When/where they asked (date and context)
+- Plain-language explanation
+- Why it matters
+
+The glossary lives in the Directions master at `__DIRECTIONS/44_my-glossary.md` and carries across all projects.
 
 ### Phase Transitions
 
@@ -204,6 +218,7 @@ Remind about relevant docs when changing phases:
 ├── 41_apple-ui.md                ← Apple UI vocabulary
 ├── 42_web-ui.md                  ← Web UI vocabulary
 ├── 43_data-structures.md         ← CS fundamentals
+├── 44_my-glossary.md             ← Personal learning log
 │
 ├── 50_progressive-context.md     ← Managing large projects
 └── 51_planning-patterns.md       ← Complex task planning
