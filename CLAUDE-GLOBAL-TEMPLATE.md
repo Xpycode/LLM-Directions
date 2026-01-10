@@ -17,6 +17,7 @@ At the start of every session, greet briefly and show available commands:
 > | `/log` | Create or update today's session log |
 > | `/decide` | Record an architectural/design decision |
 > | `/interview` | Run the full discovery interview |
+> | `/learned` | Add a term to your personal glossary |
 > | `/update-directions` | Pull latest Directions from GitHub |
 >
 > Or just tell me what you're working on.

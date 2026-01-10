@@ -122,6 +122,7 @@ Based on what's happening, suggest these docs:
 | Sandbox, bookmark, Keychain, notarization | `22_macos-platform.md` |
 | Web, HTML, CSS, JavaScript, responsive | `24_web-gotchas.md` |
 | Git, branch, commit, version control | `32_git-workflow.md` |
+| Folder structure, where to put, organize, gitignore | `13_folder-structure.md` |
 | Font, typography, tracking, kerning | `40_typography.md` |
 | What's this UI element called | `41_apple-ui.md` or `42_web-ui.md` |
 | What does [term] mean, what's a [concept] | Auto-offer to log in `44_my-glossary.md` |
@@ -203,6 +204,7 @@ Remind about relevant docs when changing phases:
 ├── 10_new-project.md             ← Project setup checklist
 ├── 11_ai-context-template.md     ← Context file templates
 ├── 12_documentation-templates.md ← README, CHANGELOG templates
+├── 13_folder-structure.md        ← Project folder organization
 │
 ├── 20_swiftui-gotchas.md         ← SwiftUI bugs & fixes
 ├── 21_coordinate-systems.md      ← Points vs pixels
