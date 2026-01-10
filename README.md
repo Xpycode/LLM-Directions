@@ -123,6 +123,34 @@ Synthesized from 229 documentation files across 15+ shipped macOS/iOS projects.
 
 ---
 
+## Slash Commands
+
+The `commands/` folder contains slash commands for Claude Code:
+
+| Command | Purpose |
+|---------|---------|
+| `/setup` | Detect project state, offer setup/migration |
+| `/status` | Quick project status check |
+| `/log` | Create/update session log |
+| `/decide` | Record a decision |
+| `/interview` | Run discovery interview |
+| `/update-directions` | Pull latest from GitHub |
+
+To use globally, copy to `~/.claude/commands/`:
+```bash
+cp -r commands/* ~/.claude/commands/
+```
+
+---
+
+## Global CLAUDE.md
+
+See `CLAUDE-GLOBAL-TEMPLATE.md` for a template to put in `~/.claude/CLAUDE.md`.
+
+This enables automatic project detection and setup when starting Claude in any folder.
+
+---
+
 ## License
 
 MIT - Use freely, modify as needed.
