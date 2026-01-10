@@ -134,6 +134,7 @@ The `commands/` folder contains slash commands for Claude Code:
 | `/log` | Create/update session log |
 | `/decide` | Record a decision |
 | `/interview` | Run discovery interview |
+| `/learned` | Add a term to your personal glossary |
 | `/update-directions` | Pull latest from GitHub |
 
 To use globally, copy to `~/.claude/commands/`:
