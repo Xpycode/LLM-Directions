@@ -9,57 +9,65 @@ A consistent structure keeps projects clean, GitHub-friendly, and easy to naviga
 ## macOS / iOS Projects
 
 ```
-MyApp/
-├── MyApp/                      ← Source code (Xcode project folder)
-│   ├── Views/
-│   ├── Models/
-│   ├── Services/
-│   ├── Resources/
-│   └── Assets.xcassets/
+MyApp/                              ← Project root (GitHub repo)
 │
-├── MyApp.xcodeproj/            ← Xcode project file
-│   └── (xcuserdata/ ignored)
+├── 01_Project/                     ← ALL XCODE STUFF
+│   ├── MyApp/                      ← Source code
+│   │   ├── Views/
+│   │   ├── Models/
+│   │   ├── Services/
+│   │   ├── Resources/
+│   │   └── Assets.xcassets/
+│   ├── MyApp.xcodeproj/
+│   ├── MyAppTests/                 ← Unit tests
+│   └── MyAppUITests/               ← UI tests
 │
-├── APP/                        ← Exports (builds, DMGs, IPAs)
-│   ├── MyApp-1.0.dmg
-│   └── MyApp 1.0/              ← Unzipped app for testing
-│
-├── Design/                     ← Design source files
-│   ├── MyApp-Icon.afdesign     ← Affinity Designer source
-│   ├── MyApp-Icon.icon         ← Folder icon project
-│   └── Exports/                ← Exported PNGs for icon
+├── 02_Design/                      ← Design source files
+│   ├── MyApp-Icon.afdesign         ← Affinity Designer source
+│   ├── MyApp-Icon.icon             ← Folder icon project
+│   └── Exports/                    ← Exported PNGs
 │       └── AppIcon.appiconset/
 │
-├── Screenshots/                ← App Store / promotional
+├── 03_Screenshots/                 ← App Store / promotional
 │   ├── 01-MainView.png
 │   ├── 02-Settings.png
 │   └── ...
 │
-├── docs/                       ← Directions documentation
+├── 04_Exports/                     ← Builds, DMGs, IPAs (gitignored)
+│   ├── MyApp-1.0.dmg
+│   └── MyApp 1.0/                  ← Unzipped app for testing
+│
+├── docs/                           ← Directions documentation
 │   ├── 00_base.md
 │   ├── PROJECT_STATE.md
 │   └── sessions/
 │
-├── old-docs/                   ← Migrated docs (if any)
+├── old-docs/                       ← Migrated docs (if any)
 │
 ├── .git/
 ├── .gitignore
-├── CLAUDE.md                   ← Project-specific Claude context
+├── CLAUDE.md                       ← Project-specific Claude context
 ├── README.md
 ├── LICENSE
-└── CHANGELOG.md                ← Optional
+└── CHANGELOG.md                    ← Optional
 ```
 
-### iOS-Specific Additions
+### iOS with Extensions
 
 ```
 MyApp/
-├── MyApp/                      ← Main iOS app
-├── MyAppWidget/                ← Widget extension
-├── MyApp Watch Watch App/      ← watchOS companion
-├── MyAppTests/                 ← Unit tests
-├── MyAppUITests/               ← UI tests
-└── ...
+├── 01_Project/
+│   ├── MyApp/                      ← Main iOS app
+│   ├── MyAppWidget/                ← Widget extension
+│   ├── MyApp Watch Watch App/      ← watchOS companion
+│   ├── MyAppTests/
+│   ├── MyAppUITests/
+│   └── MyApp.xcodeproj/
+│
+├── 02_Design/
+├── 03_Screenshots/
+├── 04_Exports/
+└── docs/
 ```
 
 ---
@@ -67,36 +75,51 @@ MyApp/
 ## Web Projects
 
 ```
-MyWebsite/
-├── frontend/                   ← Built site / app
+MyWebsite/                          ← Project root
+│
+├── 01_Source/                      ← Source code
+│   ├── components/
+│   ├── pages/
+│   └── styles/
+│
+├── 02_Frontend/                    ← Built site / app
 │   ├── index.html
 │   ├── css/
 │   ├── js/
 │   └── assets/
 │
-├── src/                        ← Source (if using build tools)
-│   ├── components/
-│   ├── pages/
-│   └── styles/
-│
-├── scripts/                    ← Build/utility scripts
+├── 03_Scripts/                     ← Build/utility scripts
 │   ├── build.py
 │   └── deploy.sh
 │
-├── data/                       ← Data files (JSON, CSV)
+├── 04_Data/                        ← Data files (JSON, CSV)
 │   ├── content.json
 │   └── backup/
 │
-├── docs/                       ← Directions
+├── docs/                           ← Directions
 │
-├── venv/                       ← Python virtual env (gitignored)
-├── node_modules/               ← Node deps (gitignored)
+├── venv/                           ← Python virtual env (gitignored)
+├── node_modules/                   ← Node deps (gitignored)
 │
 ├── .gitignore
 ├── README.md
-├── requirements.txt            ← Python deps
-└── package.json                ← Node deps
+├── requirements.txt                ← Python deps
+└── package.json                    ← Node deps
 ```
+
+---
+
+## Folder Numbering Logic
+
+| Number | Purpose | Examples |
+|--------|---------|----------|
+| 01_ | Source/Project | Xcode project, source code |
+| 02_ | Design | Affinity files, icons, mockups |
+| 03_ | Screenshots | App Store, promotional |
+| 04_ | Exports/Output | DMGs, IPAs, built apps |
+| docs/ | Documentation | Directions (has own numbering) |
+
+Numbers keep folders sorted logically in Finder and terminals.
 
 ---
 
@@ -104,15 +127,15 @@ MyWebsite/
 
 | Item | Location | Git? |
 |------|----------|------|
-| Source code | `MyApp/` | Yes |
-| Xcode project | `MyApp.xcodeproj/` | Yes (mostly) |
-| Built apps, DMGs | `APP/` | No |
-| Design source (.af, .afdesign) | `Design/` | Optional |
-| Icon exports | `Design/Exports/` | No (generated) |
-| Screenshots | `Screenshots/` | Yes (if for App Store) |
+| Source code | `01_Project/MyApp/` | Yes |
+| Xcode project | `01_Project/MyApp.xcodeproj/` | Yes (mostly) |
+| Design source (.af, .afdesign) | `02_Design/` | Optional |
+| Icon exports | `02_Design/Exports/` | No (generated) |
+| Screenshots | `03_Screenshots/` | Yes (if for App Store) |
+| Built apps, DMGs | `04_Exports/` | No |
 | Documentation | `docs/` | Yes |
 | Planning/review MDs | `docs/` or root | No (temporary) |
-| Crash logs (.ips) | Delete or `Debug/` | No |
+| Crash logs (.ips) | Delete | No |
 | Trace files (.trace) | Delete | No |
 | Python venv | `venv/` | No |
 | Node modules | `node_modules/` | No |
@@ -122,26 +145,13 @@ MyWebsite/
 ## Naming Conventions
 
 ### Folders
-- PascalCase for app folders: `MyApp/`, `Screenshots/`
-- lowercase for utility: `docs/`, `scripts/`, `venv/`
+- Numbered: `01_Project/`, `02_Design/`
+- Lowercase for non-numbered: `docs/`, `venv/`
 
 ### Files
 - Screenshots: `01-MainView.png`, `02-Settings.png` (numbered for order)
 - Design files: `MyApp-Icon.afdesign` (project name prefix)
 - Exports: `MyApp-1.0.dmg` (with version)
-
-### Icon Export Folders
-Consistent pattern:
-```
-MyApp-Icon Exports/         ← Exported PNGs
-MyApp-Icon.afdesign         ← Source file
-```
-
-Not:
-```
-MyApp-icon-NanoBanana Exports/    ← Too specific
-AppIcon.appiconset/               ← Only inside Exports/
-```
 
 ---
 
@@ -194,14 +204,14 @@ Pods/
 Carthage/Build/
 
 # === Build Outputs ===
-APP/
+04_Exports/
 *.dmg
 *.app
 *.o
 *.a
 
 # === Design Assets (Optional - uncomment if not tracking) ===
-# Design/
+# 02_Design/
 # *.afdesign
 # *.af
 # *.icon
@@ -262,12 +272,14 @@ secrets.json
 
 When a project gets messy:
 
-1. **Move loose MDs** to `docs/` or delete if obsolete
-2. **Move design files** to `Design/`
-3. **Move builds** to `APP/`
-4. **Delete debug artifacts** (.ips, .trace, crash logs)
-5. **Update .gitignore** if new patterns emerged
-6. **Run `git status`** to verify nothing unwanted is tracked
+1. **Move Xcode stuff** into `01_Project/`
+2. **Move design files** to `02_Design/`
+3. **Move screenshots** to `03_Screenshots/`
+4. **Move builds** to `04_Exports/`
+5. **Move loose MDs** to `docs/` or delete if obsolete
+6. **Delete debug artifacts** (.ips, .trace, crash logs)
+7. **Update .gitignore** if new patterns emerged
+8. **Run `git status`** to verify nothing unwanted is tracked
 
 ---
 
@@ -277,14 +289,14 @@ For new projects:
 
 ```bash
 # Create folder structure
-mkdir -p APP Design/Exports Screenshots docs/sessions
+mkdir -p 01_Project 02_Design/Exports 03_Screenshots 04_Exports docs/sessions
 
 # Create minimal .gitignore
 cat > .gitignore << 'EOF'
 .DS_Store
 DerivedData/
 build/
-APP/
+04_Exports/
 *.dmg
 *.ips
 *.trace
@@ -300,7 +312,41 @@ EOF
 touch docs/PROJECT_STATE.md
 touch docs/decisions.md
 echo "# Session Index" > docs/sessions/_index.md
+
+echo "Created: 01_Project/ 02_Design/ 03_Screenshots/ 04_Exports/ docs/"
 ```
+
+---
+
+## Migrating Existing Projects
+
+If you have an existing messy project:
+
+```bash
+# Create new structure
+mkdir -p 01_Project 02_Design/Exports 03_Screenshots 04_Exports
+
+# Move Xcode stuff (adjust names as needed)
+mv MyApp 01_Project/
+mv MyApp.xcodeproj 01_Project/
+mv MyAppTests 01_Project/
+
+# Move design files
+mv *.afdesign 02_Design/
+mv *.af 02_Design/
+mv *.icon 02_Design/
+mv *Exports/ 02_Design/
+
+# Move screenshots
+mv Screenshots/* 03_Screenshots/
+mv *.png 03_Screenshots/  # be careful with this one
+
+# Move exports
+mv APP/* 04_Exports/
+mv *.dmg 04_Exports/
+```
+
+Then update your `.xcodeproj` paths if needed (or recreate the project).
 
 ---
 
