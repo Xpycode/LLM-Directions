@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# Local/personal files (not part of the system)
+docs-browser.html
+docs.sh
+
+# Session logs (project-specific, not template)
+sessions/*.md
+!sessions/_index.md
