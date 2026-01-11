@@ -4,29 +4,29 @@
 
 ---
 
-## Session Start: Show Commands Menu
+## Session Start: Auto-Detect and Resume
 
-At the start of every session, greet briefly and show available commands:
+At the start of every session, **automatically run Project Detection (below)** to determine project state.
 
-> **What would you like to do?**
->
-> | Command | What it does |
-> |---------|--------------|
-> | `/setup` | Detect project state, set up or migrate Directions |
-> | `/status` | Check current phase, focus, blockers, last session |
-> | `/log` | Create or update today's session log |
-> | `/decide` | Record an architectural/design decision |
-> | `/interview` | Run the full discovery interview |
-> | `/learned` | Add a term to your personal glossary |
-> | `/update-directions` | Pull latest Directions from GitHub |
->
-> Or just tell me what you're working on.
+After detection:
+- If Directions exists → show current status and ask what to work on
+- If no Directions → offer to set it up, then show commands menu
 
-Then wait for user input before proceeding with project detection or other actions.
+**Available commands:**
+
+| Command | What it does |
+|---------|--------------|
+| `/setup` | Re-run project detection, set up or migrate Directions |
+| `/status` | Check current phase, focus, blockers, last session |
+| `/log` | Create or update today's session log |
+| `/decide` | Record an architectural/design decision |
+| `/interview` | Run the full discovery interview |
+| `/learned` | Add a term to your personal glossary |
+| `/update-directions` | Pull latest Directions from GitHub |
 
 ---
 
-## Project Detection (Run on /setup or when user describes work)
+## Project Detection (Run automatically on session start)
 
 Check the project state and act accordingly:
 
