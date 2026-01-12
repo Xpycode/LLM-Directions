@@ -13,18 +13,14 @@ Show all available Directions commands and system info.
 | `/decide` | Record an architectural/design decision |
 | `/interview` | Run the full discovery interview |
 | `/learned` | Add a term to your personal glossary |
-| `/update-directions` | Pull latest and sync to ~/.claude/ |
-
-## Coming Soon (v2.0)
-
-| Command | What it does |
-|---------|--------------|
+| `/reorg` | Reorganize folder structure (numbered folders) |
+| `/update-directions` | Pull latest from GitHub |
 | `/phase` | Change project phase |
-| `/context` | Quick dump of current state |
-| `/handoff` | Create detailed handoff notes |
-| `/blockers` | Log current blockers |
-| `/review` | Run production checklist |
-| `/new-feature` | Scaffold a new feature |
+| `/context` | Show project context summary |
+| `/handoff` | Generate handoff document |
+| `/blockers` | Log and track blockers |
+| `/review` | Interactive production checklist |
+| `/new-feature` | Scaffold docs for new feature |
 
 ## Tips
 
