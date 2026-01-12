@@ -106,7 +106,7 @@
 
 ### Task 3.1: /phase Command
 
-- [ ] Create `commands/phase.md`
+- [x] Create `commands/phase.md`
   - Show current phase from PROJECT_STATE.md
   - List available phases: discovery → planning → implementation → polish → shipping
   - Update PROJECT_STATE.md with new phase + timestamp
@@ -114,7 +114,7 @@
 
 ### Task 3.2: /context Command
 
-- [ ] Create `commands/context.md`
+- [x] Create `commands/context.md`
   - Read PROJECT_STATE.md (phase, focus, blockers)
   - Read last 3 sessions from sessions/_index.md
   - Read last 3 decisions from decisions.md
@@ -122,7 +122,7 @@
 
 ### Task 3.3: /handoff Command
 
-- [ ] Create `commands/handoff.md`
+- [x] Create `commands/handoff.md`
   - Read today's session log
   - Read PROJECT_STATE.md
   - Read recent decisions
@@ -131,7 +131,7 @@
 
 ### Task 3.4: /blockers Command
 
-- [ ] Create `commands/blockers.md`
+- [x] Create `commands/blockers.md`
   - Ask what's blocking
   - Ask what was tried
   - Ask what would unblock
@@ -139,7 +139,7 @@
 
 ### Task 3.5: /review Command
 
-- [ ] Create `commands/review.md`
+- [x] Create `commands/review.md`
   - Load 30_production-checklist.md
   - Go through each item interactively
   - Log failures
@@ -147,7 +147,7 @@
 
 ### Task 3.6: /new-feature Command
 
-- [ ] Create `commands/new-feature.md`
+- [x] Create `commands/new-feature.md`
   - Ask feature name (kebab-case)
   - Ask one-sentence description
   - Create docs/features/[name].md with template
