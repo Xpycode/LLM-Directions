@@ -1,0 +1,7 @@
+{
+  "name": "directions",
+  "version": "2.0.0",
+  "description": "AI-assisted development with session management, workflow automation, and project state tracking",
+  "author": "Xpycode",
+  "repository": "https://github.com/Xpycode/LLM-Directions"
+}
