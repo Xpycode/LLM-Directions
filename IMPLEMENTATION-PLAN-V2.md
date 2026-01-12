@@ -19,7 +19,7 @@
 
 ### Tasks
 
-- [ ] Create `.claude-plugin/plugin.json` manifest
+- [x] Create `.claude-plugin/plugin.json` manifest
   ```json
   {
     "name": "directions",
@@ -28,15 +28,15 @@
   }
   ```
 
-- [ ] Create `scripts/` directory for hook scripts
+- [x] Create `scripts/` directory for hook scripts
 
-- [ ] Create `hooks/` directory with empty `hooks.json`
+- [x] Create `hooks/` directory with empty `hooks.json`
 
-- [ ] Create `mcp-server/` directory for future MCP server
+- [x] Create `mcp-server/` directory for future MCP server
 
-- [ ] Create `skills/directions-workflow/SKILL.md` with methodology summary
+- [x] Create `skills/directions-workflow/SKILL.md` with methodology summary
 
-- [ ] Test: Verify Claude Code recognizes it as a plugin
+- [x] Test: Verify Claude Code recognizes it as a plugin
   ```bash
   # Symlink to plugins folder
   ln -sf /Users/sim/XcodeProjects/0-DIRECTIONS/__DIRECTIONS ~/.claude/plugins/local/directions
