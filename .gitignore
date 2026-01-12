@@ -8,3 +8,6 @@ docs.sh
 # Session logs (project-specific, not template)
 sessions/*.md
 !sessions/_index.md
+
+# Syncthing temp files
+.syncthing.*.tmp
