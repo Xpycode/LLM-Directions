@@ -54,14 +54,14 @@
 
 ### Task 2.1: SessionStart Hook
 
-- [ ] Create `scripts/session-start.py`
+- [x] Create `scripts/session-start.py`
   - Check if `docs/00_base.md` exists in project
   - If yes: Read PROJECT_STATE.md, get current phase/focus
   - Read latest session from sessions/_index.md
   - Return JSON with system message containing context
   - If no: Return message about non-Directions project
 
-- [ ] Add to `hooks/hooks.json`:
+- [x] Add to `hooks/hooks.json`:
   ```json
   {
     "hooks": {
@@ -77,11 +77,11 @@
   }
   ```
 
-- [ ] Test: Start new Claude session in a Directions project, verify context loads
+- [x] Test: Start new Claude session in a Directions project, verify context loads
 
 ### Task 2.2: Stop Hook
 
-- [ ] Add Stop hook to `hooks/hooks.json`:
+- [x] Add Stop hook to `hooks/hooks.json`:
   ```json
   "Stop": [{
     "matcher": "*",
@@ -92,7 +92,7 @@
   }]
   ```
 
-- [ ] Test: Do some work, try to stop, verify prompt appears
+- [x] Test: Do some work, try to stop, verify prompt appears
 
 ### Deliverables
 - Auto-context loading on session start
