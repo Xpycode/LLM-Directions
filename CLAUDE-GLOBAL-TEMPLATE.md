@@ -22,6 +22,7 @@ After detection:
 | `/decide` | Record an architectural/design decision |
 | `/interview` | Run the full discovery interview |
 | `/learned` | Add a term to your personal glossary |
+| `/reorg` | Reorganize folder structure (numbered folders) |
 | `/update-directions` | Pull latest Directions from GitHub |
 
 ---
