@@ -164,7 +164,7 @@
 
 ### Task 4.1: Doc Suggester Hook
 
-- [ ] Create `scripts/doc-suggester.py`
+- [x] Create `scripts/doc-suggester.py`
   - Parse user prompt for keywords
   - Map keywords to docs:
     - coordinates/position/image → 21_coordinate-systems.md
@@ -174,13 +174,13 @@
     - ship/release/production → 30_production-checklist.md
   - Return system message suggesting doc if match found
 
-- [ ] Add UserPromptSubmit hook to hooks.json
+- [x] Add UserPromptSubmit hook to hooks.json
 
-- [ ] Test: Mention "coordinates" in prompt, verify suggestion appears
+- [x] Test: Mention "coordinates" in prompt, verify suggestion appears
 
 ### Task 4.2: Decision Reminder Hook
 
-- [ ] Add PostToolUse hook for git commits:
+- [x] Add PostToolUse hook for git commits:
   ```json
   "PostToolUse": [{
     "matcher": "Bash",
