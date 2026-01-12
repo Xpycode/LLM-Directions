@@ -197,8 +197,9 @@
 
 ---
 
-## Phase 5: MCP Server
+## Phase 5: MCP Server ⏸️ DEFERRED
 
+**Status:** Deferred - slash commands and hooks provide sufficient functionality
 **Estimated effort:** Larger - requires MCP protocol implementation
 
 ### Task 5.1: Basic Server Setup
@@ -260,17 +261,17 @@
 
 ### Tasks
 
-- [ ] Update `README.md`
+- [x] Update `README.md`
   - Add plugin installation instructions
   - Document all commands (old + new)
   - Explain hooks behavior
-  - Document MCP tools
+  - ~~Document MCP tools~~ (deferred)
 
-- [ ] Update `CLAUDE-GLOBAL-TEMPLATE.md`
+- [x] Update `CLAUDE-GLOBAL-TEMPLATE.md`
   - Add new commands to table
   - Update installation to use plugin method
 
-- [ ] Create `install-directions.sh`
+- [x] Create `install-directions.sh`
   ```bash
   #!/bin/bash
   DIRECTIONS_REPO="${1:-$(pwd)}"
@@ -280,11 +281,11 @@
   echo "Directions plugin installed. Restart Claude Code."
   ```
 
-- [ ] Update `/update-directions` command
+- [x] Update `/update-directions` command
   - Pull git changes
   - Remind to restart Claude for hook changes
 
-- [ ] Commit and push all changes
+- [x] Commit and push all changes
 
 ### Deliverables
 - Complete documentation

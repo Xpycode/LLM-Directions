@@ -23,6 +23,13 @@ After detection:
 | `/interview` | Run the full discovery interview |
 | `/learned` | Add a term to your personal glossary |
 | `/reorg` | Reorganize folder structure (numbered folders) |
+| `/directions` | Show all available commands |
+| `/phase` | Change project phase |
+| `/context` | Show project context summary |
+| `/handoff` | Generate handoff document for future sessions |
+| `/blockers` | Log and track blockers |
+| `/review` | Interactive production checklist |
+| `/new-feature` | Scaffold docs for new feature |
 | `/update-directions` | Pull latest Directions from GitHub |
 
 ---

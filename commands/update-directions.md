@@ -33,3 +33,14 @@ Show what changed:
 - `git log --oneline -5` to show recent commits
 - List any new commands added
 - Note if CLAUDE.md template changed
+
+## Step 5: Remind about restart
+
+If hooks or scripts changed, remind the user:
+
+> "Hooks or scripts were updated. Restart Claude Code for changes to take effect."
+
+Check if these files changed in the pull:
+- `hooks/hooks.json`
+- `scripts/*.py`
+- `.claude-plugin/plugin.json`

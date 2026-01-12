@@ -123,9 +123,43 @@ Synthesized from 229 documentation files across 15+ shipped macOS/iOS projects.
 
 ---
 
-## Slash Commands
+## Installation
 
-The `commands/` folder contains slash commands for Claude Code:
+### Option 1: Plugin Install (Recommended)
+
+Install as a Claude Code plugin for automatic hooks and context loading:
+
+```bash
+# Clone the repo
+git clone https://github.com/Xpycode/LLM-Directions.git
+
+# Run the install script
+cd LLM-Directions
+./install-directions.sh
+```
+
+Or manually:
+```bash
+mkdir -p ~/.claude/plugins/local
+ln -sf /path/to/LLM-Directions ~/.claude/plugins/local/directions
+cp commands/* ~/.claude/commands/
+cp CLAUDE-GLOBAL-TEMPLATE.md ~/.claude/CLAUDE.md
+# Edit ~/.claude/CLAUDE.md to set your local paths
+```
+
+Restart Claude Code after installing.
+
+### Option 2: Commands Only
+
+Just copy the slash commands without hooks:
+
+```bash
+cp -r commands/* ~/.claude/commands/
+```
+
+---
+
+## Slash Commands
 
 | Command | Purpose |
 |---------|---------|
@@ -136,12 +170,34 @@ The `commands/` folder contains slash commands for Claude Code:
 | `/interview` | Run discovery interview |
 | `/learned` | Add a term to your personal glossary |
 | `/reorg` | Reorganize folder structure (numbered folders) |
-| `/update-directions` | Pull latest from GitHub |
+| `/directions` | Show all available commands |
+| `/update-directions` | Pull latest from GitHub + sync |
+| `/phase` | Change project phase |
+| `/context` | Show project context summary |
+| `/handoff` | Generate handoff document |
+| `/blockers` | Log and track blockers |
+| `/review` | Interactive production checklist |
+| `/new-feature` | Scaffold docs for new feature |
 
-To use globally, copy to `~/.claude/commands/`:
-```bash
-cp -r commands/* ~/.claude/commands/
-```
+---
+
+## Hooks (Plugin Only)
+
+When installed as a plugin, Directions provides automatic hooks:
+
+| Hook | Trigger | Behavior |
+|------|---------|----------|
+| **SessionStart** | New session | Auto-loads project state, shows phase/focus/blockers |
+| **Stop** | Ending session | Reminds to run `/log` if work wasn't logged |
+| **UserPromptSubmit** | Every prompt | Suggests relevant docs based on keywords |
+| **PostToolUse** | After git commits | Suggests `/decide` for architectural changes |
+
+**Keyword → Doc Suggestions:**
+- "coordinates", "position" → `21_coordinate-systems.md`
+- "not updating", "@state" → `20_swiftui-gotchas.md`
+- "sandbox", "bookmark" → `22_macos-platform.md`
+- "debug", "bug" → `31_debugging.md`
+- "ship", "release" → `30_production-checklist.md`
 
 ---
 
