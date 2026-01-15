@@ -109,14 +109,17 @@ No docs, no MDs, minimal files.
 Then:
 > "Want me to set up the Directions documentation system?"
 
-If yes, set up Directions:
-```bash
-# Option 1: Clone from GitHub
-git clone https://github.com/Xpycode/LLM-Directions.git docs
+If yes, set up Directions by **executing this command** (do not create files manually):
 
-# Option 2: Copy from local (customize this path)
-# cp -r /path/to/LLM-Directions ./docs
+```bash
+# Primary: Copy from local master (includes all reference guides)
+mkdir -p docs && cp -r /path/to/LLM-Directions/* ./docs/
+
+# Fallback if local not available: Clone from GitHub
+# git clone https://github.com/Xpycode/LLM-Directions.git docs
 ```
+
+**Important:** Always copy ALL files from the source. Do not manually create a subset of files.
 
 Then read `docs/00_base.md` and run the full discovery interview.
 
