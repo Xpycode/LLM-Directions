@@ -1,5 +1,9 @@
 # Directions
 
+[![GitHub stars](https://img.shields.io/github/stars/Xpycode/LLM-Directions)](https://github.com/Xpycode/LLM-Directions/stargazers)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Xpycode/LLM-Directions)](https://github.com/Xpycode/LLM-Directions/commits/main)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 **A systematic approach to AI-assisted software development.**
 
 For people who direct AI to build software but don't code themselves.
@@ -178,6 +182,7 @@ cp -r commands/* ~/.claude/commands/
 | `/blockers` | Log and track blockers |
 | `/review` | Interactive production checklist |
 | `/new-feature` | Scaffold docs for new feature |
+| `/execute` | Wave-based parallel execution (fresh contexts) |
 
 ---
 
