@@ -52,6 +52,7 @@ docs/
 | `/learned` | Add glossary term |
 | `/reorg` | Reorganize folder structure |
 | `/update-directions` | Pull latest updates |
+| `/execute` | Wave-based parallel execution |
 
 ## Workflow Principles
 
@@ -60,3 +61,15 @@ docs/
 3. **Decisions Are Permanent** - Log decisions when made, not retroactively
 4. **Blockers Are Signals** - Track blockers to identify patterns
 5. **Handoffs Enable Continuity** - Write handoffs as if for another person
+
+## Context Management
+
+Prevent quality degradation during long sessions:
+
+1. **File Size Limits** - PROJECT_STATE.md <80 lines, session logs ~200 lines
+2. **Temporary Files** - PLAN.md and RESUME.md delete after use
+3. **Orchestrator Pattern** - Keep main context <40%, spawn subagents for heavy work
+4. **Wave Execution** - Group tasks by dependency, run parallel waves with fresh contexts
+5. **Atomic Commits** - One task = one commit for easy revert/bisect
+
+See `52_context-management.md` for full details.

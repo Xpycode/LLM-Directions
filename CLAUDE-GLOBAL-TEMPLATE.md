@@ -30,6 +30,7 @@ After detection:
 | `/blockers` | Log and track blockers |
 | `/review` | Interactive production checklist |
 | `/new-feature` | Scaffold docs for new feature |
+| `/execute` | Wave-based parallel execution with fresh contexts |
 | `/update-directions` | Pull latest Directions from GitHub |
 
 ---

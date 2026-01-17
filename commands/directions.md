@@ -21,6 +21,7 @@ Show all available Directions commands and system info.
 | `/blockers` | Log and track blockers |
 | `/review` | Interactive production checklist |
 | `/new-feature` | Scaffold docs for new feature |
+| `/execute` | Wave-based parallel execution with fresh contexts |
 
 ## Tips
 
