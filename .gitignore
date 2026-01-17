@@ -11,3 +11,4 @@ sessions/*.md
 
 # Syncthing temp files
 .syncthing.*.tmp
+*.sync-conflict-*
