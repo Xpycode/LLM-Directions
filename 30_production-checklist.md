@@ -6,7 +6,11 @@ LOAD: full
 
 # Production Readiness Checklist
 
-*What makes code "production ready" based on 10 code reviews across 6 projects.*
+*Code quality checks based on 10 code reviews across 6 projects.*
+
+> **Two-part release flow:**
+> 1. First run `/minimums` → Feature baselines (updates, logging, UI polish)
+> 2. Then run `/review` → Code quality (this file)
 
 ---
 
@@ -78,15 +82,7 @@ LOAD: full
 
 ## Review Checklist by Category
 
-### UI/UX Review
-
-- [ ] **Accessibility labels** on interactive elements
-- [ ] **Loading states shown** — not blank screens
-- [ ] **Error states handled** — not silent failures
-- [ ] **Empty states designed** — not just missing content
-- [ ] **Keyboard navigation works** — Tab, Enter, Escape
-- [ ] **Dark mode tested** — if supported
-- [ ] **Different screen sizes tested** — window resize behavior
+> **UI/UX Review:** See [33_app-minimums.md](33_app-minimums.md) for UI polish checklist (empty states, loading states, keyboard shortcuts, etc.)
 
 ### Data Persistence Review
 
@@ -141,8 +137,6 @@ Before distributing to users:
 [ ] Version number incremented
 [ ] Code signed and notarized (macOS)
 ```
-
-> **See also:** [33_app-minimums.md](33_app-minimums.md) for baseline features checklist (updates, logging, UI polish, etc.)
 
 ---
 

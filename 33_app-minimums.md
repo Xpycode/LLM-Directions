@@ -8,6 +8,10 @@ LOAD: full
 
 *Baseline features every app should have. Compiled from patterns across 15+ shipped macOS/iOS apps.*
 
+> **Two-part release flow:**
+> 1. First run `/minimums` → Feature baselines (this file)
+> 2. Then run `/review` → Code quality ([30_production-checklist.md](30_production-checklist.md))
+
 ---
 
 ## Quick Reference

@@ -51,57 +51,32 @@ Does docs/00_base.md exist?
 
 ---
 
-### Step 2: Check for Existing /docs Folder
+### Step 2: Check for Existing Docs
 
 ```
-Does a /docs folder exist (but without 00_base.md)?
+Is there a /docs folder OR scattered .md files in the project?
 ```
 
-**YES → Has docs but not Directions structure.**
+**YES → Existing documentation found.**
 
-Offer options:
-> "Found a `/docs` folder but it's not the Directions system. How should I handle this?
-> 1. **Rename to /old-docs** - Move existing docs aside, set up Directions in /docs
-> 2. **Merge** - Add Directions files into existing /docs structure
-> 3. **Separate** - Keep /docs as-is, put Directions in /directions
-> 4. **Ignore** - Don't set up Directions, just work with what's here"
+Offer two options:
+> "Found existing documentation. How should I proceed?
+> 1. **Migrate** (recommended) - Back up to /old-docs, set up Directions in /docs, extract useful info
+> 2. **Skip** - Don't set up Directions, just work with what's here"
 
-If they choose 1, 2, or 3:
-- Set up Directions in chosen location
-- Read existing docs to extract: project purpose, decisions made, architecture hints
+If they choose Migrate:
+- Create git commit: "Pre-Directions backup"
+- Move existing /docs (or scattered .md files except README.md) to `/old-docs`
+- Set up Directions in `/docs`
+- Read `/old-docs` to extract: project purpose, decisions, architecture hints
+- Populate PROJECT_STATE.md and decisions.md from what was found
 - Run gap interview for missing info
-- Populate PROJECT_STATE.md, decisions.md from what was found
 
 **NO → Continue to Step 3.**
 
 ---
 
-### Step 3: Check for Scattered Markdown Files
-
-```
-Are there .md files in the project (not in /docs)?
-```
-
-**YES → Has scattered docs, no structure.**
-
-Offer options:
-> "Found markdown files but no organized docs structure. Options:
-> 1. **Migrate** - Move existing MDs to /old-docs, set up Directions in /docs, extract useful info
-> 2. **Fresh start** - Ignore existing MDs, set up Directions clean
-> 3. **Ignore** - Don't set up Directions"
-
-If they choose 1:
-- Create `/old-docs` folder
-- Move all `.md` files (except README.md) to `/old-docs`
-- Set up Directions in `/docs`
-- Read `/old-docs`, extract info → populate `/docs`
-- Run gap interview
-
-**NO → Continue to Step 4.**
-
----
-
-### Step 4: New Empty Project
+### Step 3: New Project
 
 No docs, no MDs, minimal files.
 
@@ -130,17 +105,25 @@ After the interview, create a `CLAUDE.md` in the project root with:
 - Key architecture decisions
 - Pointer to `docs/00_base.md`
 
+Then show the **Setup Complete** message:
+> "✓ **Setup complete!** Your project is ready.
+>
+> **Quick start:**
+> - `/status` - See current focus
+> - `/log` - Start your first session log
+> - Or just tell me what you want to build!"
+
 ---
 
 ## Existing Projects with Directions
 
 If `docs/00_base.md` exists:
 
-1. Read it (refresh on the system)
-2. Check `docs/PROJECT_STATE.md` for current phase/focus
-3. Check `docs/sessions/_index.md` for what happened last time
-4. Read the latest session log if continuing work
-5. Continue from where we left off
+1. Read `docs/PROJECT_STATE.md` for current phase/focus/blockers
+2. Show: "Phase: [X] | Focus: [Y] | Last session: [date]"
+3. Ask: "Continue with [current focus], or work on something else?"
+
+Only read additional files (session logs, decisions.md) if specifically needed for the task.
 
 ---
 
