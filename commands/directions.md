@@ -20,6 +20,7 @@ Show all available Directions commands and system info.
 | `/handoff` | Generate handoff document |
 | `/blockers` | Log and track blockers |
 | `/review` | Interactive production checklist |
+| `/minimums` | Check baseline app features (updates, logging, UI) |
 | `/new-feature` | Scaffold docs for new feature |
 | `/execute` | Wave-based parallel execution with fresh contexts |
 
@@ -28,3 +29,4 @@ Show all available Directions commands and system info.
 - Run `/status` for a quick check of where you are
 - Run `/log` before ending a session to save progress
 - Run `/decide` after making architectural choices
+- Run `/minimums` before shipping to catch forgotten features

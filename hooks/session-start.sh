@@ -16,7 +16,7 @@ What would you like to do?
 | /execute    | Wave-based parallel execution (fresh contexts)    |
 | /update-directions | Pull latest and sync to project             |
 
-**More:** /phase, /context, /handoff, /blockers, /review, /new-feature
+**More:** /phase, /context, /handoff, /blockers, /review, /minimums, /new-feature
 
 **Context tip:** Use /execute for implementation (spawns fresh subagents).
 Create RESUME.md if ending mid-task. Keep PROJECT_STATE.md under 80 lines.

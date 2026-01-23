@@ -36,8 +36,11 @@ Based on the new phase, suggest relevant documentation:
 | discovery | 10_new-project.md, 11_ai-context-template.md |
 | planning | 04_architecture-decisions.md, 51_planning-patterns.md |
 | implementation | 20_swiftui-gotchas.md, 21_coordinate-systems.md, 31_debugging.md |
-| polish | 30_production-checklist.md, 40_typography.md, 41_apple-ui.md |
-| shipping | 30_production-checklist.md, 32_git-workflow.md |
+| polish | 30_production-checklist.md, 33_app-minimums.md, 40_typography.md |
+| shipping | 30_production-checklist.md, 33_app-minimums.md, 32_git-workflow.md |
+
+**For polish/shipping phases**, also remind:
+> "Have you run `/minimums` to check baseline features?"
 
 ## Step 5: Confirm
 

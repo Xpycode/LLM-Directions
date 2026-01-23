@@ -309,7 +309,22 @@ If persisting file access:
 
 ---
 
-## Phase 9: Pre-Release Prep
+## Phase 9: App Minimums Check
+
+Before shipping, verify baseline features are in place. See **33_app-minimums.md** for the full checklist.
+
+### Quick Check
+- [ ] Auto-update mechanism (Sparkle / App Store)
+- [ ] Version visible in UI (About window)
+- [ ] Diagnostic logging set up
+- [ ] Preferences system (@AppStorage)
+- [ ] Empty states designed
+- [ ] Loading/error states implemented
+- [ ] Keyboard shortcuts documented
+
+---
+
+## Phase 10: Pre-Release Prep
 
 ### Distribution Setup
 

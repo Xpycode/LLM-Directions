@@ -2,9 +2,11 @@
 
 Run through the production checklist interactively.
 
-## Step 1: Load Checklist
+## Step 1: Load Checklists
 
-Read `docs/30_production-checklist.md` to get the checklist items.
+Read both:
+- `docs/30_production-checklist.md` - Code quality and release prep
+- `docs/33_app-minimums.md` - Baseline features (updates, logging, UI polish)
 
 If it doesn't exist, use this default checklist:
 

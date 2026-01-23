@@ -325,6 +325,7 @@ Let's start fresh. Here's what I need: [one sentence]
 | macOS specifics | Directions-MACOS-PLATFORM.md |
 | AI context template | Directions-AI-CONTEXT-TEMPLATE.md |
 | Pre-release | Directions-PRODUCTION-CHECKLIST.md |
+| App minimums | 33_app-minimums.md |
 | Doc templates | Directions-DOCUMENTATION-TEMPLATES.md |
 
 ---

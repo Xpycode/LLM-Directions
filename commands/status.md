@@ -12,3 +12,9 @@ Report:
 - Any blockers
 - What happened last time
 - Suggested next action
+
+## Phase-Specific Reminders
+
+If phase is **polish** or **shipping**, add:
+
+> **Reminder:** Run `/minimums` to check baseline features (updates, logging, UI polish) before release.

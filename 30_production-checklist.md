@@ -132,6 +132,7 @@ Before distributing to users:
 
 ```
 [ ] Full production checklist above
+[ ] App Minimums verified (see 33_app-minimums.md)
 [ ] Tested on clean install (delete app data)
 [ ] Tested app update path (if updating existing app)
 [ ] Crash reports reviewed (if available)
@@ -140,6 +141,8 @@ Before distributing to users:
 [ ] Version number incremented
 [ ] Code signed and notarized (macOS)
 ```
+
+> **See also:** [33_app-minimums.md](33_app-minimums.md) for baseline features checklist (updates, logging, UI polish, etc.)
 
 ---
 
