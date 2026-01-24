@@ -1,7 +1,7 @@
 # Session History
 
 ## Active Project
-[Project name and one-line description]
+LLM-Directions - Documentation system for AI-assisted development
 
 ## Current Status
 → See [PROJECT_STATE.md](../PROJECT_STATE.md)
@@ -10,7 +10,7 @@
 
 | Date | Focus | Outcome | Log |
 |------|-------|---------|-----|
-| [Template row - delete when adding first real session] | | | |
+| 2026-01-23 | System improvement analysis | Simplified onboarding, consolidated docs, added testing guide | [log](2026-01-23.md) |
 
 ---
 
