@@ -2,4 +2,5 @@
 
 | Date | Summary |
 |------|---------|
-| 2026-01-23 | Implemented `/execute` command |
+| 2026-01-24 | Added LLM failure modes reference (53_llm-failure-modes.md) from WFGY analysis |
+| 2026-01-23 | Implemented `/execute` command; captured FeedbackKit idea |
