@@ -166,6 +166,41 @@ After extraction, run a **gap interview**:
 - Log decisions to `docs/decisions.md` when architectural choices are made
 - Update session logs after significant progress
 
+### Xcode Build Behavior
+Before building any app, ALWAYS do a clean build cycle:
+
+1. **Kill the running app** (if any)
+   ```bash
+   # macOS app
+   killall "AppName" 2>/dev/null || true
+
+   # iOS Simulator
+   xcrun simctl terminate booted <bundle-id> 2>/dev/null || true
+   ```
+
+2. **Clean the build folder**
+   ```bash
+   xcodebuild clean -scheme "SchemeName" -destination "..."
+   # Or: rm -rf ~/Library/Developer/Xcode/DerivedData/ProjectName-*
+   ```
+
+3. **Build the app**
+   ```bash
+   xcodebuild -scheme "SchemeName" -destination "..." build
+   ```
+
+4. **Launch the app**
+   ```bash
+   # macOS
+   open /path/to/Build/Products/Debug/AppName.app
+
+   # iOS Simulator
+   xcrun simctl install booted /path/to/app
+   xcrun simctl launch booted <bundle-id>
+   ```
+
+This ensures a fresh state every time - no stale caches or zombie processes.
+
 ---
 
 ## Directions Location
