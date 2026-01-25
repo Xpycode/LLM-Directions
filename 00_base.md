@@ -130,6 +130,10 @@ Based on what's happening, suggest these docs:
 | Minimums, baseline, must have, essential features | `33_app-minimums.md` |
 | Bug, broken, not working, debug | `31_debugging.md` |
 | Planning, multi-session, complex task | `51_planning-patterns.md` |
+| Security, secrets, credentials, HIPAA | `54_security-rules.md` |
+| Code review, before commit, quality check | `/code-review` command |
+| Test first, TDD, test-driven | `/tdd` command |
+| Build error, won't compile, Xcode error | `/build-fix` command |
 
 **How to suggest:**
 > "You mentioned [keyword]. The [doc name] covers common issues with this - want me to review it before we continue?"
@@ -225,7 +229,9 @@ Remind about relevant docs when changing phases:
 ├── 44_my-glossary.md             ← Personal learning log
 │
 ├── 50_progressive-context.md     ← Managing large projects
-└── 51_planning-patterns.md       ← Complex task planning
+├── 51_planning-patterns.md       ← Complex task planning
+├── 53_llm-failure-modes.md       ← Common AI mistakes
+└── 54_security-rules.md          ← Security checklist
 ```
 
 ### Numbering Logic
