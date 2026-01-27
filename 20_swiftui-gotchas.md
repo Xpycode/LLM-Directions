@@ -1,5 +1,5 @@
 <!--
-TRIGGERS: UI not updating, @Observable, @State, SwiftUI bug, layout broken, view not refreshing
+TRIGGERS: UI not updating, @Observable, @State, SwiftUI bug, layout broken, view not refreshing, layout shift, conditional view, show hide
 PHASE: implementation
 LOAD: full
 -->
@@ -216,6 +216,63 @@ ForEach(viewModel.items, id: \.stableId) { item in
 
 ---
 
+### Conditional Views Causing Layout Shifts
+
+**Problem:** UI jumps/shifts when showing or hiding elements based on state.
+
+```swift
+// BROKEN: ZStack includes hidden view in size calculation
+ZStack {
+    MainContent()
+        .padding(.bottom, 30)  // Reserve space
+
+    if showIndicator {  // Structural change!
+        IndicatorBar()
+    }
+}
+
+// ALSO BROKEN: opacity still triggers layout recalc
+ZStack {
+    MainContent()
+    IndicatorBar()
+        .opacity(showIndicator ? 1 : 0)  // May still animate/recalc
+}
+
+// WORKS: Use .overlay - excluded from parent size calculation
+MainContent()
+    .padding(.bottom, 30)  // Reserve space
+    .overlay(alignment: .bottom) {
+        IndicatorBar()
+            .opacity(showIndicator ? 1 : 0)
+    }
+```
+
+**Why:** Two issues combine:
+1. `if condition { View }` changes view structure, forcing SwiftUI to rebuild the hierarchy
+2. `ZStack` calculates size from the union of all children's frames—even invisible ones can affect layout
+3. `.overlay()` is explicitly excluded from parent size calculation
+
+**Detection:** Layout shifts when toggling visibility. Add border to parent: `.border(.red)` — if size changes when child shows/hides, this is the cause.
+
+**Fix Pattern:**
+
+**Fix 1: `.overlay()` instead of `ZStack`**
+- Move the toggled element into an `.overlay()` modifier
+- Overlays are completely excluded from parent layout sizing
+- The main content determines its own size; the overlay floats on top
+
+**Fix 2: Always render, control with `opacity`**
+- Remove `if condition { View }` conditionals
+- View is always in the tree with `opacity` controlling visibility
+- Prevents SwiftUI structural identity changes that trigger layout passes
+
+**Rule:** For show/hide elements that shouldn't affect layout:
+1. Use `.overlay()` instead of `ZStack` siblings
+2. Always render the view (no `if`), control visibility with `.opacity()`
+3. Reserve space with fixed padding on the parent
+
+---
+
 ## Threading Issues
 
 ### Publishing from Background Threads
@@ -325,6 +382,7 @@ If values are wrong → Logic bug, trace the data flow.
 | HSplitView | Layout gaps | Use HStack + Divider |
 | PreferenceKey conditional | Sizing breaks | Always use max(value, nextValue()) |
 | .clipped() | Overlay escapes | Use .clipShape(Rectangle()) |
+| Conditional view | Layout shifts | Use .overlay() + opacity, not if/ZStack |
 | Background publish | Purple warning | .receive(on: .main) |
 | Cursor imbalance | Cursor stuck | defer { NSCursor.pop() } |
 
