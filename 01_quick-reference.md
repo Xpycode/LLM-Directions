@@ -126,6 +126,25 @@ Is this thread-safe? Should any classes be actors?
 
 ---
 
+## AI Code Quality Thresholds
+
+| Metric | Healthy | Caution | Stop & Review |
+|--------|---------|---------|---------------|
+| Total LOC | < 10k | 10k-30k | > 30k |
+| Largest file | < 300 | 300-500 | > 500 |
+| Features | ≤ 7 | 8-10 | > 10 |
+| Change size | < 200 LOC | 200-500 | > 500 |
+
+**Weekly check:** `/quality` — run codebase health audit
+
+**AI-typical issues:**
+- Happy-path bias (error paths untested)
+- Edge case gaps (empty, nil, max values)
+- Verbose solutions (ask: "can this be simpler?")
+- Confident wrongness (always verify)
+
+---
+
 ## Top 5 Bug Categories
 
 | Bug | Symptom | Ask |
@@ -316,6 +335,9 @@ Let's start fresh. Here's what I need: [one sentence]
 
 | Need | Guide |
 |------|-------|
+| AI code quality | 35_ai-code-quality.md |
+| Testing | 34_testing.md |
+| TDD workflow | commands/tdd.md |
 | Full learning | Directions-LEARNING-GUIDE.md |
 | Step-by-step | Directions-CURRICULUM.md |
 | Claude Code CLI | Directions-CLAUDE-CODE-REFERENCE.md |

@@ -29,9 +29,14 @@ After detection:
 | `/handoff` | Generate handoff document for future sessions |
 | `/blockers` | Log and track blockers |
 | `/review` | Interactive production checklist |
+| `/minimums` | Check baseline app features before shipping |
 | `/new-feature` | Scaffold docs for new feature |
 | `/execute` | Wave-based parallel execution with fresh contexts |
 | `/update-directions` | Pull latest Directions from GitHub |
+| `/code-review` | Quality checklist before commits |
+| `/tdd` | Test-driven development workflow |
+| `/quality` | AI code quality audit (LOC, complexity, edge cases) |
+| `/build-fix` | Xcode/Swift error resolution guide |
 
 ---
 
