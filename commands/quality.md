@@ -114,9 +114,11 @@ For fast checks, just run:
 
 1. `wc -l` on changed files
 2. Count features, calculate interactions
-3. Grep for `try?` (swallowed errors)
-4. Grep for `print(` (debug code)
+3. Grep for `try?` (swallowed errors) — verify each is intentional
+4. Grep for `print(` — **verify context** (OK inside `#if DEBUG` or `#Preview`)
 5. Spot check error handling
+
+**Important:** Pattern matching finds candidates. Context determines if they're issues. See `/code-review` for verification steps.
 
 ---
 
