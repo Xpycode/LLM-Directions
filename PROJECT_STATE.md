@@ -35,6 +35,17 @@
 | Implementation | **active** | 4/12 |
 | Polish | pending | 0/5 |
 
+## Readiness
+<!-- Status per dimension: ⚪ not started | 🔶 WIP | ✅ done -->
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Features | 🔶 WIP | [what's done/remaining] |
+| UI/Polish | ⚪ — | [current state] |
+| Testing | ⚪ — | [coverage notes] |
+| Docs | ⚪ — | [README, API docs, etc.] |
+| Distribution | ⚪ — | [build, signing, release] |
+
 ## Validation Gates
 <!-- Backpressure checks before phase transitions -->
 - [ ] **Define → Plan**: Spec reviewed, edge cases documented
