@@ -37,6 +37,28 @@ After detection:
 | `/tdd` | Test-driven development workflow |
 | `/quality` | AI code quality audit (LOC, complexity, edge cases) |
 | `/build-fix` | Xcode/Swift error resolution guide |
+| `/cookbook` | Manage reusable code patterns cookbook |
+| `/spec` | Create feature specification (mini-PRD) before implementation |
+| `/plan` | Create implementation plan with task waves |
+| `/checkpoint` | Create git tag checkpoints for safe rollback |
+| `/next` | Get next steps based on current state |
+| `/reflect` | Session reflection and lessons learned |
+| `/example-map` | Example mapping for acceptance criteria |
+
+---
+
+## Pattern Cookbook (Auto-Trigger)
+
+When implementing these UI patterns, **FIRST check** the cookbook at:
+`[LOCAL_DIRECTIONS_PATH]/PATTERNS-COOKBOOK.md`
+
+**Trigger keywords:**
+- Window layouts (HSplitView, NavigationSplitView, 2-pane, 3-pane, sidebar)
+- Export dialogs (NSSavePanel, NSOpenPanel, file picker)
+- File import (drag-and-drop, .fileImporter, security-scoped bookmarks)
+- App lifecycle (@main, AppDelegate, scenePhase, service initialization)
+
+**Also search Vestige** for semantic matches - patterns are stored there too.
 
 ---
 
