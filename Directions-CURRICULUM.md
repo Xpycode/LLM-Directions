@@ -762,22 +762,21 @@ Per-bug: Add to CLAUDE.md if pattern
 
 **Core Guides:**
 - This curriculum → Step-by-step learning
-- Directions-LEARNING-GUIDE.md → Comprehensive reference
-- Directions-QUICK-REFERENCE.md → Daily checklist
+- 01_quick-reference.md → Daily checklist
 
 **Claude Code:**
-- Directions-CLAUDE-CODE-REFERENCE.md → CLI features, MCP, hooks
-- Directions-PROGRESSIVE-CONTEXT.md → Router pattern, 95% token reduction
+- 23_claude-code-cli.md → CLI features, MCP, hooks
+- 50_progressive-context.md → Router pattern, 95% token reduction
 
 **Technical References:**
-- Directions-SWIFTUI-GOTCHAS.md → Common SwiftUI bugs
-- Directions-COORDINATE-SYSTEMS.md → Points vs pixels
-- Directions-MACOS-PLATFORM.md → macOS-specific patterns
+- 20_swiftui-gotchas.md → Common SwiftUI bugs
+- 21_coordinate-systems.md → Points vs pixels
+- 22_macos-platform.md → macOS-specific patterns
 
 **Templates:**
-- Directions-AI-CONTEXT-TEMPLATE.md → AI context files
-- Directions-DOCUMENTATION-TEMPLATES.md → README, CHANGELOG, etc.
-- Directions-PRODUCTION-CHECKLIST.md → Pre-release verification
+- 11_ai-context-template.md → AI context files
+- 12_documentation-templates.md → README, CHANGELOG, etc.
+- 30_production-checklist.md → Pre-release verification
 
 **Your Knowledge Base:**
 - Your CLAUDE.md → Project rules you've learned

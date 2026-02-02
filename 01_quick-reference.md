@@ -338,17 +338,16 @@ Let's start fresh. Here's what I need: [one sentence]
 | AI code quality | 35_ai-code-quality.md |
 | Testing | 34_testing.md |
 | TDD workflow | commands/tdd.md |
-| Full learning | Directions-LEARNING-GUIDE.md |
-| Step-by-step | Directions-CURRICULUM.md |
-| Claude Code CLI | Directions-CLAUDE-CODE-REFERENCE.md |
-| Large project context | Directions-PROGRESSIVE-CONTEXT.md |
-| SwiftUI bugs | Directions-SWIFTUI-GOTCHAS.md |
-| Coordinates | Directions-COORDINATE-SYSTEMS.md |
-| macOS specifics | Directions-MACOS-PLATFORM.md |
-| AI context template | Directions-AI-CONTEXT-TEMPLATE.md |
-| Pre-release | Directions-PRODUCTION-CHECKLIST.md |
+| Step-by-step curriculum | Directions-CURRICULUM.md |
+| Claude Code CLI | 23_claude-code-cli.md |
+| Large project context | 50_progressive-context.md |
+| SwiftUI bugs | 20_swiftui-gotchas.md |
+| Coordinates | 21_coordinate-systems.md |
+| macOS specifics | 22_macos-platform.md |
+| AI context template | 11_ai-context-template.md |
+| Pre-release | 30_production-checklist.md |
 | App minimums | 33_app-minimums.md |
-| Doc templates | Directions-DOCUMENTATION-TEMPLATES.md |
+| Doc templates | 12_documentation-templates.md |
 
 ---
 

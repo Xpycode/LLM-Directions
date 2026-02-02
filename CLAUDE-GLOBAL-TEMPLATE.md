@@ -44,6 +44,7 @@ After detection:
 | `/next` | Get next steps based on current state |
 | `/reflect` | Session reflection and lessons learned |
 | `/example-map` | Example mapping for acceptance criteria |
+| `/compound` | Extract reusable learnings from session |
 
 ---
 

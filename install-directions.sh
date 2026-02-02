@@ -8,6 +8,19 @@ set -e
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Check for Python 3 (required for hooks)
+if ! command -v python3 &> /dev/null; then
+    echo "⚠️  Warning: Python 3 not found."
+    echo "   Some hooks (session-start, doc-suggester) require Python 3."
+    echo "   Install with: brew install python3"
+    echo ""
+    read -p "Continue anyway? [y/N] " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
 PLUGIN_DIR="$HOME/.claude/plugins/local/directions"
 COMMANDS_DIR="$HOME/.claude/commands"
 CLAUDE_MD="$HOME/.claude/CLAUDE.md"

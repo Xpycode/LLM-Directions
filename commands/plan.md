@@ -60,7 +60,7 @@ Group tasks by dependencies:
 
 ### Step 5: Write IMPLEMENTATION_PLAN.md
 
-Use the template from `drafts/IMPLEMENTATION_PLAN-template.md`.
+Use the template from `IMPLEMENTATION_PLAN-template.md` (in root or docs/).
 
 Include for each task:
 - Description

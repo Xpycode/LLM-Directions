@@ -2,7 +2,9 @@
 
 Manage the reusable code patterns cookbook.
 
-**Location:** `/Users/sim/XcodeProjects/0-DIRECTIONS/__DIRECTIONS/PATTERNS-COOKBOOK.md`
+**Location:** Detect automatically:
+- Master repo: `./PATTERNS-COOKBOOK.md` (root)
+- Installed projects: `./docs/PATTERNS-COOKBOOK.md`
 
 ## Commands
 
@@ -11,7 +13,7 @@ Manage the reusable code patterns cookbook.
 Full rescan of XcodeProjects to find new patterns.
 
 **Process:**
-1. Scan `/Users/sim/XcodeProjects` for Swift files containing:
+1. Scan the user's projects directory for Swift files containing:
    - Window layouts (HSplitView, NavigationSplitView, WindowGroup)
    - Export dialogs (NSSavePanel, NSOpenPanel)
    - File pickers (.fileImporter, drag-and-drop)

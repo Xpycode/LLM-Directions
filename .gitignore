@@ -1,6 +1,9 @@
 # macOS
 .DS_Store
 
+# Archive (internal artifacts, not for distribution)
+.archive/
+
 # Local/personal files (not part of the system)
 docs-browser.html
 docs.sh
@@ -12,3 +15,6 @@ sessions/*.md
 # Syncthing temp files
 .syncthing.*.tmp
 *.sync-conflict-*
+
+# Embedding cache
+.fastembed_cache/

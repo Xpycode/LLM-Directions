@@ -6,6 +6,21 @@
 
 ---
 
+## Layout Modes (Important)
+
+Directions operates in two modes:
+
+| Mode | File Location | When |
+|------|---------------|------|
+| **Master repo** | Files at root (`./00_base.md`, `./PROJECT_STATE.md`) | When editing the Directions repo itself |
+| **Installed project** | Files in `docs/` (`docs/00_base.md`, `docs/PROJECT_STATE.md`) | After copying to a user project |
+
+**Detection rule:** Check for `docs/00_base.md` first. If it exists, use `docs/` paths. Otherwise, use root paths.
+
+All commands and hooks support both modes automatically.
+
+---
+
 ## For Claude: How to Use This System
 
 You are working with someone who directs AI to build software but doesn't code themselves. Your job is to:
