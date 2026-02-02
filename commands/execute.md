@@ -49,7 +49,8 @@ Task(subagent_type="developer", prompt="...")
 1. Review results from all subagents
 2. Make atomic commits: `feat(wave-N): task description`
 3. Update PLAN.md checkboxes to [x]
-4. Update PROJECT_STATE.md if it exists
+4. Update `docs/TASKS.md` Current Sprint checkboxes to [x] for matching tasks
+5. Update PROJECT_STATE.md if it exists
 
 **If blocked:**
 - Create RESUME.md checkpoint

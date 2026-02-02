@@ -147,6 +147,24 @@ Confirm understanding:
 
 ---
 
+## TASKS.md Integration
+
+After validation, add discovered tasks to `docs/TASKS.md` Backlog:
+
+1. Create `docs/TASKS.md` from template if it doesn't exist
+2. Extract actionable tasks from the spec's acceptance criteria
+3. Add to Backlog section (priority: top = highest)
+
+```markdown
+## Backlog
+- [ ] [Task derived from acceptance criterion 1]
+- [ ] [Task derived from acceptance criterion 2]
+```
+
+> "Added [N] tasks to Backlog. Run `/plan` to move them to Current Sprint."
+
+---
+
 ## Quick Modes
 
 | Mode | When | Duration |

@@ -61,3 +61,26 @@ After syncing PROJECT_STATE.md, **check for new reusable patterns**:
 If yes, run `/cookbook add` to capture the pattern while it's fresh.
 
 **Why:** Patterns captured immediately after solving a problem are more complete and accurate than trying to extract them later.
+
+## Archive Completed Tasks
+
+After cookbook check, **archive completed tasks from TASKS.md**:
+
+1. Read `docs/TASKS.md` Current Sprint section
+2. Find checked tasks: `- [x] ...`
+3. Move them to `docs/tasks-archive.md`:
+   - Add to top of Completed section with date: `- [x] Task description (YYYY-MM-DD)`
+   - Increment "Total archived" count in Stats section
+   - Update "Last updated" date
+4. Remove checked tasks from TASKS.md Current Sprint
+5. Update PROJECT_STATE.md progress bar:
+
+```
+Progress = (archived + current_checked) / (backlog + current + archived) × 100
+```
+
+Format: `[##########..........] 50%`
+
+> "Archived [N] completed tasks. Progress: [X]%"
+
+**Skip if:** TASKS.md doesn't exist or no checked tasks in Current Sprint.

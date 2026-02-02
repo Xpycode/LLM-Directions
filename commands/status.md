@@ -7,11 +7,18 @@ Quick status check. Read and summarize:
 - If `./PROJECT_STATE.md` exists at root → use root paths (master repo)
 
 1. `PROJECT_STATE.md` - current phase, focus, blockers
-2. `sessions/_index.md` - last session date and outcome
-3. Latest session log if exists
+2. `TASKS.md` - backlog, current sprint, progress (if exists)
+3. `tasks-archive.md` - archived count (if exists)
+4. `sessions/_index.md` - last session date and outcome
+5. Latest session log if exists
 
 Report:
 - What phase we're in
+- **Task progress** (if TASKS.md exists):
+  - Backlog: N tasks
+  - Current Sprint: N/M complete
+  - Archived: N tasks
+  - Overall: X%
 - Readiness snapshot (Features/UI/Testing/Docs/Distribution status)
 - What we're working on
 - Any blockers

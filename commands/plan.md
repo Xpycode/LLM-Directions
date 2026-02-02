@@ -96,4 +96,28 @@ Plans are disposable. If the current plan is wrong:
 Don't patch broken plans. Regenerate.
 
 ---
+
+## TASKS.md Integration
+
+After creating IMPLEMENTATION_PLAN.md, sync with `docs/TASKS.md`:
+
+1. **If tasks exist in Backlog:** Move relevant tasks to Current Sprint
+2. **If new tasks:** Add them to Current Sprint (they weren't in Backlog)
+3. Keep Current Sprint focused: 3-7 tasks max per sprint
+
+```markdown
+## Current Sprint
+- [ ] Task 1.1: [from Wave 1]
+- [ ] Task 1.2: [from Wave 1]
+- [ ] Task 2.1: [from Wave 2]
+```
+
+**Mapping:** IMPLEMENTATION_PLAN.md tasks → TASKS.md Current Sprint
+- Wave tasks become sprint tasks
+- IMPLEMENTATION_PLAN.md has execution details (files, backpressure)
+- TASKS.md has checkbox tracking for progress
+
+> "Moved [N] tasks to Current Sprint. Run `/execute` to begin."
+
+---
 *80% of time on planning, 20% on execution. This is the 80%.*
