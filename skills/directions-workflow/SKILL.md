@@ -53,6 +53,7 @@ docs/
 | `/reorg` | Reorganize folder structure |
 | `/update-directions` | Pull latest updates |
 | `/execute` | Wave-based parallel execution |
+| `/cookbook` | Manage reusable code patterns |
 
 ## Workflow Principles
 

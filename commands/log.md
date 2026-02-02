@@ -44,3 +44,20 @@ If yes, review the session and update PROJECT_STATE.md with any changes to:
 | **Key Decisions** | Major decisions were made (add summary + link to decisions.md) |
 
 Keep PROJECT_STATE.md as a **current snapshot** — it should reflect where the project stands *now*, not the history of how it got there (that's what session logs are for).
+
+## Check for Cookbook Patterns
+
+After syncing PROJECT_STATE.md, **check for new reusable patterns**:
+
+> "Did this session produce any reusable code patterns worth adding to the cookbook?"
+
+**Trigger words to listen for during session:**
+- "finally got X working"
+- "figured out how to..."
+- "this pattern works well"
+- "copied from [other project]"
+- Window layouts, export dialogs, file pickers, app lifecycle
+
+If yes, run `/cookbook add` to capture the pattern while it's fresh.
+
+**Why:** Patterns captured immediately after solving a problem are more complete and accurate than trying to extract them later.
