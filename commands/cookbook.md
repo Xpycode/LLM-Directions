@@ -2,7 +2,7 @@
 
 Manage the reusable code patterns cookbook.
 
-**Location:** `/Users/sim/XcodeProjects/0-DIRECTIONS/_Analysis/PATTERNS-COOKBOOK.md`
+**Location:** `/Users/sim/XcodeProjects/0-DIRECTIONS/__DIRECTIONS/PATTERNS-COOKBOOK.md`
 
 ## Commands
 
