@@ -81,6 +81,7 @@ docs/ (Directions reference)
 ├── 01_quick-reference.md         ← Daily cheatsheet
 ├── 03_workflow-phases.md         ← The funnel process
 ├── 04_architecture-decisions.md  ← Interview → tech mapping
+├── PATTERNS-COOKBOOK.md          ← Reusable code patterns
 ├── 10-19: Setup docs
 ├── 20-29: Technical gotchas
 ├── 30-39: Quality & debugging
@@ -110,6 +111,7 @@ docs/ (Directions reference)
 | `/setup` | Detect project state, offer setup/migration |
 | `/decide` | Record an architectural decision |
 | `/learned` | Add term to personal glossary |
+| `/cookbook` | Manage reusable code patterns |
 | `/phase` | Change project phase |
 | `/review` | Production checklist |
 | `/new-feature` | Scaffold docs for new feature |
@@ -139,6 +141,23 @@ After each session, extract learnings:
 - Patterns → `AGENTS.md`
 - Terms → `44_my-glossary.md`
 - Decisions → `decisions.md`
+
+### Patterns Cookbook
+Reusable code patterns extracted from production apps. Copy-first beats building new.
+
+```
+/cookbook         # Update cookbook (rescan for patterns)
+/cookbook add     # Quick-add a pattern you just built
+/cookbook search  # Search existing patterns
+```
+
+**Included patterns:**
+- Window layouts (NavigationSplitView, HSplitView, multi-window)
+- Export dialogs (NSSavePanel, NSOpenPanel, progress indicators)
+- App lifecycle (initialization order, scene phase handling)
+- MCP memory integration (Vestige patterns)
+
+See `PATTERNS-COOKBOOK.md` for full code snippets.
 
 ---
 
