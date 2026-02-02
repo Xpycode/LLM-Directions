@@ -10,6 +10,7 @@ LLM-Directions - Documentation system for AI-assisted development
 
 | Date | Focus | Outcome | Log |
 |------|-------|---------|-----|
+| 2026-02-02 | Deploy cookbook + sync commands | Vestige patterns stored, 7 commands added to global CLAUDE.md | [log](2026-02-02.md) |
 | 2026-01-23 | System improvement analysis | Simplified onboarding, consolidated docs, added testing guide | [log](2026-01-23.md) |
 
 ---
