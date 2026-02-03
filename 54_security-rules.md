@@ -1,6 +1,6 @@
 # Security Rules Reference
 
-**Triggers:** security, secrets, credentials, authentication, privacy, HIPAA, healthcare data
+**Triggers:** security, secrets, credentials, authentication, privacy, HIPAA, healthcare data, OWASP, XSS, CSRF, SSRF, injection
 
 Mandatory security checks before any commit.
 
@@ -179,6 +179,7 @@ Scan for these patterns:
 
 ## Related
 
+- `/security-audit` - Comprehensive web security audit (OWASP patterns)
 - `34_testing.md` - Security testing section
 - `/code-review` command - Includes security checks
 - `22_macos-platform.md` - Keychain, sandboxing

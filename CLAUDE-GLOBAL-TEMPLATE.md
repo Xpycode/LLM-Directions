@@ -34,6 +34,7 @@ After detection:
 | `/execute` | Wave-based parallel execution with fresh contexts |
 | `/update-directions` | Pull latest Directions from GitHub |
 | `/code-review` | Quality checklist before commits |
+| `/security-audit` | Comprehensive security audit (OWASP patterns) |
 | `/tdd` | Test-driven development workflow |
 | `/quality` | AI code quality audit (LOC, complexity, edge cases) |
 | `/build-fix` | Xcode/Swift error resolution guide |
