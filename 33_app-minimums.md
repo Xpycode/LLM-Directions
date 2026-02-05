@@ -61,6 +61,8 @@ PLATFORM-SPECIFIC
 
 > **⚠ Sandbox gotcha:** If App Sandbox is enabled (`ENABLE_APP_SANDBOX = YES` in build settings), you **must** add the `com.apple.security.network.client` entitlement — otherwise Sparkle silently fails because all outgoing HTTP is blocked. Xcode may enable sandbox by default even if your `.entitlements` file is empty. If unsandboxed, no entitlement needed. See [22_macos-platform.md](22_macos-platform.md#sandbox-considerations).
 
+> **⚠ Versioning gotcha:** Sparkle compares `sparkle:version` (= `CFBundleVersion` / `CURRENT_PROJECT_VERSION`) **not** the marketing version. The marketing version (`sparkle:shortVersionString`) is display-only. Build numbers must be **monotonically increasing** across all releases — if v1.2 has build 3 and v1.3 has build 2, Sparkle thinks v1.2 is newer and offers a downgrade loop. Rule: treat the build number as a single global counter that only goes up, and always set `sparkle:version` in your appcast to match `CURRENT_PROJECT_VERSION` exactly.
+
 **macOS (App Store):**
 - System handles updates, but show "What's New" on first launch after update
 
