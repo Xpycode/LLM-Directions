@@ -59,6 +59,8 @@ PLATFORM-SPECIFIC
 - Host appcast.xml with update info
 - Check on launch + periodically
 
+> **⚠ Sandbox gotcha:** If App Sandbox is enabled (`ENABLE_APP_SANDBOX = YES` in build settings), you **must** add the `com.apple.security.network.client` entitlement — otherwise Sparkle silently fails because all outgoing HTTP is blocked. Xcode may enable sandbox by default even if your `.entitlements` file is empty. If unsandboxed, no entitlement needed. See [22_macos-platform.md](22_macos-platform.md#sandbox-considerations).
+
 **macOS (App Store):**
 - System handles updates, but show "What's New" on first launch after update
 
