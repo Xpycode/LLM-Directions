@@ -63,21 +63,23 @@ PLATFORM-SPECIFIC
 
 > **⚠ Versioning gotcha:** Sparkle compares `sparkle:version` (= `CFBundleVersion` / `CURRENT_PROJECT_VERSION`) **not** the marketing version. The marketing version (`sparkle:shortVersionString`) is display-only. Build numbers must be **monotonically increasing** across all releases — if v1.2 has build 3 and v1.3 has build 2, Sparkle thinks v1.2 is newer and offers a downgrade loop.
 
-**Build number scheme:**
+**Build number scheme** (encode version in digits: `major` `minor` `patch` `iteration`):
 
-| Marketing version | Build range | Example |
+| Marketing version | Build range | Meaning |
 |---|---|---|
-| v1.0 | 100–109 | 100 = first release, 101 = hotfix |
-| v1.1 | 110–119 | 110 = feature update |
-| v1.2 | 120–129 | … |
-| v2.0 | 200–209 | Major version bump |
-| v2.1 | 210–219 | … |
+| v1.0 | 1000–1009 | 1.0.0, up to 10 builds |
+| v1.1 | 1100–1109 | 1.1.0 |
+| v1.3 | 1300–1309 | 1.3.0 |
+| v1.3.1 | 1310–1319 | patch release |
+| v1.3.4 | 1340–1349 | patch release |
+| v2.0 | 2000–2009 | major version bump |
 
 Rules:
-- `CURRENT_PROJECT_VERSION` = first number in the range (e.g. 130 for v1.3)
+- `CURRENT_PROJECT_VERSION` = first number in the range (e.g. 1300 for v1.3)
 - `sparkle:version` in appcast **must match** `CURRENT_PROJECT_VERSION` exactly
-- Hotfix builds increment within the range (131, 132…)
+- Subsequent builds increment the last digit (1301, 1302…)
 - Never reuse a build number across releases
+- Capacity: 10 builds per patch, 10 patches per minor, 10 minors per major
 
 **macOS (App Store):**
 - System handles updates, but show "What's New" on first launch after update
