@@ -175,6 +175,7 @@ Before distributing to users:
 [ ] README updated with new features
 [ ] CHANGELOG entry added
 [ ] Version number incremented
+[ ] Build number follows scheme (v1.2 → 120+) and matches sparkle:version in appcast
 [ ] Code signed and notarized (macOS)
 ```
 
