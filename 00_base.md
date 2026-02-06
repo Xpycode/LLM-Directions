@@ -138,6 +138,7 @@ swift test        # Tests pass?
 | Git, branch, commit | `32_git-workflow.md` |
 | Ship, release, production | `30_production-checklist.md` |
 | Security, secrets, credentials | `54_security-rules.md` |
+| Model, haiku, sonnet, opus, slow, cost | `60_model-selection.md` |
 | What does [term] mean | Add to `44_my-glossary.md` |
 
 ---
