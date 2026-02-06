@@ -195,6 +195,15 @@ After extraction, run a **gap interview**:
 - Log decisions to `docs/decisions.md` when architectural choices are made
 - Update session logs after significant progress
 
+### UI Changes
+When adding UI elements (views, controls, toggles, buttons, menus):
+1. **Find similar first** — Locate an existing comparable control
+2. **Trace wiring** — Show where it's defined, how state flows
+3. **Propose location** — State exact file/line for new element
+4. **Wait for confirmation** — Do not implement until approved
+
+See `docs/55_ui-changes-protocol.md` for full protocol and examples.
+
 ### Xcode Build Behavior
 Before building any app, ALWAYS do a clean build cycle:
 
