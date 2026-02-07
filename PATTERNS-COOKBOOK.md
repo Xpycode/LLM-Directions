@@ -1,17 +1,18 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-02-02**
+**Last updated: 2026-02-07**
 
 ---
 
 ## Table of Contents
 
 1. [Window Layouts](#window-layouts)
-2. [Export & File Dialogs](#export--file-dialogs)
-3. [App Lifecycle & Initialization](#app-lifecycle--initialization)
-4. [MCP Memory Integration](#mcp-memory-integration)
-5. [Quick Reference Table](#quick-reference-table)
+2. [SwiftUI Performance](#swiftui-performance)
+3. [Export & File Dialogs](#export--file-dialogs)
+4. [App Lifecycle & Initialization](#app-lifecycle--initialization)
+5. [MCP Memory Integration](#mcp-memory-integration)
+6. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -304,6 +305,152 @@ HStack(spacing: 0) {
         .frame(minWidth: 400)
 }
 ```
+
+---
+
+## SwiftUI Performance
+
+### The Core Principle: Diffing Checkpoints
+
+**Source:** [SwiftUI Performance Article](https://www.swiftdifferently.com/blog/swiftui/swiftui-performance-article)
+
+SwiftUI uses a "comparison engine" that diffs view output against previous renders. When state updates, the view body re-executes and SwiftUI compares the result.
+
+**The Problem:** Large, monolithic view bodies force SwiftUI to compare many primitives (Text, Button, Image) on every state change.
+
+**The Solution:** Extract subviews into separate structs. Each struct becomes a "diffing checkpoint" — SwiftUI skips re-evaluating subviews whose properties haven't changed.
+
+```swift
+// ❌ BAD: Monolithic view body
+struct ContentView: View {
+    @State private var counter = 0
+
+    var body: some View {
+        VStack {
+            Text("Header")
+            Image(systemName: "star")
+            Text("Count: \(counter)")
+            Button("Increment") { counter += 1 }
+            // 50 more views here...
+            // ALL re-evaluated when counter changes
+        }
+    }
+}
+
+// ✅ GOOD: Separate view structs
+struct ContentView: View {
+    @State private var counter = 0
+
+    var body: some View {
+        VStack {
+            HeaderView()        // ← Diffing checkpoint (skipped if unchanged)
+            CounterView(count: counter)
+            IncrementButton { counter += 1 }
+        }
+    }
+}
+
+struct HeaderView: View {
+    var body: some View {
+        VStack {
+            Text("Header")
+            Image(systemName: "star")
+        }
+    }
+}
+```
+
+---
+
+### Anti-Pattern: @ViewBuilder Methods Don't Help
+
+**Source:** [SwiftUI Performance Article](https://www.swiftdifferently.com/blog/swiftui/swiftui-performance-article)
+
+Methods and computed properties using `@ViewBuilder` still trigger full re-execution because they're called at runtime. Only separate structs get the optimization.
+
+```swift
+// ❌ BAD: @ViewBuilder method (no performance benefit)
+struct ContentView: View {
+    @State private var counter = 0
+
+    var body: some View {
+        VStack {
+            headerView   // Still re-executes every time!
+            Text("Count: \(counter)")
+        }
+    }
+
+    @ViewBuilder
+    private var headerView: some View {
+        Text("Header")
+        Image(systemName: "star")
+    }
+}
+
+// ✅ GOOD: Separate struct (actual optimization)
+struct HeaderView: View {
+    var body: some View {
+        VStack {
+            Text("Header")
+            Image(systemName: "star")
+        }
+    }
+}
+```
+
+---
+
+### Equatable for Views with Closures
+
+**Source:** [SwiftUI Performance Article](https://www.swiftdifferently.com/blog/swiftui/swiftui-performance-article)
+
+SwiftUI can't compare closures, so views with closure properties always look "changed." Use `.equatable()` with custom equality.
+
+```swift
+struct ActionButton: View, Equatable {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(title, action: action)
+    }
+
+    // Custom equality ignores the closure
+    static func == (lhs: ActionButton, rhs: ActionButton) -> Bool {
+        lhs.title == rhs.title
+    }
+}
+
+// Usage:
+ActionButton(title: "Save", action: save)
+    .equatable()  // ← Enables custom equality check
+```
+
+---
+
+### Debug Technique: Random Background Colors
+
+**Source:** [SwiftUI Performance Article](https://www.swiftdifferently.com/blog/swiftui/swiftui-performance-article)
+
+Visualize which views are re-rendering by adding random background colors:
+
+```swift
+extension View {
+    func debugRender() -> some View {
+        self.background(Color(
+            red: .random(in: 0...1),
+            green: .random(in: 0...1),
+            blue: .random(in: 0...1)
+        ))
+    }
+}
+
+// Usage during debugging:
+HeaderView()
+    .debugRender()  // Color changes = view re-rendered
+```
+
+If a view's color changes when unrelated state updates, it needs extraction into a separate struct.
 
 ---
 
@@ -883,6 +1030,9 @@ mcp__vestige__demote_memory({ id: "memory-uuid" })
 
 | Pattern | Source Project | Use Case |
 |---------|---------------|----------|
+| Separate view structs | swiftdifferently.com | Performance (diffing checkpoints) |
+| .equatable() modifier | swiftdifferently.com | Views with closures |
+| debugRender() extension | swiftdifferently.com | Visualize re-renders |
 | NavigationSplitView | Directions | Sidebar navigation |
 | HSplitView (simple) | TextScanner | 2-pane layouts |
 | HSplitView (complex) | Phosphor | Preview + timeline |
@@ -907,6 +1057,8 @@ mcp__vestige__demote_memory({ id: "memory-uuid" })
 
 | Anti-Pattern | Problem | Solution |
 |--------------|---------|----------|
+| @ViewBuilder methods for subviews | No performance benefit — re-executes fully | Use separate view structs |
+| Monolithic view bodies | Every state change re-evaluates all children | Extract subviews as structs |
 | HSplitView layout bugs | Doesn't fill vertical space | Use HStack + Divider |
 | `try?` swallowing errors | Silent failures | Handle errors explicitly |
 | Missing `stopAccessingSecurityScopedResource()` | Resource leaks | Always use `defer` |
