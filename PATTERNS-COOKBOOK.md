@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-02-07**
+**Last updated: 2025-02-07**
 
 ---
 
@@ -12,7 +12,8 @@
 3. [Export & File Dialogs](#export--file-dialogs)
 4. [App Lifecycle & Initialization](#app-lifecycle--initialization)
 5. [MCP Memory Integration](#mcp-memory-integration)
-6. [Quick Reference Table](#quick-reference-table)
+6. [Agent Skills Integration](#agent-skills-integration)
+7. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -1026,6 +1027,111 @@ mcp__vestige__demote_memory({ id: "memory-uuid" })
 
 ---
 
+## Agent Skills Integration
+
+Patterns for extending Claude Code with reusable skills from skills.sh.
+
+### Discover and Install Skills
+
+**Source:** Session 2025-02-07
+
+```bash
+# Search for skills interactively
+npx skills find
+
+# Search by keyword
+npx skills find "react"
+npx skills find "swift"
+
+# Install a skill repo globally (all skills in repo)
+npx skills add <owner/repo> --yes --global --agent claude-code
+
+# Examples:
+npx skills add avdlee/swiftui-agent-skill --yes --global --agent claude-code
+npx skills add obra/superpowers --yes --global --agent claude-code
+npx skills add anthropics/skills --yes --global --agent claude-code
+```
+
+**Key flags:**
+- `--yes` (`-y`): Skip confirmation prompts
+- `--global` (`-g`): Install user-wide, not project-level
+- `--agent claude-code`: Target Claude Code specifically
+
+---
+
+### Manage Installed Skills
+
+**Source:** Session 2025-02-07
+
+```bash
+# List installed skills
+npx skills list              # Project-level
+npx skills list --global     # Global skills
+
+# Check for updates
+npx skills check
+
+# Update all skills to latest
+npx skills update
+
+# Remove a skill
+npx skills remove <skill-name> --global
+
+# Remove all skills from a specific agent
+npx skills remove --global --skill '*' --agent claude-code
+```
+
+---
+
+### Recommended Skill Collections
+
+**Source:** Session 2025-02-07
+
+| Repo | Skills | Best For |
+|------|--------|----------|
+| `avdlee/swiftui-agent-skill` | 1 | SwiftUI patterns, state management, Liquid Glass |
+| `avdlee/swift-concurrency-agent-skill` | 1 | async/await, actors, Swift 6 migration |
+| `anthropics/skills` | 17 | PDF/DOCX/XLSX creation, frontend-design, MCP building |
+| `obra/superpowers` | 14 | TDD, debugging, planning, verification, git worktrees |
+| `wshobson/agents` | 146 | Architecture, testing, security, accessibility, marketing |
+| `vercel-labs/agent-skills` | 4 | Web design, React best practices |
+| `remotion-dev/skills` | 1 | Video processing with React |
+
+---
+
+### How Skills Activate
+
+Skills load **automatically** based on context keywords in your prompts:
+
+| You Say | Skills That Activate |
+|---------|---------------------|
+| "SwiftUI state management" | swiftui-expert-skill |
+| "async/await actor isolation" | swift-concurrency |
+| "design a dashboard" | ui-ux-pro-max, frontend-design |
+| "debug this issue" | systematic-debugging |
+| "write tests first" | test-driven-development |
+| "create a PDF report" | pdf |
+
+No manual invocation needed — skills enhance responses when relevant context is detected.
+
+---
+
+### Skills Location
+
+```bash
+# Global skills (available in all projects)
+~/.claude/skills/
+~/.agents/skills/  # Source, symlinked to above
+
+# Project-level skills
+./.claude/skills/
+./.agents/skills/
+```
+
+**Best for:** Extending Claude Code with domain expertise that persists across sessions.
+
+---
+
 ## Quick Reference Table
 
 | Pattern | Source Project | Use Case |
@@ -1050,6 +1156,8 @@ mcp__vestige__demote_memory({ id: "memory-uuid" })
 | Vestige pattern storage | This cookbook | Auto-recall past solutions |
 | Dual-trigger (CLAUDE.md + Vestige) | This cookbook | Reliable pattern surfacing |
 | Session log integration | Directions | Capture patterns when fresh |
+| skills.sh global install | Session 2025-02-07 | Extend Claude Code with domain skills |
+| Skills auto-activation | Session 2025-02-07 | Context-based skill loading |
 
 ---
 

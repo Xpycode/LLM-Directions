@@ -3,73 +3,69 @@
 > **Size limit: <100 lines.** This is a digest, not an archive. Details go in session logs.
 
 ## Identity
-- **Project:** [Name]
-- **One-liner:** [What it does in one sentence]
-- **Started:** [Date]
+- **Project:** Directions
+- **One-liner:** LLM-assisted development framework with structured specs, plans, and verification
+- **Tags:** meta, framework, documentation, workflow, Claude
+- **Started:** 2024
 
 ## Current Position
-- **Funnel:** define | plan | build
-- **Phase:** discovery | planning | implementation | polish | shipping
-- **Focus:** [Current task/feature in 1 line]
-- **Status:** ready | in-progress | blocked | verifying
-- **Last updated:** [Date]
+- **Funnel:** build
+- **Phase:** implementation
+- **Focus:** Enhancing agent capabilities with skills.sh integration
+- **Status:** ready
+- **Last updated:** 2025-02-07
 
 ## Funnel Progress (Ralph-style)
 <!-- The 3-phase funnel that ships software -->
 
 | Funnel | Status | Gate |
 |--------|--------|------|
-| **Define** | done | Spec exists, acceptance criteria clear |
-| **Plan** | active | IMPLEMENTATION_PLAN.md complete, tasks atomic |
-| **Build** | pending | Tests pass, backpressure satisfied |
+| **Define** | done | Framework documented, patterns established |
+| **Plan** | done | Slash commands, templates, workflows defined |
+| **Build** | active | Iterating on improvements |
 
 ## Phase Progress
 ```
-[##########..........] 50% - Phase 3 of 6
+[################....] 80% - Mature framework
 ```
 
 | Phase | Status | Tasks |
 |-------|--------|-------|
-| Discovery | done | 5/5 |
-| Planning | done | 3/3 |
-| Implementation | **active** | 4/12 |
-| Polish | pending | 0/5 |
+| Discovery | done | ✓ |
+| Planning | done | ✓ |
+| Implementation | **active** | ongoing |
+| Polish | ongoing | docs refinement |
 
 ## Readiness
 <!-- Status per dimension: ⚪ not started | 🔶 WIP | ✅ done -->
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Features | 🔶 WIP | [what's done/remaining] |
-| UI/Polish | ⚪ — | [current state] |
-| Testing | ⚪ — | [coverage notes] |
-| Docs | ⚪ — | [README, API docs, etc.] |
-| Distribution | ⚪ — | [build, signing, release] |
+| Features | ✅ done | Core framework complete |
+| UI/Polish | 🔶 WIP | Slash commands, templates |
+| Testing | ⚪ — | Manual verification |
+| Docs | ✅ done | Full documentation suite |
+| Distribution | ✅ done | GitHub repo, local master |
 
 ## Validation Gates
 <!-- Backpressure checks before phase transitions -->
-- [ ] **Define → Plan**: Spec reviewed, edge cases documented
-- [ ] **Plan → Build**: Tasks are atomic (<30 min each), dependencies mapped
-- [ ] **Build → Ship**: Tests pass, adversarial review done, manual verification complete
+- [x] **Define → Plan**: Framework spec complete
+- [x] **Plan → Build**: Commands and templates documented
+- [ ] **Build → Ship**: Ongoing refinement
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
-- [Date]: [Decision summary]
+- 2025-02-07: Installed 261 agent skills globally via skills.sh for enhanced Claude Code capabilities
+- 2025-02-07: Skills auto-activate on context; update with `npx skills update`
 
 ## Blockers
 <!-- Empty = good. If blocked, include workaround attempts. -->
 
 
-## Execution State
-<!-- Only present during /execute. Delete when done. -->
-- **Plan:** IMPLEMENTATION_PLAN.md
-- **Current wave:** 2 of 3
-- **Tasks complete:** 5/12
-- **Last commit:** `abc123` feat(wave-2): add auth middleware
-
-## Compound Learnings
-<!-- Patterns extracted from recent sessions. Move to glossary/decisions when stable. -->
-
+## Infrastructure
+- **Global skills:** 261 installed at `~/.claude/skills/`
+- **Key skill sets:** SwiftUI, Swift concurrency, UI/UX, workflow patterns, debugging, TDD
+- **Update command:** `npx skills update`
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
