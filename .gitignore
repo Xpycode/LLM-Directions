@@ -18,3 +18,10 @@ sessions/*.md
 
 # Embedding cache
 .fastembed_cache/
+
+# Skills managed externally by npx skills
+.claude/skills/
+.agents/
+
+# But keep Claude settings as reference
+!.claude/settings.local.json

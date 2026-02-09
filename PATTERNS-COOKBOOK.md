@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2025-02-07**
+**Last updated: 2026-02-09**
 
 ---
 
@@ -13,7 +13,8 @@
 4. [App Lifecycle & Initialization](#app-lifecycle--initialization)
 5. [MCP Memory Integration](#mcp-memory-integration)
 6. [Agent Skills Integration](#agent-skills-integration)
-7. [Quick Reference Table](#quick-reference-table)
+7. [Web Development Patterns](#web-development-patterns)
+8. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -1132,6 +1133,96 @@ No manual invocation needed — skills enhance responses when relevant context i
 
 ---
 
+## Web Development Patterns
+
+### Data Injection Pattern (Jinja2 → External JS)
+
+**Source:** `PDF2Calendar/01_Project/templates/stats.html` + `static/js/stats.js`
+
+When server-rendered templates have inline JavaScript with Jinja2 expressions, you can't simply move the JS to an external file. Use a data injection pattern:
+
+**Template (stats.html):**
+```html
+<!-- Small inline script injects server-rendered data -->
+<script>
+    window.STATS_DATA = {
+        dailyVisits: {{ daily_visits | tojson }},
+        deviceData: {{ stats.page_visits.by_device | tojson }},
+        exportDownload: {{ stats.export_download.by_parser | tojson }},
+        // ... other server data
+    };
+</script>
+<!-- Main logic in external file -->
+<script src="/static/js/stats.js"></script>
+```
+
+**External JS (stats.js):**
+```javascript
+// Access server data via global object
+const dailyData = window.STATS_DATA.dailyVisits;
+const deviceData = window.STATS_DATA.deviceData;
+
+// Use data in charts, etc.
+new Chart(ctx, {
+    data: { labels: dailyData.map(d => d[0]) }
+});
+```
+
+**Benefits:**
+- Separates data (server) from logic (client)
+- External JS is cacheable
+- ~90% of code moves to external file
+- Only 10-20 lines of data assignment stays inline
+
+**Best for:** Flask/Django/Jinja2 templates with significant inline JavaScript.
+
+---
+
+### Wave-Based Parallel Execution
+
+**Source:** PDF2Calendar refactor session (2026-02-09)
+
+Pattern for orchestrating multiple parallel tasks with fresh context per task:
+
+**PLAN.md structure:**
+```markdown
+### Wave 1 (parallel - no dependencies)
+- [ ] Task 1.1: Create file A
+- [ ] Task 1.2: Create file B
+- [ ] Task 1.3: Modify file C
+
+### Wave 2 (depends on Wave 1)
+- [ ] Task 2.1: Use files from Wave 1
+
+### Wave 3 (verification)
+- [ ] Task 3.1: Run tests
+```
+
+**Execution pattern (Claude Code):**
+```javascript
+// Wave 1: Spawn parallel tasks
+Task(subagent_type="developer", prompt="Task 1.1: ...")
+Task(subagent_type="developer", prompt="Task 1.2: ...")
+Task(subagent_type="developer", prompt="Task 1.3: ...")
+
+// Wait for all Wave 1 to complete
+// Commit: git commit -m "feat(wave-1): description"
+// Update PLAN.md checkboxes to [x]
+
+// Wave 2: Sequential or parallel based on dependencies
+Task(subagent_type="developer", prompt="Task 2.1: ...")
+```
+
+**Key principles:**
+1. **Fresh context per task** - Each subagent starts clean, no conversation history
+2. **Atomic commits** - One wave = one commit (easy rollback)
+3. **State in files** - PLAN.md is source of truth, not conversation
+4. **Orchestrator stays light** - Delegate heavy work to subagents
+
+**Best for:** Multi-file refactors, feature implementations, any work that can be parallelized.
+
+---
+
 ## Quick Reference Table
 
 | Pattern | Source Project | Use Case |
@@ -1158,6 +1249,8 @@ No manual invocation needed — skills enhance responses when relevant context i
 | Session log integration | Directions | Capture patterns when fresh |
 | skills.sh global install | Session 2025-02-07 | Extend Claude Code with domain skills |
 | Skills auto-activation | Session 2025-02-07 | Context-based skill loading |
+| Jinja2 data injection | PDF2Calendar | Server→client data passing |
+| Wave-based execution | Directions /execute | Parallel task orchestration |
 
 ---
 
