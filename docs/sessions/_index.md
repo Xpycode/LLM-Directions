@@ -1,5 +1,10 @@
 # Session Logs
 
+## 2026
+
+### February
+- [2026-02-11](2026-02-11.md) — Directions state check, multi-Mac skills setup script
+
 ## 2025
 
 ### February
