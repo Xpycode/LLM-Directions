@@ -408,9 +408,11 @@ jobs:
 
 ## Slash Commands
 
+**Note:** Custom commands (`.claude/commands/`) are now merged into the skills system. Existing command files continue to work. If a skill and a command share the same name, the skill takes precedence. See "The Skills System" section below.
+
 ### Built-in Commands
 
-Create `.claude/commands/` directory for custom commands.
+Create `.claude/commands/` directory for custom commands (legacy approach — prefer skills for new work).
 
 **Example: `.claude/commands/review.md`**
 ```markdown
@@ -445,6 +447,135 @@ Add diagnostic logging to trace what's happening.
 ```
 /project:debug the save button doesn't work
 ```
+
+---
+
+## The Skills System (SKILL.md)
+
+### What Skills Are
+
+- Reusable instruction files that capture HOW to do something well
+- Skills adapt to context — same instructions work across different projects
+- SKILL.md is an **open standard** (spec at agentskills.io), supported by 25+ tools: Codex CLI, Gemini CLI, OpenCode, Cursor, VS Code, GitHub, Amp, Roo Code, etc.
+- Dual legibility: readable by both humans and Claude — the file IS the documentation
+- Skills replace the old `.claude/commands/` system (which still works for backward compatibility)
+
+### The Three-Times Rule
+
+If you've used the same prompt or sequence three times, convert it to a skill. Signs:
+
+- You keep writing the same instructions
+- You've discovered an approach that works and will forget it
+- You want everyone following the same process
+- The task has steps that are easy to forget or get wrong
+
+### SKILL.md File Format
+
+Every skill lives in a file called `SKILL.md` (exactly this filename):
+
+```markdown
+---
+name: my-skill
+description: What this skill does and when to use it. The description is CRITICAL -
+  Claude uses it to decide when to automatically load your skill. All "when to use"
+  information belongs here, not in the instructions body.
+---
+Instructions for Claude go here in regular Markdown...
+```
+
+### Frontmatter Fields
+
+| Field | Required | Purpose | Default |
+|-------|----------|---------|---------|
+| `name` | Recommended | Becomes the slash command (`/my-skill`). Max 64 chars, lowercase, hyphens only | Directory name |
+| `description` | Strongly recommended | Tells Claude what the skill does and when to use it | First paragraph of instructions |
+| `disable-model-invocation` | No | Set `true` to prevent automatic invocation | `false` |
+| `user-invocable` | No | Set `false` to hide from `/` menu | `true` |
+| `allowed-tools` | No | Restrict which tools Claude can use | All tools |
+| `argument-hint` | No | Hint shown during autocomplete | None |
+| `model` | No | Specify which model to use | Current model |
+| `context` | No | Set to `fork` to run in a subagent | Inline |
+| `version` | No | Semantic version (e.g., `2.1.0`) | None |
+
+### Where Skills Live (Priority Order)
+
+| Priority | Location | Scope |
+|----------|----------|-------|
+| 1 (highest) | Enterprise (managed settings) | Organization-wide |
+| 2 | `~/.claude/skills/<name>/SKILL.md` | All your projects (personal) |
+| 3 | `.claude/skills/<name>/SKILL.md` | Current project only (team) |
+| 4 | Plugin directories | Where plugin is enabled |
+
+Higher priority overrides lower. Personal skills override project skills with the same name.
+
+**Recommendation:** Start personal (`~/.claude/skills/`). Move to project (`.claude/skills/`) when ready to share with team.
+
+### Description Budget
+
+- All skill descriptions share a **15,000 character budget** at startup
+- Run `/context` to check whether any skills have been excluded
+- Keep descriptions focused — a bloated description wastes budget for all skills
+
+### Skill Discovery and Invocation
+
+**Manual:** Type the skill name as a slash command: `/commit`, `/brainstorm`, `/review`
+
+**Automatic:** When your conversation matches a skill's description, Claude may load and apply it automatically
+
+**Arguments:** Some skills accept arguments: `/review security`
+
+**Controlling behavior:**
+
+| Configuration | You Invoke | Claude Auto-Invokes | Best For |
+|---|---|---|---|
+| Default | Yes | Yes | General workflows |
+| `disable-model-invocation: true` | Yes | No | Actions with side effects |
+| `user-invocable: false` | No | Yes | Background knowledge |
+
+### Skill Design Patterns
+
+**Interview Pattern** — forces Claude to ask questions before acting:
+```markdown
+Before implementing, conduct an interview:
+1. Read context first
+2. Ask non-obvious questions using AskUserQuestion tool
+3. Require approval before implementation
+```
+
+**Checklist Pattern** — ensures steps aren't skipped:
+```markdown
+Copy this checklist and track progress:
+- [ ] Step 1: Analyze
+- [ ] Step 2: Implement
+- [ ] Step 3: Validate
+**Critical**: After Step 2, ALWAYS run validation. Do NOT proceed until validation passes.
+```
+
+**Composition Pattern** — skills referencing shared resources:
+```
+.claude/skills/
+    copywrite/SKILL.md       <- core engine
+    linkedin-post/SKILL.md   <- uses copywrite + adds constraints
+    shared/
+        VOICE_GUIDE.md       <- referenced by multiple skills
+```
+
+### Installing Pre-Built Skills
+
+**From marketplace:**
+```
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+```
+
+**Manual:** Copy skill folder to `~/.claude/skills/<name>/` or `.claude/skills/<name>/`. Claude discovers it automatically on restart.
+
+### Anti-Patterns
+
+- **Skill hoarding** — installing thirty skills and using two wastes context
+- **Trusting without reading** — always read a SKILL.md before installing (it takes 30 seconds)
+- **Over-engineering** — invoking a full TDD workflow for a one-off script
+- **Vague descriptions** — if description is vague, auto-invocation won't trigger correctly
 
 ---
 

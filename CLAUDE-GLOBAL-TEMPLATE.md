@@ -239,6 +239,49 @@ Before building any app, ALWAYS do a clean build cycle:
 
 This ensures a fresh state every time - no stale caches or zombie processes.
 
+### Context Management
+
+**CLAUDE.md Size:** Keep this file under 500 lines. If it's growing beyond that, move workflow-specific instructions into skills (`.claude/skills/<name>/SKILL.md`). Skills load on-demand, saving context.
+
+**Compaction instructions:**
+When compacting conversation context, always preserve:
+- Full list of modified files in this session
+- Test commands used and their results
+- Key architectural decisions made
+- Current task state and next steps
+
+**Session hygiene:**
+- `/clear` between unrelated tasks — a clean session outperforms a cluttered one
+- `/compact` proactively at 65-70% context, not when forced at 95%
+- `/rename` sessions before clearing so you can `/resume` later
+- Use subagents for research to keep main context light
+
+**MCP server awareness:** Disable unused MCP servers via `/mcp` — they consume context just by existing (tool definitions always loaded). CLI tools (`gh`, `aws`) have no context overhead.
+
+### Skills Strategy
+
+Use skills (`.claude/skills/<name>/SKILL.md`) instead of long CLAUDE.md sections for:
+- Process workflows (commit, review, deploy)
+- Domain-specific checklists
+- Interview/discovery flows
+- Repeatable multi-step procedures
+
+Skills load on-demand only when invoked. CLAUDE.md loads every session.
+
+**The Three-Times Rule:** If you've typed the same prompt three times, create a skill.
+
+See `docs/23_claude-code-cli.md` for full skills documentation.
+
+### Troubleshooting Quick Reference
+
+When something goes wrong:
+1. `Escape` — stop current action immediately
+2. `Esc+Esc` — rewind file changes (doesn't track bash command changes)
+3. `git restore` — rollback to last commit (tracks everything)
+4. `/clear` — fresh session with better prompt
+
+Run `/doctor` first for configuration issues. See `docs/25_troubleshooting.md` for full guide.
+
 ---
 
 ## Directions Location

@@ -140,6 +140,10 @@ swift test        # Tests pass?
 | Security, secrets, credentials | `54_security-rules.md` |
 | Model, haiku, sonnet, opus, slow, cost | `60_model-selection.md` |
 | What does [term] mean | Add to `44_my-glossary.md` |
+| Stuck, broken, error, loop, freeze | `25_troubleshooting.md` |
+| Plugin, add-on, superpowers, MCP server | `26_ecosystem.md` |
+| Skills, SKILL.md, slash command | `23_claude-code-cli.md` (Skills section) |
+| Context full, degrading, compacting | `52_context-management.md` |
 
 ---
 
@@ -203,12 +207,16 @@ Plans are disposable:
 ├── 04_architecture-decisions.md  ← Interview → tech choices
 │
 ├── 10-19: Setup docs
-├── 20-29: Technical gotchas
+├── 20-29: Technical gotchas & troubleshooting
+│   ├── 20-24: Platform-specific gotchas
+│   ├── 25_troubleshooting.md         ← Recovery & diagnostics
+│   └── 26_ecosystem.md              ← Add-ons & frameworks
 ├── 30-39: Quality & debugging
 ├── 40-49: Terminology reference
 ├── 50-59: Advanced patterns
 │
-└── commands/                     ← Slash command definitions
+├── commands/                     ← Legacy slash command definitions
+└── .claude/skills/               ← Skills (SKILL.md, preferred)
 ```
 
 ---

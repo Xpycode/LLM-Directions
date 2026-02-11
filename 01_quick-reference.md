@@ -66,6 +66,14 @@ Is this thread-safe? Should any classes be actors?
 | Multiline input | `Option+Enter` (macOS) |
 | Command history | `Up/Down` arrows |
 | Escape line break | `\` + `Enter` |
+| Rewind changes | `Esc` + `Esc` (double-tap) |
+| Toggle thinking | `Option+T` (macOS) / `Alt+T` |
+| Switch model | `Option+P` (macOS) / `Alt+P` |
+| Paste image | `Ctrl+V` / `Cmd+V` (iTerm2) |
+| Open in editor | `Ctrl+G` |
+| Verbose output | `Ctrl+O` |
+| Background task | `Ctrl+B` |
+| Toggle task list | `Ctrl+T` |
 
 ---
 
@@ -81,6 +89,47 @@ Is this thread-safe? Should any classes be actors?
 | `/cost` | Token usage |
 | `/doctor` | Diagnostics |
 | `/plan` | Enter plan mode |
+| `/context` | Token usage breakdown |
+| `/status` | Version, model, account info |
+| `/stats` | Usage patterns (Pro/Max) |
+| `/rewind` | Undo to previous checkpoint |
+| `/rename <name>` | Name current session |
+| `/resume [session]` | Resume named session |
+| `/export` | Export conversation |
+| `/mcp` | Manage MCP servers |
+| `/terminal-setup` | Install terminal bindings |
+| `/vim` | Enable vim editing mode |
+
+---
+
+## Skills Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/skill-name` | Invoke any installed skill |
+| `/plugin marketplace add <source>` | Add a skill marketplace |
+| `/plugin install <name>@<source>` | Install a skill from marketplace |
+
+**Creating skills:** Place `SKILL.md` in `.claude/skills/<name>/` (project) or `~/.claude/skills/<name>/` (personal).
+
+**See:** `23_claude-code-cli.md` for full skills documentation.
+
+---
+
+## Context Management
+
+| Situation | Action |
+|-----------|--------|
+| Starting a session | Check `/context` for baseline |
+| Context at 50-70% | Plan to `/compact` soon |
+| Context at 70-85% | `/compact` now with focus instructions |
+| Context over 85% | `/clear` — start fresh with better prompt |
+| Switching topics | `/rename`, then `/clear` |
+| Resuming later | `/resume session-name` |
+
+**Quick compaction:** `/compact Focus on [what matters most]`
+
+**The correction spiral fix:** After 2 failed corrections, `/clear` and rewrite your initial prompt.
 
 ---
 
@@ -161,11 +210,12 @@ Is this thread-safe? Should any classes be actors?
 
 ```
 project/
-├── CLAUDE.md           ← Rules for AI
+├── CLAUDE.md           ← Rules for AI (<500 lines)
 ├── SPEC.md             ← Current feature
 ├── README.md           ← What it does
 └── .claude/
-    ├── commands/       ← Slash commands
+    ├── skills/         ← Skills (SKILL.md files)
+    ├── commands/       ← Legacy slash commands
     └── settings.json   ← Permissions
 ```
 
@@ -345,6 +395,9 @@ Let's start fresh. Here's what I need: [one sentence]
 | Coordinates | 21_coordinate-systems.md |
 | macOS specifics | 22_macos-platform.md |
 | AI context template | 11_ai-context-template.md |
+| Troubleshooting | 25_troubleshooting.md |
+| Add-on ecosystem | 26_ecosystem.md |
+| Context management | 52_context-management.md |
 | Pre-release | 30_production-checklist.md |
 | App minimums | 33_app-minimums.md |
 | Doc templates | 12_documentation-templates.md |

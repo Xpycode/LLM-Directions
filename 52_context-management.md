@@ -76,6 +76,112 @@ Wave 3: [F]          ← verification
 
 Each task in a wave runs in a fresh subagent context.
 
+### 5. The 70% Rule
+
+Community-derived guideline: treat ~70% context usage as your practical ceiling.
+
+| Zone | Usage | Action |
+|------|-------|--------|
+| **Green** | 0-50% | Carry on |
+| **Yellow** | 50-70% | Start thinking about compacting |
+| **Orange** | 70-85% | Don't read more files than needed. Prepare to compact |
+| **Red** | 85-95% | Stop new work. Compact now |
+| **Critical** | 95%+ | /clear immediately, create a handoff document first |
+
+Response quality starts dipping before auto-compact triggers at ~95%. Keep headroom for complex tasks.
+
+### 6. Checking Context Usage
+
+**The `/context` command** shows token breakdown:
+```
+claude-sonnet-4-20250514 * 17k/200k tokens (8%)
+Breakdown:
+- System prompt: 3,200 tokens (1.6%)
+- System tools: 11,600 tokens (5.8%)
+- Custom agents: 69 tokens (0.0%)
+- Memory files: 743 tokens (0.4%)
+- Messages: 1,200 tokens (0.6%)
+- Free space: 183,300 tokens (91.6%)
+```
+
+**Typical context breakdown:**
+| Category | Percentage |
+|----------|-----------|
+| System instructions | 5-10% (always present) |
+| Tool definitions (MCP, skills) | 5-15% (even if not used!) |
+| CLAUDE.md files | 1-5% |
+| Conversation history | 40-70% (the big one) |
+| Response buffer | 10-20% |
+
+**Status bar shortcut:** `Ctx(u): 56.0%` — this percentage is the one to watch. Configure via `/terminal-setup`.
+
+**When to check:**
+- Start of each session (know your baseline)
+- When responses feel slower or less precise
+- After installing new MCP servers or skills
+- Before starting something complex
+
+### 7. What Degradation Looks Like
+
+Signs appear in this order:
+1. **Terse answers** where Claude used to give detailed ones
+2. **Context bleeding** — confusing current task with something discussed earlier
+3. **Lost instruction following** — style preferences and rules from earlier get ignored
+4. **Confident mistakes** — contradicts things it said earlier without awareness
+5. **Inconsistent responses** — verbose then terse, cautious then reckless
+
+By the time you notice symptoms, quality has already been degrading for a while.
+
+### 8. Compaction Guidance
+
+**When to compact:**
+- After finishing a feature (natural breakpoint)
+- Before switching to a different area of the codebase
+- Proactively at 65-70%, before symptoms appear
+- Every 60-90 minutes or every 25-30 messages
+
+**Compact with focus instructions (recommended):**
+```
+/compact Focus on the API changes
+/compact Prioritise test output and code changes
+/compact Preserve the full list of modified files
+```
+
+**Add to your CLAUDE.md:**
+```markdown
+# Compact instructions
+When compacting, always preserve:
+- Full list of modified files
+- Test commands used
+- Key architectural decisions
+```
+
+**`/clear` vs `/compact`:**
+- `/clear` — switching to unrelated work, context over 80%, starting fresh would be faster
+- `/compact` — need to preserve task context, continuing related work, hit a milestone in same domain
+
+### 9. Context-Saving Strategies
+
+**Use CLAUDE.md for persistent instructions:** Instructions in conversation consume context every time. CLAUDE.md instructions consume context once and stay across sessions. Move repeated guidance there (coding style, conventions, terminology). Keep CLAUDE.md under 500 lines.
+
+**Use skills instead of CLAUDE.md for workflow-specific instructions:** Skills load on-demand only when invoked, saving context until needed.
+
+**Subagents for research:** Each subagent runs in its own context window. Verbose output stays there. Only the relevant summary returns to your session. One of the most effective context-saving techniques.
+
+**Disable unused MCP servers:** MCP servers consume tokens just by existing (tool definitions always loaded). Disable via `/mcp` to reclaim context. CLI tools like `gh`, `aws`, `gcloud` don't have this overhead.
+
+**Write specific prompts:**
+- Vague: `Improve this codebase` (triggers broad scanning, eats context)
+- Specific: `Add input validation to the login function in auth.ts` (minimal file reads)
+
+**Name and save sessions:**
+```
+/rename oauth-migration
+/clear
+# Later:
+/resume oauth-migration
+```
+
 ## The Hybrid Workflow
 
 ### For Discovery/Planning (Directions-style)
@@ -139,6 +245,10 @@ Each task in a wave runs in a fresh subagent context.
 - Let session logs grow beyond ~200 lines
 - Do heavy implementation in the main context
 - Accumulate "just in case" context
+
+**The Kitchen Sink** — Start with one task, ask something unrelated, return to first task. Context fills with irrelevant information. Fix: `/clear` between unrelated tasks. A clean session with a good prompt outperforms a cluttered long session every time.
+
+**The Correction Spiral** — Claude does something wrong, you correct, still wrong, correct again. Three rounds in, half your context is failed approaches. Fix: After two failed corrections, `/clear` and write a better initial prompt incorporating what you learned. Starting over with a good prompt is faster than correcting a bad one five times.
 
 **Do:**
 - Delete temporary files aggressively
