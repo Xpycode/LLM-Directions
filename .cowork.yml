@@ -1,0 +1,55 @@
+project:
+  name: __DIRECTIONS
+  description: ""
+models:
+  codex-architect:
+    provider: openai
+    model: gpt-5.3-codex
+    maxTokens: 4096
+    temperature: 0.7
+    timeout: 120
+  codex-reviewer:
+    provider: openai
+    model: gpt-5.3-codex
+    maxTokens: 4096
+    temperature: 0.3
+    timeout: 120
+roles:
+  architect:
+    model: codex-architect
+    temperature: 0.7
+    maxTokens: 4096
+  reviewer:
+    model: codex-reviewer
+    temperature: 0.3
+    maxTokens: 4096
+  implementer:
+    model: codex-architect
+    temperature: 0.4
+    maxTokens: 8192
+workflow: plan-review-implement
+mode: autonomous
+debate:
+  defaultPattern: proposal-critique
+  maxRounds: 3
+  consensusThreshold: 0.7
+memory:
+  autoExtractFacts: true
+  contextBudget:
+    activeContext: 8000
+    retrievedMemory: 4000
+    messageBuffer: 2000
+budget:
+  perSession: 5
+  perDay: 25
+  perMonth: 200
+  warningAt: 0.8
+  action: warn
+output:
+  saveTranscripts: true
+  transcriptFormat: markdown
+  transcriptDir: .cowork/transcripts
+advanced:
+  retryAttempts: 3
+  stream: true
+  logLevel: info
