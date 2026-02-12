@@ -68,7 +68,19 @@
       "WebFetch(domain:skills.sh)",
       "Bash(npx skills:*)",
       "Bash(xargs -I {} sh -c 'echo \"\"=== {} ===\"\" && head -20 \"\"{}\"\" | grep -A2 \"\"invocation\"\"')",
-      "Bash(for skill in \"remotion-dev/skills\" \"supabase/agent-skills\" \"antfu/skills\" \"vercel-labs/next-skills\" \"coreyhaines31/marketingskills\")"
+      "Bash(for skill in \"remotion-dev/skills\" \"supabase/agent-skills\" \"antfu/skills\" \"vercel-labs/next-skills\" \"coreyhaines31/marketingskills\")",
+      "Bash(node --version:*)",
+      "Bash(pnpm --version:*)",
+      "Bash(claude --version:*)",
+      "Bash(codex --version:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm setup:*)",
+      "Bash(export PNPM_HOME=\"/Users/sim/Library/pnpm\")",
+      "Bash(export PATH:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm link:*)",
+      "Bash(codemoot:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
