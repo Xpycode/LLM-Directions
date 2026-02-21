@@ -11,9 +11,9 @@
 ## Current Position
 - **Funnel:** build
 - **Phase:** implementation
-- **Focus:** Enhancing agent capabilities with skills.sh integration
+- **Focus:** Ecosystem tooling — XcodePreviews, cliclick, visual capture pipeline
 - **Status:** ready
-- **Last updated:** 2025-02-07
+- **Last updated:** 2026-02-21
 
 ## Funnel Progress (Ralph-style)
 <!-- The 3-phase funnel that ships software -->
@@ -55,8 +55,8 @@
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
+- 2026-02-18: Added XcodePreviews (Iron-Ham/XcodePreviews) to ecosystem — global `/preview` command, documented in 26_ecosystem.md and global CLAUDE.md
 - 2025-02-07: Installed 261 agent skills globally via skills.sh for enhanced Claude Code capabilities
-- 2025-02-07: Skills auto-activate on context; update with `npx skills update`
 
 ## Blockers
 <!-- Empty = good. If blocked, include workaround attempts. -->
@@ -66,6 +66,7 @@
 - **Global skills:** 261 installed at `~/.claude/skills/`
 - **Key skill sets:** SwiftUI, Swift concurrency, UI/UX, workflow patterns, debugging, TDD
 - **Update command:** `npx skills update`
+- **XcodePreviews:** `/Users/sim/XcodeProjects/0-DIRECTIONS/XcodePreviews/` — `/preview` command for SwiftUI visual capture
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->

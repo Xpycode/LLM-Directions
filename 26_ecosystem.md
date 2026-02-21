@@ -171,26 +171,112 @@ beans init
 
 ---
 
-## Key MCP Servers
+## Installed MCP Servers
 
-### Context7
-Injects up-to-date, version-specific documentation into prompts. Just include "use context7" in any prompt.
+These are the MCP servers currently configured and active on this machine.
 
-```bash
-claude mcp add context7 -- npx -y @upstash/context7-mcp --api-key YOUR_API_KEY
-```
+### Zen (Multi-Model Orchestration)
+Orchestrates multiple AI models (Gemini, GPT, O3, etc.) in a single conversation with context continuity. Send work to other models for second opinions, code reviews, or consensus.
 
-### Firecrawl
-Web scraping producing clean markdown optimized for LLMs. Removes ads, navigation, boilerplate. 500 free credits.
+**Key tools:** `chat`, `codereview`, `debug`, `precommit`, `planner`, `consensus`, `challenge`
 
-```bash
-npx -y firecrawl-mcp
-```
+**Config:** `~/.mcp.json` → Python venv at `~/zen-mcp-server/`
 
-### Playwright
-Browser automation using Microsoft's Playwright. Uses accessibility tree for reliable navigation. Enables end-to-end testing, web scraping, form automation.
+**Best for:** Multi-model code reviews, architecture debates, pre-commit validation.
+
+### Apple Doc MCP (Apple Developer Documentation)
+Instant access to current Apple Developer Documentation (SwiftUI, UIKit, Foundation) with wildcard symbol search. Avoids stale training-data answers for Apple APIs.
+
+**Key tools:** `search_symbols`, `get_documentation`, `list_technologies`
+
+**Config:** `~/.mcp.json` → `~/apple-doc-mcp/`
+
+**Best for:** iOS/macOS development — looking up current API signatures, finding framework symbols.
+
+### Sosumi (Apple Documentation Search)
+Remote Apple documentation search and fetch. Complementary to Apple Doc MCP with broader coverage.
+
+**Key tools:** `searchAppleDocumentation`, `fetchAppleDocumentation`, `fetchExternalDocumentation`
+
+**Config:** `~/.mcp.json` → remote at `https://sosumi.ai/mcp`
+
+**Best for:** Quick Apple doc lookups without local installation overhead.
+
+### XcodeBuildMCP (Xcode Build Automation)
+Automates Xcode builds, simulator management, Swift package development, LLDB debugging, screenshots, and UI automation.
+
+**Key tools:** `build_macos`, `build_run_macos`, `screenshot`, `scaffold_macos_project`
+
+**Config:** `~/.mcp.json` → `npx xcodebuildmcp@latest`
+
+**Best for:** Build-test-screenshot cycles without leaving Claude Code.
+
+### Serena (Semantic Code Navigation & Editing)
+IDE-like symbol-level code navigation and editing across 30+ languages. Reads specific functions/classes instead of entire files — saves tokens on large codebases.
+
+**Key tools:** `find_symbol`, `get_symbols_overview`, `replace_symbol_body`, `find_referencing_symbols`
+
+**Config:** `~/.mcp.json` → `uvx` from `github.com/oraios/serena`
+
+**Best for:** Large codebase navigation, precise symbol-level edits, finding all references.
+
+### Vestige (Long-Term Memory)
+Persistent cognitive memory system using FSRS-6 spaced repetition. Remembers patterns, decisions, and context across sessions with human-like decay.
+
+**Key tools:** `memory`, `recall`, `remember_pattern`, `remember_decision`, `set_intention`
+
+**Config:** `.claude.json` (project-level) → `~/.local/bin/vestige-mcp`
+
+**Best for:** Cross-session learning, remembering architectural decisions, tracking intentions.
+
+### Context7 (Live Documentation)
+Injects up-to-date, version-specific documentation into prompts. Include "use context7" in any prompt to get current docs instead of training-data answers.
+
+**Config:** `.claude.json` (user-level) → `npx -y @upstash/context7-mcp`
+
+**Note:** No API key configured — runs at 60 req/hour free tier. Get a key at `context7.com/dashboard` for higher limits.
+
+**Best for:** Getting current library docs (React, Next.js, etc.) instead of outdated training data.
+
+### Playwright (Browser Automation)
+Microsoft's official browser automation MCP. Uses accessibility tree for reliable navigation. Enables end-to-end testing, web scraping, form automation.
+
+**Config:** `.claude.json` (user-level) → `npx -y @playwright/mcp@latest`
 
 **Tip:** Have Claude show a login page, log in yourself, then tell Claude what to do next.
+
+**Best for:** E2E testing, web scraping, form filling, visual verification.
+
+### Not Installed (Documented for Reference)
+
+**Firecrawl** — Web scraping producing clean markdown optimized for LLMs. Requires API key (free tier: 500 credits). Install when needed:
+```bash
+claude mcp add --scope user firecrawl -e FIRECRAWL_API_KEY=your-key -- npx -y firecrawl-mcp
+```
+
+---
+
+## CLI Tools (Not MCP)
+
+### XcodePreviews (PreviewBuild)
+Programmatic SwiftUI preview capture — builds and screenshots UI components without running the full app.
+
+**By:** Iron-Ham (`github.com/Iron-Ham/XcodePreviews`)
+
+| Approach | Build Time | Use Case |
+|----------|-----------|----------|
+| Dynamic injection | ~3-4 sec | Xcode projects with `#Preview` |
+| Minimal host | ~5 sec | Standalone Swift files |
+| SPM temp project | ~20 sec | Swift packages |
+
+**Installed at:** `~/XcodePreviews`
+**Claude command:** `/preview path/to/MyView.swift`
+
+```bash
+~/XcodePreviews/scripts/preview MyView.swift --output /tmp/preview.png
+```
+
+**Best for:** Visual verification of SwiftUI views during AI-assisted development.
 
 ---
 
