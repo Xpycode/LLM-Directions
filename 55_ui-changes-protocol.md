@@ -128,8 +128,23 @@ When adding UI elements: find a similar existing control first, show me how it's
 
 ---
 
+## UI Constraints Checklist
+
+Before implementing any UI element, verify against these project conventions (see `41_apple-ui.md` → Project UI Conventions for full details):
+
+| Constraint | Rule |
+|------------|------|
+| **No Tahoe sidebar** | Do not use `NavigationSplitView` or liquid glass sidebar. Use HStack + Divider panes. |
+| **No SwiftUI Button** | Wrap `NSButton` via `NSViewRepresentable`. Do not use SwiftUI `Button`. |
+| **No HSplitView** | Use `HStack(spacing: 0)` + `Divider()` for split layouts. |
+
+If a proposed UI change would introduce any of these, flag it before implementing.
+
+---
+
 ## Related
 
 - `/spec` — Creates feature specification with exploration phase
 - `/plan` — Implementation planning with task breakdown
 - `54_security-rules.md` — Similar "check first" pattern for security
+- `41_apple-ui.md` — Apple UI reference with project UI conventions

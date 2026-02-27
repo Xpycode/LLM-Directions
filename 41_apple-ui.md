@@ -326,6 +326,105 @@ Common values: 10pt (buttons), 12pt (cards), 20pt+ (sheets)
 | Navigation Bar | N/A | Top of view | View title + nav |
 | Inspector | Right panel/popover | Sheet/popover | Properties |
 
+## Project UI Conventions
+
+These preferences apply to all projects unless explicitly overridden in project CLAUDE.md.
+
+### 1. No Tahoe Sidebar
+
+Do **not** use `NavigationSplitView` or the macOS Tahoe liquid glass sidebar style. These create opinionated navigation that's hard to customize and introduces platform-version coupling.
+
+```swift
+// ❌ AVOID
+NavigationSplitView {
+    SidebarContent()
+} detail: {
+    DetailContent()
+}
+
+// ❌ AVOID — Tahoe glass sidebar styling
+.navigationSplitViewStyle(.prominentDetail)
+```
+
+### 2. HStack + Divider Panes
+
+Use `HStack(spacing: 0)` with `Divider()` for split layouts. This gives full control over widths, collapse behavior, and avoids `HSplitView` layout bugs (see `20_swiftui-gotchas.md` gotcha #3).
+
+```swift
+// ✅ PREFERRED
+HStack(spacing: 0) {
+    SidebarContent()
+        .frame(width: sidebarWidth)
+
+    Divider()
+
+    DetailContent()
+        .frame(maxWidth: .infinity)
+}
+```
+
+For three-column layouts:
+
+```swift
+// ✅ PREFERRED
+HStack(spacing: 0) {
+    NavigationPane()
+        .frame(width: navWidth)
+
+    Divider()
+
+    ListPane()
+        .frame(width: listWidth)
+
+    Divider()
+
+    DetailPane()
+        .frame(maxWidth: .infinity)
+}
+```
+
+### 3. AppKit Buttons (NSButton via NSViewRepresentable)
+
+Do **not** use SwiftUI `Button`. Wrap `NSButton` via `NSViewRepresentable` for consistent macOS-native appearance and behavior.
+
+```swift
+// ❌ AVOID
+Button("Export") { handleExport() }
+Button(action: doSomething) {
+    Label("Save", systemImage: "square.and.arrow.down")
+}
+
+// ✅ PREFERRED
+struct AppKitButton: NSViewRepresentable {
+    let title: String
+    let action: () -> Void
+
+    func makeNSView(context: Context) -> NSButton {
+        let button = NSButton(title: title, target: context.coordinator, action: #selector(Coordinator.clicked))
+        button.bezelStyle = .rounded
+        return button
+    }
+
+    func updateNSView(_ nsView: NSButton, context: Context) {
+        nsView.title = title
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(action: action)
+    }
+
+    class Coordinator: NSObject {
+        let action: () -> Void
+        init(action: @escaping () -> Void) { self.action = action }
+        @objc func clicked() { action() }
+    }
+}
+```
+
+> **Tip:** Create a shared `AppKitButton` wrapper once and reuse it. Support bezel styles (`.rounded`, `.texturedSquare`, `.toolbar`, etc.) via a parameter.
+
+---
+
 ## Related Terms
 
 - **HIG**: Human Interface Guidelines (Apple's design documentation)
