@@ -57,11 +57,15 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 1. **Read this file** (you're doing that now)
 2. **Run `/interview`** - Multi-phase discovery
-3. **Create initial files:**
+3. **Create project folder structure** per `13_folder-structure.md`:
+   - macOS/iOS: `01_Project/`, `02_Design/`, `03_Screenshots/`, `04_Exports/`, `docs/sessions/`
+   - Web: `01_Source/`, `02_Frontend/`, `03_Scripts/`, `04_Data/`, `docs/sessions/`
+   - Create `.gitignore` from `13_folder-structure.md` template
+4. **Create initial files:**
    - `specs/[feature].md` with acceptance criteria
    - Update `PROJECT_STATE.md` with funnel position
    - Start first session in `sessions/`
-4. **Refer to `04_architecture-decisions.md`** to map interview answers to tech choices
+5. **Refer to `04_architecture-decisions.md`** to map interview answers to tech choices
 
 ### Returning to Existing Project
 

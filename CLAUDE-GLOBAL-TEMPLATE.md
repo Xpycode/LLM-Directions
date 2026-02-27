@@ -128,7 +128,26 @@ mkdir -p docs && cp -r /path/to/LLM-Directions/* ./docs/
 
 Then read `docs/00_base.md` and run the full discovery interview.
 
-After the interview, create a `CLAUDE.md` in the project root with:
+After the interview:
+
+**Create the project folder structure** based on project type (see `docs/13_folder-structure.md` for full reference):
+
+```bash
+# For macOS/iOS projects:
+mkdir -p 01_Project 02_Design/Exports 03_Screenshots 04_Exports docs/sessions
+
+# For web projects:
+mkdir -p 01_Source 02_Frontend 03_Scripts 04_Data docs/sessions
+```
+
+Also create the `.gitignore` from `docs/13_folder-structure.md` and the Directions working files:
+
+```bash
+touch docs/PROJECT_STATE.md docs/decisions.md
+echo "# Session Index" > docs/sessions/_index.md
+```
+
+Then create a `CLAUDE.md` in the project root with:
 - Project name and description
 - Tech stack decided
 - Key architecture decisions
