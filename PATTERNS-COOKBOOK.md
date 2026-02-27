@@ -1,20 +1,21 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-02-09**
+**Last updated: 2026-02-27**
 
 ---
 
 ## Table of Contents
 
 1. [Window Layouts](#window-layouts)
-2. [SwiftUI Performance](#swiftui-performance)
-3. [Export & File Dialogs](#export--file-dialogs)
-4. [App Lifecycle & Initialization](#app-lifecycle--initialization)
-5. [MCP Memory Integration](#mcp-memory-integration)
-6. [Agent Skills Integration](#agent-skills-integration)
-7. [Web Development Patterns](#web-development-patterns)
-8. [Quick Reference Table](#quick-reference-table)
+2. [AppKit Controls](#appkit-controls)
+3. [SwiftUI Performance](#swiftui-performance)
+4. [Export & File Dialogs](#export--file-dialogs)
+5. [App Lifecycle & Initialization](#app-lifecycle--initialization)
+6. [MCP Memory Integration](#mcp-memory-integration)
+7. [Agent Skills Integration](#agent-skills-integration)
+8. [Web Development Patterns](#web-development-patterns)
+9. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -249,7 +250,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 ### Autosave Divider Positions
 
-**Source:** `Penumbra/Utils/View+SplitViewAutosave.swift`
+**Source:** `Penumbra/Utils/View+SplitViewAutosave.swift`, `VCR/Views/AppKit/View+SplitViewAutosave.swift`
 
 ```swift
 private struct SplitViewAutosaveHelper: NSViewRepresentable {
@@ -307,6 +308,394 @@ HStack(spacing: 0) {
         .frame(minWidth: 400)
 }
 ```
+
+---
+
+### NSTableView in SwiftUI (NSViewRepresentable)
+
+**Source:** `VCR/Views/AppKit/FileTableView.swift`
+
+When SwiftUI `List` doesn't cut it — you need column headers, cell reuse, or native drag-drop — wrap `NSTableView` in `NSViewRepresentable`. Key pattern: `@MainActor Coordinator` for Swift 6 strict concurrency, smart diffing in `updateNSView` for flicker-free updates.
+
+```swift
+struct FileTableView: NSViewRepresentable {
+    let entries: [FileEntry]
+    @Binding var selectedFileID: UUID?
+    var onScan: (UUID) -> Void
+    var onRemove: (UUID) -> Void
+    var onDropFiles: ([URL]) -> Void
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let tableView = NSTableView()
+        tableView.style = .plain
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.rowHeight = 28
+
+        // Add columns (fixed + flexible)
+        let nameCol = NSTableColumn(identifier: .init("Name"))
+        nameCol.title = "Name"
+        nameCol.minWidth = 120
+        nameCol.resizingMask = .autoresizingMask
+        tableView.addTableColumn(nameCol)
+        // ... more columns
+
+        tableView.dataSource = context.coordinator
+        tableView.delegate = context.coordinator
+        tableView.registerForDraggedTypes([.fileURL])
+
+        let scrollView = NSScrollView()
+        scrollView.documentView = tableView
+        scrollView.hasVerticalScroller = true
+        context.coordinator.tableView = tableView
+        return scrollView
+    }
+
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        guard let tableView = scrollView.documentView as? NSTableView else { return }
+        let coordinator = context.coordinator
+        let oldIDs = coordinator.entries.map(\.id)
+        let newIDs = entries.map(\.id)
+        coordinator.entries = entries
+
+        if oldIDs != newIDs {
+            tableView.reloadData()  // Structural change
+        } else {
+            // Selective reload: only rows whose data changed
+            var changed = IndexSet()
+            for (i, new) in entries.enumerated() {
+                let old = coordinator.entries[i]
+                if old.isScanning != new.isScanning
+                    || old.scanResult?.status != new.scanResult?.status {
+                    changed.insert(i)
+                }
+            }
+            if !changed.isEmpty {
+                tableView.reloadData(forRowIndexes: changed,
+                    columnIndexes: IndexSet(integersIn: 0..<tableView.numberOfColumns))
+            }
+        }
+
+        // Selection sync (guard against infinite loops)
+        if !coordinator.isUpdatingSelection {
+            // ... sync selectedFileID → tableView.selectedRow
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
+
+    @MainActor
+    final class Coordinator: NSObject, NSTableViewDataSource, NSTableViewDelegate,
+        NSMenuDelegate
+    {
+        var entries: [FileEntry] = []
+        var isUpdatingSelection = false
+        weak var tableView: NSTableView?
+        private let parent: FileTableView
+
+        init(parent: FileTableView) { self.parent = parent }
+
+        func numberOfRows(in tableView: NSTableView) -> Int { entries.count }
+
+        func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?,
+            row: Int) -> NSView? {
+            // Cell factory: makeView(withIdentifier:owner:) for reuse
+            let cell = tableView.makeView(withIdentifier: col, owner: nil)
+                as? NSTableCellView ?? makeTextCell(identifier: col)
+            cell.textField?.stringValue = entries[row].file.fileName
+            return cell
+        }
+
+        func tableViewSelectionDidChange(_ notification: Notification) {
+            guard !isUpdatingSelection else { return }
+            isUpdatingSelection = true
+            defer { isUpdatingSelection = false }
+            let row = tableView?.selectedRow ?? -1
+            parent.selectedFileID = row >= 0 ? entries[row].id : nil
+        }
+
+        // Drag-and-drop via validateDrop / acceptDrop
+        // Context menu via NSMenuDelegate.menuNeedsUpdate
+    }
+}
+```
+
+**Key design decisions:**
+- **Diff by ID first:** If the list of IDs changed (add/remove), full `reloadData()`. Same IDs → compare per-row properties for selective `reloadData(forRowIndexes:)`.
+- **Selection guard:** `isUpdatingSelection` flag prevents `tableViewSelectionDidChange` → `updateNSView` → `selectRowIndexes` infinite loops.
+- **`@MainActor Coordinator`:** Required for Swift 6 strict concurrency since all NSTableView callbacks run on main thread.
+- **Cell reuse:** `makeView(withIdentifier:owner:)` returns cached cells, `NSTableCellView` created manually with Auto Layout only on first use.
+
+**Best for:** File lists, media browsers, any table needing columns + headers + native AppKit behavior in a SwiftUI app.
+
+---
+
+## AppKit Controls
+
+All interactive controls use AppKit wrappers via `NSViewRepresentable` instead of SwiftUI controls. SwiftUI's `.bordered` button style renders as rounded capsules; AppKit's `.rounded` bezel gives the classic ~4pt corner radius. This applies to every control — buttons, toggles, pickers, sliders, etc. See `41_apple-ui.md` → Project UI Conventions for the full mapping table.
+
+**Convention:** Keep all wrappers in `Views/AppKit/` and reuse across the project.
+
+### AppKitButton (NSButton)
+
+**Replaces:** SwiftUI `Button`
+
+```swift
+struct AppKitButton: NSViewRepresentable {
+    let title: String
+    var bezelStyle: NSButton.BezelStyle = .rounded
+    var keyEquivalent: String = ""
+    let action: () -> Void
+
+    func makeNSView(context: Context) -> NSButton {
+        let button = NSButton(title: title, target: context.coordinator,
+                              action: #selector(Coordinator.clicked))
+        button.bezelStyle = bezelStyle
+        button.keyEquivalent = keyEquivalent
+        return button
+    }
+
+    func updateNSView(_ nsView: NSButton, context: Context) {
+        nsView.title = title
+        nsView.bezelStyle = bezelStyle
+        nsView.keyEquivalent = keyEquivalent
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(action: action) }
+
+    class Coordinator: NSObject {
+        let action: () -> Void
+        init(action: @escaping () -> Void) { self.action = action }
+        @objc func clicked() { action() }
+    }
+}
+
+// Usage
+AppKitButton(title: "Export", action: handleExport)
+AppKitButton(title: "OK", bezelStyle: .rounded, keyEquivalent: "\r", action: confirm)
+AppKitButton(title: "Delete", bezelStyle: .texturedSquare, action: delete)
+```
+
+**Bezel styles:** `.rounded` (standard), `.texturedSquare` (toolbar), `.regularSquare` (flat), `.recessed` (subtle)
+
+**Best for:** Any tappable action — primary, secondary, destructive, toolbar buttons.
+
+---
+
+### AppKitCheckbox (NSButton, checkbox type)
+
+**Replaces:** SwiftUI `Toggle`
+
+```swift
+struct AppKitCheckbox: NSViewRepresentable {
+    let title: String
+    @Binding var isOn: Bool
+
+    func makeNSView(context: Context) -> NSButton {
+        let checkbox = NSButton(checkboxWithTitle: title, target: context.coordinator,
+                                action: #selector(Coordinator.toggled))
+        checkbox.state = isOn ? .on : .off
+        return checkbox
+    }
+
+    func updateNSView(_ nsView: NSButton, context: Context) {
+        nsView.title = title
+        nsView.state = isOn ? .on : .off
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(isOn: $isOn) }
+
+    class Coordinator: NSObject {
+        let isOn: Binding<Bool>
+        init(isOn: Binding<Bool>) { self.isOn = isOn }
+        @objc func toggled(_ sender: NSButton) { isOn.wrappedValue = sender.state == .on }
+    }
+}
+
+// Usage
+AppKitCheckbox(title: "Show grid", isOn: $showGrid)
+AppKitCheckbox(title: "Auto-save", isOn: $autoSave)
+```
+
+**Best for:** Boolean settings, preferences, feature toggles.
+
+---
+
+### AppKitPopup (NSPopUpButton)
+
+**Replaces:** SwiftUI `Picker` with `.menu` style
+
+```swift
+struct AppKitPopup<T: Hashable>: NSViewRepresentable {
+    let items: [T]
+    let titleForItem: (T) -> String
+    @Binding var selection: T
+
+    func makeNSView(context: Context) -> NSPopUpButton {
+        let popup = NSPopUpButton(frame: .zero, pullsDown: false)
+        popup.target = context.coordinator
+        popup.action = #selector(Coordinator.selected)
+        return popup
+    }
+
+    func updateNSView(_ nsView: NSPopUpButton, context: Context) {
+        nsView.removeAllItems()
+        for item in items { nsView.addItem(withTitle: titleForItem(item)) }
+        if let idx = items.firstIndex(of: selection) { nsView.selectItem(at: idx) }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
+
+    class Coordinator: NSObject {
+        let parent: AppKitPopup
+        init(parent: AppKitPopup) { self.parent = parent }
+        @objc func selected(_ sender: NSPopUpButton) {
+            let idx = sender.indexOfSelectedItem
+            if idx >= 0 && idx < parent.items.count { parent.selection = parent.items[idx] }
+        }
+    }
+}
+
+// Usage
+AppKitPopup(items: ExportFormat.allCases, titleForItem: \.rawValue, selection: $format)
+```
+
+**Best for:** Enum selection, format pickers, any dropdown menu.
+
+---
+
+### AppKitSegmented (NSSegmentedControl)
+
+**Replaces:** SwiftUI `Picker` with `.segmented` style
+
+```swift
+struct AppKitSegmented<T: Hashable>: NSViewRepresentable {
+    let items: [(title: String, value: T)]
+    @Binding var selection: T
+
+    func makeNSView(context: Context) -> NSSegmentedControl {
+        let control = NSSegmentedControl(labels: items.map(\.title),
+                                          trackingMode: .selectOne,
+                                          target: context.coordinator,
+                                          action: #selector(Coordinator.changed))
+        if let idx = items.firstIndex(where: { $0.value == selection }) {
+            control.selectedSegment = idx
+        }
+        return control
+    }
+
+    func updateNSView(_ nsView: NSSegmentedControl, context: Context) {
+        if let idx = items.firstIndex(where: { $0.value == selection }) {
+            nsView.selectedSegment = idx
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
+
+    class Coordinator: NSObject {
+        let parent: AppKitSegmented
+        init(parent: AppKitSegmented) { self.parent = parent }
+        @objc func changed(_ sender: NSSegmentedControl) {
+            let idx = sender.selectedSegment
+            if idx >= 0 && idx < parent.items.count { parent.selection = parent.items[idx].value }
+        }
+    }
+}
+
+// Usage
+AppKitSegmented(items: [("List", ViewMode.list), ("Grid", ViewMode.grid)], selection: $viewMode)
+```
+
+**Best for:** View mode switching, tab-like selection, mutually exclusive options.
+
+---
+
+### AppKitSlider (NSSlider)
+
+**Replaces:** SwiftUI `Slider`
+
+```swift
+struct AppKitSlider: NSViewRepresentable {
+    @Binding var value: Double
+    var minValue: Double = 0
+    var maxValue: Double = 1
+
+    func makeNSView(context: Context) -> NSSlider {
+        let slider = NSSlider(value: value, minValue: minValue, maxValue: maxValue,
+                              target: context.coordinator, action: #selector(Coordinator.changed))
+        slider.isContinuous = true
+        return slider
+    }
+
+    func updateNSView(_ nsView: NSSlider, context: Context) {
+        nsView.doubleValue = value
+        nsView.minValue = minValue
+        nsView.maxValue = maxValue
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(value: $value) }
+
+    class Coordinator: NSObject {
+        let value: Binding<Double>
+        init(value: Binding<Double>) { self.value = value }
+        @objc func changed(_ sender: NSSlider) { value.wrappedValue = sender.doubleValue }
+    }
+}
+
+// Usage
+AppKitSlider(value: $opacity, minValue: 0, maxValue: 1)
+AppKitSlider(value: $volume, minValue: 0, maxValue: 100)
+```
+
+**Best for:** Continuous value adjustment — opacity, volume, zoom, timeline scrubbing.
+
+---
+
+### AppKitTextField (NSTextField)
+
+**Replaces:** SwiftUI `TextField`
+
+```swift
+struct AppKitTextField: NSViewRepresentable {
+    let placeholder: String
+    @Binding var text: String
+    var onCommit: (() -> Void)?
+
+    func makeNSView(context: Context) -> NSTextField {
+        let field = NSTextField()
+        field.placeholderString = placeholder
+        field.stringValue = text
+        field.delegate = context.coordinator
+        return field
+    }
+
+    func updateNSView(_ nsView: NSTextField, context: Context) {
+        if nsView.stringValue != text { nsView.stringValue = text }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
+
+    class Coordinator: NSObject, NSTextFieldDelegate {
+        let parent: AppKitTextField
+        init(parent: AppKitTextField) { self.parent = parent }
+
+        func controlTextDidChange(_ obj: Notification) {
+            guard let field = obj.object as? NSTextField else { return }
+            parent.text = field.stringValue
+        }
+
+        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+            parent.onCommit?()
+            return true
+        }
+    }
+}
+
+// Usage
+AppKitTextField(placeholder: "Search...", text: $searchText)
+AppKitTextField(placeholder: "File name", text: $fileName, onCommit: save)
+```
+
+**Best for:** Text input fields, search bars, inline editing.
 
 ---
 
@@ -1372,7 +1761,14 @@ export function renderCalendar() {
 | HSplitView (complex) | Phosphor | Preview + timeline |
 | HSplitView (3-section) | AppUpdater | Sidebar with header/footer |
 | Multi-window + Menu Bar | WindowMind | Background utilities |
-| Autosave dividers | Penumbra | Remember pane sizes |
+| Autosave dividers | Penumbra, VCR | Remember pane sizes |
+| NSTableView in SwiftUI | VCR | Column headers, cell reuse, native table |
+| AppKitButton | Convention | Native NSButton, replaces SwiftUI Button |
+| AppKitCheckbox | Convention | Native checkbox toggle |
+| AppKitPopup | Convention | Native NSPopUpButton dropdown |
+| AppKitSegmented | Convention | Native segmented control |
+| AppKitSlider | Convention | Native NSSlider |
+| AppKitTextField | Convention | Native NSTextField input |
 | NSSavePanel + progress | Phosphor | File export |
 | NSOpenPanel (folder) | Directions | Folder selection |
 | Security-scoped bookmarks | Directions | Persistent folder access |
@@ -1400,6 +1796,7 @@ export function renderCalendar() {
 | @ViewBuilder methods for subviews | No performance benefit — re-executes fully | Use separate view structs |
 | Monolithic view bodies | Every state change re-evaluates all children | Extract subviews as structs |
 | HSplitView layout bugs | Doesn't fill vertical space | Use HStack + Divider |
+| SwiftUI controls on macOS | Capsule buttons, Catalyst look | AppKit wrappers via NSViewRepresentable |
 | `try?` swallowing errors | Silent failures | Handle errors explicitly |
 | Missing `stopAccessingSecurityScopedResource()` | Resource leaks | Always use `defer` |
 | Single AI review | Misses bugs | Multi-model validation |
