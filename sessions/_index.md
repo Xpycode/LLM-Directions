@@ -10,6 +10,8 @@ LLM-Directions - Documentation system for AI-assisted development
 
 | Date | Focus | Outcome | Log |
 |------|-------|---------|-----|
+| 2026-02-27 | Wire folder structure into setup flow | Updated template, base, setup command; synced live CLAUDE.md | [log](2026-02-27.md) |
+| 2026-02-18 | Install XcodePreviews globally | Cloned, installed `/preview` command, updated ecosystem docs, tested on Group Alarms | [log](2026-02-18.md) |
 | 2026-02-02 | Deploy cookbook + sync commands | Vestige patterns stored, 7 commands added to global CLAUDE.md | [log](2026-02-02.md) |
 | 2026-01-29 | Installed Vestige memory MCP server | MCP configured for Claude | [log](2026-01-29.md) |
 | 2026-01-24 | LLM failure modes reference | Added 53_llm-failure-modes.md from WFGY analysis | [log](2026-01-24.md) |
