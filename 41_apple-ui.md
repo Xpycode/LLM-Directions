@@ -383,35 +383,51 @@ HStack(spacing: 0) {
 }
 ```
 
-### 3. AppKit Buttons (NSButton via NSViewRepresentable)
+### 3. AppKit Controls (All Interactive Elements via NSViewRepresentable)
 
-Do **not** use SwiftUI `Button`. Wrap `NSButton` via `NSViewRepresentable` for consistent macOS-native appearance and behavior.
+Do **not** use SwiftUI interactive controls (`Button`, `Toggle`, `Picker`, `Stepper`, `Slider`, `DatePicker`, `ColorPicker`, segmented `Picker`). Wrap their AppKit equivalents via `NSViewRepresentable` for consistent native macOS appearance.
+
+**Why:** SwiftUI controls on macOS use `.bordered` / Catalyst-like styling (rounded capsules, padded toggles) that look like an iPad port. AppKit controls give the classic pro-Mac look — rectangular buttons with subtle ~4pt corner radius, compact toggles, native popup menus.
+
+#### Mapping Table
+
+| SwiftUI Control | AppKit Replacement | Notes |
+|----------------|-------------------|-------|
+| `Button` | `NSButton` | `.rounded` bezel for standard, `.texturedSquare` for toolbar |
+| `Toggle` | `NSButton` (checkbox) | `.switch` type, or `NSSwitch` for switch style |
+| `Picker` (menu) | `NSPopUpButton` | Native dropdown menu |
+| `Picker` (segmented) | `NSSegmentedControl` | Native segmented control |
+| `Slider` | `NSSlider` | Linear or circular |
+| `Stepper` | `NSStepper` | Paired with `NSTextField` for value display |
+| `DatePicker` | `NSDatePicker` | `.textFieldAndStepper` or `.clockAndCalendar` style |
+| `ColorPicker` | `NSColorWell` | Standard or `.minimal` style |
+| `TextField` | `NSTextField` | Native text input |
+| `TextEditor` | `NSTextView` | Multi-line editing, scrollable |
+
+#### Button Wrapper
 
 ```swift
 // ❌ AVOID
 Button("Export") { handleExport() }
-Button(action: doSomething) {
-    Label("Save", systemImage: "square.and.arrow.down")
-}
 
 // ✅ PREFERRED
 struct AppKitButton: NSViewRepresentable {
     let title: String
+    var bezelStyle: NSButton.BezelStyle = .rounded
     let action: () -> Void
 
     func makeNSView(context: Context) -> NSButton {
         let button = NSButton(title: title, target: context.coordinator, action: #selector(Coordinator.clicked))
-        button.bezelStyle = .rounded
+        button.bezelStyle = bezelStyle
         return button
     }
 
     func updateNSView(_ nsView: NSButton, context: Context) {
         nsView.title = title
+        nsView.bezelStyle = bezelStyle
     }
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(action: action)
-    }
+    func makeCoordinator() -> Coordinator { Coordinator(action: action) }
 
     class Coordinator: NSObject {
         let action: () -> Void
@@ -421,7 +437,120 @@ struct AppKitButton: NSViewRepresentable {
 }
 ```
 
-> **Tip:** Create a shared `AppKitButton` wrapper once and reuse it. Support bezel styles (`.rounded`, `.texturedSquare`, `.toolbar`, etc.) via a parameter.
+#### Toggle (Checkbox) Wrapper
+
+```swift
+// ❌ AVOID
+Toggle("Show grid", isOn: $showGrid)
+
+// ✅ PREFERRED
+struct AppKitCheckbox: NSViewRepresentable {
+    let title: String
+    @Binding var isOn: Bool
+
+    func makeNSView(context: Context) -> NSButton {
+        let checkbox = NSButton(checkboxWithTitle: title, target: context.coordinator, action: #selector(Coordinator.toggled))
+        checkbox.state = isOn ? .on : .off
+        return checkbox
+    }
+
+    func updateNSView(_ nsView: NSButton, context: Context) {
+        nsView.title = title
+        nsView.state = isOn ? .on : .off
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(isOn: $isOn) }
+
+    class Coordinator: NSObject {
+        let isOn: Binding<Bool>
+        init(isOn: Binding<Bool>) { self.isOn = isOn }
+        @objc func toggled(_ sender: NSButton) { isOn.wrappedValue = sender.state == .on }
+    }
+}
+```
+
+#### Popup (Picker) Wrapper
+
+```swift
+// ❌ AVOID
+Picker("Format", selection: $format) {
+    ForEach(formats) { Text($0.name).tag($0) }
+}
+
+// ✅ PREFERRED
+struct AppKitPopup<T: Hashable>: NSViewRepresentable {
+    let items: [T]
+    let titleForItem: (T) -> String
+    @Binding var selection: T
+
+    func makeNSView(context: Context) -> NSPopUpButton {
+        let popup = NSPopUpButton(frame: .zero, pullsDown: false)
+        popup.target = context.coordinator
+        popup.action = #selector(Coordinator.selected)
+        return popup
+    }
+
+    func updateNSView(_ nsView: NSPopUpButton, context: Context) {
+        nsView.removeAllItems()
+        for item in items { nsView.addItem(withTitle: titleForItem(item)) }
+        if let idx = items.firstIndex(of: selection) { nsView.selectItem(at: idx) }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
+
+    class Coordinator: NSObject {
+        let parent: AppKitPopup
+        init(parent: AppKitPopup) { self.parent = parent }
+        @objc func selected(_ sender: NSPopUpButton) {
+            let idx = sender.indexOfSelectedItem
+            if idx >= 0 && idx < parent.items.count { parent.selection = parent.items[idx] }
+        }
+    }
+}
+```
+
+#### Segmented Control Wrapper
+
+```swift
+// ❌ AVOID
+Picker("View", selection: $viewMode) { ... }.pickerStyle(.segmented)
+
+// ✅ PREFERRED
+struct AppKitSegmented<T: Hashable>: NSViewRepresentable {
+    let items: [(title: String, value: T)]
+    @Binding var selection: T
+
+    func makeNSView(context: Context) -> NSSegmentedControl {
+        let control = NSSegmentedControl(labels: items.map(\.title),
+                                          trackingMode: .selectOne,
+                                          target: context.coordinator,
+                                          action: #selector(Coordinator.changed))
+        if let idx = items.firstIndex(where: { $0.value == selection }) {
+            control.selectedSegment = idx
+        }
+        return control
+    }
+
+    func updateNSView(_ nsView: NSSegmentedControl, context: Context) {
+        if let idx = items.firstIndex(where: { $0.value == selection }) {
+            nsView.selectedSegment = idx
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
+
+    class Coordinator: NSObject {
+        let parent: AppKitSegmented
+        init(parent: AppKitSegmented) { self.parent = parent }
+        @objc func changed(_ sender: NSSegmentedControl) {
+            let idx = sender.selectedSegment
+            if idx >= 0 && idx < parent.items.count { parent.selection = parent.items[idx].value }
+        }
+    }
+}
+```
+
+> **Tip:** Keep all AppKit wrappers in a shared `AppKit/` folder (e.g., `Views/AppKit/`). Each project should build this wrapper set once and reuse across all views.
 
 ---
 

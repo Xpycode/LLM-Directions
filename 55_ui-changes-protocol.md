@@ -135,7 +135,7 @@ Before implementing any UI element, verify against these project conventions (se
 | Constraint | Rule |
 |------------|------|
 | **No Tahoe sidebar** | Do not use `NavigationSplitView` or liquid glass sidebar. Use HStack + Divider panes. |
-| **No SwiftUI Button** | Wrap `NSButton` via `NSViewRepresentable`. Do not use SwiftUI `Button`. |
+| **No SwiftUI controls** | Do not use SwiftUI `Button`, `Toggle`, `Picker`, `Slider`, `Stepper`, `DatePicker`, `ColorPicker`, or `TextField`/`TextEditor`. Wrap AppKit equivalents via `NSViewRepresentable`. See mapping table in `41_apple-ui.md`. |
 | **No HSplitView** | Use `HStack(spacing: 0)` + `Divider()` for split layouts. |
 
 If a proposed UI change would introduce any of these, flag it before implementing.
