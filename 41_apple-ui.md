@@ -552,6 +552,70 @@ struct AppKitSegmented<T: Hashable>: NSViewRepresentable {
 
 > **Tip:** Keep all AppKit wrappers in a shared `AppKit/` folder (e.g., `Views/AppKit/`). Each project should build this wrapper set once and reuse across all views.
 
+### 4. Toolbars: SwiftUI .toolbar + AppKit-Style ButtonStyle
+
+**Exception to the "no SwiftUI controls" rule.** Keep SwiftUI `.toolbar` for structure and placement — it handles `.navigation`, `.principal`, `.primaryAction` grouping and `toolbarRole(.editor)` integration with minimal code. But use a custom `ButtonStyle` inside the toolbar that renders with AppKit appearance (~4pt corner radius, flat background, subtle border).
+
+```swift
+// ✅ PREFERRED — SwiftUI .toolbar with AppKit-styled buttons
+.toolbar {
+    ToolbarItemGroup(placement: .navigation) {
+        Button(action: importFile) {
+            Image(systemName: "plus")
+        }
+        .buttonStyle(AppKitToolbarButtonStyle(isOn: .constant(false)))
+    }
+
+    ToolbarItemGroup(placement: .principal) {
+        // View mode toggles
+    }
+
+    ToolbarItemGroup(placement: .primaryAction) {
+        Button(action: toggleSidebar) {
+            Image(systemName: "sidebar.right")
+        }
+        .buttonStyle(AppKitToolbarButtonStyle(isOn: $showSidebar))
+    }
+}
+.toolbarRole(.editor)
+```
+
+```swift
+/// Toolbar button style with native AppKit appearance.
+/// Flat background, 4pt corners, accent color when active.
+struct AppKitToolbarButtonStyle: ButtonStyle {
+    @Binding var isOn: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .foregroundColor(isOn ? .white : .primary)
+            .background(
+                ZStack {
+                    if isOn {
+                        Color.accentColor
+                    } else {
+                        Color(nsColor: .gray.withAlphaComponent(0.2))
+                    }
+                    if configuration.isPressed {
+                        Color.black.opacity(0.2)
+                    }
+                }
+            )
+            .cornerRadius(4)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
+            )
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+```
+
+> **Why not NSToolbar?** NSToolbar gives user customization (drag items in/out) and overflow menus, but requires `NSToolbarDelegate` boilerplate (~80 lines) and bridging to SwiftUI state. For most apps, SwiftUI `.toolbar` + custom style gets 90% of the native look with 10% of the code. Use NSToolbar only if you specifically need user-customizable toolbars.
+
 ---
 
 ## Related Terms

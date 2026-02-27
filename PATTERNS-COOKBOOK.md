@@ -699,6 +699,70 @@ AppKitTextField(placeholder: "File name", text: $fileName, onCommit: save)
 
 ---
 
+### AppKitToolbarButtonStyle (SwiftUI .toolbar Exception)
+
+**Source:** `Penumbra/Views/ToolbarButtonStyles.swift`
+
+SwiftUI `.toolbar` is the **one exception** to the "no SwiftUI controls" rule. It handles placement (`.navigation`, `.principal`, `.primaryAction`) and `toolbarRole(.editor)` with minimal code. But toolbar buttons must use a custom `ButtonStyle` for native AppKit appearance instead of SwiftUI's default capsule styling.
+
+```swift
+/// Toolbar button with native AppKit appearance.
+/// Flat background, 4pt corners, accent color when active.
+struct AppKitToolbarButtonStyle: ButtonStyle {
+    @Binding var isOn: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .foregroundColor(isOn ? .white : .primary)
+            .background(
+                ZStack {
+                    if isOn {
+                        Color.accentColor
+                    } else {
+                        Color(nsColor: .gray.withAlphaComponent(0.2))
+                    }
+                    if configuration.isPressed {
+                        Color.black.opacity(0.2)
+                    }
+                }
+            )
+            .cornerRadius(4)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
+            )
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+
+// Usage in .toolbar
+.toolbar {
+    ToolbarItemGroup(placement: .navigation) {
+        Button(action: importFile) {
+            Image(systemName: "plus")
+        }
+        .buttonStyle(AppKitToolbarButtonStyle(isOn: .constant(false)))
+    }
+
+    ToolbarItemGroup(placement: .primaryAction) {
+        Button(action: { showSidebar.toggle() }) {
+            Image(systemName: "sidebar.right")
+        }
+        .buttonStyle(AppKitToolbarButtonStyle(isOn: $showSidebar))
+    }
+}
+.toolbarRole(.editor)
+```
+
+**Why not NSToolbar?** NSToolbar gives user customization (drag items in/out) and overflow menus, but requires `NSToolbarDelegate` boilerplate (~80 lines) and bridging to SwiftUI state. SwiftUI `.toolbar` + custom style gets 90% of the native look with 10% of the code.
+
+**Best for:** All toolbar buttons. Use `isOn: .constant(false)` for action buttons, `isOn: $binding` for toggle buttons.
+
+---
+
 ## SwiftUI Performance
 
 ### The Core Principle: Diffing Checkpoints
@@ -1769,6 +1833,7 @@ export function renderCalendar() {
 | AppKitSegmented | Convention | Native segmented control |
 | AppKitSlider | Convention | Native NSSlider |
 | AppKitTextField | Convention | Native NSTextField input |
+| AppKitToolbarButtonStyle | Penumbra | Native look in SwiftUI .toolbar |
 | NSSavePanel + progress | Phosphor | File export |
 | NSOpenPanel (folder) | Directions | Folder selection |
 | Security-scoped bookmarks | Directions | Persistent folder access |
