@@ -80,7 +80,16 @@
       "Bash(pnpm install:*)",
       "Bash(pnpm build:*)",
       "Bash(pnpm link:*)",
-      "Bash(codemoot:*)"
+      "Bash(codemoot:*)",
+      "Bash(gem list:*)",
+      "Bash(gem install:*)",
+      "Bash(~/.zshrc)",
+      "Bash(export PREVIEW_BUILD_PATH=/Users/sim/XcodeProjects/0-DIRECTIONS/XcodePreviews:*)",
+      "Bash(export PATH=\"$HOME/.gem/ruby/2.6.0/bin:$PATH\")",
+      "Bash(/Users/sim/XcodeProjects/0-DIRECTIONS/XcodePreviews/scripts/preview:*)",
+      "Bash(claude mcp list:*)",
+      "Bash(npx:*)",
+      "Bash(git check-ignore:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
