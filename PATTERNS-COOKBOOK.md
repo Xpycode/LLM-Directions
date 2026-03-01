@@ -33,7 +33,8 @@
 7. [Agent Skills Integration](#agent-skills-integration)
 8. [Web Development Patterns](#web-development-patterns)
 9. [Subprocess & URL Patterns](#subprocess--url-patterns)
-10. [Quick Reference Table](#quick-reference-table)
+10. [Timecode Display Typography](#timecode-display-typography)
+11. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -2127,6 +2128,49 @@ export function renderCalendar() {
 
 ---
 
+## Timecode Display Typography
+
+**Source:** `1-macOS/Penumbra/` (TimecodeView, ControlsRow, CurrentSelectionView)
+**Use case:** Any video app displaying SMPTE timecode (HH:MM:SS:FF)
+
+### The Problem
+
+SF Mono (`.design(.monospaced)`) uses **slashed zeros** to distinguish `0` from `O`. This is correct for code editors but looks wrong in video timecode displays — professional NLEs like Final Cut Pro use clean round zeros.
+
+### The Solution: SF Pro + `.monospacedDigit()`
+
+```swift
+// BAD — SF Mono, slashed zeros, too "code-like"
+.font(.system(size: 32, weight: .light, design: .monospaced))
+
+// GOOD — SF Pro with fixed-width digits, clean round zeros (FCP-style)
+.font(.system(size: 32, weight: .thin).monospacedDigit())
+```
+
+### Weight Hierarchy for TC Displays
+
+| Display | Weight | Rationale |
+|---------|--------|-----------|
+| Main TC (large, ~32pt) | `.thin` | Doesn't dominate the UI |
+| Secondary TC (IN/OUT/DURATION, ~body) | `.light` | Readable at smaller size |
+| Dimmed leading zeros | `.ultraLight` + `opacity(0.7)` | Subtle de-emphasis of `00:00:` prefix |
+
+### NSFont Width Calculation (AppKit)
+
+When using per-character layout with fixed-width frames, the `NSFont` for width measurement must match the rendered font:
+
+```swift
+// If rendering SF Pro .monospacedDigit(), measure with systemFont (NOT monospacedSystemFont)
+let nsFont = NSFont.systemFont(ofSize: fontSize, weight: fontWeight.toNSFontWeight())
+let digitWidth = NSAttributedString(string: "0", attributes: [.font: nsFont]).size().width
+```
+
+### Key Rule
+
+**Timecode = `.monospacedDigit()`, Code = `.monospaced`**. Never use SF Mono for timecode in video apps.
+
+---
+
 ## Quick Reference Table
 
 | Pattern | Source Project | Use Case |
@@ -2169,6 +2213,7 @@ export function renderCalendar() {
 | Session log integration | Directions | Capture patterns when fresh |
 | skills.sh global install | Session 2025-02-07 | Extend Claude Code with domain skills |
 | Skills auto-activation | Session 2025-02-07 | Context-based skill loading |
+| TC font: SF Pro .monospacedDigit() | Penumbra | Timecode without slashed zeros (FCP-style) |
 | Jinja2 data injection | PDF2Calendar | Server→client data passing |
 | Wave-based execution | Directions /execute | Parallel task orchestration |
 | ES Module DI | PDF2Calendar | Avoid circular imports in JS modules |
