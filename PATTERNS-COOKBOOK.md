@@ -1,12 +1,29 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-02-27**
+**Last updated: 2026-03-01**
+
+---
+
+> **MANDATORY STANDARD — READ FIRST**
+>
+> Every macOS app MUST use the **App Shell Standard** below. This means:
+> - `HSplitView` for panes (NOT `NavigationSplitView` — no Tahoe frosted sidebars)
+> - `FCPToolbarButtonStyle` for toolbar buttons (NOT default round/capsule buttons)
+> - `.windowStyle(.hiddenTitleBar)` + `.preferredColorScheme(.dark)` + `.toolbarRole(.editor)`
+> - Custom dark `Theme` struct for consistent colors
+>
+> **Existing apps not using this pattern should be migrated.** When starting work on
+> any macOS app, check whether it follows the App Shell Standard. If it doesn't,
+> migrating to this standard is a prerequisite before adding new features.
+>
+> Reference implementation: `1-macOS/Penumbra/`
 
 ---
 
 ## Table of Contents
 
+0. [App Shell Standard](#app-shell-standard) — **START HERE**
 1. [Window Layouts](#window-layouts)
 2. [AppKit Controls](#appkit-controls)
 3. [SwiftUI Performance](#swiftui-performance)
@@ -15,7 +32,304 @@
 6. [MCP Memory Integration](#mcp-memory-integration)
 7. [Agent Skills Integration](#agent-skills-integration)
 8. [Web Development Patterns](#web-development-patterns)
-9. [Quick Reference Table](#quick-reference-table)
+9. [Subprocess & URL Patterns](#subprocess--url-patterns)
+10. [Quick Reference Table](#quick-reference-table)
+
+---
+
+## App Shell Standard
+
+**Source:** `1-macOS/Penumbra/` (reference implementation)
+
+The standard app shell for all macOS apps. Avoids macOS Tahoe's round capsule buttons, frosted sidebars, and default system chrome. Every new app starts with this. Every existing app migrates to this.
+
+---
+
+### 1. App Entry Point
+
+```swift
+@main
+struct MyApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .frame(minWidth: 900, minHeight: 600)
+                .preferredColorScheme(.dark)
+        }
+        .windowStyle(.hiddenTitleBar)     // no system title bar
+        .commands {
+            SidebarCommands()             // keep ⌘⇧S for sidebar toggle
+        }
+
+        Settings {
+            SettingsView()
+        }
+    }
+}
+```
+
+**Key decisions:**
+- `.windowStyle(.hiddenTitleBar)` — removes the standard title bar chrome
+- `.preferredColorScheme(.dark)` — forced dark mode, consistent across system settings
+- No `.navigationTitle()` — title bar is hidden, so titles go in custom info strips or toolbars
+
+---
+
+### 2. Theme Struct
+
+Centralized dark color palette. Use `Theme.xxx` everywhere instead of hardcoded colors.
+
+```swift
+import SwiftUI
+
+@Observable
+class ThemeManager {
+    static let shared = ThemeManager()
+
+    var accentColor: Color {
+        didSet { saveColor(accentColor, forKey: "accentColor") }
+    }
+
+    private init() {
+        self.accentColor = Self.loadColor(forKey: "accentColor")
+            ?? Color(red: 0.9, green: 0.5, blue: 0.2)  // brand orange
+    }
+
+    private func saveColor(_ color: Color, forKey key: String) {
+        let nsColor = NSColor(color)
+        if let data = try? NSKeyedArchiver.archivedData(
+            withRootObject: nsColor, requiringSecureCoding: false
+        ) {
+            UserDefaults.standard.set(data, forKey: key)
+        }
+    }
+
+    private static func loadColor(forKey key: String) -> Color? {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let nsColor = try? NSKeyedUnarchiver.unarchivedObject(
+                  ofClass: NSColor.self, from: data
+              ) else { return nil }
+        return Color(nsColor: nsColor)
+    }
+}
+
+struct Theme {
+    static var primaryBackground: Color { Color(white: 0.10) }
+    static var secondaryBackground: Color { Color(white: 0.15) }
+    static var accent: Color { ThemeManager.shared.accentColor }
+    static var primaryText: Color { .white }
+    static var secondaryText: Color { .white.opacity(0.65) }
+}
+```
+
+**Usage:** `Theme.primaryBackground`, `Theme.accent`, `Theme.secondaryText` — never `Color.gray` or `.secondary` for backgrounds.
+
+---
+
+### 3. FCPToolbarButtonStyle (Flat Toolbar Buttons)
+
+Replaces macOS default round/capsule toolbar buttons with flat, 4px-corner-radius buttons inspired by Final Cut Pro.
+
+```swift
+struct FCPToolbarButtonStyle: ButtonStyle {
+    @Binding var isOn: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .foregroundColor(isOn ? .white : .primary)
+            .background(
+                ZStack {
+                    if isOn {
+                        Theme.accent
+                    } else {
+                        Color(nsColor: .gray.withAlphaComponent(0.2))
+                    }
+                    if configuration.isPressed {
+                        Color.black.opacity(0.2)
+                    }
+                }
+            )
+            .cornerRadius(4)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
+            )
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isOn)
+    }
+}
+```
+
+For toolbar toggle buttons, wrap in a reusable view:
+
+```swift
+struct PaneToggleButton: View {
+    @Binding var isOn: Bool
+    let iconName: String
+    let help: String
+
+    var body: some View {
+        Button(action: { withAnimation { isOn.toggle() } }) {
+            Image(systemName: iconName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 16, height: 16)
+        }
+        .help(help)
+        .buttonStyle(FCPToolbarButtonStyle(isOn: $isOn))
+    }
+}
+```
+
+**For non-toggle toolbar buttons**, pass `.constant(false)`:
+```swift
+Button(action: importFiles) {
+    Image(systemName: "plus")
+        .resizable().aspectRatio(contentMode: .fit)
+        .frame(width: 16, height: 16)
+}
+.buttonStyle(FCPToolbarButtonStyle(isOn: .constant(false)))
+```
+
+---
+
+### 4. Toolbar Configuration
+
+```swift
+.toolbar {
+    ToolbarItemGroup(placement: .navigation) {
+        // Left side — primary actions (import, add)
+        PaneToggleButton(isOn: .constant(false), iconName: "plus", help: "Import")
+    }
+
+    ToolbarItemGroup(placement: .principal) {
+        // Center — workspace/view mode switchers
+        HStack {
+            PaneToggleButton(isOn: $showGrid, iconName: "square.grid.3x3", help: "Grid")
+            PaneToggleButton(isOn: $showList, iconName: "list.bullet", help: "List")
+        }
+        .buttonStyle(.borderless)
+    }
+
+    ToolbarItemGroup(placement: .primaryAction) {
+        // Right side — pane visibility toggles
+        HStack {
+            PaneToggleButton(isOn: $showSidebar, iconName: "sidebar.left", help: "Sidebar")
+            PaneToggleButton(isOn: $showInspector, iconName: "sidebar.right", help: "Inspector")
+
+            Divider().frame(height: 20).padding(.horizontal, 4)
+
+            PaneToggleButton(isOn: .constant(false), iconName: "terminal", help: "Console")
+        }
+        .buttonStyle(.borderless)
+    }
+}
+.toolbarRole(.editor)  // editor-style toolbar, not browser-style
+```
+
+**Key:** `.toolbarRole(.editor)` prevents the back/forward navigation chrome that `.automatic` adds.
+
+---
+
+### 5. Pane Layout with HSplitView
+
+```swift
+var body: some View {
+    VStack(spacing: 0) {
+        // Optional: Info strip at top
+        InfoStripView()
+            .frame(height: 25)
+
+        // Main content area
+        HSplitView {
+            if showSidebar {
+                SidebarView()
+                    .frame(minWidth: 220, idealWidth: 300, maxWidth: 500)
+            }
+            MainContentView()
+                .frame(minWidth: 500)
+            if showInspector {
+                InspectorView()
+                    .frame(minWidth: 220, idealWidth: 300, maxWidth: 500)
+            }
+        }
+        .layoutPriority(1)
+        .autosaveSplitView(named: "MainSplitView")
+
+        // Optional: Bottom bar
+        BottomBarView()
+            .frame(height: 40)
+    }
+    .toolbar { /* ... */ }
+    .toolbarRole(.editor)
+}
+```
+
+**Pane visibility** is driven by `@AppStorage` bools toggled from the toolbar:
+```swift
+@AppStorage("showSidebar") private var showSidebar: Bool = true
+@AppStorage("showInspector") private var showInspector: Bool = true
+```
+
+---
+
+### 6. Button Style Guide (Non-Toolbar)
+
+| Context | Style | Example |
+|---------|-------|---------|
+| Transport controls (play, pause, step) | `.buttonStyle(.plain)` | Icon-only, no background |
+| Inline text actions (skip, dismiss) | `.buttonStyle(.borderless)` | Text link appearance |
+| Secondary actions (Mark IN, Mark OUT) | `.buttonStyle(.bordered)` | Subtle bordered in dark mode |
+| Primary CTA (Export, Submit) | `.borderedProminent` + `.tint(Theme.accent)` | Accent-colored, prominent |
+
+---
+
+### 7. Info Strip (Optional Top Bar)
+
+Thin bar below the toolbar showing contextual info (file name, metadata, progress).
+
+```swift
+struct InfoStripView: View {
+    var body: some View {
+        HStack {
+            Text("Current file info")
+                .font(.caption)
+            Spacer()
+            Text("metadata")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(.horizontal)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .background(Color(nsColor: .windowBackgroundColor))
+        .overlay(
+            Rectangle().frame(height: 1)
+                .foregroundColor(Color(nsColor: .separatorColor)),
+            alignment: .bottom
+        )
+    }
+}
+```
+
+---
+
+### Migration Checklist
+
+When migrating an existing app to the App Shell Standard:
+
+- [ ] Replace `NavigationSplitView` with `HSplitView`
+- [ ] Add `.windowStyle(.hiddenTitleBar)` to the `WindowGroup` scene
+- [ ] Add `.preferredColorScheme(.dark)`
+- [ ] Add `.toolbarRole(.editor)` to the main view
+- [ ] Replace default toolbar buttons with `FCPToolbarButtonStyle`
+- [ ] Add `Theme` struct, replace hardcoded colors
+- [ ] Add `.autosaveSplitView(named:)` to split views
+- [ ] Convert pane visibility to `@AppStorage` bools toggled from toolbar
+- [ ] Remove any `NavigationTitle` calls (title bar is hidden)
+- [ ] Verify: no round/capsule buttons remain in the toolbar
 
 ---
 
@@ -1817,6 +2131,14 @@ export function renderCalendar() {
 
 | Pattern | Source Project | Use Case |
 |---------|---------------|----------|
+| **App Shell Standard** | **Penumbra** | **MANDATORY — base for all macOS apps** |
+| FCPToolbarButtonStyle | Penumbra | Flat 4px toolbar buttons, replaces round |
+| PaneToggleButton | Penumbra | Toolbar toggle with FCPToolbarButtonStyle |
+| Theme struct | Penumbra | Dark color palette (0.10/0.15 grays) |
+| .hiddenTitleBar + .dark | Penumbra | No system chrome, forced dark mode |
+| .toolbarRole(.editor) | Penumbra | Editor toolbar, no nav chrome |
+| HSplitView + @AppStorage | Penumbra | Togglable panes with persisted visibility |
+| InfoStripView | Penumbra | Contextual bar below toolbar |
 | Separate view structs | swiftdifferently.com | Performance (diffing checkpoints) |
 | .equatable() modifier | swiftdifferently.com | Views with closures |
 | debugRender() extension | swiftdifferently.com | Visualize re-renders |
@@ -1854,6 +2176,72 @@ export function renderCalendar() {
 
 ---
 
+## Subprocess & URL Patterns
+
+### URL Path for Subprocesses — Avoid `url.path()`
+
+**Source:** `CutSnaps/Services/FFmpegService.swift`
+**Problem:** Swift's `URL.path()` method (macOS 13+) defaults to `percentEncoded: true`, encoding spaces as `%20`. When passed to `Foundation.Process` or any subprocess, the path is garbled.
+
+```swift
+// BAD — spaces become %20, subprocess gets "No such file"
+let args = ["-i", url.path()]
+
+// GOOD — decoded path, spaces preserved
+let args = ["-i", url.path(percentEncoded: false)]
+
+// Also applies to embedded paths in filter strings:
+let filter = "metadata=print:file=\(tempFile.path(percentEncoded: false))"
+```
+
+**Why it's subtle:** The deprecated `url.path` property (no parens) auto-decodes. The new `url.path()` method does not. Migrating from `.path` to `.path()` silently breaks paths with spaces.
+
+---
+
+### Security-Scoped Access Across Async Pipelines
+
+**Source:** `CutSnaps/Models/VideoFile.swift`
+**Problem:** File pickers and drag-and-drop grant security-scoped access, but calling `stopAccessingSecurityScopedResource()` before an async pipeline completes kills access for the entire chain.
+
+```swift
+// BAD — access revoked before async processing finishes
+for url in urls {
+    let accessing = url.startAccessingSecurityScopedResource()
+    importVideo(url: url)  // enqueues async work
+    if accessing { url.stopAccessingSecurityScopedResource() }  // too early!
+}
+
+// GOOD — manage access lifecycle on the model
+@Observable
+class VideoFile: Identifiable {
+    let url: URL
+    private var isAccessingSecurityScope = false
+
+    func startAccess() {
+        guard !isAccessingSecurityScope else { return }
+        isAccessingSecurityScope = url.startAccessingSecurityScopedResource()
+    }
+
+    func stopAccess() {
+        guard isAccessingSecurityScope else { return }
+        url.stopAccessingSecurityScopedResource()
+        isAccessingSecurityScope = false
+    }
+
+    deinit {
+        if isAccessingSecurityScope {
+            url.stopAccessingSecurityScopedResource()
+        }
+    }
+}
+
+// Call startAccess() on import, stopAccess() when processing completes or model removed
+```
+
+**Rule:** If `startAccessingSecurityScopedResource()` and the work using that resource are on different async boundaries, the access token must outlive the async chain.
+
+---
+
 ## Anti-Patterns to Avoid
 
 | Anti-Pattern | Problem | Solution |
@@ -1863,7 +2251,8 @@ export function renderCalendar() {
 | HSplitView layout bugs | Doesn't fill vertical space | Use HStack + Divider |
 | SwiftUI controls on macOS | Capsule buttons, Catalyst look | AppKit wrappers via NSViewRepresentable |
 | `try?` swallowing errors | Silent failures | Handle errors explicitly |
-| Missing `stopAccessingSecurityScopedResource()` | Resource leaks | Always use `defer` |
+| Missing `stopAccessingSecurityScopedResource()` | Resource leaks | Always use `defer` or model lifecycle |
+| `url.path()` for subprocesses | Percent-encodes spaces, breaks paths | Use `url.path(percentEncoded: false)` |
 | Single AI review | Misses bugs | Multi-model validation |
 | >500 line files | Unmaintainable | Extract managers/services |
 
