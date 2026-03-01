@@ -35,7 +35,9 @@
 9. [Web Development Patterns](#web-development-patterns)
 10. [Subprocess & URL Patterns](#subprocess--url-patterns)
 11. [Timecode Display Typography](#timecode-display-typography)
-12. [Quick Reference Table](#quick-reference-table)
+12. [Keyboard Shortcuts](#keyboard-shortcuts) — Four tiers from menu commands to custom managers
+13. [Context Menus](#context-menus) — Per-pane right-click menus
+14. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -2569,6 +2571,689 @@ let digitWidth = NSAttributedString(string: "0", attributes: [.font: nsFont]).si
 
 ---
 
+## Keyboard Shortcuts
+
+Pro apps are keyboard-first. Four tiers from simplest to most advanced — pick the lightest tier that covers your needs.
+
+---
+
+### Tier 1: SwiftUI Commands (Menu-Bar Shortcuts)
+
+**Source:** `VideoScout/VideoScoutApp.swift`, `Penumbra/App/PenumbraApp.swift`
+**Use case:** Standard menu commands with keyboard accelerators (Cmd+I, Cmd+Shift+E, etc.)
+
+```swift
+struct AppCommands: Commands {
+    @FocusedValue(\.actions) private var actions
+
+    var body: some Commands {
+        // Replace built-in menu items
+        CommandGroup(replacing: .newItem) {
+            Button("Import Videos…") {
+                actions?.importVideos()
+            }
+            .keyboardShortcut("i")
+            .disabled(actions == nil)
+        }
+
+        // Add a custom menu
+        CommandMenu("Scan") {
+            Button("Detect Shots") {
+                actions?.detectShots()
+            }
+            .keyboardShortcut("d", modifiers: [.command, .shift])
+            .disabled(!(actions?.canDetectShots ?? false))
+
+            Divider()
+
+            Button("Export as CSV…") {
+                actions?.exportCSV()
+            }
+            .keyboardShortcut("e", modifiers: [.command, .shift])
+        }
+    }
+}
+
+// Wire into the app:
+@main
+struct MyApp: App {
+    var body: some Scene {
+        WindowGroup { ContentView() }
+            .commands { AppCommands() }
+    }
+}
+```
+
+**FocusedValue pattern** for dispatching actions to the active view:
+
+```swift
+// Define the focused value key
+struct ActionsKey: FocusedValueKey {
+    typealias Value = AppActions
+}
+
+extension FocusedValues {
+    var actions: AppActions? {
+        get { self[ActionsKey.self] }
+        set { self[ActionsKey.self] = newValue }
+    }
+}
+
+// Protocol for actions any view can provide
+protocol AppActions {
+    func importVideos()
+    func detectShots()
+    func exportCSV()
+    var canDetectShots: Bool { get }
+}
+
+// Publish from your view:
+ContentView()
+    .focusedValue(\.actions, viewModel)
+```
+
+**Best for:** Standard app commands that appear in the menu bar. Automatic discoverability (users see them in menus). Accessibility built-in.
+
+---
+
+### Tier 2: `.onKeyPress` (View-Level Keys, macOS 14+)
+
+**Source:** `QuickMotion/ContentView.swift`, `VideoScout/Views/Content/ShotGridView.swift`
+**Use case:** Keyboard-driven interaction within a specific view — JKL shuttle, arrow navigation, single-key triggers.
+
+```swift
+var body: some View {
+    VStack(spacing: 0) {
+        ViewerPane(player: player)
+        TimelinePane(project: project)
+    }
+    .onKeyPress { keyPress in
+        guard appState.hasVideo else { return .ignored }
+
+        switch keyPress.characters {
+        case "j", "J":
+            appState.decreaseSpeed(big: keyPress.modifiers.contains(.shift))
+            return .handled
+        case "k", "K":
+            appState.togglePlayPause()
+            return .handled
+        case "l", "L":
+            appState.increaseSpeed(big: keyPress.modifiers.contains(.shift))
+            return .handled
+        case "i", "I":
+            appState.setInPoint()
+            return .handled
+        case "o", "O":
+            appState.setOutPoint()
+            return .handled
+        default:
+            return .ignored
+        }
+    }
+}
+```
+
+For arrow keys, use the typed overload:
+
+```swift
+.onKeyPress(.leftArrow) {
+    navigateShot(direction: -1)
+    return .handled
+}
+.onKeyPress(.rightArrow) {
+    navigateShot(direction: 1)
+    return .handled
+}
+.onKeyPress(.space) {
+    togglePlayback()
+    return .handled
+}
+```
+
+**Key rules:**
+- Return `.handled` to consume the key, `.ignored` to pass it through
+- Respects text field focus automatically — if a text field is active, keys go there instead
+- Modifier detection via `keyPress.modifiers.contains(.shift)` etc.
+- Only fires when the view has focus — attach to the outermost content view
+
+**Best for:** JKL shuttle controls, single-key triggers (I/O for in/out points), arrow navigation. Clean, modern, no setup/teardown.
+
+---
+
+### Tier 3: `NSEvent.addLocalMonitorForEvents` (App-Window Level)
+
+**Source:** `Penumbra/KeyInputView.swift`, `VideoWallpaper/App/AppDelegate.swift`
+**Use case:** Intercept keys across the entire app window, consume events to prevent system beeps, handle keyUp.
+
+```swift
+struct KeyInputView: NSViewRepresentable {
+    static let eventMonitor = KeyboardEventMonitor()
+
+    func makeNSView(context: Context) -> NSView {
+        Self.eventMonitor.start()
+        let view = NSView()
+        view.frame = .zero
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {}
+}
+
+class KeyboardEventMonitor {
+    private var monitor: Any?
+
+    func start() {
+        monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp]) { event in
+            // Skip when text input is focused
+            if let firstResponder = event.window?.firstResponder,
+               firstResponder is NSTextView {
+                return event  // pass through
+            }
+
+            if event.type == .keyDown {
+                return self.handleKeyDown(event)
+            } else if event.type == .keyUp {
+                return self.handleKeyUp(event)
+            }
+            return event
+        }
+    }
+
+    func stop() {
+        if let monitor { NSEvent.removeMonitor(monitor) }
+        self.monitor = nil
+    }
+
+    private func handleKeyDown(_ event: NSEvent) -> NSEvent? {
+        let hasModifiers = !event.modifierFlags
+            .intersection([.command, .control, .option]).isEmpty
+
+        // Consume unmodified single-key shortcuts
+        if !hasModifiers {
+            switch event.keyCode {
+            case 38:  // J
+                NotificationCenter.default.post(name: .shuttleReverse, object: nil)
+                return nil  // consume — no system beep
+            case 40:  // K
+                NotificationCenter.default.post(name: .shuttlePause, object: nil)
+                return nil
+            case 37:  // L
+                NotificationCenter.default.post(name: .shuttleForward, object: nil)
+                return nil
+            default:
+                break
+            }
+        }
+        return event  // pass through
+    }
+
+    private func handleKeyUp(_ event: NSEvent) -> NSEvent? {
+        // Handle key release (e.g., stop shuttle on J/L release)
+        return event
+    }
+}
+
+// Embed in your root view (invisible, zero-frame):
+var body: some View {
+    ZStack {
+        KeyInputView()
+        ContentView()
+    }
+}
+```
+
+**Key rules:**
+- Return `nil` to consume the event (prevents system beep on unhandled keys)
+- Return `event` to pass it through to the normal responder chain
+- **Always guard for text field focus** — check `firstResponder is NSTextView`
+- Clean up with `NSEvent.removeMonitor` in `applicationWillTerminate` or view disappear
+- Only works when your app is focused (not system-wide)
+
+**Best for:** Single-key shortcuts (J/K/L, Space, I/O) that must work anywhere in the app, not just in a specific view. Essential when you need to consume events to prevent beeps.
+
+---
+
+### Tier 4: Custom KeyboardShortcutManager (User-Customizable)
+
+**Source:** `Penumbra/KeyboardShortcutManager.swift`
+**Use case:** User-recordable shortcuts, centralized action dispatch, conflict detection.
+
+```swift
+final class KeyboardShortcutManager {
+    static let shared = KeyboardShortcutManager()
+
+    var isRecordingShortcut = false
+    private var keysPressed: Set<UInt16> = []
+
+    // User-configurable shortcut storage
+    private let shortcutSettings = ShortcutSettings.shared
+
+    func handleKeyDown(with event: NSEvent) {
+        guard !isRecordingShortcut else { return }
+        guard !event.isARepeat else { return }
+
+        keysPressed.insert(event.keyCode)
+
+        let modifiers = event.modifierFlags
+            .intersection([.command, .option, .control, .shift])
+        let keyCode = Int(event.keyCode)
+
+        // Match against user-configured shortcuts
+        for (action, shortcut) in shortcutSettings.shortcuts {
+            if shortcut.keyCode == keyCode &&
+               shortcut.modifiers.rawValue == modifiers.rawValue {
+                perform(action)
+                return
+            }
+        }
+    }
+
+    func handleKeyUp(with event: NSEvent) {
+        keysPressed.remove(event.keyCode)
+    }
+
+    private func perform(_ action: ShortcutAction) {
+        switch action {
+        case .stepForward1:
+            NotificationCenter.default.post(name: .playerStepFrames, object: 1)
+        case .stepForward10:
+            NotificationCenter.default.post(name: .playerStepFrames, object: 10)
+        case .stepBackward1:
+            NotificationCenter.default.post(name: .playerStepFrames, object: -1)
+        case .markIn:
+            NotificationCenter.default.post(name: .playerMarkInPoint, object: nil)
+        case .markOut:
+            NotificationCenter.default.post(name: .playerMarkOutPoint, object: nil)
+        case .togglePlay:
+            NotificationCenter.default.post(name: .playerTogglePlay, object: nil)
+        // ... more actions
+        }
+    }
+}
+```
+
+**ShortcutSettings** for persistence and a settings UI:
+
+```swift
+@Observable
+class ShortcutSettings {
+    static let shared = ShortcutSettings()
+
+    struct Shortcut: Codable, Equatable {
+        var keyCode: Int
+        var modifiers: NSEvent.ModifierFlags
+
+        var displayString: String {
+            var parts: [String] = []
+            if modifiers.contains(.control) { parts.append("⌃") }
+            if modifiers.contains(.option) { parts.append("⌥") }
+            if modifiers.contains(.shift) { parts.append("⇧") }
+            if modifiers.contains(.command) { parts.append("⌘") }
+            parts.append(Self.keyCodeToString(keyCode))
+            return parts.joined()
+        }
+    }
+
+    // Persisted via UserDefaults or JSON file
+    var shortcuts: [ShortcutAction: Shortcut] = [:]
+
+    func setShortcut(_ shortcut: Shortcut, for action: ShortcutAction) {
+        // Check for conflicts
+        if let conflict = shortcuts.first(where: {
+            $0.key != action && $0.value == shortcut
+        }) {
+            // Remove conflicting binding
+            shortcuts[conflict.key] = nil
+        }
+        shortcuts[action] = shortcut
+        save()
+    }
+}
+```
+
+**Wiring:** Tier 4 sits on top of Tier 3 — the `KeyInputView` event monitor calls `KeyboardShortcutManager.shared.handleKeyDown(with:)` instead of handling keys directly.
+
+**Best for:** Pro apps where users expect to customize every shortcut (video editors, DAWs). Adds complexity — only use when you genuinely need user-configurable bindings.
+
+---
+
+### Choosing a Tier
+
+| Need | Tier | Example |
+|---|---|---|
+| Standard menu commands (Cmd+S, Cmd+I) | **1: Commands** | Import, Export, Settings |
+| View-specific keys, modern API | **2: `.onKeyPress`** | Arrow nav in a grid, JKL in viewer |
+| App-wide single keys, must consume events | **3: Local Monitor** | Space for play/pause, J/K/L anywhere |
+| User-customizable, recordable shortcuts | **4: Custom Manager** | Penumbra-style shortcut prefs |
+
+**Combine tiers:** Most pro apps use Tier 1 for menu commands + Tier 3 for single-key shortcuts. Tier 4 only if you ship a shortcut editor in preferences.
+
+---
+
+## Context Menus
+
+Right-click menus that change based on which pane the user clicked and what's selected. Four patterns from simple to advanced.
+
+---
+
+### Pattern 1: Basic `.contextMenu`
+
+**Source:** `ClipSmart/Views/SnippetsView.swift`
+**Use case:** Simple action list on a list item.
+
+```swift
+SnippetRow(snippet: snippet)
+    .contextMenu {
+        Button("Copy") {
+            copySnippet(snippet)
+        }
+
+        Button("Edit") {
+            selectedSnippet = snippet
+            showingEditSheet = true
+        }
+
+        Divider()
+
+        Button("Delete", role: .destructive) {
+            snippetManager.deleteSnippet(snippet)
+        }
+    }
+```
+
+**Key rules:**
+- `role: .destructive` renders the item in red and places it visually last
+- `Divider()` separates action groups
+- Attach to the row view, not the List
+
+---
+
+### Pattern 2: Conditional Items (State-Driven)
+
+**Source:** `VAM/Views/Content/AssetGridView.swift`
+**Use case:** Menu items that appear/disappear based on model state.
+
+```swift
+AssetGridItemView(asset: asset)
+    .contextMenu {
+        Button("Open in Finder") {
+            NSWorkspace.shared.selectFile(asset.url.path, inFileViewerRootedAtPath: "")
+        }
+
+        Divider()
+
+        if let proxy = asset.proxyFile {
+            if proxy.status == .completed {
+                Button("Delete Proxy", role: .destructive) {
+                    proxyService.deleteProxy(for: asset)
+                }
+            }
+            if proxy.status == .failed {
+                Button("Retry Proxy") {
+                    proxyQueue.enqueue([asset.id])
+                }
+            }
+        } else {
+            Button("Generate Proxy") {
+                proxyQueue.enqueue([asset.id])
+            }
+            .disabled(!proxySettings.isConfigured)
+        }
+    }
+```
+
+**Key rule:** Use `if`/`else` inside the `@ViewBuilder` context menu closure. SwiftUI rebuilds the menu each time it's shown, so state is always current.
+
+---
+
+### Pattern 3: Extracted `@ViewBuilder` + Submenus
+
+**Source:** `VideoWallpaper/UI/PlaylistLibraryView.swift`, `FileManagement/Views/FileContextMenu.swift`
+**Use case:** Complex menus with nested options, checkmarks, toggle labels. Reusable across multiple views.
+
+Extract the menu into a `@ViewBuilder` function:
+
+```swift
+@ViewBuilder
+private func playlistContextMenu(for playlist: Playlist) -> some View {
+    Button {
+        playlistToRename = playlist
+    } label: {
+        Label("Rename…", systemImage: "pencil")
+    }
+
+    Button {
+        library.duplicatePlaylist(playlist)
+    } label: {
+        Label("Duplicate", systemImage: "doc.on.doc")
+    }
+
+    Divider()
+
+    // Nested submenu
+    Menu {
+        ForEach(SortOrder.allCases) { sortOrder in
+            Button {
+                var updated = playlist
+                updated.sortOrder = sortOrder
+                library.updatePlaylist(updated)
+            } label: {
+                HStack {
+                    Text(sortOrder.displayName)
+                    if playlist.sortOrder == sortOrder {
+                        Spacer()
+                        Image(systemName: "checkmark")
+                    }
+                }
+            }
+        }
+    } label: {
+        Label("Sort By", systemImage: "arrow.up.arrow.down")
+    }
+
+    // Toggle label that flips
+    Button {
+        var updated = playlist
+        updated.shuffleEnabled.toggle()
+        library.updatePlaylist(updated)
+    } label: {
+        Label(
+            playlist.shuffleEnabled ? "Disable Shuffle" : "Enable Shuffle",
+            systemImage: "shuffle"
+        )
+    }
+
+    Divider()
+
+    Button("Delete", role: .destructive) {
+        library.deletePlaylist(id: playlist.id)
+    }
+}
+
+// Apply:
+PlaylistRow(playlist: playlist)
+    .contextMenu { playlistContextMenu(for: playlist) }
+```
+
+**View extension pattern** for reusable context menus across files:
+
+```swift
+public struct FileContextMenu: View {
+    let file: FileItem
+    let onOpen: () -> Void
+    let onQuickLook: () -> Void
+
+    public var body: some View {
+        Group {
+            Button { onOpen() } label: {
+                Label("Open", systemImage: "arrow.up.forward.app")
+            }
+            .keyboardShortcut(.return, modifiers: [])
+
+            Button { onQuickLook() } label: {
+                Label("Quick Look", systemImage: "eye")
+            }
+            .keyboardShortcut(.space, modifiers: [])
+
+            Divider()
+
+            Button { revealInFinder() } label: {
+                Label("Reveal in Finder", systemImage: "folder")
+            }
+
+            // Dynamic "Open With" submenu
+            Menu {
+                let apps = NSWorkspace.shared.urlsForApplications(toOpen: file.url)
+                ForEach(apps.prefix(10), id: \.self) { appURL in
+                    Button {
+                        NSWorkspace.shared.open([file.url], withApplicationAt: appURL,
+                                                configuration: .init())
+                    } label: {
+                        Text(appURL.deletingPathExtension().lastPathComponent)
+                    }
+                }
+                if apps.count > 10 {
+                    Divider()
+                    Button("Other…") { openWithOther() }
+                }
+            } label: {
+                Label("Open With", systemImage: "arrow.up.forward.app.fill")
+            }
+
+            Divider()
+
+            Button { copyPath() } label: {
+                Label("Copy Path", systemImage: "doc.on.doc")
+            }
+        }
+    }
+}
+
+// Reusable View extension:
+extension View {
+    func fileContextMenu(
+        for file: FileItem?,
+        onOpen: @escaping () -> Void,
+        onQuickLook: @escaping () -> Void
+    ) -> some View {
+        Group {
+            if let file {
+                self.contextMenu {
+                    FileContextMenu(file: file, onOpen: onOpen, onQuickLook: onQuickLook)
+                }
+            } else {
+                self
+            }
+        }
+    }
+}
+```
+
+**Best for:** Complex menus shared across multiple views, menus with submenus or dynamic system data.
+
+---
+
+### Pattern 4: AppKit `NSMenuDelegate` (NSTableView / NSViewRepresentable)
+
+**Source:** `VCR/Views/AppKit/FileTableView.swift`
+**Use case:** Context menus on NSTableView rows inside an `NSViewRepresentable`. Menu built dynamically at display time.
+
+```swift
+// In makeNSView:
+let menu = NSMenu()
+menu.delegate = context.coordinator
+tableView.menu = menu
+
+// In Coordinator:
+@MainActor
+final class Coordinator: NSObject, NSTableViewDataSource, NSTableViewDelegate, NSMenuDelegate {
+    var entries: [FileEntry] = []
+    var onScan: (UUID) -> Void
+    var onRemove: (UUID) -> Void
+
+    // Called right before the menu appears
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+
+        guard let tableView,
+              tableView.clickedRow >= 0,
+              tableView.clickedRow < entries.count
+        else { return }
+
+        let entry = entries[tableView.clickedRow]
+
+        let scanItem = NSMenuItem(
+            title: "Scan",
+            action: #selector(contextScan(_:)),
+            keyEquivalent: ""
+        )
+        scanItem.target = self
+        scanItem.representedObject = entry.id
+        scanItem.isEnabled = !entry.isScanning && entry.scanResult == nil
+        menu.addItem(scanItem)
+
+        let removeItem = NSMenuItem(
+            title: "Remove",
+            action: #selector(contextRemove(_:)),
+            keyEquivalent: ""
+        )
+        removeItem.target = self
+        removeItem.representedObject = entry.id
+        menu.addItem(removeItem)
+
+        // Conditional items
+        if entry.hasRepairableIssues {
+            menu.addItem(.separator())
+            let repairItem = NSMenuItem(
+                title: "Queue Repair",
+                action: #selector(contextQueueRepair(_:)),
+                keyEquivalent: ""
+            )
+            repairItem.target = self
+            repairItem.representedObject = entry.id
+            menu.addItem(repairItem)
+        }
+    }
+
+    @objc private func contextScan(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? UUID else { return }
+        onScan(id)
+    }
+
+    @objc private func contextRemove(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? UUID else { return }
+        onRemove(id)
+    }
+}
+```
+
+**Key rules:**
+- `menuNeedsUpdate(_:)` fires right before display — always rebuild from scratch
+- Use `representedObject` to pass data (row ID) from menu item to action handler
+- `tableView.clickedRow` gives the row the user right-clicked (not the selection)
+- Set `target = self` on every item — otherwise the responder chain may route incorrectly
+
+**Best for:** NSTableView context menus where you need per-row, state-aware menus inside an `NSViewRepresentable`.
+
+---
+
+### Choosing a Pattern
+
+| Need | Pattern | Example |
+|---|---|---|
+| Simple actions on a list item | **1: Basic** | Copy, Edit, Delete |
+| Items that vary by item state | **2: Conditional** | Show "Retry" only on failures |
+| Complex, reusable, with submenus | **3: Extracted** | File browser, playlist manager |
+| NSTableView rows in AppKit wrapper | **4: NSMenuDelegate** | VCR file table |
+
+**Anti-patterns:**
+- Don't put 15+ items in a flat context menu — use submenus (`Menu { }`) to group
+- Don't attach `.contextMenu` to the `List` itself — attach it to each row
+- Don't use SwiftUI `.contextMenu` on an `NSViewRepresentable` — use `NSMenu` + delegate on the underlying `NSView`
+- Don't duplicate menu items that already exist in the menu bar — users expect Cmd+C to work via the menu, not from a context menu
+
+---
+
 ## Quick Reference Table
 
 | Pattern | Source Project | Use Case |
@@ -2611,6 +3296,14 @@ let digitWidth = NSAttributedString(string: "0", attributes: [.font: nsFont]).si
 | **Layout Template C: Organizer** | **AppUpdater** | **Source list + full detail** |
 | **Layout Template D: Dual Viewer** | **FCP compare** | **Side-by-side / overlay / wipe** |
 | **Layout Template E: Workspace** | **FCP tabs** | **Tab-switched distinct layouts** |
+| KB Tier 1: SwiftUI Commands | VideoScout, Penumbra | Menu-bar shortcuts (Cmd+key) |
+| KB Tier 2: .onKeyPress | QuickMotion, VideoScout | View-level JKL, arrows, space |
+| KB Tier 3: NSEvent local monitor | Penumbra, VideoWallpaper | App-wide single-key, consume events |
+| KB Tier 4: KeyboardShortcutManager | Penumbra | User-customizable, recordable |
+| Context menu: basic | ClipSmart | Simple action list on rows |
+| Context menu: conditional | VAM | State-driven items |
+| Context menu: extracted + submenus | VideoWallpaper, FileManagement | Reusable, nested menus |
+| Context menu: NSMenuDelegate | VCR | NSTableView row menus |
 | Vestige pattern storage | This cookbook | Auto-recall past solutions |
 | Dual-trigger (CLAUDE.md + Vestige) | This cookbook | Reliable pattern surfacing |
 | Session log integration | Directions | Capture patterns when fresh |
