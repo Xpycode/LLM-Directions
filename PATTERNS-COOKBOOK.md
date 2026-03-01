@@ -37,7 +37,9 @@
 11. [Timecode Display Typography](#timecode-display-typography)
 12. [Keyboard Shortcuts](#keyboard-shortcuts) — Four tiers from menu commands to custom managers
 13. [Context Menus](#context-menus) — Per-pane right-click menus
-14. [Quick Reference Table](#quick-reference-table)
+14. [Selection Models](#selection-models) — Single, multi, cross-pane propagation
+15. [Drag & Drop](#drag--drop) — External file drops and internal reordering
+16. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -3254,6 +3256,653 @@ final class Coordinator: NSObject, NSTableViewDataSource, NSTableViewDelegate, N
 
 ---
 
+## Selection Models
+
+How selection works in pro apps: single item, multi-select, cross-pane propagation, and keyboard navigation. The core principle is **one source of truth** — selection lives in a shared `@Observable` model, not scattered across views.
+
+---
+
+### Pattern 1: Single Selection (List / Sidebar)
+
+**Source:** `VideoScout/Views/Sidebar/VideoListView.swift`
+**Use case:** Sidebar list where selecting an item drives a detail view.
+
+```swift
+@Binding var selectedVideo: VideoAsset?
+
+var body: some View {
+    List(selection: $selectedVideo) {
+        ForEach(videos) { video in
+            VideoRowView(video: video)
+                .tag(video)
+        }
+    }
+    .onDeleteCommand {
+        guard let video = selectedVideo else { return }
+        selectedVideo = nil
+        modelContext.delete(video)
+    }
+}
+```
+
+**Key rules:**
+- Bind to an optional model type: `@Binding var selectedVideo: VideoAsset?`
+- Every row needs `.tag(video)` — without it, `List(selection:)` won't work
+- `nil` means nothing selected
+
+---
+
+### Pattern 2: Multi-Selection with `Set<ID>`
+
+**Source:** `Penumbra/Views/MediaListView.swift`
+**Use case:** File list or table where the user selects multiple items for batch operations.
+
+```swift
+@State private var selection = Set<Video.ID>()
+
+var body: some View {
+    Table(filteredVideos, selection: $selection) {
+        TableColumn("Name") { video in Text(video.name) }
+        TableColumn("Duration") { video in Text(video.durationString) }
+    }
+    .onChange(of: selection) { _, newSelection in
+        // Drive single-item detail from first selection
+        library.selectedVideo = library.videos.first { newSelection.contains($0.id) }
+    }
+
+    // Footer with batch actions
+    HStack {
+        Text("\(selection.count) of \(filteredVideos.count) selected")
+        Spacer()
+        Button(action: deleteSelected) {
+            Image(systemName: "trash")
+        }
+        .disabled(selection.isEmpty)
+    }
+}
+
+private func deleteSelected() {
+    let toDelete = library.videos.filter { selection.contains($0.id) }
+    for video in toDelete {
+        library.removeVideo(video)
+    }
+    selection.removeAll()
+}
+```
+
+**Key rules:**
+- `Set<Video.ID>` (not `Set<Video>`) — use the ID type for hashing efficiency
+- `Table(selection:)` and `List(selection:)` both support `Set<>` for multi-select
+- Filter the data source by the set: `library.videos.filter { selection.contains($0.id) }`
+
+---
+
+### Pattern 3: Grid Selection (LazyVGrid)
+
+**Source:** `VideoScout/Views/Content/ShotGridView.swift`
+**Use case:** Thumbnail grid with tap-to-select and keyboard arrow navigation.
+
+```swift
+@Binding var selectedShot: Shot?
+
+private let columns = [GridItem(.adaptive(minimum: 150))]
+
+var body: some View {
+    ScrollView {
+        LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(sortedShots) { shot in
+                ShotThumbnailView(shot: shot, isSelected: selectedShot?.id == shot.id)
+                    .onTapGesture { selectedShot = shot }
+            }
+        }
+    }
+    .onKeyPress(.leftArrow) {
+        navigateShot(direction: -1)
+        return .handled
+    }
+    .onKeyPress(.rightArrow) {
+        navigateShot(direction: 1)
+        return .handled
+    }
+}
+
+private func navigateShot(direction: Int) {
+    let sorted = sortedShots
+    guard !sorted.isEmpty else { return }
+
+    guard let current = selectedShot,
+          let index = sorted.firstIndex(where: { $0.id == current.id }) else {
+        selectedShot = sorted.first
+        return
+    }
+
+    let newIndex = index + direction
+    if sorted.indices.contains(newIndex) {
+        selectedShot = sorted[newIndex]
+    }
+}
+```
+
+**Key rules:**
+- `LazyVGrid` doesn't have built-in `selection:` — use `.onTapGesture` and manual highlighting
+- Pass `isSelected` bool to each cell for visual state
+- Arrow key navigation uses index math on the sorted array
+- Fallback to first item when nothing is selected
+
+---
+
+### Pattern 4: NSTableView Selection (AppKit ↔ SwiftUI Sync)
+
+**Source:** `VCR/Views/AppKit/FileTableView.swift`
+**Use case:** `NSViewRepresentable` table with bidirectional selection sync.
+
+```swift
+struct FileTableView: NSViewRepresentable {
+    let entries: [FileEntry]
+    @Binding var selectedFileID: UUID?
+
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        let coordinator = context.coordinator
+
+        // SwiftUI → AppKit sync (guard against loops)
+        if !coordinator.isUpdatingSelection {
+            let desiredRow: Int
+            if let id = selectedFileID,
+               let index = entries.firstIndex(where: { $0.id == id }) {
+                desiredRow = index
+            } else {
+                desiredRow = -1
+            }
+
+            if tableView.selectedRow != desiredRow {
+                coordinator.isUpdatingSelection = true
+                if desiredRow >= 0 {
+                    tableView.selectRowIndexes(IndexSet(integer: desiredRow),
+                                               byExtendingSelection: false)
+                } else {
+                    tableView.deselectAll(nil)
+                }
+                DispatchQueue.main.async {
+                    coordinator.isUpdatingSelection = false
+                }
+            }
+        }
+    }
+
+    @MainActor
+    final class Coordinator: NSObject, NSTableViewDelegate {
+        var isUpdatingSelection = false
+
+        func tableViewSelectionDidChange(_ notification: Notification) {
+            guard !isUpdatingSelection else { return }
+            isUpdatingSelection = true
+            defer { isUpdatingSelection = false }
+
+            guard let tableView else { return }
+            let row = tableView.selectedRow
+            let newID = row >= 0 && row < entries.count ? entries[row].id : nil
+
+            if parent.selectedFileID != newID {
+                parent.selectedFileID = newID
+            }
+        }
+    }
+}
+```
+
+**Critical:** The `isUpdatingSelection` flag prevents infinite loops. Without it: SwiftUI sets selection → `updateNSView` → `selectRowIndexes` → `tableViewSelectionDidChange` → sets binding → `updateNSView` → forever.
+
+---
+
+### Pattern 5: Cross-Pane Propagation (Shared Observable)
+
+**Source:** `Penumbra/Views/ContentView.swift`, `Penumbra/Models/VideoLibrary.swift`
+**Use case:** Selection in one pane drives content in other panes.
+
+```swift
+// Shared model — single source of truth
+@Observable
+class VideoLibrary {
+    var videos: [Video] = []
+    var selectedVideo: Video? = nil
+
+    func removeVideo(_ video: Video) {
+        videos.removeAll { $0.id == video.id }
+        if selectedVideo?.id == video.id {
+            // Smart fallback: pick adjacent item, not just nil
+            if let index = videos.firstIndex(where: { $0.id == video.id }) {
+                selectedVideo = videos.indices.contains(index) ? videos[index] : videos.last
+            } else {
+                selectedVideo = videos.first
+            }
+        }
+    }
+}
+
+// Root view passes to all panes
+struct ContentView: View {
+    @State private var library = VideoLibrary()
+
+    var body: some View {
+        HSplitView {
+            if showSidebar {
+                MediaListView(library: library)          // writes library.selectedVideo
+            }
+            VideoPlayerView(video: library.selectedVideo) // reads
+            if showInspector {
+                InspectorView(video: library.selectedVideo) // reads
+            }
+        }
+    }
+}
+```
+
+**The pattern:**
+- `@Observable` model holds both data and selection state
+- List pane **writes** `library.selectedVideo`
+- Detail and inspector panes **read** `library.selectedVideo`
+- Deletion logic auto-selects adjacent item (never leaves user with blank screen)
+
+---
+
+### Pattern 6: Two-Level Selection (Sidebar + Content)
+
+**Source:** `VAM/Views/ContentView.swift`
+**Use case:** Sidebar selects a category/collection, content area selects an item within it.
+
+```swift
+@State private var selectedSidebarItem: SidebarItem? = .allVideos
+@State private var selectedAsset: VideoAsset?
+
+var body: some View {
+    HSplitView {
+        if showSidebar {
+            SidebarView(selection: $selectedSidebarItem)
+        }
+
+        AssetGridView(
+            sidebarSelection: selectedSidebarItem,   // read-only: filters content
+            selectedAsset: $selectedAsset             // read-write: item selection
+        )
+
+        if showInspector {
+            AssetDetailView(asset: selectedAsset)     // reads item selection
+        }
+    }
+}
+```
+
+**The pattern:**
+- Level 1: `selectedSidebarItem` (category) — passed as read-only to filter the grid
+- Level 2: `selectedAsset` (item) — passed as binding, drives the inspector
+- Changing sidebar selection should clear or update the item selection
+
+---
+
+### Choosing a Pattern
+
+| Need | Pattern | Key Trait |
+|---|---|---|
+| One item from a list | **1: Single** | `@Binding var selected: Item?` + `.tag()` |
+| Batch operations (delete, export) | **2: Multi-select** | `Set<Item.ID>` + filter by set |
+| Thumbnail grid with keyboard nav | **3: Grid** | `.onTapGesture` + arrow key index math |
+| AppKit table in SwiftUI | **4: NSTableView** | `isUpdatingSelection` loop guard |
+| Selection drives multiple panes | **5: Cross-pane** | `@Observable` with shared selection |
+| Category → item drill-down | **6: Two-level** | Sidebar binds category, grid binds item |
+
+**Deletion rule:** When removing the selected item, auto-select the adjacent item (next, or last if at end). Never leave the user staring at an empty detail pane.
+
+---
+
+## Drag & Drop
+
+Two categories: **external drops** (files from Finder into your app) and **internal drag** (reordering items within or between panes). Most apps need external drops; internal drag is for editors and organizers.
+
+---
+
+### Pattern 1: Basic File Drop (SwiftUI `.onDrop`)
+
+**Source:** `CropBatch/Views/DropZoneView.swift`, `VideoCorruptor/Views/ContentView.swift`
+**Use case:** Drop zone that accepts files from Finder.
+
+```swift
+@State private var isDropTargeted = false
+
+var body: some View {
+    ContentArea()
+        .overlay {
+            if isDropTargeted {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Theme.accent, lineWidth: 2)
+                    .background(Theme.accent.opacity(0.1))
+            }
+        }
+        .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
+            handleDrop(providers: providers)
+        }
+}
+
+private func handleDrop(providers: [NSItemProvider]) -> Bool {
+    var handled = false
+
+    for provider in providers {
+        if provider.canLoadObject(ofClass: URL.self) {
+            _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                if let url {
+                    Task { @MainActor in
+                        appState.addFiles(from: [url])
+                    }
+                }
+            }
+            handled = true
+        }
+    }
+
+    return handled
+}
+```
+
+**Key rules:**
+- `isTargeted` drives visual feedback (border highlight)
+- Always dispatch UI updates to `@MainActor`
+- Return `true` from the handler to accept the drop
+- Use `.fileURL` as the UTType for general file drops
+
+---
+
+### Pattern 2: Typed Drop Handler (Reusable Utility)
+
+**Source:** `QuickMotion/Utilities/VideoDropHandler.swift`
+**Use case:** Centralized drop logic for a specific file type, reused across views.
+
+```swift
+enum VideoDropHandler {
+    static let supportedTypes: [UTType] = [
+        .movie, .video, .mpeg4Movie, .quickTimeMovie
+    ]
+
+    static func loadURL(from providers: [NSItemProvider]) async -> URL? {
+        guard let provider = providers.first else { return nil }
+
+        for type in supportedTypes {
+            if provider.hasItemConformingToTypeIdentifier(type.identifier) {
+                if let url = try? await loadURL(from: provider,
+                                                 typeIdentifier: type.identifier) {
+                    return url
+                }
+            }
+        }
+        return nil
+    }
+
+    private static func loadURL(
+        from provider: NSItemProvider,
+        typeIdentifier: String
+    ) async throws -> URL? {
+        try await withCheckedThrowingContinuation { continuation in
+            provider.loadItem(forTypeIdentifier: typeIdentifier, options: nil) { item, error in
+                if let error { continuation.resume(throwing: error); return }
+
+                if let url = item as? URL {
+                    continuation.resume(returning: url)
+                } else if let data = item as? Data,
+                          let url = URL(dataRepresentation: data, relativeTo: nil) {
+                    continuation.resume(returning: url)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+        }
+    }
+}
+
+// Usage:
+.onDrop(of: VideoDropHandler.supportedTypes, isTargeted: $isTargeted) { providers in
+    Task {
+        if let url = await VideoDropHandler.loadURL(from: providers) {
+            await MainActor.run { onDrop(url) }
+        }
+    }
+    return true
+}
+```
+
+**Best for:** When multiple views in your app accept the same file type. Extract once, reuse everywhere.
+
+---
+
+### Pattern 3: Concurrent Multi-File Drop (async TaskGroup)
+
+**Source:** `Penumbra/Views/ContentView.swift`
+**Use case:** User drops 20 video files at once — load them all in parallel.
+
+```swift
+.onDrop(of: [.movie], isTargeted: $isDropTargeted) { [library] providers in
+    Task {
+        let urls = await withTaskGroup(of: URL?.self, returning: [URL].self) { group in
+            for provider in providers {
+                group.addTask {
+                    do {
+                        let data = try await withCheckedThrowingContinuation {
+                            (cont: CheckedContinuation<Data?, Error>) in
+                            _ = provider.loadDataRepresentation(for: .fileURL) { data, error in
+                                if let error { cont.resume(throwing: error) }
+                                else { cont.resume(returning: data) }
+                            }
+                        }
+                        guard let data,
+                              let url = URL(dataRepresentation: data, relativeTo: nil)
+                        else { return nil }
+                        return url
+                    } catch {
+                        return nil
+                    }
+                }
+            }
+
+            var results: [URL] = []
+            for await url in group {
+                if let url { results.append(url) }
+            }
+            return results
+        }
+
+        if !urls.isEmpty {
+            await library.addVideos(urls: urls)
+        }
+    }
+    return true
+}
+```
+
+**Best for:** Bulk import where each file resolution is independent. `TaskGroup` parallelizes the `NSItemProvider` loads.
+
+---
+
+### Pattern 4: Internal Reordering (`.draggable` + `.dropDestination`)
+
+**Source:** `Phosphor/Views/TimelinePane.swift`, `CropBatch/Views/ThumbnailStripView.swift`
+**Use case:** Drag thumbnails to reorder them in a timeline or strip.
+
+```swift
+@State private var draggedFrameID: UUID?
+@State private var dropTargetIndex: Int?
+
+var body: some View {
+    ScrollView(.horizontal) {
+        HStack(spacing: 8) {
+            ForEach(Array(frames.enumerated()), id: \.element.id) { index, frame in
+                thumbnailView(frame: frame, index: index)
+            }
+        }
+    }
+}
+
+private func thumbnailView(frame: ImageItem, index: Int) -> some View {
+    HStack(spacing: 0) {
+        // Drop indicator bar
+        Rectangle()
+            .fill(Color.accentColor)
+            .frame(width: 3, height: thumbnailHeight)
+            .opacity(dropTargetIndex == index ? 1.0 : 0.0)
+
+        FrameThumbnailView(frame: frame, isSelected: selectedIndex == index)
+            .opacity(draggedFrameID == frame.id ? 0.5 : 1.0)
+            .draggable(frame.id.uuidString) {
+                // Drag preview
+                FrameThumbnailView(frame: frame, isSelected: true)
+                    .frame(width: 80, height: 60)
+                    .onAppear { draggedFrameID = frame.id }
+            }
+            .dropDestination(for: String.self) { items, _ in
+                handleReorder(destinationIndex: index)
+            } isTargeted: { targeted in
+                dropTargetIndex = targeted ? index : (dropTargetIndex == index ? nil : dropTargetIndex)
+            }
+    }
+}
+
+private func handleReorder(destinationIndex: Int) -> Bool {
+    guard let draggedID = draggedFrameID,
+          let sourceIndex = frames.firstIndex(where: { $0.id == draggedID }),
+          sourceIndex != destinationIndex
+    else {
+        draggedFrameID = nil
+        dropTargetIndex = nil
+        return false
+    }
+
+    appState.reorderFrames(from: IndexSet(integer: sourceIndex), to: destinationIndex)
+    draggedFrameID = nil
+    dropTargetIndex = nil
+    return true
+}
+```
+
+**Visual feedback:**
+- Dragged item: `opacity(0.5)` to ghost it
+- Drop target: 3px accent-colored bar appears at insertion point
+- Cleanup: always reset `draggedFrameID` and `dropTargetIndex` on drop or cancel
+
+---
+
+### Pattern 5: AppKit NSTableView Drop (NSViewRepresentable)
+
+**Source:** `VCR/Views/AppKit/FileTableView.swift`
+**Use case:** File drop onto an NSTableView wrapped in SwiftUI.
+
+```swift
+// In makeNSView:
+tableView.registerForDraggedTypes([.fileURL])
+
+// In Coordinator:
+func tableView(
+    _ tableView: NSTableView,
+    validateDrop info: any NSDraggingInfo,
+    proposedRow row: Int,
+    proposedDropOperation: NSTableView.DropOperation
+) -> NSDragOperation {
+    guard info.draggingPasteboard.canReadObject(
+        forClasses: [NSURL.self], options: nil
+    ) else { return [] }
+
+    // Drop onto table as a whole, not between rows
+    tableView.setDropRow(-1, dropOperation: .on)
+    return .copy
+}
+
+func tableView(
+    _ tableView: NSTableView,
+    acceptDrop info: any NSDraggingInfo,
+    row: Int,
+    dropOperation: NSTableView.DropOperation
+) -> Bool {
+    guard let urls = info.draggingPasteboard.readObjects(
+        forClasses: [NSURL.self],
+        options: [.urlReadingFileURLsOnly: true]
+    ) as? [URL], !urls.isEmpty
+    else { return false }
+
+    onDropFiles(urls)
+    return true
+}
+```
+
+**Key rules:**
+- `registerForDraggedTypes([.fileURL])` in `makeNSView` — without it, nothing happens
+- `setDropRow(-1, dropOperation: .on)` retargets to "whole table" (not between rows)
+- Use `.urlReadingFileURLsOnly: true` to filter out non-file URLs
+- Call back to SwiftUI via closure (`onDropFiles`)
+
+---
+
+### Pattern 6: AppKit NSView Drop (Custom View Subclass)
+
+**Source:** `TimeCodeEditor/Views/DropTargetView.swift`
+**Use case:** Custom drop zone as an `NSView` subclass with file type validation.
+
+```swift
+class DropTargetView: NSView {
+    weak var delegate: DropTargetViewDelegate?
+    private let supportedExtensions = ["mov", "mp4", "m4v", "mxf", "mts"]
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        registerForDraggedTypes([.fileURL])
+    }
+
+    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        hasValidFiles(in: sender) ? .copy : []
+    }
+
+    override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+        hasValidFiles(in: sender) ? .copy : []
+    }
+
+    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        guard let urls = sender.draggingPasteboard.readObjects(
+            forClasses: [NSURL.self]
+        ) as? [URL] else { return false }
+
+        let valid = urls.filter { supportedExtensions.contains($0.pathExtension.lowercased()) }
+        guard !valid.isEmpty else { return false }
+
+        delegate?.dropTargetView(self, didReceiveFiles: valid)
+        return true
+    }
+
+    private func hasValidFiles(in info: NSDraggingInfo) -> Bool {
+        guard let urls = info.draggingPasteboard.readObjects(
+            forClasses: [NSURL.self]
+        ) as? [URL] else { return false }
+        return urls.contains { supportedExtensions.contains($0.pathExtension.lowercased()) }
+    }
+}
+```
+
+**Best for:** Pure AppKit apps or when you need full control over drag feedback (custom highlight drawing, per-extension validation).
+
+---
+
+### Choosing a Pattern
+
+| Need | Pattern | Key Trait |
+|---|---|---|
+| Simple file drop zone | **1: Basic** | `.onDrop` + visual highlight |
+| Same file type in many views | **2: Typed Handler** | Extracted utility enum |
+| Bulk drop (10+ files) | **3: Concurrent** | `TaskGroup` parallel loading |
+| Reorder items in a list/strip | **4: Internal** | `.draggable` + `.dropDestination` |
+| NSTableView file drop | **5: AppKit Table** | `registerForDraggedTypes` + delegate |
+| Custom AppKit drop view | **6: AppKit NSView** | `NSDraggingDestination` override |
+
+**Anti-patterns:**
+- Don't use `.onDrop` on an `NSViewRepresentable` — use `registerForDraggedTypes` on the underlying `NSView`
+- Don't forget `@MainActor` when dispatching from `NSItemProvider` callbacks to UI
+- Don't skip `isTargeted` visual feedback — without it the user can't tell where they're dropping
+- Don't use `.onDrop(of: [.data])` as a catch-all — be specific about UTTypes you accept
+
+---
+
 ## Quick Reference Table
 
 | Pattern | Source Project | Use Case |
@@ -3304,6 +3953,18 @@ final class Coordinator: NSObject, NSTableViewDataSource, NSTableViewDelegate, N
 | Context menu: conditional | VAM | State-driven items |
 | Context menu: extracted + submenus | VideoWallpaper, FileManagement | Reusable, nested menus |
 | Context menu: NSMenuDelegate | VCR | NSTableView row menus |
+| Selection: single `@Binding` | VideoScout | `List(selection:)` + `.tag()` |
+| Selection: multi `Set<ID>` | Penumbra | `Table(selection:)`, batch ops |
+| Selection: grid + keyboard nav | VideoScout | `LazyVGrid` + arrow keys |
+| Selection: NSTableView sync | VCR | `isUpdatingSelection` loop guard |
+| Selection: cross-pane observable | Penumbra | `@Observable` shared model |
+| Selection: two-level | VAM | Sidebar category + item binding |
+| Drop: basic `.onDrop` | CropBatch | File drop zone + highlight |
+| Drop: typed handler utility | QuickMotion | Reusable `VideoDropHandler` |
+| Drop: concurrent TaskGroup | Penumbra | Bulk multi-file import |
+| Drop: internal reordering | Phosphor | `.draggable` + `.dropDestination` |
+| Drop: NSTableView | VCR | `registerForDraggedTypes` + delegate |
+| Drop: AppKit NSView subclass | TimeCodeEditor | `NSDraggingDestination` override |
 | Vestige pattern storage | This cookbook | Auto-recall past solutions |
 | Dual-trigger (CLAUDE.md + Vestige) | This cookbook | Reliable pattern surfacing |
 | Session log integration | Directions | Capture patterns when fresh |
