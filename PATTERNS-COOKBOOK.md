@@ -17,7 +17,8 @@
 > any macOS app, check whether it follows the App Shell Standard. If it doesn't,
 > migrating to this standard is a prerequisite before adding new features.
 >
-> Reference implementation: `1-macOS/Penumbra/`
+> Reference implementation: `1-macOS/Penumbra/` (pre-Tahoe SDK toolbar)
+> Titlebar injection reference: `1-macOS/VAM/` (macOS 26 SDK — no system chrome)
 
 ---
 
@@ -39,7 +40,9 @@
 13. [Context Menus](#context-menus) — Per-pane right-click menus
 14. [Selection Models](#selection-models) — Single, multi, cross-pane propagation
 15. [Drag & Drop](#drag--drop) — External file drops and internal reordering
-16. [Quick Reference Table](#quick-reference-table)
+16. [Activity & Progress Bars](#activity--progress-bars) — Bottom bars, progress, ETA, cancel
+17. [Workspace Switching](#workspace-switching) — Toolbar-driven mode/view switching
+18. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -202,41 +205,133 @@ Button(action: importFiles) {
 
 ---
 
-### 4. Toolbar Configuration
+### 4. Toolbar Configuration — Titlebar Injection (macOS 26 SDK)
+
+> **Why not `.toolbar {}`?** Starting with Xcode 17 / macOS 26 SDK, Apple forces
+> pill/capsule system chrome on ALL `NSToolbarItem`s — regardless of custom `ButtonStyle`,
+> `.borderless`, or any SwiftUI modifier. The old `.toolbar {}` approach (still shown in
+> older Penumbra builds) only works when linked against the macOS 15 SDK or earlier.
+>
+> **The fix:** Bypass `NSToolbar` entirely. Inject an `NSHostingView` directly into the
+> titlebar's NSView hierarchy. Buttons render as regular SwiftUI views — no
+> `NSToolbarItem` wrapping, no system bezel.
+
+#### Step 1: WindowToolbarConfigurator (NSViewRepresentable)
+
+Finds the titlebar view via the traffic light buttons and injects our custom toolbar content.
 
 ```swift
-.toolbar {
-    ToolbarItemGroup(placement: .navigation) {
-        // Left side — primary actions (import, add)
-        PaneToggleButton(isOn: .constant(false), iconName: "plus", help: "Import")
+struct WindowToolbarConfigurator: NSViewRepresentable {
+    static let viewID = NSUserInterfaceItemIdentifier("AppToolbarContent")
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView(frame: .zero)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            Self.injectToolbar(from: view)
+        }
+        return view
     }
 
-    ToolbarItemGroup(placement: .principal) {
-        // Center — workspace/view mode switchers
-        HStack {
-            PaneToggleButton(isOn: $showGrid, iconName: "square.grid.3x3", help: "Grid")
-            PaneToggleButton(isOn: $showList, iconName: "list.bullet", help: "List")
-        }
-        .buttonStyle(.borderless)
-    }
+    func updateNSView(_ nsView: NSView, context: Context) {}
 
-    ToolbarItemGroup(placement: .primaryAction) {
-        // Right side — pane visibility toggles
-        HStack {
-            PaneToggleButton(isOn: $showSidebar, iconName: "sidebar.left", help: "Sidebar")
-            PaneToggleButton(isOn: $showInspector, iconName: "sidebar.right", help: "Inspector")
+    private static func injectToolbar(from view: NSView) {
+        guard let window = view.window else { return }
 
-            Divider().frame(height: 20).padding(.horizontal, 4)
+        // closeButton → NSWindowButtonsView → NSTitlebarView
+        guard let closeButton = window.standardWindowButton(.closeButton),
+              let titlebarView = closeButton.superview?.superview else { return }
 
-            PaneToggleButton(isOn: .constant(false), iconName: "terminal", help: "Console")
-        }
-        .buttonStyle(.borderless)
+        // Don't inject twice
+        if titlebarView.subviews.contains(where: { $0.identifier == viewID }) { return }
+
+        let content = TitlebarToolbarContent()    // your SwiftUI toolbar view
+            .preferredColorScheme(.dark)
+        let hostingView = NSHostingView(rootView: content)
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        hostingView.identifier = viewID
+
+        titlebarView.addSubview(hostingView)
+
+        NSLayoutConstraint.activate([
+            hostingView.leadingAnchor.constraint(
+                equalTo: titlebarView.leadingAnchor, constant: 78),  // clear traffic lights
+            hostingView.trailingAnchor.constraint(
+                equalTo: titlebarView.trailingAnchor, constant: -8),
+            hostingView.centerYAnchor.constraint(
+                equalTo: titlebarView.centerYAnchor),
+            hostingView.heightAnchor.constraint(equalToConstant: 30)
+        ])
     }
 }
-.toolbarRole(.editor)  // editor-style toolbar, not browser-style
 ```
 
-**Key:** `.toolbarRole(.editor)` prevents the back/forward navigation chrome that `.automatic` adds.
+#### Step 2: TitlebarToolbarContent (SwiftUI view)
+
+A regular SwiftUI view — uses `FCPToolbarButtonStyle`, `@AppStorage` for toggle state.
+Because it lives in an `NSHostingView` (not an `NSToolbarItem`), no system chrome is applied.
+
+```swift
+struct TitlebarToolbarContent: View {
+    @AppStorage("showSidebarView") private var showSidebar = true
+    @AppStorage("showInspectorView") private var showInspector = true
+
+    var body: some View {
+        HStack(spacing: 8) {
+            // Left — primary actions
+            Button(action: importFiles) {
+                Image(systemName: "plus")
+                    .resizable().aspectRatio(contentMode: .fit)
+                    .frame(width: 14, height: 14)
+            }
+            .buttonStyle(FCPToolbarButtonStyle(isOn: .constant(false)))
+
+            Spacer()
+
+            // Right — pane toggles
+            HStack(spacing: 4) {
+                PaneToggleButton(isOn: $showSidebar, iconName: "sidebar.leading", help: "Sidebar")
+                PaneToggleButton(isOn: $showInspector, iconName: "sidebar.trailing", help: "Inspector")
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+}
+```
+
+#### Step 3: Wire it up
+
+```swift
+// In your content view:
+HSplitView { /* ... panes ... */ }
+    .background(WindowToolbarConfigurator())   // inject custom toolbar
+    .toolbar {}                                // empty — keeps titlebar height
+    .toolbarRole(.editor)                      // editor-style layout
+
+// In your App struct (unchanged):
+WindowGroup { ContentView() /* ... */ }
+    .windowStyle(.hiddenTitleBar)
+```
+
+#### How it works
+
+| Layer | What | Chrome? |
+|-------|-------|---------|
+| `NSToolbar` (SwiftUI `.toolbar {}`) | Empty — exists only for titlebar height | N/A (no items) |
+| `NSTitlebarView` | macOS titlebar container with traffic lights | System-managed |
+| Our `NSHostingView` | Injected as subview of `NSTitlebarView` | **None** — regular SwiftUI |
+| `FCPToolbarButtonStyle` | Renders flat 4px buttons | Exactly as designed |
+
+#### Alternatives considered
+
+| Approach | Result |
+|----------|--------|
+| `.toolbar {}` + `FCPToolbarButtonStyle` | System forces pill/capsule bezel on macOS 26 SDK |
+| `.buttonStyle(.borderless)` wrapper | Suppressed chrome for `.primaryAction` only, not `.navigation` |
+| `ToolbarChromeStripper` (walk NSView tree, set `isBordered = false`) | SwiftUI uses hosting views, not raw NSButtons — didn't reach the right layer |
+| `NSTitlebarAccessoryViewController` with `.bottom` | Works but adds a **separate row** below traffic lights |
+| **Direct titlebar injection** (this pattern) | Buttons on **same row** as traffic lights, zero chrome |
+
+**Key:** `.toolbarRole(.editor)` on the content view still matters — it prevents back/forward navigation chrome and sets the correct titlebar height.
 
 ---
 
@@ -330,7 +425,8 @@ When migrating an existing app to the App Shell Standard:
 - [ ] Add `.windowStyle(.hiddenTitleBar)` to the `WindowGroup` scene
 - [ ] Add `.preferredColorScheme(.dark)`
 - [ ] Add `.toolbarRole(.editor)` to the main view
-- [ ] Replace default toolbar buttons with `FCPToolbarButtonStyle`
+- [ ] Replace `.toolbar {}` buttons with titlebar injection (`WindowToolbarConfigurator` + `TitlebarToolbarContent`)
+- [ ] Keep empty `.toolbar {}` + `.toolbarRole(.editor)` for titlebar height
 - [ ] Add `Theme` struct, replace hardcoded colors
 - [ ] Add `.autosaveSplitView(named:)` to split views
 - [ ] Convert pane visibility to `@AppStorage` bools toggled from toolbar
@@ -3903,6 +3999,725 @@ class DropTargetView: NSView {
 
 ---
 
+## Activity & Progress Bars
+
+Bottom bars, progress indicators, and status displays for background tasks. Every pro app needs at least a status bar; most need progress for exports, scans, or batch operations.
+
+---
+
+### Pattern 1: Status Bar (Item Count + State)
+
+**Source:** `VCR/Views/ContentView.swift`
+**Use case:** Persistent bottom bar showing file count and quick actions.
+
+```swift
+.safeAreaInset(edge: .bottom) {
+    HStack {
+        Text("\(entries.count) \(entries.count == 1 ? "file" : "files")")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        Spacer()
+        Button("Clear All") { viewModel.removeAllEntries() }
+            .font(.caption)
+            .buttonStyle(.borderless)
+            .disabled(entries.isEmpty)
+    }
+    .padding(.horizontal, 12)
+    .padding(.vertical, 8)
+    .background(.bar)
+}
+```
+
+**Key rule:** `.safeAreaInset(edge: .bottom)` pushes content up so the bar never overlaps scroll content. Better than `.overlay` for persistent bars.
+
+---
+
+### Pattern 2: Inline Progress in Bottom Bar
+
+**Source:** `Penumbra/Views/InfoStripView.swift`, `VAM/Views/Shared/StatusBarView.swift`
+**Use case:** Progress bar and status text that appear in the existing bottom bar when a task is running.
+
+```swift
+HStack {
+    if proxyQueue.isProcessing {
+        HStack(spacing: 6) {
+            ProgressView()
+                .controlSize(.small)
+            Text("\(proxyQueue.activeCount) encoding, \(proxyQueue.queuedCount) queued")
+                .font(.system(size: 11))
+                .foregroundStyle(Theme.secondaryText)
+        }
+    } else {
+        Text("Ready")
+            .font(.system(size: 11))
+            .foregroundStyle(Theme.secondaryText)
+    }
+
+    Spacer()
+
+    // Export progress when active
+    if case .exporting(let progress, let message) = exportManager.exportState {
+        ProgressView(value: progress)
+            .progressViewStyle(.linear)
+            .frame(width: 100)
+        Text("\(Int(progress * 100))%")
+            .font(.caption.monospacedDigit())
+            .foregroundStyle(.secondary)
+            .frame(width: 35, alignment: .trailing)
+        Text(message)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .truncationMode(.middle)
+    }
+}
+.padding(.horizontal, 12)
+.frame(height: 28)
+.background(Theme.secondaryBackground)
+.overlay(alignment: .top) { Divider() }
+```
+
+**Key rules:**
+- Indeterminate spinner (`.controlSize(.small)`) for unknown-length tasks
+- Determinate `ProgressView(value:)` with `.linear` style for measurable tasks
+- Percentage with `.monospacedDigit()` so numbers don't jitter
+- Phase/message text truncated with `.middle` so you see start and end of paths
+
+---
+
+### Pattern 3: Determinate Progress with Cancel
+
+**Source:** `Phosphor/Views/Export/ExportProgressView.swift`, `CutSnaps/Views/ExportProgressView.swift`
+**Use case:** Modal or inline progress for a single export/render operation.
+
+```swift
+VStack(spacing: 16) {
+    Text("Exporting…")
+        .font(.headline)
+
+    ProgressView(value: progress)
+        .progressViewStyle(.linear)
+        .frame(width: 300)
+
+    Text("\(Int(progress * 100))%")
+        .font(.headline.monospacedDigit())
+        .foregroundStyle(.secondary)
+
+    Button("Cancel", role: .cancel) {
+        onCancel()
+    }
+    .buttonStyle(.bordered)
+}
+.padding(24)
+```
+
+**Best for:** Single-task exports where the user waits. Keep it simple — progress bar, percentage, cancel.
+
+---
+
+### Pattern 4: Multi-Level Progress (Overall + Per-Item)
+
+**Source:** `VideoScout/Views/BatchProgressView.swift`
+**Use case:** Batch operation processing multiple items, showing both overall and per-item progress.
+
+```swift
+VStack(alignment: .leading, spacing: 12) {
+    // Overall progress
+    VStack(alignment: .leading, spacing: 3) {
+        HStack {
+            Text("Video \(pipeline.currentVideoIndex + 1) of \(pipeline.totalVideos)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Spacer()
+            etaLabel
+        }
+        ProgressView(value: overallFraction)
+            .tint(.accentColor)
+    }
+
+    // Per-item progress (only during specific phases)
+    if pipeline.currentStage == .captioning && pipeline.totalShots > 0 {
+        VStack(alignment: .leading, spacing: 3) {
+            Text("Shot \(pipeline.currentShotIndex) of \(pipeline.totalShots)")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            ProgressView(value: shotFraction)
+                .tint(.purple)
+        }
+    }
+
+    // Phase label with spinner
+    HStack(spacing: 6) {
+        if pipeline.currentStage != .idle && pipeline.currentStage != .complete {
+            ProgressView()
+                .controlSize(.mini)
+                .scaleEffect(0.7)
+                .frame(width: 12, height: 12)
+        }
+        Text(pipeline.currentStage.label)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+    }
+}
+.padding(16)
+.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+```
+
+**Key rules:**
+- Two tint colors distinguish overall (accent) from per-item (purple) progress
+- Per-item bar only appears during relevant phases
+- Phase label changes as the pipeline advances through stages
+- Material background makes it float over content
+
+---
+
+### Pattern 5: Progress Metrics Panel (Elapsed / ETA / Speed)
+
+**Source:** `P2toMXF/Views/ProgressControlPanel.swift`
+**Use case:** Long-running conversions where the user needs elapsed time, ETA, and throughput.
+
+```swift
+struct ProgressControlPanel: View {
+    let metrics: ProgressMetrics
+    let onCancel: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 12) {
+                ProgressView(value: metrics.progress)
+                    .progressViewStyle(.linear)
+                Text("\(Int(metrics.progress * 100))%")
+                    .font(.system(.body, design: .monospaced))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 40, alignment: .trailing)
+            }
+
+            HStack {
+                Text(metrics.phase)
+                    .font(.callout)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+
+                Spacer()
+
+                HStack(spacing: 8) {
+                    MetricLabel(icon: "clock", value: metrics.formattedElapsed)
+                    if let remaining = metrics.formattedRemaining {
+                        Divider().frame(height: 12)
+                        MetricLabel(icon: "hourglass", value: "~\(remaining)")
+                    }
+                    if let speed = metrics.formattedSpeed {
+                        Divider().frame(height: 12)
+                        MetricLabel(icon: "speedometer", value: speed)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+private struct MetricLabel: View {
+    let icon: String
+    let value: String
+
+    var body: some View {
+        Label(value, systemImage: icon)
+            .monospacedDigit()
+    }
+}
+```
+
+**ProgressMetrics model:**
+
+```swift
+struct ProgressMetrics {
+    var progress: Double = 0.0
+    var phase: String = ""
+    var startTime: Date?
+
+    var elapsedSeconds: TimeInterval {
+        guard let start = startTime else { return 0 }
+        return Date().timeIntervalSince(start)
+    }
+
+    var estimatedRemainingSeconds: TimeInterval? {
+        guard progress > 0.05, elapsedSeconds > 0 else { return nil }
+        let total = elapsedSeconds / progress
+        return max(0, total - elapsedSeconds)
+    }
+
+    var formattedElapsed: String { formatInterval(elapsedSeconds) }
+    var formattedRemaining: String? {
+        estimatedRemainingSeconds.map { formatInterval($0) }
+    }
+    var formattedSpeed: String?
+
+    private func formatInterval(_ seconds: TimeInterval) -> String {
+        let t = Int(max(seconds, 0))
+        let h = t / 3600, m = (t % 3600) / 60, s = t % 60
+        if h > 0 { return "\(h)h \(m)m" }
+        if m > 0 { return "\(m)m \(s)s" }
+        return "\(s)s"
+    }
+}
+```
+
+**Key rules:**
+- Don't show ETA until `progress > 0.05` — early estimates are wildly inaccurate
+- Use `~` prefix on remaining time to signal it's an estimate
+- Divider-separated metric chips for a clean layout
+- `.monospacedDigit()` on all numbers to prevent jitter
+
+---
+
+### Pattern 6: Floating Progress Overlay
+
+**Source:** `VideoScout/Views/ContentView.swift`
+**Use case:** Progress panel that floats over content, appears/disappears with animation.
+
+```swift
+.overlay(alignment: .bottomTrailing) {
+    if pipelineService.isRunning {
+        BatchProgressView(
+            pipeline: pipelineService,
+            onCancel: { pipelineService.cancelBatch() }
+        )
+        .padding()
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .animation(.easeInOut(duration: 0.3), value: pipelineService.isRunning)
+    }
+}
+```
+
+**Key rules:**
+- `.bottomTrailing` so it doesn't block the main content
+- `.move(edge: .bottom).combined(with: .opacity)` for a polished slide-up entrance
+- Animate on the boolean (`isRunning`), not the progress value
+
+**Best for:** Non-modal progress that doesn't block interaction with the rest of the app.
+
+---
+
+### Pattern 7: Phase Indicator (Scan/Process Stages)
+
+**Source:** `VOLTLAS/Sources/Views/Components/ScanProgressPanel.swift`, `VCR/Models/ScanProgress.swift`
+**Use case:** Multi-phase operations where each phase has a distinct icon and label.
+
+```swift
+enum ScanPhase: String, Sendable {
+    case enumerating, persisting, completed, cancelled
+    case failed(String)
+}
+
+struct ScanPhaseIndicator: View {
+    let phase: ScanPhase
+
+    var body: some View {
+        HStack(spacing: 6) {
+            switch phase {
+            case .enumerating:
+                Image(systemName: "folder.badge.gearshape").foregroundStyle(.blue)
+                Text("Enumerating files…")
+            case .persisting:
+                Image(systemName: "cylinder.split.1x2").foregroundStyle(.orange)
+                Text("Writing to database…")
+            case .completed:
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                Text("Completed")
+            case .cancelled:
+                Image(systemName: "xmark.circle.fill").foregroundStyle(.yellow)
+                Text("Cancelled")
+            case .failed(let message):
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red)
+                Text("Failed: \(message)").lineLimit(2)
+            }
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+}
+```
+
+**Progress data model:**
+
+```swift
+struct ScanProgress: Sendable, Equatable {
+    let currentFrame: Int
+    let estimatedTotalFrames: Int?
+    let phase: ScanPhase
+    let startTime: Date
+
+    var percentage: Double {
+        guard let total = estimatedTotalFrames, total > 0 else { return 0 }
+        return min(1.0, Double(currentFrame) / Double(total))
+    }
+
+    var framesPerSecond: Double {
+        let elapsed = Date().timeIntervalSince(startTime)
+        guard elapsed > 0 else { return 0 }
+        return Double(currentFrame) / elapsed
+    }
+}
+```
+
+**Color convention:** Blue = active, Orange = processing, Green = done, Yellow = cancelled, Red = failed.
+
+---
+
+### Pattern 8: Footer with Progress + Stop Controls
+
+**Source:** `P2toMXF/Views/FooterControlsView.swift`
+**Use case:** Bottom bar that swaps between normal actions and progress+cancel during operations.
+
+```swift
+@ViewBuilder
+private var footerContent: some View {
+    if isAnyConversionActive {
+        // Progress mode
+        HStack(spacing: 16) {
+            ProgressControlPanel(
+                metrics: activeProgressMetrics,
+                onCancel: cancelActiveConversion
+            )
+
+            if queueManager.pendingCount > 0 {
+                Button("Stop All") {
+                    queueManager.stopAllProcessing()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+            } else {
+                Button("Stop") {
+                    cancelActiveConversion()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+            }
+        }
+    } else {
+        // Normal mode
+        HStack {
+            if let feedback = viewModel.queueFeedback {
+                Label(feedback, systemImage: "checkmark.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.green)
+                    .transition(.opacity)
+            }
+            Spacer()
+            Button("Add to Queue") { viewModel.addToQueue() }
+                .disabled(!viewModel.canAddToQueue)
+        }
+    }
+}
+```
+
+**Key rule:** The footer **swaps entirely** between normal state and progress state — don't try to squeeze both into the same layout. Use `if`/`else` at the top level.
+
+---
+
+### Choosing a Pattern
+
+| Need | Pattern | Example |
+|---|---|---|
+| Always-visible file count / status | **1: Status Bar** | `safeAreaInset` bottom bar |
+| Progress in existing bar | **2: Inline** | Spinner + text when busy, "Ready" when idle |
+| Single export/render task | **3: Determinate** | Progress bar + % + cancel |
+| Batch of N items | **4: Multi-level** | Overall bar + per-item bar + phase |
+| Long conversion with ETA | **5: Metrics Panel** | Elapsed / remaining / speed chips |
+| Non-blocking background task | **6: Floating Overlay** | Slide-up panel, bottom-trailing |
+| Multi-phase pipeline | **7: Phase Indicator** | Color-coded phase icons |
+| Footer that transforms | **8: Footer Swap** | Normal actions ↔ progress+stop |
+
+---
+
+## Workspace Switching
+
+Toolbar-driven mode or view switching that replaces the entire content area. Three patterns from lightweight pane toggles to full workspace systems.
+
+---
+
+### Pattern 1: View Mode Switching (Toolbar Buttons)
+
+**Source:** `Penumbra/Views/ContentView.swift`
+**Use case:** Switch between grid, list, and single-item views.
+
+```swift
+enum WorkspaceLayout: String, CaseIterable {
+    case grid, list, single
+
+    var icon: String {
+        switch self {
+        case .grid:   return "rectangle.grid.3x3"
+        case .list:   return "rectangle.grid.1x3"
+        case .single: return "rectangle.grid.1x2"
+        }
+    }
+}
+
+@State private var selectedWorkspace: WorkspaceLayout = .single
+
+var body: some View {
+    VStack(spacing: 0) {
+        switch selectedWorkspace {
+        case .grid:
+            MediaGridView(library: library)
+        case .list:
+            MediaListView(library: library)
+        case .single:
+            SingleVideoView(library: library)
+        }
+    }
+    .toolbar {
+        ToolbarItemGroup(placement: .principal) {
+            HStack {
+                ForEach(WorkspaceLayout.allCases, id: \.self) { layout in
+                    PaneToggleButton(
+                        isOn: Binding(
+                            get: { selectedWorkspace == layout },
+                            set: { if $0 { selectedWorkspace = layout } }
+                        ),
+                        iconName: layout.icon,
+                        help: layout.rawValue.capitalized
+                    )
+                }
+            }
+            .buttonStyle(.borderless)
+        }
+    }
+    .toolbarRole(.editor)
+}
+```
+
+**Key technique:** `PaneToggleButton` with a computed `Binding` that maps a boolean to an enum case. Only the active button shows as "on".
+
+**Best for:** Same data, different presentation (grid vs list vs detail). The sidebar and inspector stay the same — only the center content changes.
+
+---
+
+### Pattern 2: Tool Mode Switching (Segmented Picker)
+
+**Source:** `CropBatch/Models/AppState.swift`, `CropBatch/ContentView.swift`
+**Use case:** Editor modes that change both the controls and the canvas overlay.
+
+```swift
+enum EditorTool: String, CaseIterable, Identifiable {
+    case crop = "Crop"
+    case blur = "Blur"
+
+    var id: String { rawValue }
+
+    var icon: String {
+        switch self {
+        case .crop: return "crop"
+        case .blur: return "eye.slash"
+        }
+    }
+}
+
+// In an @Observable AppState:
+var currentTool: EditorTool = .crop
+
+// Segmented picker in sidebar:
+Picker("Tool", selection: $appState.currentTool) {
+    ForEach(EditorTool.allCases) { tool in
+        Label(tool.rawValue, systemImage: tool.icon).tag(tool)
+    }
+}
+.pickerStyle(.segmented)
+.labelsHidden()
+
+// Controls change per mode:
+if appState.currentTool == .crop {
+    CropControlsView()
+} else {
+    BlurToolSettingsPanel()
+}
+
+// Canvas overlay changes per mode:
+if appState.currentTool == .crop {
+    cropOverlay
+    cropHandles
+}
+if appState.currentTool == .blur {
+    BlurEditorView(/* ... */)
+}
+```
+
+**Key technique:** `.pickerStyle(.segmented)` gives native macOS segmented control appearance. Mode enum lives in `@Observable` state so both the sidebar controls and the canvas respond to changes.
+
+**Best for:** Editor modes where the tool/controls change but the canvas and data model stay the same.
+
+---
+
+### Pattern 3: Full Workspace Switching (Sidebar-Driven)
+
+**Source:** `VOLTLAS/Sources/Views/Screens/MainView.swift`
+**Use case:** Entirely different screens driven by sidebar navigation — dashboard, search, detail, comparison.
+
+```swift
+enum SidebarItem: Hashable {
+    case dashboard
+    case compare
+    case search
+    case volume(UUID)
+}
+
+@State private var selectedItem: SidebarItem? = .dashboard
+
+var body: some View {
+    HSplitView {
+        // Sidebar with navigation items
+        List(selection: $selectedItem) {
+            Section("Overview") {
+                Label("Dashboard", systemImage: "chart.bar")
+                    .tag(SidebarItem.dashboard)
+                Label("Compare", systemImage: "arrow.left.arrow.right")
+                    .tag(SidebarItem.compare)
+                Label("Search", systemImage: "magnifyingglass")
+                    .tag(SidebarItem.search)
+            }
+
+            Section("Volumes") {
+                ForEach(volumes) { volume in
+                    Label(volume.name, systemImage: "externaldrive")
+                        .tag(SidebarItem.volume(volume.id))
+                }
+            }
+        }
+        .frame(minWidth: 200, idealWidth: 240, maxWidth: 350)
+
+        // Content switches entirely based on sidebar selection
+        detailContent
+            .frame(minWidth: 500)
+    }
+}
+
+@ViewBuilder
+private var detailContent: some View {
+    switch selectedItem {
+    case .dashboard, .none:
+        DashboardView()
+    case .compare:
+        ComparisonView()
+    case .search:
+        SearchView()
+    case .volume(let id):
+        VolumeDetailView(volumeID: id)
+    }
+}
+```
+
+**Key technique:** `@ViewBuilder` with `switch` on an enum — each case renders a completely different screen. The enum can have associated values (`.volume(UUID)`) for parameterized screens.
+
+**Best for:** Apps with distinct functional areas (dashboard, analytics, settings, per-item detail). Each "workspace" is a fully independent view hierarchy.
+
+---
+
+### Pattern 4: Persistent Mode with `@AppStorage`
+
+**Source:** `VideoScout/Views/ContentView.swift`
+**Use case:** Workspace selection that survives app relaunch.
+
+```swift
+@AppStorage("activeWorkspace") private var workspace: String = "edit"
+
+// Enum with RawRepresentable for @AppStorage:
+enum Workspace: String, CaseIterable {
+    case importMedia = "import"
+    case edit = "edit"
+    case export = "export"
+
+    var icon: String {
+        switch self {
+        case .importMedia: return "square.and.arrow.down"
+        case .edit:        return "slider.horizontal.3"
+        case .export:      return "square.and.arrow.up"
+        }
+    }
+}
+
+private var activeWorkspace: Workspace {
+    get { Workspace(rawValue: workspace) ?? .edit }
+    set { workspace = newValue.rawValue }
+}
+```
+
+**Key rule:** `@AppStorage` only stores `String`/`Int`/`Bool`/`Double`/`Data`/`URL`. For enums, use `rawValue: String` and a computed property to bridge.
+
+---
+
+### Pattern 5: Sub-Mode within a Workspace (Nested Switch)
+
+**Source:** `VOLTLAS/Sources/Views/Screens/ComparisonView.swift`
+**Use case:** A workspace that itself has modes — e.g., a comparison screen with "setup" and "results" phases.
+
+```swift
+enum ComparisonMode: String, CaseIterable, Identifiable {
+    case specific = "Compare Selected"
+    case oneVsAll = "One vs All"
+    case global = "Global Dedup"
+
+    var id: String { rawValue }
+}
+
+@Observable
+class ComparisonViewModel {
+    var selectedMode: ComparisonMode = .specific
+    var showResults = false
+}
+
+var body: some View {
+    VStack {
+        if viewModel.showResults {
+            ResultsView(viewModel: viewModel)
+        } else {
+            VStack {
+                // Mode picker
+                Picker("Mode", selection: $viewModel.selectedMode) {
+                    ForEach(ComparisonMode.allCases) { mode in
+                        Text(mode.rawValue).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+
+                // Content varies by mode
+                switch viewModel.selectedMode {
+                case .specific:  MultiVolumeSelector(viewModel: viewModel)
+                case .oneVsAll:  SingleVolumeSelector(viewModel: viewModel)
+                case .global:    EmptyView()
+                }
+
+                Button("Compare") { viewModel.runComparison() }
+            }
+        }
+    }
+}
+```
+
+**Key technique:** Two-level switching — outer boolean (`showResults`) for phase, inner enum (`selectedMode`) for variant. Each level uses the lightest mechanism that works.
+
+---
+
+### Choosing a Pattern
+
+| Need | Pattern | Key Trait |
+|---|---|---|
+| Same data, different layout (grid/list) | **1: View Mode** | `PaneToggleButton` + enum binding |
+| Editor tool modes | **2: Tool Mode** | `.segmented` picker, controls + canvas change |
+| Entirely different screens | **3: Sidebar-Driven** | `@ViewBuilder switch` on enum with associated values |
+| Mode that persists across launches | **4: @AppStorage** | String raw value bridge |
+| Workspace with sub-modes | **5: Nested** | Outer phase + inner variant |
+
+**Anti-patterns:**
+- Don't use `TabView` for workspace switching in pro apps — it creates iOS-style tabs at the top. Use `HSplitView` sidebar or toolbar buttons instead
+- Don't animate workspace transitions with `.animation` on the switch — the content change is structural, not a value change. If you want transitions, use `.transition()` on each branch with `withAnimation`
+- Don't put workspace state in a view-local `@State` if other views need to read it — use `@Observable` or `@AppStorage`
+
+---
+
 ## Quick Reference Table
 
 | Pattern | Source Project | Use Case |
@@ -3965,6 +4780,19 @@ class DropTargetView: NSView {
 | Drop: internal reordering | Phosphor | `.draggable` + `.dropDestination` |
 | Drop: NSTableView | VCR | `registerForDraggedTypes` + delegate |
 | Drop: AppKit NSView subclass | TimeCodeEditor | `NSDraggingDestination` override |
+| Progress: status bar | VCR | `.safeAreaInset` bottom bar |
+| Progress: inline in bar | Penumbra, VAM | Spinner + text when busy |
+| Progress: determinate + cancel | Phosphor, CutSnaps | Export bar + % + cancel |
+| Progress: multi-level | VideoScout | Overall + per-item bars |
+| Progress: metrics panel | P2toMXF | Elapsed / ETA / speed chips |
+| Progress: floating overlay | VideoScout | Slide-up `.bottomTrailing` |
+| Progress: phase indicator | VOLTLAS, VCR | Color-coded stage icons |
+| Progress: footer swap | P2toMXF | Normal actions ↔ progress+stop |
+| Workspace: view mode toggle | Penumbra | Grid/list/single via toolbar |
+| Workspace: tool mode picker | CropBatch | `.segmented` picker, controls swap |
+| Workspace: sidebar-driven | VOLTLAS | `@ViewBuilder switch` on enum |
+| Workspace: @AppStorage persist | VideoScout | Mode survives relaunch |
+| Workspace: nested sub-modes | VOLTLAS | Outer phase + inner variant |
 | Vestige pattern storage | This cookbook | Auto-recall past solutions |
 | Dual-trigger (CLAUDE.md + Vestige) | This cookbook | Reliable pattern surfacing |
 | Session log integration | Directions | Capture patterns when fresh |
