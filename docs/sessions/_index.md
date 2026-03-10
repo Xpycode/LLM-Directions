@@ -2,6 +2,9 @@
 
 ## 2026
 
+### March
+- [2026-03-10](2026-03-10.md) — Installed codebase-memory-mcp + Apple developer credentials setup
+
 ### February
 - [2026-02-21](2026-02-21.md) — Added command explanation preference to global CLAUDE.md
 - [2026-02-18](2026-02-18.md) — Installed XcodePreviews CLI tool for SwiftUI preview capture
