@@ -555,3 +555,37 @@ Before shipping, verify:
 ---
 
 *Add tests as you build. Retrofitting tests to untested code is painful—writing them alongside is natural.*
+
+---
+
+## AppProbe — Automated macOS UI Testing
+
+For testing complete user flows via accessibility APIs without writing XCUITest code.
+
+**Location:** `/Users/sim/XcodeProjects/9-TESTING/AppProbe/`
+
+**Quick start:**
+```bash
+# Trigger from Claude Code:
+/test-app MyAppName
+
+# Or manually:
+appprobe discover com.example.myapp -o discovery.json   # Inspect UI tree
+appprobe run plans/myapp.yaml --slow --overlay --verbose  # Run test plan
+```
+
+**How it works:**
+1. `/test-app` reads your source code + inspects the running app's accessibility tree
+2. Claude generates a comprehensive YAML test plan covering all user flows
+3. AppProbe executes it: launches app, clicks buttons, types text, navigates menus, takes screenshots
+4. Results: JSON report + failure screenshots for Claude to analyze
+
+**When to use:**
+- Before shipping — full UI regression test
+- After refactoring — verify nothing broke
+- New feature — test the user flow end-to-end
+- Bug report — reproduce and verify the fix
+
+**Supported actions:** click, type, menu navigation, keyboard shortcuts, drag-and-drop, scroll, window management, element state verification, screenshots.
+
+**Flags:** `--slow` (visible actions), `--overlay` (floating progress HUD), `--tag` (run subset)
