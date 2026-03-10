@@ -42,7 +42,8 @@
 15. [Drag & Drop](#drag--drop) — External file drops and internal reordering
 16. [Activity & Progress Bars](#activity--progress-bars) — Bottom bars, progress, ETA, cancel
 17. [Workspace Switching](#workspace-switching) — Toolbar-driven mode/view switching
-18. [Quick Reference Table](#quick-reference-table)
+18. [Native Video Analysis](#native-video-analysis-avfoundation) — Shot detection and motion scoring without Python
+19. [Quick Reference Table](#quick-reference-table)
 
 ---
 
@@ -4869,6 +4870,237 @@ class VideoFile: Identifiable {
 ```
 
 **Rule:** If `startAccessingSecurityScopedResource()` and the work using that resource are on different async boundaries, the access token must outlive the async chain.
+
+---
+
+## Native Video Analysis (AVFoundation)
+
+### Shot/Scene Detection — Y-Plane Histogram Chi-Square
+
+**Source:** `VideoScout/Services/NativeShotDetector.swift`
+**Problem:** Shot boundary detection typically requires Python (PySceneDetect) or OpenCV — adding deployment burden for macOS apps. AVFoundation can decode video natively.
+
+**Algorithm:** Stream frames via `AVAssetReader` in YCbCr format, compute 32-bin luminance histograms on the Y-plane, mark scene cuts when chi-square distance between consecutive frames exceeds a threshold.
+
+```swift
+actor NativeShotDetector {
+
+    func detectShots(
+        in videoURL: URL,
+        threshold: Double = 27.0,     // chi-square threshold
+        minSceneLength: Double = 3.0  // merge cuts closer than this
+    ) async throws -> [SceneResult] {
+        let asset = AVURLAsset(url: videoURL)
+        guard let track = try await asset.loadTracks(withMediaType: .video).first else {
+            throw DetectionError.noVideoTrack
+        }
+
+        let fps = Double(try await track.load(.nominalFrameRate))
+        let totalSeconds = CMTimeGetSeconds(try await asset.load(.duration))
+
+        let reader = try AVAssetReader(asset: asset)
+        let output = AVAssetReaderTrackOutput(track: track, outputSettings: [
+            kCVPixelBufferPixelFormatTypeKey as String:
+                kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+        ])
+        output.alwaysCopiesSampleData = false
+        reader.add(output)
+        guard reader.startReading() else { throw DetectionError.readerFailed("...") }
+
+        var prevHistogram: [Double]?
+        var cuts: [Double] = []
+
+        while let sample = output.copyNextSampleBuffer() {
+            guard let px = CMSampleBufferGetImageBuffer(sample) else { continue }
+            let time = CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sample))
+            let hist = yPlaneHistogram(from: px)
+            if let prev = prevHistogram, chiSquare(prev, hist) > threshold {
+                cuts.append(time)
+            }
+            prevHistogram = hist
+        }
+        reader.cancelReading()
+
+        // merge close cuts, build SceneResult array from boundaries
+        return buildScenes(from: mergeCuts(cuts, minGap: minSceneLength),
+                           duration: totalSeconds, fps: fps)
+    }
+
+    /// 32-bin histogram on Y-plane, normalized to percentage (sum ≈ 100)
+    private func yPlaneHistogram(from px: CVPixelBuffer) -> [Double] {
+        CVPixelBufferLockBaseAddress(px, .readOnly)
+        defer { CVPixelBufferUnlockBaseAddress(px, .readOnly) }
+
+        guard let base = CVPixelBufferGetBaseAddressOfPlane(px, 0) else {
+            return [Double](repeating: 0, count: 32)
+        }
+        let w = CVPixelBufferGetWidthOfPlane(px, 0)
+        let h = CVPixelBufferGetHeightOfPlane(px, 0)
+        let bpr = CVPixelBufferGetBytesPerRowOfPlane(px, 0)
+
+        var hist = [Double](repeating: 0, count: 32)
+        var count = 0
+        for y in Swift.stride(from: 0, to: h, by: 4) {       // subsample 4x
+            let row = base.advanced(by: y * bpr)
+            for x in Swift.stride(from: 0, to: w, by: 4) {
+                let lum = row.load(fromByteOffset: x, as: UInt8.self)
+                hist[min(Int(Double(lum) * 32.0 / 256.0), 31)] += 1
+                count += 1
+            }
+        }
+        if count > 0 { let s = 100.0 / Double(count); for i in 0..<32 { hist[i] *= s } }
+        return hist
+    }
+
+    /// χ² = Σ (a[i] - b[i])² / (a[i] + b[i])
+    private func chiSquare(_ a: [Double], _ b: [Double]) -> Double {
+        var d = 0.0
+        for i in 0..<a.count {
+            let s = a[i] + b[i]
+            if s > 0 { let diff = a[i] - b[i]; d += diff * diff / s }
+        }
+        return d
+    }
+}
+```
+
+**Key design choices:**
+- **YCbCr pixel format** — `kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange` decodes natively (no color space conversion). Plane 0 = pure luminance.
+- **4x subsampling** — Every 4th pixel in both dimensions. 1920×1080 → ~130K samples per frame. Sufficient for histogram accuracy, ~3ms/frame on Apple Silicon.
+- **Percentage normalization** — Histogram bins sum to ≈100 (not 1.0). This gives chi-square distances in a range where 27.0 is a meaningful default threshold, regardless of video resolution.
+- **Threshold mapping** — If exposing a user-facing sensitivity slider (e.g. 1–10), multiply by 9 to get chi-square threshold. Default 3.0 → 27.0.
+- **Post-processing** — Merge cuts closer than `minSceneLength` seconds to avoid detecting flicker/flash as boundaries.
+- **Performance** — ~2–5ms/frame. A 30fps, 1-hour video ≈ 108K frames ≈ 3–9 minutes.
+
+---
+
+### Motion Scoring — Frame Differencing on Y-Plane
+
+**Source:** `VideoScout/Services/NativeMotionAnalyzer.swift`
+**Problem:** Optical flow (Farneback) requires OpenCV. For a scalar "how much motion" score, frame differencing on luminance is equivalent.
+
+```swift
+actor NativeMotionAnalyzer {
+    func analyzeMotion(
+        in videoURL: URL, startTime: Double, endTime: Double, sampleRate: Int = 5
+    ) async throws -> MotionResult {
+        // Same AVAssetReader setup as above, with:
+        //   reader.timeRange = CMTimeRange(start:..., end:...)
+        // For every Nth frame: extract subsampled Y-plane, compute mean
+        // absolute pixel difference with previous frame, normalize by 255.
+        // Average all pair scores → motionScore (0.0–1.0)
+    }
+}
+```
+
+**Motion categories** (thresholds for the 0.0–1.0 score):
+| Range | Category |
+|-------|----------|
+| < 0.05 | static |
+| 0.05–0.2 | slow |
+| 0.2–0.5 | moderate |
+| ≥ 0.5 | fast |
+
+**Why not optical flow:** Farneback optical flow gives direction vectors (useful for tracking). If you only need magnitude (scalar score), mean absolute pixel difference gives equivalent categorization with zero external dependencies.
+
+---
+
+## Sparkle Auto-Updates (macOS)
+
+### Integration Checklist
+
+1. **Add Sparkle via SPM** — `https://github.com/sparkle-project/Sparkle` (>= 2.8.1)
+2. **Generate EdDSA key pair** — `./Sparkle.framework/bin/generate_keys`
+3. **Configure Info.plist keys** — `SUFeedURL` and `SUPublicEDKey`
+4. **Create updater controller** — `SPUStandardUpdaterController`
+5. **Add "Check for Updates" menu item** — observe `canCheckForUpdates`
+6. **Host appcast.xml** — with at least one valid release entry
+7. **Sign releases** — `./Sparkle.framework/bin/sign_update YourApp.zip`
+
+### Gotcha: INFOPLIST_KEY_ Prefix Does NOT Work for Custom Keys
+
+When using `GENERATE_INFOPLIST_FILE = YES` with xcconfig, the `INFOPLIST_KEY_` prefix
+**only works for Apple-recognized keys** (e.g., `NSHumanReadableCopyright`, `CFBundleDisplayName`).
+
+Custom third-party keys like `SUFeedURL` and `SUPublicEDKey` are **silently ignored**.
+
+**Symptom:** Sparkle shows "You must specify the URL of the appcast as the SUFeedURL key
+in either the Info.plist" even though you defined `INFOPLIST_KEY_SUFeedURL` in xcconfig.
+
+**Fix:** Create a partial `Info.plist` with the custom keys and set `INFOPLIST_FILE` in xcconfig:
+
+```xml
+<!-- Config/Info.plist -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>SUFeedURL</key>
+    <string>https://example.com/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>YOUR_PUBLIC_KEY_HERE</string>
+</dict>
+</plist>
+```
+
+```
+// Shared.xcconfig
+GENERATE_INFOPLIST_FILE = YES
+INFOPLIST_FILE = Config/Info.plist
+// Xcode merges both: generated Apple keys + your custom keys
+```
+
+### Gotcha: Empty Appcast
+
+Sparkle requires at least one valid `<item>` in the appcast feed. An empty `<channel>` (or
+all items commented out) causes "An error occurred in retrieving update information."
+
+Populate the appcast before shipping, or at minimum include the current version so Sparkle
+can report "You're up to date."
+
+### Minimal Updater Setup (SwiftUI)
+
+```swift
+import Sparkle
+
+// Controller — create once at app launch
+final class UpdaterController: ObservableObject {
+    let updater: SPUStandardUpdaterController
+
+    init() {
+        updater = SPUStandardUpdaterController(
+            startingUpdater: true,
+            updaterDelegate: nil,
+            userDriverDelegate: nil
+        )
+    }
+}
+
+// ViewModel for menu item state
+final class CheckForUpdatesViewModel: ObservableObject {
+    @Published var canCheckForUpdates = false
+    private var cancellable: AnyCancellable?
+
+    init(updater: SPUUpdater) {
+        cancellable = updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: \.canCheckForUpdates, on: self)
+    }
+}
+
+// Menu item
+struct CheckForUpdatesView: View {
+    @ObservedObject var viewModel: CheckForUpdatesViewModel
+    let updater: SPUUpdater
+
+    var body: some View {
+        Button("Check for Updates…") {
+            updater.checkForUpdates()
+        }
+        .disabled(!viewModel.canCheckForUpdates)
+    }
+}
+```
 
 ---
 
