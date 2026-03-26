@@ -89,7 +89,22 @@
       "Bash(/Users/sim/XcodeProjects/0-DIRECTIONS/XcodePreviews/scripts/preview:*)",
       "Bash(claude mcp list:*)",
       "Bash(npx:*)",
-      "Bash(git check-ignore:*)"
+      "Bash(git check-ignore:*)",
+      "Bash(which go:*)",
+      "Read(//private/tmp/**)",
+      "Bash(tar xzf:*)",
+      "Bash(mkdir -p ~/.local/bin && mv /tmp/codebase-memory-mcp ~/.local/bin/ && chmod +x ~/.local/bin/codebase-memory-mcp)",
+      "Bash(echo $PATH | tr ':' '\\\\n' | grep -q \"$HOME/.local/bin\" && echo \"IN PATH\" || echo \"NOT IN PATH\")",
+      "Bash(~/.local/bin/codebase-memory-mcp --version 2>&1 || ~/.local/bin/codebase-memory-mcp version 2>&1 || echo \"binary works: $?\")",
+      "Bash(~/.local/bin/codebase-memory-mcp install:*)",
+      "Bash(~/.local/bin/codebase-memory-mcp cli:*)",
+      "Bash(gh repo:*)",
+      "WebFetch(domain:blog.pjhoberman.com)",
+      "Read(//Users/sim/.claude/commands/**)",
+      "Read(//Users/sim/.claude/**)",
+      "Bash(cp -r /tmp/autoresearch/skills/autoresearch ~/.claude/skills/autoresearch)",
+      "Bash(cp -r /tmp/autoresearch/skills/autoresearch-discover ~/.claude/skills/autoresearch-discover)",
+      "Bash(~/.claude/hooks/autoresearch-suggest.sh)"
     ]
   },
   "enableAllProjectMcpServers": true,

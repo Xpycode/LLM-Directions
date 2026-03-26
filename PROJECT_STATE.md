@@ -11,9 +11,9 @@
 ## Current Position
 - **Funnel:** build
 - **Phase:** implementation
-- **Focus:** Setup flow improvements — folder structure auto-creation, template sync
+- **Focus:** Per-project static website generator — auto-generated from Directions docs, feeds into master aggregator
 - **Status:** ready
-- **Last updated:** 2026-02-27
+- **Last updated:** 2026-03-24
 
 ## Funnel Progress (Ralph-style)
 <!-- The 3-phase funnel that ships software -->
@@ -55,6 +55,7 @@
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
+- 2026-03-24: Designing per-project static site generator — bottom-up complement to ProjectOverview aggregator
 - 2026-02-27: Wired `13_folder-structure.md` into setup flow — template, base, and setup command now auto-create numbered folders
 - 2026-02-18: Added XcodePreviews (Iron-Ham/XcodePreviews) to ecosystem — global `/preview` command, documented in 26_ecosystem.md and global CLAUDE.md
 

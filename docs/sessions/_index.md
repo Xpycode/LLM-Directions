@@ -3,6 +3,7 @@
 ## 2026
 
 ### March
+- [2026-03-24](2026-03-24.md) — Designed per-project static website generator for Directions
 - [2026-03-10](2026-03-10.md) — Installed codebase-memory-mcp + Apple developer credentials setup
 
 ### February
