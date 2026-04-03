@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-03-01**
+**Last updated: 2026-04-03**
 
 ---
 
@@ -44,6 +44,10 @@
 17. [Workspace Switching](#workspace-switching) — Toolbar-driven mode/view switching
 18. [Native Video Analysis](#native-video-analysis-avfoundation) — Shot detection and motion scoring without Python
 19. [Quick Reference Table](#quick-reference-table)
+20. [Thread-Safe Offscreen Rendering](#thread-safe-offscreen-rendering) — NSBitmapImageRep for TaskGroup
+21. [Pipeline Extraction Pattern](#pipeline-extraction-pattern) — Shared processing, caller-owned I/O
+22. [Swift 6 Concurrency: @MainActor + @Observable](#swift-6-concurrency-mainactor--observable) — Enforce main-thread mutation at the class level
+23. [Actor Re-Entrancy: When TOCTOU is NOT Possible](#actor-re-entrancy-when-toctou-is-not-possible) — Synchronous sequences can't race
 
 ---
 
@@ -1693,6 +1697,63 @@ struct ActionButton: View, Equatable {
 // Usage:
 ActionButton(title: "Save", action: save)
     .equatable()  // ← Enables custom equality check
+```
+
+---
+
+### Image Cache Miss Flash: Always Use .resizable()
+
+**Source:** CropBatch `CropEditorView` (2026-04-03) — image flash on thumbnail switch.
+
+When using a CG-scaled image cache for high-quality downscaling, the cache will miss for one render frame on every image switch (new image ID ≠ cached ID). If the fallback returns the full-resolution source image and the `Image` view lacks `.resizable()`, it renders at native pixel dimensions — causing a one-frame flash where the image fills the entire pane.
+
+```swift
+// ❌ BAD: Cache miss returns full-res image without .resizable()
+@ViewBuilder
+private var scaledImageView: some View {
+    if currentScale >= 1.0 {
+        Image(nsImage: displayedImage)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+    } else {
+        // On cache hit: pre-scaled image renders at correct size
+        // On cache miss: FULL-RES image renders at native pixels → FLASH
+        Image(nsImage: highQualityScaledImage)
+            .interpolation(.high)
+    }
+}
+
+// ✅ GOOD: Both branches use .resizable() so frame always constrains
+@ViewBuilder
+private var scaledImageView: some View {
+    if currentScale >= 1.0 {
+        Image(nsImage: displayedImage)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+    } else {
+        Image(nsImage: highQualityScaledImage)
+            .interpolation(.high)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+    }
+}
+```
+
+**Why `.resizable()` matters:** SwiftUI's `Image` without `.resizable()` renders at intrinsic (pixel) size. A parent `.frame()` only affects layout positioning — it does NOT constrain the image's rendering size. With `.resizable()`, the image scales to fill its proposed frame.
+
+**Also guard against `viewSize == .zero`:** On first render, `GeometryReader` reports size via `onChange(initial: true)` which fires *after* the first render pass. If your scale calculation falls back to `1.0` when `viewSize == .zero`, the image renders at full pixel dimensions for one frame. Guard by not rendering content until `viewSize` is populated:
+
+```swift
+GeometryReader { geometry in
+    Group {
+        if viewSize.width > 0, viewSize.height > 0 {
+            // actual content
+        }
+    }
+    .onChange(of: geometry.size, initial: true) { _, newSize in
+        viewSize = newSize
+    }
+}
 ```
 
 ---
@@ -5104,6 +5165,160 @@ struct CheckForUpdatesView: View {
 
 ---
 
+## Thread-Safe Offscreen Rendering
+
+**Problem:** `NSImage.lockFocus()` is main-thread-only. Using it from `TaskGroup` background tasks causes crashes or corrupted output.
+
+**Solution:** Use `NSBitmapImageRep` + `NSGraphicsContext(bitmapImageRep:)` for an isolated offscreen context.
+
+```swift
+// Thread-safe: each task gets its own isolated context
+guard let rep = NSBitmapImageRep(
+    bitmapDataPlanes: nil,
+    pixelsWide: width,
+    pixelsHigh: height,
+    bitsPerSample: 8,
+    samplesPerPixel: 4,
+    hasAlpha: true,
+    isPlanar: false,
+    colorSpaceName: .deviceRGB,
+    bytesPerRow: 0,
+    bitsPerPixel: 0
+) else { return image }
+guard let ctx = NSGraphicsContext(bitmapImageRep: rep) else { return image }
+
+// Draw source image via CGContext (thread-safe)
+let cgContext = ctx.cgContext
+cgContext.draw(sourceCGImage, in: CGRect(origin: .zero, size: imageSize))
+
+// For NSAttributedString.draw, temporarily set NSGraphicsContext.current
+// (per-thread TLS — safe when synchronous blocks don't cross await points)
+let saved = NSGraphicsContext.current
+NSGraphicsContext.current = ctx
+attrString.draw(in: drawRect)
+NSGraphicsContext.current = saved
+
+guard let result = rep.cgImage else { return image }
+return NSImage(cgImage: result, size: imageSize)
+```
+
+**Key insight:** `NSGraphicsContext.current` is per-thread TLS. Synchronous blocks in `TaskGroup` run to completion on one thread — no interleaving. The real danger is `lockFocus()` which creates screen-backed windows.
+
+**Source:** CropBatch `ImageCropService.applyTextWatermark` (2026-03-29)
+
+---
+
+## Pipeline Extraction Pattern
+
+**Problem:** Multiple code paths reimplement the same processing pipeline (e.g., normal export vs. rename-on-conflict export). Pipelines drift apart — one path adds a step, the other doesn't.
+
+**Solution:** Extract the pipeline into a method that returns processed results WITHOUT saving. Callers handle I/O (URL construction, saving) independently.
+
+```swift
+// Shared pipeline — single source of truth
+static func processImageThroughPipeline(
+    item: ImageItem,
+    settings: ProcessingSettings
+) throws -> [(gridPosition: (row: Int, col: Int)?, image: NSImage, format: UTType)] {
+    var image = item.originalImage
+    // Step 1: blur, Step 2: transform, Step 3: crop, Step 4: mask
+    // Step 5: grid split, Step 6: per-tile resize + watermark
+    // Step 7: resolve format
+    return tiles  // No saving — caller decides where/how to write
+}
+
+// Normal export path
+func processSingleImage(...) throws -> [URL] {
+    let tiles = try processImageThroughPipeline(...)
+    return tiles.map { tile in
+        let url = buildOutputURL(...)     // caller controls naming
+        try save(tile.image, to: url)
+        return url
+    }
+}
+
+// Rename-on-conflict path
+func processConflicting(...) throws -> [URL] {
+    let tiles = try processImageThroughPipeline(...)  // same pipeline!
+    return tiles.map { tile in
+        let url = buildRenamedURL(...)    // different naming strategy
+        try save(tile.image, to: url)
+        return url
+    }
+}
+```
+
+**Rule:** If two code paths share >3 processing steps, extract the pipeline. Let callers own I/O.
+
+**Source:** CropBatch `ImageCropService.processImageThroughPipeline` (2026-03-31)
+
+---
+
+## Swift 6 Concurrency: @MainActor + @Observable
+
+**Rule:** All `@Observable` model classes that drive UI should be `@MainActor`. Without it, Swift 6 permits mutation from any concurrency context — the compiler can't protect you.
+
+```swift
+// WRONG — @Observable alone doesn't enforce main-thread mutation
+@Observable
+final class AppState { ... }
+
+// CORRECT — compiler enforces all mutation happens on main actor
+@MainActor
+@Observable
+final class AppState { ... }
+```
+
+**Why `@Observable` alone isn't enough:** The `@Observable` macro rewrites property access for observation tracking, but it doesn't restrict *which thread* can mutate stored properties. You can race on them from a background Task with no warning in non-strict mode.
+
+**The per-call patch (anti-pattern):**
+```swift
+// Common workaround — but misses call sites silently
+Task { @MainActor in
+    self?.isProcessing = false
+}
+```
+
+Adding `@MainActor` to the class makes this redundant (harmless) and enforces it everywhere automatically. The compiler flags any missing `await` at a call site.
+
+**Impact on async export patterns:** If your `@MainActor` class creates an inner `Task { }`, that Task inherits `@MainActor` isolation. Actual heavy work still runs off-thread when you `await` a `nonisolated` function — the actor is released during the `await`.
+
+**Source:** CropBatch pre-v1.4 review (2026-04-03)
+
+---
+
+## Actor Re-Entrancy: When TOCTOU is NOT Possible
+
+**Rule:** Between two lines with no `await`, an actor cannot re-enter. Two callers cannot interleave in a synchronous sequence.
+
+```swift
+actor ThumbnailCache {
+    private var inFlight: [String: Task<NSImage?, Never>] = [:]
+
+    func thumbnail(for url: URL) async -> NSImage? {
+        // ✅ SAFE — no await between check and write
+        if let existing = inFlight[key] {
+            return await existing.value  // <- re-entry CAN happen here (at the await)
+        }
+
+        let task = Task { ... }
+        inFlight[key] = task          // <- atomic with the check above, no interleave possible
+
+        let result = await task.value  // <- re-entry CAN happen here
+        inFlight.removeValue(forKey: key)
+        return result
+    }
+}
+```
+
+**Re-entry only happens at `await` points.** A code reviewer (or AI model) may flag `check → create → write` as a TOCTOU race. It isn't one if there's no `await` between check and write. The actor serializes synchronous sequences.
+
+**Where re-entry IS a real concern:** After an `await`, a second caller can enter. If your post-await code reads state that the second caller might mutate, that's a real race. Design around it with snapshot captures before the `await`.
+
+**Source:** CropBatch `ThumbnailCache` review (2026-04-03) — false positive correctly dismissed.
+
+---
+
 ## Anti-Patterns to Avoid
 
 | Anti-Pattern | Problem | Solution |
@@ -5117,6 +5332,9 @@ struct CheckForUpdatesView: View {
 | `url.path()` for subprocesses | Percent-encodes spaces, breaks paths | Use `url.path(percentEncoded: false)` |
 | Single AI review | Misses bugs | Multi-model validation |
 | >500 line files | Unmaintainable | Extract managers/services |
+| `@Observable` without `@MainActor` | UI mutations unprotected from background threads | Add `@MainActor` at class level |
+| `DispatchQueue.main.asyncAfter` in `@MainActor` class | Bypasses actor isolation | Use `Task { @MainActor in; await Task.sleep(...) }` |
+| `Image(nsImage:)` without `.resizable()` in cache fallback | Full-res flash on cache miss (one frame at native pixels) | Always add `.resizable().aspectRatio(contentMode: .fill)` |
 
 ---
 
