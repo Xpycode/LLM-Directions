@@ -2,7 +2,11 @@
 
 ## 2026
 
+### April
+- [2026-04-03](2026-04-03.md) — Researched & installed Elgato Stream Deck MCP server for Claude Code
+
 ### March
+- [2026-03-31](2026-03-31.md) — Explored Phantom autonomous agent; flagged for Mac mini trial
 - [2026-03-24](2026-03-24.md) — Designed per-project static website generator for Directions
 - [2026-03-10](2026-03-10.md) — Installed codebase-memory-mcp + Apple developer credentials setup
 
