@@ -53,6 +53,8 @@ Each pattern lives in `docs/cookbook/`. Read the relevant file when a pattern is
 | 22 | [22-debounced-cifilter.md](docs/cookbook/22-debounced-cifilter.md) | Live filter preview with SwiftUI fallback cache |
 | 23 | [23-z-order-overlay.md](docs/cookbook/23-z-order-overlay.md) | Out-of-bounds visual feedback without badges |
 | 24 | [24-web-dev-patterns.md](docs/cookbook/24-web-dev-patterns.md) | Jinja2 data injection, ES module DI, shared state module |
+| 25 | [25-extension-file-splitting.md](docs/cookbook/25-extension-file-splitting.md) | Split large files via extensions, access level fixes, strategy by file type |
+| 26 | [26-launchd-node-service.md](docs/cookbook/26-launchd-node-service.md) | KeepAlive server, scheduled tasks, install/uninstall, Apple Silicon PATH gotcha |
 
 ---
 
@@ -135,3 +137,6 @@ Each pattern lives in `docs/cookbook/`. Read the relevant file when a pattern is
 | Jinja2 data injection | PDF2Calendar | Server→client data passing |
 | ES Module DI | PDF2Calendar | Avoid circular imports in JS modules |
 | Shared State Module | PDF2Calendar | Centralized state for vanilla JS apps |
+| launchd KeepAlive server | X-STATUS | Node.js server auto-start + auto-restart |
+| launchd scheduled task | X-STATUS | Daily data collection (cron replacement) |
+| Install/uninstall scripts | X-STATUS | Idempotent launchd agent management |

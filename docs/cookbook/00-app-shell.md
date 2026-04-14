@@ -6,6 +6,26 @@ The standard app shell for all macOS apps. Avoids macOS Tahoe's round capsule bu
 
 ---
 
+### 0. Info.plist — Required Key
+
+Every macOS app MUST include this in its Info.plist:
+
+```xml
+<key>UIDesignRequiresCompatibility</key>
+<true/>
+```
+
+**Without this key, `.hiddenTitleBar` and `FCPToolbarButtonStyle` will NOT work.**
+The system falls back to compatibility mode and forces pill/capsule chrome on all
+`NSToolbarItem`s regardless of your ButtonStyle or window style settings.
+
+*Discovered 2026-04-05: CropBatch had `.hiddenTitleBar` + `.toolbarRole(.editor)` +
+`FCPToolbarButtonStyle` + HStack `.borderless` wrapper — all correct — but still got
+pill chrome. Adding `UIDesignRequiresCompatibility = true` to Info.plist fixed it instantly.
+Penumbra had this key all along, which is why its flat buttons worked.*
+
+---
+
 ### 1. App Entry Point
 
 ```swift
@@ -30,6 +50,7 @@ struct MyApp: App {
 ```
 
 **Key decisions:**
+- `UIDesignRequiresCompatibility = true` in Info.plist — **prerequisite** for all other styling
 - `.windowStyle(.hiddenTitleBar)` — removes the standard title bar chrome
 - `.preferredColorScheme(.dark)` — forced dark mode, consistent across system settings
 - No `.navigationTitle()` — title bar is hidden, so titles go in custom info strips or toolbars
@@ -157,16 +178,54 @@ Button(action: importFiles) {
 
 ---
 
-### 4. Toolbar Configuration — Titlebar Injection (macOS 26 SDK)
+### 4. Toolbar Configuration (macOS 26 SDK)
 
-> **Why not `.toolbar {}`?** Starting with Xcode 17 / macOS 26 SDK, Apple forces
-> pill/capsule system chrome on ALL `NSToolbarItem`s — regardless of custom `ButtonStyle`,
-> `.borderless`, or any SwiftUI modifier. The old `.toolbar {}` approach (still shown in
-> older Penumbra builds) only works when linked against the macOS 15 SDK or earlier.
+> **The problem:** Starting with Xcode 17 / macOS 26 SDK, Apple forces pill/capsule
+> system chrome on `NSToolbarItem`s under `.windowStyle(.automatic)`.
 >
-> **The fix:** Bypass `NSToolbar` entirely. Inject an `NSHostingView` directly into the
-> titlebar's NSView hierarchy. Buttons render as regular SwiftUI views — no
-> `NSToolbarItem` wrapping, no system bezel.
+> **The fix (what Penumbra actually does):** Use `.windowStyle(.hiddenTitleBar)` +
+> regular `.toolbar {}` items + `FCPToolbarButtonStyle`. Under `.hiddenTitleBar`,
+> the system chrome enforcement is reduced and custom `ButtonStyle` renders correctly.
+> **Keep the real toolbar items** — they're needed for content area layout.
+
+#### Approach A: `.hiddenTitleBar` + `.toolbar {}` (recommended — what Penumbra uses)
+
+```swift
+// App struct:
+WindowGroup { ContentView() }
+    .windowStyle(.hiddenTitleBar)
+
+// Content view:
+HSplitView { /* ... */ }
+    .toolbar {
+        ToolbarItemGroup(placement: .navigation) {
+            Button(action: importFile) {
+                Image(systemName: "plus")
+                    .resizable().aspectRatio(contentMode: .fit)
+                    .frame(width: 16, height: 16)
+            }
+            .buttonStyle(FCPToolbarButtonStyle(isOn: .constant(false)))
+        }
+        ToolbarItemGroup(placement: .primaryAction) {
+            PaneToggleButton(isOn: $showSidebar, iconName: "sidebar.right", help: "Sidebar")
+        }
+    }
+    .toolbarRole(.editor)
+```
+
+**Why this works:** `.hiddenTitleBar` removes the title bar but keeps `NSToolbar` functional.
+The toolbar items maintain proper safe area / content layout. `FCPToolbarButtonStyle` renders
+flat because the system doesn't enforce capsule chrome without a visible title bar.
+
+**⚠️ Important:** Do NOT remove the `.toolbar {}` items. SwiftUI uses them for content area
+safe area calculation. Removing all items (or replacing with empty/invisible items) causes
+`GeometryReader` in the content area to report incorrect sizes — canvases render blank.
+
+#### Approach B: Titlebar Injection (advanced — for edge cases only)
+
+> Use this ONLY if Approach A doesn't suppress chrome on your target SDK.
+> This approach bypasses `NSToolbar` entirely by injecting an `NSHostingView`
+> directly into the titlebar's NSView hierarchy.
 
 #### Step 1: WindowToolbarConfigurator (NSViewRepresentable)
 
@@ -281,9 +340,25 @@ WindowGroup { ContentView() /* ... */ }
 | `.buttonStyle(.borderless)` wrapper | Suppressed chrome for `.primaryAction` only, not `.navigation` |
 | `ToolbarChromeStripper` (walk NSView tree, set `isBordered = false`) | SwiftUI uses hosting views, not raw NSButtons — didn't reach the right layer |
 | `NSTitlebarAccessoryViewController` with `.bottom` | Works but adds a **separate row** below traffic lights |
-| **Direct titlebar injection** (this pattern) | Buttons on **same row** as traffic lights, zero chrome |
+| Titlebar injection + `.windowStyle(.automatic)` | **BREAKS LAYOUT** — GeometryReader gets zero size, canvas goes blank |
+| **Direct titlebar injection + `.hiddenTitleBar`** (this pattern) | Buttons on **same row** as traffic lights, zero chrome |
 
 **Key:** `.toolbarRole(.editor)` on the content view still matters — it prevents back/forward navigation chrome and sets the correct titlebar height.
+
+#### ⚠️ Critical: Keep real toolbar items
+
+**Never remove `.toolbar {}` items** when using titlebar injection. SwiftUI uses toolbar items
+for content area safe area calculation. Removing them causes `GeometryReader` to report
+zero/incorrect sizes — canvases render blank.
+
+**If using injection (Approach B):**
+- `.hiddenTitleBar` is required — injection does NOT work with `.automatic`
+- `@Environment` values are NOT available in the injected `NSHostingView` — pass `@Observable` objects as direct properties
+- The injected hosting view is a separate SwiftUI view hierarchy
+
+**Prefer Approach A** (`.hiddenTitleBar` + regular `.toolbar {}` + `FCPToolbarButtonStyle`) — it's simpler, proven in Penumbra, and avoids the injection pitfalls entirely.
+
+*Learned from CropBatch (2026-04-05): attempted titlebar injection under `.automatic` without toolbar items, broke canvas for an entire session. Penumbra investigation revealed it uses Approach A, not injection.*
 
 ---
 
@@ -373,12 +448,14 @@ struct InfoStripView: View {
 
 When migrating an existing app to the App Shell Standard:
 
+- [ ] **Add `UIDesignRequiresCompatibility = true` to Info.plist** (nothing else works without this)
 - [ ] Replace `NavigationSplitView` with `HSplitView`
 - [ ] Add `.windowStyle(.hiddenTitleBar)` to the `WindowGroup` scene
 - [ ] Add `.preferredColorScheme(.dark)`
 - [ ] Add `.toolbarRole(.editor)` to the main view
-- [ ] Replace `.toolbar {}` buttons with titlebar injection (`WindowToolbarConfigurator` + `TitlebarToolbarContent`)
-- [ ] Keep empty `.toolbar {}` + `.toolbarRole(.editor)` for titlebar height
+- [ ] Apply `FCPToolbarButtonStyle` to all `.toolbar {}` buttons
+- [ ] Wrap toolbar button groups in `HStack` with `.buttonStyle(.borderless)` on the container
+- [ ] Keep real `.toolbar {}` items — do NOT remove them or use titlebar injection
 - [ ] Add `Theme` struct, replace hardcoded colors
 - [ ] Add `.autosaveSplitView(named:)` to split views
 - [ ] Convert pane visibility to `@AppStorage` bools toggled from toolbar
