@@ -104,7 +104,15 @@
       "Read(//Users/sim/.claude/**)",
       "Bash(cp -r /tmp/autoresearch/skills/autoresearch ~/.claude/skills/autoresearch)",
       "Bash(cp -r /tmp/autoresearch/skills/autoresearch-discover ~/.claude/skills/autoresearch-discover)",
-      "Bash(~/.claude/hooks/autoresearch-suggest.sh)"
+      "Bash(~/.claude/hooks/autoresearch-suggest.sh)",
+      "Bash(gh search:*)",
+      "Bash(npm search:*)",
+      "Bash(pip3 search:*)",
+      "Bash(pip3 index:*)",
+      "Bash(pip3 show:*)",
+      "WebFetch(domain:www.elgato.com)",
+      "Bash(npm --version)",
+      "Bash(npm view:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
