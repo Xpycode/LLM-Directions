@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-04-04**
+**Last updated: 2026-04-15**
 
 ---
 
@@ -55,6 +55,9 @@ Each pattern lives in `docs/cookbook/`. Read the relevant file when a pattern is
 | 24 | [24-web-dev-patterns.md](docs/cookbook/24-web-dev-patterns.md) | Jinja2 data injection, ES module DI, shared state module |
 | 25 | [25-extension-file-splitting.md](docs/cookbook/25-extension-file-splitting.md) | Split large files via extensions, access level fixes, strategy by file type |
 | 26 | [26-launchd-node-service.md](docs/cookbook/26-launchd-node-service.md) | KeepAlive server, scheduled tasks, install/uninstall, Apple Silicon PATH gotcha |
+| 27 | [27-timelineview-elapsed.md](docs/cookbook/27-timelineview-elapsed.md) | TimelineView(.periodic) for elapsed/remaining readouts, replaces Timer + objectWillChange |
+| 28 | [28-commandgroup-observation.md](docs/cookbook/28-commandgroup-observation.md) | Commands struct with @ObservedObject — makes menu items update from @Published state |
+| 29 | [29-disk-space-preflight.md](docs/cookbook/29-disk-space-preflight.md) | URLResourceKey volume APIs, preflight check, same-volume detection, named-volume errors |
 
 ---
 
