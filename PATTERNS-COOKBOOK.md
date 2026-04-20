@@ -67,6 +67,7 @@ Each pattern lives in `docs/cookbook/`. Read the relevant file when a pattern is
 | 36 | [36-fast-preview-heavy-commit.md](docs/cookbook/36-fast-preview-heavy-commit.md) | Split render API into `preview(…) throws -> NSImage` (in-memory, sync, ~15 ms) vs `render(…) async throws -> Data` (full pipeline with subprocess, ~300 ms). Synchronous `.onChange` wiring for live slider feedback; no Task/cancel gymnastics. |
 | 37 | [37-effective-source-fallback.md](docs/cookbook/37-effective-source-fallback.md) | `pending ?? cached` editor binding so settings can be tweaked on a previously-saved asset without re-importing. Includes dirty-detection for the commit gate and self-healing for disappeared cache files. |
 | 38 | [38-destructive-copy-guard.md](docs/cookbook/38-destructive-copy-guard.md) | `sourceURL.standardizedFileURL == destURL.standardizedFileURL` early-return before `removeItem → copyItem` — avoids deleting the file you're about to read when `src == dest`. |
+| 39 | [39-design-tokens.md](docs/cookbook/39-design-tokens.md) | **App-wide visual tokens** — typography scale (semantic, modular ratio), 8pt spacing grid with internal≤external rule, SF Symbol weight/scale conventions, corner radii, CSS `clamp()` fluid translation for web projects |
 
 ---
 
