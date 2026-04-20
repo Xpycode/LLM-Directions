@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-04-15**
+**Last updated: 2026-04-20**
 
 ---
 
@@ -58,6 +58,15 @@ Each pattern lives in `docs/cookbook/`. Read the relevant file when a pattern is
 | 27 | [27-timelineview-elapsed.md](docs/cookbook/27-timelineview-elapsed.md) | TimelineView(.periodic) for elapsed/remaining readouts, replaces Timer + objectWillChange |
 | 28 | [28-commandgroup-observation.md](docs/cookbook/28-commandgroup-observation.md) | Commands struct with @ObservedObject — makes menu items update from @Published state |
 | 29 | [29-disk-space-preflight.md](docs/cookbook/29-disk-space-preflight.md) | URLResourceKey volume APIs, preflight check, same-volume detection, named-volume errors |
+| 30 | [30-volume-custom-icons.md](docs/cookbook/30-volume-custom-icons.md) | **Two-step write** (`.VolumeIcon.icns` + `com.apple.FinderInfo` xattr + `utimes`) because `NSWorkspace.setIcon` is broken on volume roots since macOS 13.1 |
+| 31 | [31-volume-enumeration.md](docs/cookbook/31-volume-enumeration.md) | "External drive" heuristic — why `volumeIsRemovableKey` is misleading; correct filter is `!isInternal && !isRootFileSystem && !isLikelyDiskImage` |
+| 32 | [32-nsworkspace-asyncstream.md](docs/cookbook/32-nsworkspace-asyncstream.md) | Bridge `NSWorkspace` mount/unmount notifications to `AsyncStream<MountEvent>` inside an actor; observer ownership + termination cleanup |
+| 33 | [33-managed-developer-id.md](docs/cookbook/33-managed-developer-id.md) | Xcode Archive → Direct Distribution with a server-side managed Developer ID cert; CLI `notarytool` pipeline as an appendix |
+| 34 | [34-xcodeproj-clone-rename.md](docs/cookbook/34-xcodeproj-clone-rename.md) | Clone an existing `.xcodeproj` when a new app needs the same toolchain bundling / entitlements / build phases — `cp -R` + sed recipe with macOS sed, display-name-with-spaces, and xcuserdata gotchas |
+| 35 | [35-asyncstream-bounded-fanout.md](docs/cookbook/35-asyncstream-bounded-fanout.md) | `withTaskGroup` drain-and-refill pattern for streaming results from thousands of async operations with a bounded concurrency cap; why the naive `for url in files { group.addTask }` version is wrong |
+| 36 | [36-fast-preview-heavy-commit.md](docs/cookbook/36-fast-preview-heavy-commit.md) | Split render API into `preview(…) throws -> NSImage` (in-memory, sync, ~15 ms) vs `render(…) async throws -> Data` (full pipeline with subprocess, ~300 ms). Synchronous `.onChange` wiring for live slider feedback; no Task/cancel gymnastics. |
+| 37 | [37-effective-source-fallback.md](docs/cookbook/37-effective-source-fallback.md) | `pending ?? cached` editor binding so settings can be tweaked on a previously-saved asset without re-importing. Includes dirty-detection for the commit gate and self-healing for disappeared cache files. |
+| 38 | [38-destructive-copy-guard.md](docs/cookbook/38-destructive-copy-guard.md) | `sourceURL.standardizedFileURL == destURL.standardizedFileURL` early-return before `removeItem → copyItem` — avoids deleting the file you're about to read when `src == dest`. |
 
 ---
 
@@ -143,3 +152,7 @@ Each pattern lives in `docs/cookbook/`. Read the relevant file when a pattern is
 | launchd KeepAlive server | X-STATUS | Node.js server auto-start + auto-restart |
 | launchd scheduled task | X-STATUS | Daily data collection (cron replacement) |
 | Install/uninstall scripts | X-STATUS | Idempotent launchd agent management |
+| **Volume custom icons (two-step write)** | **Sigil** | **`.VolumeIcon.icns` + FinderInfo xattr** |
+| **VolumeEnumerator + external heuristic** | **Sigil** | **`!isInternal && !DMG` filter** |
+| **NSWorkspace → AsyncStream bridge** | **Sigil** | **Mount/unmount events via structured concurrency** |
+| **Managed Developer ID GUI workflow** | **Sigil** | **Archive → Direct Distribution, no local cert** |
