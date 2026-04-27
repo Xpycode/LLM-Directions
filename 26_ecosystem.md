@@ -220,6 +220,17 @@ IDE-like symbol-level code navigation and editing across 30+ languages. Reads sp
 
 **Best for:** Large codebase navigation, precise symbol-level edits, finding all references.
 
+### Codebase Memory (Structural Code Knowledge Graph)
+Builds a SQLite knowledge graph of your codebase using tree-sitter parsing — functions, classes, imports, call relationships. Lets Claude answer "who calls X?" / "find all routes" / "trace this call path" with structural queries instead of grep over source.
+
+**Key tools:** `index_repository`, `search_graph`, `get_code_snippet`, `trace_call_path`, `find_dead_code`
+
+**Config:** `~/.claude.json` → `~/.local/bin/codebase-memory-mcp`
+
+**Best for:** Large codebases, refactoring impact analysis, dead-code detection.
+
+**Caution:** Has a `$HOME` / umbrella-folder footgun — see `27_mcp-gotchas.md` and install the PreToolUse guard at `hooks/mcp-guards/codebase-memory-guard.sh` before relying on it.
+
 ### Vestige (Long-Term Memory)
 Persistent cognitive memory system using FSRS-6 spaced repetition. Remembers patterns, decisions, and context across sessions with human-like decay.
 

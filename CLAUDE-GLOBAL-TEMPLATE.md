@@ -291,6 +291,15 @@ Skills load on-demand only when invoked. CLAUDE.md loads every session.
 
 See `docs/23_claude-code-cli.md` for full skills documentation.
 
+### MCP Hygiene
+
+Never launch Claude Code from `$HOME` or umbrella project dirs (e.g. `~/Code/`, `~/Code/group/`)
+while `codebase-memory-mcp` is installed — its auto-index skills will walk the entire tree
+into a multi-GB SQLite DB and burn hundreds of % CPU. A PreToolUse guard at
+`~/.claude/hooks/codebase-memory-guard.sh` blocks this; see Directions docs `27_mcp-gotchas.md`
+and `hooks/mcp-guards/` for the templated guard. Same caution applies to Serena's
+`--project-from-cwd`.
+
 ### Troubleshooting Quick Reference
 
 When something goes wrong:
