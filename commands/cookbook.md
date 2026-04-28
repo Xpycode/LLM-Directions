@@ -10,7 +10,7 @@ Manage the reusable code patterns cookbook.
 
 ### `/cookbook` or `/cookbook update`
 
-Full rescan of XcodeProjects to find new patterns.
+Full rescan of ProgrammingProjects to find new patterns.
 
 **Process:**
 1. Scan the user's projects directory for Swift files containing:

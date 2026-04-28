@@ -562,7 +562,7 @@ Before shipping, verify:
 
 For testing complete user flows via accessibility APIs without writing XCUITest code.
 
-**Location:** `/Users/sim/XcodeProjects/9-TESTING/AppProbe/`
+**Location:** `/Users/sim/ProgrammingProjects/9-TESTING/AppProbe/`
 
 **Quick start:**
 ```bash

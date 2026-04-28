@@ -6,7 +6,7 @@ Pull latest Directions from GitHub and sync to both global config and current pr
 
 Check these locations in order:
 1. The path in `~/.claude/CLAUDE.md` under "Local master:"
-2. Default: `/Users/sim/XcodeProjects/0-DIRECTIONS/__DIRECTIONS`
+2. Default: `/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS`
 
 ## Step 2: Pull Latest
 

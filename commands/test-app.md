@@ -12,13 +12,13 @@ Determine:
 - **Project path** (source code location)
 - **Xcode scheme** (for building if needed)
 
-If the user gives a project name, search `/Users/sim/XcodeProjects/1-macOS/` for it.
+If the user gives a project name, search `/Users/sim/ProgrammingProjects/1-macOS/` for it.
 
 ## Step 2: Build the App (if needed)
 
 Check if the app is already running:
 ```bash
-swift run --package-path /Users/sim/XcodeProjects/9-TESTING/AppProbe appprobe check
+swift run --package-path /Users/sim/ProgrammingProjects/9-TESTING/AppProbe appprobe check
 ```
 
 If the app isn't running, offer to build and launch it:
@@ -33,7 +33,7 @@ Wait for it to launch, then proceed.
 
 Run discovery to inspect the running app's accessibility tree:
 ```bash
-swift run --package-path /Users/sim/XcodeProjects/9-TESTING/AppProbe appprobe discover <bundle-id> --output /tmp/appprobe-discovery.json
+swift run --package-path /Users/sim/ProgrammingProjects/9-TESTING/AppProbe appprobe discover <bundle-id> --output /tmp/appprobe-discovery.json
 ```
 
 Read the discovery JSON to understand what UI elements exist: windows, buttons, menus, text fields, etc.
@@ -113,7 +113,7 @@ tests:
 - Use `titleContains` for dynamic titles
 - Add `description` to each step explaining what it verifies
 
-Save the test plan to: `/Users/sim/XcodeProjects/9-TESTING/AppProbe/plans/<app-name>.yaml`
+Save the test plan to: `/Users/sim/ProgrammingProjects/9-TESTING/AppProbe/plans/<app-name>.yaml`
 
 ## Step 6: Ask Before Running
 
@@ -132,7 +132,7 @@ Ask: "Ready to run? Options:"
 
 Run the chosen command:
 ```bash
-swift run --package-path /Users/sim/XcodeProjects/9-TESTING/AppProbe appprobe run plans/<app-name>.yaml --slow --overlay --verbose --output ./appprobe-results/<app-name>
+swift run --package-path /Users/sim/ProgrammingProjects/9-TESTING/AppProbe appprobe run plans/<app-name>.yaml --slow --overlay --verbose --output ./appprobe-results/<app-name>
 ```
 
 ## Step 8: Review Results
