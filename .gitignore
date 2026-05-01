@@ -19,6 +19,9 @@ sessions/*.md
 # Embedding cache
 .fastembed_cache/
 
+# Serena tool cache
+.serena/
+
 # Skills managed externally by npx skills
 .claude/skills/
 .agents/

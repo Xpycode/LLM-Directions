@@ -87,7 +87,7 @@ Set these as build settings (prefixed `INFOPLIST_KEY_`) rather than editing an I
 3. Confirm `CODE_SIGN_STYLE = Automatic`
 4. Enable `ENABLE_HARDENED_RUNTIME` and (if App Store) `ENABLE_APP_SANDBOX`
 5. Set `INFOPLIST_KEY_NSHumanReadableCopyright` and the appropriate `LSApplicationCategoryType`
-6. Apply the **App Shell Standard** (`docs/cookbook/00-app-shell.md`)
+6. Apply the **App Shell Standard** (`cookbook/00-app-shell.md`)
 7. Commit the project template before writing feature code
 
 ---

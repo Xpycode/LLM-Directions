@@ -1,6 +1,24 @@
 ## App Shell Standard
 
-**Source:** `1-macOS/Penumbra/` (reference implementation)
+**Source:** `1-macOS/Penumbra/01_Project/Penumbra/` — the live reference implementation.
+Key files: `App/PenumbraApp.swift`, `Views/ContentView.swift`, `Views/ToolbarButtonStyles.swift`, `Utils/ThemeManager.swift`, `Utils/View+SplitViewAutosave.swift`.
+
+> **Ignore archived copies.** Penumbra has been cloned into at least six historical locations
+> (`XcodeArchive/VIDEO Apps/Penumbra/`, `VIME/01_Project/Archive/Penumbra/`,
+> `medialibrary/01_Project/Reference/Penumbra/`, `VideoMetadataEditor/02_Design/Reference/Penumbra/`,
+> `TimeCodeEditor/old-projects/Penumbra/`, `XcodeArchive/VIDEO Apps/VideoMetadataEditor/AppsForReference/Penumbra/`).
+> These are snapshots and drift from the live project. Always read from `1-macOS/Penumbra/01_Project/Penumbra/`.
+
+### Architecture note — it's SwiftUI, not AppKit
+
+Penumbra is **SwiftUI-first with surgical AppKit interop** via `NSViewRepresentable` in exactly
+5 files: `KeyInputView`, `ShortcutRecorder`, `PlayerViewController`, `Views/MouseTrackingView`,
+and `Utils/View+SplitViewAutosave`. Everything else — app entry, content view, toolbar styles,
+theme — is pure SwiftUI. What makes Penumbra canonical is the *discipline* of the SwiftUI shell
+(FCPToolbarButtonStyle + hiddenTitleBar + toolbarRole(.editor) + dark Theme), not the AppKit
+drop-ins. Drop to AppKit only when a concrete capability forces it (raw NSEvent, AVPlayerView,
+NSTrackingArea, `NSSplitView.autosaveName`). See [39-design-tokens.md](39-design-tokens.md) for
+the full rationale.
 
 The standard app shell for all macOS apps. Avoids macOS Tahoe's round capsule buttons, frosted sidebars, and default system chrome. Every new app starts with this. Every existing app migrates to this.
 
@@ -23,6 +41,79 @@ The system falls back to compatibility mode and forces pill/capsule chrome on al
 `FCPToolbarButtonStyle` + HStack `.borderless` wrapper — all correct — but still got
 pill chrome. Adding `UIDesignRequiresCompatibility = true` to Info.plist fixed it instantly.
 Penumbra had this key all along, which is why its flat buttons worked.*
+
+---
+
+### 0.1. How to actually get the key into the plist (xcodegen)
+
+**Gotcha:** setting `INFOPLIST_KEY_UIDesignRequiresCompatibility: YES` under
+`GENERATE_INFOPLIST_FILE = YES` **silently drops the key on macOS.** Xcode's
+plist generator only honors Apple's whitelist of `INFOPLIST_KEY_*` names, and
+this one isn't on the macOS list. The build succeeds, the setting appears in
+`xcodebuild -showBuildSettings`, but the final `.app`'s `Info.plist` has no
+`UIDesignRequiresCompatibility` — and toolbar buttons render as capsules again.
+
+Verify with:
+
+```bash
+/usr/libexec/PlistBuddy -c "Print :UIDesignRequiresCompatibility" \
+  "$(xcodebuild -scheme YourApp -showBuildSettings | grep BUILT_PRODUCTS_DIR | awk '{print $3}')/YourApp.app/Contents/Info.plist"
+# Expected: true
+# Actual (with INFOPLIST_KEY_*): Entry … Does Not Exist
+```
+
+**Fix:** use xcodegen's `info:` mechanism to generate an explicit `Info.plist`
+instead of relying on `GENERATE_INFOPLIST_FILE`. Anything under
+`info.properties` lands verbatim, no whitelist filtering:
+
+```yaml
+targets:
+  YourApp:
+    type: application
+    platform: macOS
+    sources:
+      - path: YourApp
+    info:
+      path: YourApp/Info.plist
+      properties:
+        CFBundleName: $(PRODUCT_NAME)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHumanReadableCopyright: "© 2026 you"
+        NSPhotoLibraryUsageDescription: "Reason string"   # only if using PhotoKit
+        UIDesignRequiresCompatibility: true               # <-- non-whitelisted key lands here
+        NSMainStoryboardFile: ""                          # empty — SwiftUI-only app
+        NSPrincipalClass: NSApplication
+        NSHighResolutionCapable: true
+```
+
+Also gitignore the generated plist (`01_Project/YourApp/Info.plist`) alongside
+the `.xcodeproj` — it's derived from `project.yml`.
+
+**Test target caveat:** unit-test targets don't warrant a custom `info:`
+block. If your base settings no longer carry `GENERATE_INFOPLIST_FILE = YES`,
+set it per test target:
+
+```yaml
+  YourAppTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [YourAppTests]
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: YourApp
+```
+
+*Discovered 2026-04-19 during Mural M0 bootstrap: the initial build passed
+every `xcodebuild -showBuildSettings` check but the flat-toolbar-button
+render regressed — `PlistBuddy` on the built app revealed
+`UIDesignRequiresCompatibility` missing from the final plist despite being
+set in build settings. Switching to `info:` fixed it.*
 
 ---
 
@@ -96,8 +187,8 @@ class ThemeManager {
 }
 
 struct Theme {
-    static var primaryBackground: Color { Color(white: 0.10) }
-    static var secondaryBackground: Color { Color(white: 0.15) }
+    static var primaryBackground: Color { Color(white: 0.10) }   // Graphite — outer chrome
+    static var secondaryBackground: Color { Color(white: 0.15) } // Charcoal — main content
     static var accent: Color { ThemeManager.shared.accentColor }
     static var primaryText: Color { .white }
     static var secondaryText: Color { .white.opacity(0.65) }
@@ -105,6 +196,41 @@ struct Theme {
 ```
 
 **Usage:** `Theme.primaryBackground`, `Theme.accent`, `Theme.secondaryText` — never `Color.gray` or `.secondary` for backgrounds.
+
+### 2.1. Theme is a floor, not a ceiling — extending for domain needs
+
+The five tokens above are the **mandatory floor**. Every macOS app must expose exactly those
+names with exactly those values. An app that changes `primaryBackground` to `0.12` "because it
+looks better" breaks cross-app visual continuity and will be rejected.
+
+Apps **may** add additional tokens when the domain legitimately requires them. Two sanctioned
+extension patterns, both drawn from live apps:
+
+```swift
+// Sigil (CVI/01_Project/Sigil/App/Theme.swift) — volume browser needs a 3rd surface tier
+// for elevated cards and drop-target affordances. Legitimate extension.
+extension Theme {
+    static var elevatedBackground: Color { Color(white: 0.20) }  // card on charcoal
+    static var separator: Color { Color.white.opacity(0.08) }    // fixed (non-system) separator
+    static var tertiaryText: Color { .white.opacity(0.40) }      // disabled/hint text
+}
+```
+
+**Rule — additive, never subtractive:**
+- New tokens may be added with darker-than-floor or lighter-than-elevated values (never redefine floor values).
+- New tokens must be named by *role* (`elevatedBackground`, `destructiveAccent`), never by *value* (`gray20`).
+- Extensions live in the app's own `Theme.swift`, not in a forked `00-app-shell.md`. If three or more apps independently add the same token, promote it into this section (after review).
+
+**Exception tracking:** known sanctioned extensions and who uses them:
+
+| Extension | Apps | Why |
+|---|---|---|
+| `elevatedBackground (0.20)` | Sigil (12 uses across 4 files) | 3rd surface tier for volume cards and drop zones |
+| `separator (white@0.08)` | Sigil | Fixed separator for cross-platform consistency (does not respect system accessibility) |
+| `tertiaryText (white@0.40)` | Sigil | Disabled-state hint text |
+
+If one of these fits your app, copy Sigil's `extension Theme` block verbatim — do not invent
+a near-identical variant with a different opacity.
 
 ---
 
@@ -401,6 +527,62 @@ var body: some View {
 @AppStorage("showSidebar") private var showSidebar: Bool = true
 @AppStorage("showInspector") private var showInspector: Bool = true
 ```
+
+### 5.1. `.autosaveSplitView(named:)` helper — the implementation
+
+SwiftUI's `HSplitView` (and `VSplitView`) has no built-in autosave for
+divider positions. The helper referenced above walks up the SwiftUI→AppKit
+view hierarchy at runtime to find the parent `NSSplitView` and sets its
+`autosaveName`. AppKit then persists divider position across launches in
+UserDefaults (`NSSplitView Subview Frames <name>`) automatically.
+
+`Utils/View+SplitViewAutosave.swift` (drop-in, copy verbatim):
+
+```swift
+import SwiftUI
+import AppKit
+
+private struct SplitViewAutosaveHelper: NSViewRepresentable {
+    let autosaveName: String
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        // Defer one run loop tick so the view is in the hierarchy.
+        DispatchQueue.main.async {
+            var parent = view.superview
+            while parent != nil {
+                if let splitView = parent as? NSSplitView {
+                    splitView.autosaveName = autosaveName
+                    return
+                }
+                parent = parent?.superview
+            }
+            // Hierarchy walker fell off — split view may have moved.
+            print("Warning: SplitViewAutosave couldn't find NSSplitView for '\(autosaveName)'.")
+        }
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {}
+}
+
+extension View {
+    /// Enables divider-position autosave for an enclosing SwiftUI
+    /// `HSplitView` / `VSplitView`. Walks up the view hierarchy to find
+    /// the wrapped `NSSplitView` and sets its `autosaveName`.
+    ///
+    /// - Parameter name: unique key per split view per window.
+    func autosaveSplitView(named name: String) -> some View {
+        self.background(SplitViewAutosaveHelper(autosaveName: name))
+    }
+}
+```
+
+- Each `HSplitView` instance needs its own unique name (e.g. `"MainSplitView"`,
+  `"InspectorSplit"`).
+- Works with nested splits — each helper walks up only to the nearest
+  `NSSplitView`.
+- Source: `Penumbra/01_Project/Penumbra/Penumbra/Utils/View+SplitViewAutosave.swift`.
 
 ---
 
