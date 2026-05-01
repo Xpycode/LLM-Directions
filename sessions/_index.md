@@ -10,6 +10,7 @@ LLM-Directions - Documentation system for AI-assisted development
 
 | Date | Focus | Outcome | Log |
 |------|-------|---------|-----|
+| 2026-05-01 | Flatten master structure to fix consumer-bootstrap friction | Moved `docs/cookbook/` → `cookbook/` (62 entries, links rewritten); consolidated drifted `sessions/` folders; replaced `git clone … docs` bootstrap with rsync-with-excludes (no embedded `.git`, no tool-cache bloat); shipped `mcp-templates/`; added cookbook entries 40–61; 2 commits `8b495e5` + `57f2e9a` pushed to `origin/main`; patched BatchTextExtractorPlus inline | [log](2026-05-01.md) |
 | 2026-04-28 | Diagnose & prevent codebase-memory-mcp CPU runaway | Killed PID 22328 (837% CPU, 21 GB RAM), freed 5.6 GB by deleting 3 umbrella DBs; wrote PreToolUse guard hook (concrete + templated); shipped `27_mcp-gotchas.md`, `hooks/mcp-guards/`, ecosystem entry, `CLAUDE-GLOBAL-TEMPLATE.md` MCP Hygiene subsection — committed `bf99e2f`, unpushed | [log](2026-04-28.md) |
 | 2026-04-21 | Add design-tokens cookbook + correct Penumbra reference model | Created `39-design-tokens.md` (typography/spacing/icons/radii grounded in live Penumbra); added canonical-path + SwiftUI-not-AppKit note to `00-app-shell.md`; promoted Sigil's Theme extensions to sanctioned policy; restructured memory into per-file index | [log](2026-04-21.md) |
 | 2026-04-19 | Persist Apple identity + signing conventions | Saved Team ID FDMSRXXN73 + canonical bundle pattern `com.lucesumbrarum.<AppName>` to memory; scanned 8 macOS pbxprojs; added `14_project-identity.md` | [log](2026-04-19.md) |

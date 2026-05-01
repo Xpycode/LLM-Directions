@@ -13,7 +13,7 @@
 - **Phase:** implementation
 - **Focus:** Per-project static website generator — auto-generated from Directions docs, feeds into master aggregator
 - **Status:** ready
-- **Last updated:** 2026-04-28
+- **Last updated:** 2026-05-01
 
 ## Funnel Progress (Ralph-style)
 <!-- The 3-phase funnel that ships software -->
@@ -55,6 +55,7 @@
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
+- 2026-05-01: Flattened master — cookbook moved to root (`cookbook/` not `docs/cookbook/`); bootstrap is now rsync-with-excludes (no embedded `.git`, no tool-cache bloat). Eliminates `docs/docs/cookbook/` nesting in consumer projects. Cookbook at 62 entries (added 40–61).
 - 2026-04-28: Adopted MCP-hygiene pattern — PreToolUse guard on `index_repository` + new `hooks/mcp-guards/` dir; first instance documents codebase-memory-mcp's umbrella-cwd footgun in `27_mcp-gotchas.md`
 - 2026-03-24: Designing per-project static site generator — bottom-up complement to ProjectOverview aggregator
 - 2026-02-27: Wired `13_folder-structure.md` into setup flow — template, base, and setup command now auto-create numbered folders
