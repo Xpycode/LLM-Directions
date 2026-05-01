@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "vestige": {
+      "type": "stdio",
+      "command": "/Users/sim/.local/bin/vestige-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}

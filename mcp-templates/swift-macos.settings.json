@@ -1,0 +1,12 @@
+{
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "swiftlens",
+    "XcodeBuildMCP",
+    "sosumi",
+    "apple-docs",
+    "apple-hig",
+    "sequential-thinking",
+    "vestige"
+  ]
+}

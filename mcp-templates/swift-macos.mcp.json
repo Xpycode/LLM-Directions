@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "swiftlens": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["swiftlens"],
+      "env": {}
+    },
+    "XcodeBuildMCP": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "xcodebuildmcp"],
+      "env": {}
+    },
+    "sosumi": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://sosumi.ai/mcp"],
+      "env": {}
+    },
+    "apple-docs": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "apple-doc-mcp-server"],
+      "env": {}
+    },
+    "apple-hig": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "apple-dev-mcp"],
+      "env": {}
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "env": {}
+    },
+    "vestige": {
+      "type": "stdio",
+      "command": "/Users/sim/.local/bin/vestige-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}

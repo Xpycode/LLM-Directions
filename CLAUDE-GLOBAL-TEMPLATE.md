@@ -117,14 +117,24 @@ Then:
 If yes, set up Directions by **executing this command** (do not create files manually):
 
 ```bash
-# Primary: Copy from local master (includes all reference guides)
-mkdir -p docs && cp -r /path/to/LLM-Directions/* ./docs/
+# Primary: Copy from local master (rsync skips tool caches)
+mkdir -p docs && rsync -a \
+  --exclude='.git' \
+  --exclude='.serena' \
+  --exclude='.fastembed_cache' \
+  --exclude='.archive' \
+  /path/to/LLM-Directions/ ./docs/
 
-# Fallback if local not available: Clone from GitHub
-# git clone https://github.com/Xpycode/LLM-Directions.git docs
+# Fallback if local not available: clone, then strip the inner .git
+# git clone --depth 1 https://github.com/Xpycode/LLM-Directions.git /tmp/_directions \
+#   && rsync -a --exclude='.git' /tmp/_directions/ ./docs/ \
+#   && rm -rf /tmp/_directions
 ```
 
 **Important:** Always copy ALL files from the source. Do not manually create a subset of files.
+
+**Don't** `git clone … docs` directly — that nests a live `.git` inside your repo and trips
+"embedded git repository" warnings on every commit.
 
 Then read `docs/00_base.md` and run the full discovery interview.
 

@@ -1,0 +1,10 @@
+{
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "chrome-devtools",
+    "magic-ui",
+    "figma",
+    "sequential-thinking",
+    "vestige"
+  ]
+}

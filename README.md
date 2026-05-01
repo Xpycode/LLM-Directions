@@ -41,7 +41,20 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 ### For New Projects
 
-1. Copy this folder to your project as `/docs`
+1. Copy this folder into your project as `/docs` (excluding `.git` and tool caches):
+   ```bash
+   # From a local checkout
+   mkdir -p docs && rsync -a \
+     --exclude='.git' --exclude='.serena' \
+     --exclude='.fastembed_cache' --exclude='.archive' \
+     /path/to/LLM-Directions/ ./docs/
+
+   # Or, fetch fresh from GitHub without carrying the inner .git
+   git clone --depth 1 https://github.com/Xpycode/LLM-Directions.git /tmp/_directions \
+     && rsync -a --exclude='.git' /tmp/_directions/ ./docs/ \
+     && rm -rf /tmp/_directions
+   ```
+   Don't `git clone … docs` directly — that drops a live `.git` inside your repo.
 2. Add to your `CLAUDE.md`:
    ```markdown
    ## Context
