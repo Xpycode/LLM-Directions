@@ -112,7 +112,19 @@
       "Bash(pip3 show:*)",
       "WebFetch(domain:www.elgato.com)",
       "Bash(npm --version)",
-      "Bash(npm view:*)"
+      "Bash(npm view:*)",
+      "Bash(mdfind -name \"Penumbra\")",
+      "Read(//Users/sim/**)",
+      "Bash(git checkout *)",
+      "Bash(git rm *)",
+      "Bash(git mv *)",
+      "Bash(awk '{print $1}')",
+      "Bash(git merge *)",
+      "Bash(git branch *)",
+      "Bash(mv docs/docs/cookbook docs/cookbook)",
+      "Bash(rm -rf docs/docs/sessions)",
+      "Bash(rmdir docs/docs)",
+      "Bash(git rev-list *)"
     ]
   },
   "enableAllProjectMcpServers": true,
