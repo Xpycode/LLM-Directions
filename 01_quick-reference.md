@@ -390,14 +390,14 @@ Let's start fresh. Here's what I need: [one sentence]
 | TDD workflow | commands/tdd.md |
 | Step-by-step curriculum | Directions-CURRICULUM.md |
 | Claude Code CLI | 23_claude-code-cli.md |
-| Large project context | 50_progressive-context.md |
+| Large project context | 52_context-management.md (Part 1) |
 | SwiftUI bugs | 20_swiftui-gotchas.md |
 | Coordinates | 21_coordinate-systems.md |
 | macOS specifics | 22_macos-platform.md |
 | AI context template | 11_ai-context-template.md |
 | Troubleshooting | 25_troubleshooting.md |
 | Add-on ecosystem | 26_ecosystem.md |
-| Context management | 52_context-management.md |
+| Context management (all aspects) | 52_context-management.md |
 | Pre-release | 30_production-checklist.md |
 | App minimums | 33_app-minimums.md |
 | Doc templates | 12_documentation-templates.md |

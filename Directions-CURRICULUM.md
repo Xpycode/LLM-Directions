@@ -766,7 +766,7 @@ Per-bug: Add to CLAUDE.md if pattern
 
 **Claude Code:**
 - 23_claude-code-cli.md → CLI features, MCP, hooks
-- 50_progressive-context.md → Router pattern, 95% token reduction
+- 52_context-management.md → Router pattern, 95% token reduction (Part 1)
 
 **Technical References:**
 - 20_swiftui-gotchas.md → Common SwiftUI bugs

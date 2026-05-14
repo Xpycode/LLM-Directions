@@ -165,7 +165,6 @@ Already in `01_quick-reference.md` as "Multi-Model Validation" technique.
 
 ## Related
 
-- `52_context-management.md` — Context window management (model choice affects context efficiency)
-- `50_progressive-context.md` — Loading context efficiently
+- `52_context-management.md` — Canonical context guide (architecture, runtime, information design)
 - `AGENTS.md` — Sub-agent patterns
 - `01_quick-reference.md` — Multi-model validation technique
