@@ -124,7 +124,22 @@
       "Bash(mv docs/docs/cookbook docs/cookbook)",
       "Bash(rm -rf docs/docs/sessions)",
       "Bash(rmdir docs/docs)",
-      "Bash(git rev-list *)"
+      "Bash(git rev-list *)",
+      "Bash(xargs basename)",
+      "Bash(xargs -I {} sh -c 'echo \"=== OLDEST ===\" && head -50 {}')",
+      "Bash(sed -n '11,14p' sessions/_index.md)",
+      "Bash(sed -n '21,40p' decisions.md)",
+      "Bash(sed -n '56,63p' PROJECT_STATE.md)",
+      "Bash(bash --version)",
+      "Bash(./scripts/sync-session-index.sh sessions/)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/3-Websites/LUCESUMBRARUM/docs/sessions)",
+      "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/DownKeyCounter/docs/sessions)",
+      "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/AvidMXFPeek/docs/sessions)",
+      "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/BatchTextExtractorPlus/docs/sessions)",
+      "Bash(bash -x ./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/DownKeyCounter/docs/sessions)",
+      "Bash(bash -c ' *)",
+      "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/ePubReader/docs/sessions)"
     ]
   },
   "enableAllProjectMcpServers": true,
