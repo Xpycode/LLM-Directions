@@ -82,6 +82,8 @@ The bash-3.2 constraint matters: macOS ships with bash 3.2 and many users won't 
 - The master's own 9 missing entries are now diagnosed and can be backfilled (added to next-session queue).
 - A new pattern surfaced during testing: 3 consumer projects share the **same 6-entry missing set** (`2026-01-{23,24,29}`, `2026-02-{02,18,27}`). These are master Directions session-log dates that appear to have been seeded into consumer `docs/sessions/` during early bootstrap. The current rsync-with-excludes (2026-05-01) addresses future bootstrap but doesn't clean up the historical contamination. A separate cleanup pass may be warranted, but is **not** what `--fix` is for — those rows would document the master's framework history inside consumer projects, which is misleading. Recommend: delete the spurious files from consumer `docs/sessions/`, then re-run the index check.
 
+**Addendum (2026-05-14, same day):** Performed the contamination cleanup on the 3 named consumers (LUCESUMBRARUM, AvidMXFPeek, ePubReader). Used `cmp -s master/<date>.md consumer/<date>.md` to confirm bit-identity before each `rm` — no local work risked. Total: **23 files removed** (not 18 as initially scoped). The cleanup happened in 2 rounds because round-1's re-audit surfaced additional `2026-04-*` dates that were ALSO identical to master. The revised understanding: bootstrap contamination is "every master session that existed at the consumer's last sync time," not just the 6 dates the original audit flagged. All 3 consumers now `✓ in sync`. The ~7 other consumers with drift in the original audit likely have the same pattern at smaller scale and can be cleaned with the same `cmp -s` + `rm` recipe.
+
 ---
 
 ### 2026-05-14 - Archive `/0-DIRECTIONS/docs/` (second-generation parallel master)
