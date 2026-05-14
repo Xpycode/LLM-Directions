@@ -55,7 +55,8 @@
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
-- 2026-05-14: **M2 partial — wrote `39_libsql-turso-sync.md`** (198 lines). Codifies LEARNING's two libSQL/Turso CDC gotchas: DDL never replicates (need `migrate-remote.ts` helper applied alongside every local sqlite3 migration); raw sqlite3 DML bypasses CDC and creates silent divergence (use `@libsql/client` for DML; sqlite3 for read-only SELECTs only). 30s discipline range adds `39_`.
+- 2026-05-14: **M2 COMPLETE — wrote `38_ios-swiftui-state.md`** (247 lines). Five iOS state patterns from Group Alarms incidents, all rooted in "SwiftUI property wrappers are View-only": `@AppStorage` on non-View classes silently fails; `SettingsResetService` over duplicate declarations; pessimistic disk + optimistic memory; two-gate guard for implicit actions; UUID Equatable trap. Bonus: Xcode 16 synced folders auto-track filesystem. M2 fully shipped (29_, 38_, 39_).
+- 2026-05-14: **M2 partial — wrote `39_libsql-turso-sync.md`** (198 lines). LEARNING's two libSQL/Turso CDC gotchas: DDL never replicates; raw sqlite3 DML bypasses CDC.
 - 2026-05-14: **M2 partial — wrote `29_web-strato-hosting.md`** (230 lines). Codifies Strato hosting gotchas rediscovered across 4 web projects. 20s gotchas range contiguous 20–29.
 - 2026-05-14: **Sync-conflict audit closed.** Resolved final 3 sync-conflicts in AspectRatioUnifier (base = newer Wave-7 version in all 3). Cleaned 2 `.git/refs/.DS_Store` files. **Zero sync-conflicts remain anywhere under `/ProgrammingProjects/`.**
 - 2026-05-14: Merged both `.claude/settings.local.json` conflict pairs via python union (MenuBarPLUS 11 → 24 entries; SFTPmount 7 → 40 entries; both gained 5 MCP servers from the other Mac).
