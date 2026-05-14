@@ -11,7 +11,7 @@
 ## Current Position
 - **Funnel:** build
 - **Phase:** implementation
-- **Focus:** Acting on cross-project audit findings — Q2, Q5, Q5 follow-on, Q4, Q1, and Q3 shipped. The four drift patterns surfaced by the audit now have either a doc, a detection tool, or a prevention command. Remaining: backfill master's own 9 missing index entries, eat our own dogfood on `/session-close`, consolidate 50/52/58 context docs, add web/iOS gotchas docs, commit the lot.
+- **Focus:** Cross-project Directions audit (2026-05-13 → -14) functionally complete: 6 quick-wins shipped, master `_index.md` backfilled (`✓ in sync`), 4 contaminated consumers cleaned (29 files removed), all 12 Syncthing sync-conflicts under `/ProgrammingProjects/` resolved, 2 `.git/refs/.DS_Store` cleaned. `.stignore` rules prevent recurrence. Remaining audit follow-ups (M1 context-doc consolidation, M2 web/iOS gotchas) are bigger items warranting dedicated sessions.
 - **Status:** ready
 - **Last updated:** 2026-05-14
 
@@ -55,7 +55,8 @@
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
-- 2026-05-14: Verified `.git` is already in Syncthing's `.stignore` (`**/.git`, present since Apr 29 — predates known conflicts by 3 days). Cleaned 3 residual `.git/*.sync-conflict-*` files (~13 KB). Both KinoBerlin + PDF2Calendar repos remain healthy after delete. 5 non-`.git` sync-conflicts still remain (`.claude/settings.local.*`, `PROJECT_STATE`, two `.swift` source files) — out of scope for this pass.
+- 2026-05-14: **Audit fully closed.** Resolved final 3 sync-conflicts in AspectRatioUnifier (PROJECT_STATE.md + ContentView.swift + AppState.swift — all same pattern: base = newer Wave-7 version, conflict = pre-Wave-7 snapshot, conflict's 1 "unique" Swift line was an old API signature that would break the build). Cleaned 2 `.git/refs/.DS_Store` files (Apple Desktop Services Store, fsck `badRefName` warnings now resolved). **Zero sync-conflicts remain anywhere under `/ProgrammingProjects/`**; Syncthing ignore rules prevent recurrence.
+- 2026-05-14: Merged both `.claude/settings.local.json` conflict pairs via python union (MenuBarPLUS 11 → 24 entries; SFTPmount 7 → 40 entries; both gained 5 MCP servers from the other Mac).
 - 2026-05-14: Merged the 4 `docs/sessions/` sync-conflict files. All 4 turned out to be the same pattern: base = strict superset; deleted the conflicts with zero information loss. MenuBarPLUS + AspectRatioUnifier now `✓ in sync`.
 - 2026-05-14: Swept other 7 candidate consumers. Only AutoRedact had real contamination (**6 more files removed**); the other 6 had drift but no contamination. Grand total: **29 contamination files cleaned across 4 consumers**. Side-fixed a whitespace bug in `sync-session-index.sh`.
 - 2026-05-14: Cleaned bootstrap contamination from 3 consumers (LUCESUMBRARUM, AvidMXFPeek, ePubReader) — 23 bit-identical-to-master session-log files removed via `cmp -s` + `rm` after dogfooding `sync-session-index.sh` on each. All 3 now `✓ in sync`.
