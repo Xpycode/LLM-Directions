@@ -56,10 +56,10 @@ fi
 
 # --- collect files on disk (basename without .md, sorted) ---
 # Match anything starting with a 4-digit year. Excludes _index.md.
+# NOTE: must handle paths with spaces (e.g. "Group Alarms") — avoid `xargs basename`
+# which whitespace-splits the input. `find -execdir` keeps each path intact.
 files=$(
-  find "$sessions_dir" -maxdepth 1 -type f -name "20*.md" 2>/dev/null \
-    | xargs -n1 basename 2>/dev/null \
-    | sed 's/\.md$//' \
+  find "$sessions_dir" -maxdepth 1 -type f -name "20*.md" -execdir basename {} .md \; 2>/dev/null \
     | sort \
     || true
 )
