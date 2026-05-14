@@ -111,7 +111,7 @@ Reference this doc in project instructions:
 ```markdown
 ## UI Changes
 
-Follow the protocol in `docs/55_ui-changes-protocol.md`:
+Follow the protocol in `docs/36_ui-changes-protocol.md`:
 - Find similar existing element first
 - Trace the wiring pattern
 - Propose location and wait for confirmation

@@ -231,7 +231,7 @@ When adding UI elements (views, controls, toggles, buttons, menus):
 3. **Propose location** — State exact file/line for new element
 4. **Wait for confirmation** — Do not implement until approved
 
-See `docs/55_ui-changes-protocol.md` for full protocol and examples.
+See `docs/36_ui-changes-protocol.md` for full protocol and examples.
 
 ### Xcode Build Behavior
 Before building any app, ALWAYS do a clean build cycle:

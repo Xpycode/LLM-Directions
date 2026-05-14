@@ -66,6 +66,6 @@ Next steps:
 1. Fill in the requirements
 2. Run /decide for any architectural choices
 3. Check 33_app-minimums.md for baseline features to include
-4. If UI feature: check 55_ui-changes-protocol.md for UI constraints
+4. If UI feature: check 36_ui-changes-protocol.md for UI constraints
 5. Update the feature doc as you implement
 ```

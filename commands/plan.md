@@ -32,7 +32,7 @@ Compare the goal against existing code:
 
 **Key question:** "Don't assume not implemented" - check before creating new.
 
-**If the feature involves UI:** Check `55_ui-changes-protocol.md` → UI Constraints Checklist. Ensure no planned tasks use forbidden elements (NavigationSplitView, SwiftUI Button, HSplitView). Use HStack+Divider panes and NSButton wrappers instead.
+**If the feature involves UI:** Check `36_ui-changes-protocol.md` → UI Constraints Checklist. Ensure no planned tasks use forbidden elements (NavigationSplitView, SwiftUI Button, HSplitView). Use HStack+Divider panes and NSButton wrappers instead.
 
 ### Step 3: Create Task List
 
