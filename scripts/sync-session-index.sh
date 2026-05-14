@@ -66,13 +66,14 @@ files=$(
 
 # --- collect entries from _index.md ---
 # Two formats are common across consumer projects:
-#   (a) markdown link form:  `[2026-05-13](2026-05-13.md)` or just `(2026-05-13.md)`
+#   (a) markdown link form:  `[2026-05-13](2026-05-13.md)` or `[2026-05-13](./2026-05-13.md)`
+#                            (the `./` prefix is canonical in some consumers, e.g. Group Alarms)
 #   (b) bare-date row form:  `| 2026-05-13 | Focus | Outcome |`
 # We accept either. (`grep -oE` exits 1 on no matches → guard with `|| true`.)
 entries=$(
   {
-    grep -oE '\(20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*\.md\)' "$index" \
-      | sed 's/^(//;s/\.md)$//' \
+    grep -oE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*\.md\)' "$index" \
+      | sed -E 's|^\((\./)?||;s|\.md\)$||' \
       || true
     grep -oE '^\| *20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*' "$index" \
       | sed 's/^| *//;s/ *$//' \
