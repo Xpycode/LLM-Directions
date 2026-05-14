@@ -139,7 +139,12 @@
       "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/BatchTextExtractorPlus/docs/sessions)",
       "Bash(bash -x ./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/DownKeyCounter/docs/sessions)",
       "Bash(bash -c ' *)",
-      "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/ePubReader/docs/sessions)"
+      "Bash(./scripts/sync-session-index.sh /Users/sim/ProgrammingProjects/1-macOS/ePubReader/docs/sessions)",
+      "Bash(awk '/^\\\\| 20[0-9]{2}-/ { count++; print count\": \"$2 }' sessions/_index.md)",
+      "Bash(./scripts/sync-session-index.sh \"/Users/sim/ProgrammingProjects/2-iOS/Group Alarms/docs/sessions\")",
+      "Bash(sed -n '10,15p' /Users/sim/ProgrammingProjects/1-macOS/MenuBarPLUS/docs/sessions/_index.md)",
+      "Bash(sed -n '10,15p' /Users/sim/ProgrammingProjects/1-macOS/MenuBarPLUS/docs/sessions/_index.sync-conflict-20260509-232258-7R66K7G.md)",
+      "Bash(git status *)"
     ]
   },
   "enableAllProjectMcpServers": true,
