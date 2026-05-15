@@ -11,9 +11,9 @@
 ## Current Position
 - **Funnel:** build
 - **Phase:** implementation
-- **Focus:** Cross-project Directions audit (2026-05-13 → -14) functionally complete: 6 quick-wins shipped, master `_index.md` backfilled (`✓ in sync`), 4 contaminated consumers cleaned (29 files removed), all 12 Syncthing sync-conflicts under `/ProgrammingProjects/` resolved, 2 `.git/refs/.DS_Store` cleaned. `.stignore` rules prevent recurrence. Remaining audit follow-ups (M1 context-doc consolidation, M2 web/iOS gotchas) are bigger items warranting dedicated sessions.
+- **Focus:** Cross-project Directions audit (2026-05-13 → -15) **fully closed**. All 6 quick-wins + M1 (50/52/58 → canonical `52_context-management.md`) + M2 (`29_`/`38_`/`39_`) + post-M1 polish (`13_folder-structure.md` web parity, Pattern A/B + deploy artifacts + setup scripts + migration recipes) + AutoRedact orphan split + 4 consumer-index backfills (MousePlus, SFTPmount, KinoBerlin local-only, Group Alarms script-side fix) + `sync-session-index.sh` `(./)` link-form patch. Audit reports `✓ in sync` across master + 10 consumer projects. **1 housekeeping item remaining**: dogfood `/session-close` on a real session (can't be done retroactively).
 - **Status:** ready
-- **Last updated:** 2026-05-14
+- **Last updated:** 2026-05-15
 
 ## Funnel Progress (Ralph-style)
 <!-- The 3-phase funnel that ships software -->
@@ -55,6 +55,8 @@
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
+- 2026-05-15: **Audit punch list fully closed.** AutoRedact 4-way split (filesystem only; `2026-04-05.md` 177L → 4 per-session files 43/57/44/34L; `.pre-split-backup` retained). Consumer-index backfills shipped: MousePlus `2026-05-01-a` (local), SFTPmount `2026-05-09-spike` (`Xpycode/SFTPmount 1eaf000`), KinoBerlin `2026-01-16-tmdb-ratings-plan` artifact (local-only repo `089137f`). Group Alarms was a false positive — entries already indexed in bullet list via `(./file.md)` form the audit regex rejected. Patched `sync-session-index.sh` (master `5c1ca10`) to accept `(./)` prefix; verified `✓ in sync` across 11 audits (4 backfilled + 6 regression + master self). Side-incident: SFTPmount remote had near-identical spike commits pushed from another Mac (cross-Mac collision pattern recurring); resolved via `git reset --hard` + redo of the unique `_index.md` row.
+- 2026-05-14: **M1 + post-M1 polish.** Consolidated `50_progressive-context.md` + `52_context-management.md` + `58_context-engineering.md` (1042L overlap) into canonical three-part `52_context-management.md` (Architecture + Runtime + Information Design), 1001L; 50/58 became 30-line breadcrumb stubs. Then expanded `13_folder-structure.md` 353L → 711L with Pattern A (no-build/Strato) + Pattern B (framework/Vercel), deploy-artifact tables, setup scripts, migration recipes — closes the web-target gap surfaced in the post-M1 audit.
 - 2026-05-14: **M2 COMPLETE — wrote `38_ios-swiftui-state.md`** (247 lines). Five iOS state patterns from Group Alarms incidents, all rooted in "SwiftUI property wrappers are View-only": `@AppStorage` on non-View classes silently fails; `SettingsResetService` over duplicate declarations; pessimistic disk + optimistic memory; two-gate guard for implicit actions; UUID Equatable trap. Bonus: Xcode 16 synced folders auto-track filesystem. M2 fully shipped (29_, 38_, 39_).
 - 2026-05-14: **M2 partial — wrote `39_libsql-turso-sync.md`** (198 lines). LEARNING's two libSQL/Turso CDC gotchas: DDL never replicates; raw sqlite3 DML bypasses CDC.
 - 2026-05-14: **M2 partial — wrote `29_web-strato-hosting.md`** (230 lines). Codifies Strato hosting gotchas rediscovered across 4 web projects. 20s gotchas range contiguous 20–29.
