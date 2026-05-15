@@ -145,7 +145,10 @@
       "Bash(sed -n '10,15p' /Users/sim/ProgrammingProjects/1-macOS/MenuBarPLUS/docs/sessions/_index.md)",
       "Bash(sed -n '10,15p' /Users/sim/ProgrammingProjects/1-macOS/MenuBarPLUS/docs/sessions/_index.sync-conflict-20260509-232258-7R66K7G.md)",
       "Bash(git status *)",
-      "Bash(./scripts/sync-session-index.sh *)"
+      "Bash(./scripts/sync-session-index.sh *)",
+      "Bash(git show *)",
+      "Read(//tmp/**)",
+      "Bash(git reset *)"
     ]
   },
   "enableAllProjectMcpServers": true,
