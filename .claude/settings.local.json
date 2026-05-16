@@ -148,7 +148,15 @@
       "Bash(./scripts/sync-session-index.sh *)",
       "Bash(git show *)",
       "Read(//tmp/**)",
-      "Bash(git reset *)"
+      "Bash(git reset *)",
+      "Bash(sw_vers)",
+      "Bash(/usr/bin/fsclient)",
+      "Bash(mount -t MyFS)",
+      "Bash(plutil -p /System/Library/ExtensionKit/Extensions/com.apple.fskit.ftp.appex/Contents/Info.plist)",
+      "Bash(codesign -d --entitlements - /System/Library/ExtensionKit/Extensions/com.apple.fskit.ftp.appex)",
+      "Bash(plutil -extract LSMinimumSystemVersion raw /System/Library/ExtensionKit/Extensions/com.apple.fskit.ftp.appex/Contents/Info.plist)",
+      "Bash(log show *)",
+      "Bash(/usr/bin/log show *)"
     ]
   },
   "enableAllProjectMcpServers": true,
