@@ -148,6 +148,7 @@ swift test        # Tests pass?
 | Plugin, add-on, superpowers, MCP server | `26_ecosystem.md` |
 | Skills, SKILL.md, slash command | `23_claude-code-cli.md` (Skills section) |
 | Context full, degrading, compacting | `52_context-management.md` |
+| Cross-Mac, two Macs, "fetch first", "we did this on the other Mac", `.sync-conflict-*` | `37_multi-mac-discipline.md` |
 
 ---
 

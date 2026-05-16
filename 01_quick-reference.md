@@ -398,6 +398,7 @@ Let's start fresh. Here's what I need: [one sentence]
 | Troubleshooting | 25_troubleshooting.md |
 | Add-on ecosystem | 26_ecosystem.md |
 | Context management (all aspects) | 52_context-management.md |
+| Multi-Mac coordination (sync-conflicts, divergent commits, per-machine state) | 37_multi-mac-discipline.md |
 | Pre-release | 30_production-checklist.md |
 | App minimums | 33_app-minimums.md |
 | Doc templates | 12_documentation-templates.md |
