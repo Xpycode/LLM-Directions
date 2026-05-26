@@ -1,334 +1,208 @@
-## AppKit Controls
+## Controls on macOS 26 — Custom SwiftUI styles, not AppKit wrappers
 
-All interactive controls use AppKit wrappers via `NSViewRepresentable` instead of SwiftUI controls. SwiftUI's `.bordered` button style renders as rounded capsules; AppKit's `.rounded` bezel gives the classic ~4pt corner radius. This applies to every control — buttons, toggles, pickers, sliders, etc. See `41_apple-ui.md` → Project UI Conventions for the full mapping table.
+> **Rewritten 2026-05-26.** Earlier versions of this entry recommended `NSViewRepresentable`-wrapped AppKit controls to escape SwiftUI's default Tahoe chrome. **That advice was wrong.** Apple redesigned `NSButtonCell` drawing at the cell level on macOS 26, so AppKit wrappers do NOT escape Liquid Glass either. The correct escape is **custom SwiftUI styles**.
 
-**Convention:** Keep all wrappers in `Views/AppKit/` and reuse across the project.
+### The rule
 
-### AppKitButton (NSButton)
+Two surfaces draw control chrome on macOS 26:
 
-**Replaces:** SwiftUI `Button`
+|  | System paints (→ Tahoe pills) | You paint (→ your shape) |
+|---|---|---|
+| **SwiftUI** | `Button` / `Toggle` / etc. with a **built-in** style (`.automatic`, `.bordered`, `.borderedProminent`, `.plain`, `.link`, default segmented, default slider) | `Button` + custom `ButtonStyle.makeBody(...)`; `Toggle` + custom `ToggleStyle`; `Menu` + custom button label; `TextField(.plain)` + view modifiers; replace `Picker(.segmented)` with `HStack` of styled `Button`s |
+| **AppKit** | `NSButton` / `NSSegmentedControl` / etc. with any built-in `bezelStyle`, **even when wrapped via `NSViewRepresentable`** | Custom `NSButtonCell` subclass overriding `draw(withFrame:in:)` |
 
-```swift
-struct AppKitButton: NSViewRepresentable {
-    let title: String
-    var bezelStyle: NSButton.BezelStyle = .rounded
-    var keyEquivalent: String = ""
-    let action: () -> Void
+Both technologies have an escape — SwiftUI's is one short struct (~20 lines), AppKit's is a Cell subclass + manual drawing (~100 lines per bezel). **Default to SwiftUI + custom styles.**
 
-    func makeNSView(context: Context) -> NSButton {
-        let button = NSButton(title: title, target: context.coordinator,
-                              action: #selector(Coordinator.clicked))
-        button.bezelStyle = bezelStyle
-        button.keyEquivalent = keyEquivalent
-        return button
-    }
+`UIDesignRequiresCompatibility = true` in `Info.plist` opts the *SwiftUI built-in styles* out of Liquid Glass on some bezels (notably `.helpButton`), but it does NOT roll back the `.push` / default-action capsule shape and does NOT affect AppKit cells at all. Keep the flag in `Info.plist` as belt-and-suspenders — it's free — but it's not the load-bearing piece.
 
-    func updateNSView(_ nsView: NSButton, context: Context) {
-        nsView.title = title
-        nsView.bezelStyle = bezelStyle
-        nsView.keyEquivalent = keyEquivalent
-    }
+### Per-control verdicts (macOS 26 spike, 2026-05-26)
 
-    func makeCoordinator() -> Coordinator { Coordinator(action: action) }
+| Control | Recommended path | Why |
+|---|---|---|
+| **Button** | SwiftUI `Button` + custom `ButtonStyle` | Default SwiftUI = wide pill capsule. AppKit wrapper = same wide capsule. Custom `ButtonStyle.makeBody` = your shape, full control. |
+| **Toggle (checkbox)** | SwiftUI `.toggleStyle(.checkbox)` | macOS 26 default `.checkbox` style still renders as a classic small square. No custom needed. |
+| **Toggle (switch)** | SwiftUI `.toggleStyle(.switch)` (acceptable Tahoe pill) — or custom `ToggleStyle` if classic chrome wanted | Default switch is Tahoe-redesigned but the new chrome is acceptable. |
+| **Segmented** | `HStack` of styled `Button`s | Both SwiftUI `Picker.segmented` and `NSSegmentedControl` are Tahoe-redesigned. Compose from styled buttons instead. |
+| **Slider** | SwiftUI `Slider` (default) | macOS 26 default slider is slim, accent-fill, classic-modern. Both SwiftUI and `NSSlider` render identically and acceptably. |
+| **Popup / Menu** | SwiftUI `Menu` with styled-`Button` label | SwiftUI `Picker.menu` and AppKit `NSPopUpButton` both render Tahoe. `Menu` + custom button label gives full control. |
+| **TextField** | SwiftUI `TextField(.plain)` + view modifiers | Default `TextField` chrome is acceptable on macOS 26; `.plain` + explicit background/stroke gives full control. |
+| **`.helpButton`** | `NSButton(bezelStyle: .helpButton)` via `NSViewRepresentable` | The one bezel Apple kept classic in the Tahoe redesign. Niche escape. |
 
-    class Coordinator: NSObject {
-        let action: () -> Void
-        init(action: @escaping () -> Void) { self.action = action }
-        @objc func clicked() { action() }
-    }
-}
-
-// Usage
-AppKitButton(title: "Export", action: handleExport)
-AppKitButton(title: "OK", bezelStyle: .rounded, keyEquivalent: "\r", action: confirm)
-AppKitButton(title: "Delete", bezelStyle: .texturedSquare, action: delete)
-```
-
-**Bezel styles:** `.rounded` (standard), `.texturedSquare` (toolbar), `.regularSquare` (flat), `.recessed` (subtle)
-
-**Best for:** Any tappable action — primary, secondary, destructive, toolbar buttons.
+**Net: 0 of 8 controls require general-purpose `NSViewRepresentable` wrappers.** Only `.helpButton` and edge cases (NSSlider with tick marks etc.) reach for an AppKit bridge.
 
 ---
 
-### AppKitCheckbox (NSButton, checkbox type)
+### `FCPButtonStyle` — the primary style; replaces every `Button`
 
-**Replaces:** SwiftUI `Toggle`
-
-```swift
-struct AppKitCheckbox: NSViewRepresentable {
-    let title: String
-    @Binding var isOn: Bool
-
-    func makeNSView(context: Context) -> NSButton {
-        let checkbox = NSButton(checkboxWithTitle: title, target: context.coordinator,
-                                action: #selector(Coordinator.toggled))
-        checkbox.state = isOn ? .on : .off
-        return checkbox
-    }
-
-    func updateNSView(_ nsView: NSButton, context: Context) {
-        nsView.title = title
-        nsView.state = isOn ? .on : .off
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator(isOn: $isOn) }
-
-    class Coordinator: NSObject {
-        let isOn: Binding<Bool>
-        init(isOn: Binding<Bool>) { self.isOn = isOn }
-        @objc func toggled(_ sender: NSButton) { isOn.wrappedValue = sender.state == .on }
-    }
-}
-
-// Usage
-AppKitCheckbox(title: "Show grid", isOn: $showGrid)
-AppKitCheckbox(title: "Auto-save", isOn: $autoSave)
-```
-
-**Best for:** Boolean settings, preferences, feature toggles.
-
----
-
-### AppKitPopup (NSPopUpButton)
-
-**Replaces:** SwiftUI `Picker` with `.menu` style
+**Source:** Penumbra's `ToolbarButtonStyles.swift` (App Shell Standard).
 
 ```swift
-struct AppKitPopup<T: Hashable>: NSViewRepresentable {
-    let items: [T]
-    let titleForItem: (T) -> String
-    @Binding var selection: T
-
-    func makeNSView(context: Context) -> NSPopUpButton {
-        let popup = NSPopUpButton(frame: .zero, pullsDown: false)
-        popup.target = context.coordinator
-        popup.action = #selector(Coordinator.selected)
-        return popup
-    }
-
-    func updateNSView(_ nsView: NSPopUpButton, context: Context) {
-        nsView.removeAllItems()
-        for item in items { nsView.addItem(withTitle: titleForItem(item)) }
-        if let idx = items.firstIndex(of: selection) { nsView.selectItem(at: idx) }
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
-
-    class Coordinator: NSObject {
-        let parent: AppKitPopup
-        init(parent: AppKitPopup) { self.parent = parent }
-        @objc func selected(_ sender: NSPopUpButton) {
-            let idx = sender.indexOfSelectedItem
-            if idx >= 0 && idx < parent.items.count { parent.selection = parent.items[idx] }
-        }
-    }
-}
-
-// Usage
-AppKitPopup(items: ExportFormat.allCases, titleForItem: \.rawValue, selection: $format)
-```
-
-**Best for:** Enum selection, format pickers, any dropdown menu.
-
----
-
-### AppKitSegmented (NSSegmentedControl)
-
-**Replaces:** SwiftUI `Picker` with `.segmented` style
-
-```swift
-struct AppKitSegmented<T: Hashable>: NSViewRepresentable {
-    let items: [(title: String, value: T)]
-    @Binding var selection: T
-
-    func makeNSView(context: Context) -> NSSegmentedControl {
-        let control = NSSegmentedControl(labels: items.map(\.title),
-                                          trackingMode: .selectOne,
-                                          target: context.coordinator,
-                                          action: #selector(Coordinator.changed))
-        if let idx = items.firstIndex(where: { $0.value == selection }) {
-            control.selectedSegment = idx
-        }
-        return control
-    }
-
-    func updateNSView(_ nsView: NSSegmentedControl, context: Context) {
-        if let idx = items.firstIndex(where: { $0.value == selection }) {
-            nsView.selectedSegment = idx
-        }
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
-
-    class Coordinator: NSObject {
-        let parent: AppKitSegmented
-        init(parent: AppKitSegmented) { self.parent = parent }
-        @objc func changed(_ sender: NSSegmentedControl) {
-            let idx = sender.selectedSegment
-            if idx >= 0 && idx < parent.items.count { parent.selection = parent.items[idx].value }
-        }
-    }
-}
-
-// Usage
-AppKitSegmented(items: [("List", ViewMode.list), ("Grid", ViewMode.grid)], selection: $viewMode)
-```
-
-**Best for:** View mode switching, tab-like selection, mutually exclusive options.
-
----
-
-### AppKitSlider (NSSlider)
-
-**Replaces:** SwiftUI `Slider`
-
-```swift
-struct AppKitSlider: NSViewRepresentable {
-    @Binding var value: Double
-    var minValue: Double = 0
-    var maxValue: Double = 1
-
-    func makeNSView(context: Context) -> NSSlider {
-        let slider = NSSlider(value: value, minValue: minValue, maxValue: maxValue,
-                              target: context.coordinator, action: #selector(Coordinator.changed))
-        slider.isContinuous = true
-        return slider
-    }
-
-    func updateNSView(_ nsView: NSSlider, context: Context) {
-        nsView.doubleValue = value
-        nsView.minValue = minValue
-        nsView.maxValue = maxValue
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator(value: $value) }
-
-    class Coordinator: NSObject {
-        let value: Binding<Double>
-        init(value: Binding<Double>) { self.value = value }
-        @objc func changed(_ sender: NSSlider) { value.wrappedValue = sender.doubleValue }
-    }
-}
-
-// Usage
-AppKitSlider(value: $opacity, minValue: 0, maxValue: 1)
-AppKitSlider(value: $volume, minValue: 0, maxValue: 100)
-```
-
-**Best for:** Continuous value adjustment — opacity, volume, zoom, timeline scrubbing.
-
----
-
-### AppKitTextField (NSTextField)
-
-**Replaces:** SwiftUI `TextField`
-
-```swift
-struct AppKitTextField: NSViewRepresentable {
-    let placeholder: String
-    @Binding var text: String
-    var onCommit: (() -> Void)?
-
-    func makeNSView(context: Context) -> NSTextField {
-        let field = NSTextField()
-        field.placeholderString = placeholder
-        field.stringValue = text
-        field.delegate = context.coordinator
-        return field
-    }
-
-    func updateNSView(_ nsView: NSTextField, context: Context) {
-        if nsView.stringValue != text { nsView.stringValue = text }
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
-
-    class Coordinator: NSObject, NSTextFieldDelegate {
-        let parent: AppKitTextField
-        init(parent: AppKitTextField) { self.parent = parent }
-
-        func controlTextDidChange(_ obj: Notification) {
-            guard let field = obj.object as? NSTextField else { return }
-            parent.text = field.stringValue
-        }
-
-        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-            parent.onCommit?()
-            return true
-        }
-    }
-}
-
-// Usage
-AppKitTextField(placeholder: "Search...", text: $searchText)
-AppKitTextField(placeholder: "File name", text: $fileName, onCommit: save)
-```
-
-**Best for:** Text input fields, search bars, inline editing.
-
----
-
-### AppKitToolbarButtonStyle (SwiftUI .toolbar Exception)
-
-**Source:** `Penumbra/Views/ToolbarButtonStyles.swift`
-
-SwiftUI `.toolbar` is the **one exception** to the "no SwiftUI controls" rule. It handles placement (`.navigation`, `.principal`, `.primaryAction`) and `toolbarRole(.editor)` with minimal code. But toolbar buttons must use a custom `ButtonStyle` for native AppKit appearance instead of SwiftUI's default capsule styling.
-
-```swift
-/// Toolbar button with native AppKit appearance.
-/// Flat background, 4pt corners, accent color when active.
-struct AppKitToolbarButtonStyle: ButtonStyle {
-    @Binding var isOn: Bool
-
+struct FCPButtonStyle: ButtonStyle {
+    var isOn: Bool = false
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(.horizontal, 8)
-            .padding(.vertical, 6)
+            .padding(.horizontal, 10).padding(.vertical, 4)
             .foregroundColor(isOn ? .white : .primary)
-            .background(
-                ZStack {
-                    if isOn {
-                        Color.accentColor
-                    } else {
-                        Color(nsColor: .gray.withAlphaComponent(0.2))
-                    }
-                    if configuration.isPressed {
-                        Color.black.opacity(0.2)
-                    }
-                }
-            )
+            .background(isOn ? Color.accentColor
+                              : Color(nsColor: .gray.withAlphaComponent(0.25)))
             .cornerRadius(4)
-            .overlay(
-                RoundedRectangle(cornerRadius: 4)
-                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
-            )
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .overlay(RoundedRectangle(cornerRadius: 4)
+                       .stroke(Color.black.opacity(0.25), lineWidth: 1))
+            .opacity(configuration.isPressed ? 0.6 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
-// Usage in .toolbar
-.toolbar {
-    ToolbarItemGroup(placement: .navigation) {
-        Button(action: importFile) {
-            Image(systemName: "plus")
-        }
-        .buttonStyle(AppKitToolbarButtonStyle(isOn: .constant(false)))
-    }
-
-    ToolbarItemGroup(placement: .primaryAction) {
-        Button(action: { showSidebar.toggle() }) {
-            Image(systemName: "sidebar.right")
-        }
-        .buttonStyle(AppKitToolbarButtonStyle(isOn: $showSidebar))
-    }
-}
-.toolbarRole(.editor)
+// Usage
+Button("Export") { handleExport() }.buttonStyle(FCPButtonStyle())
+Button("OK")     { confirm() }
+    .buttonStyle(FCPButtonStyle(isOn: true))
+    .keyboardShortcut(.defaultAction)
 ```
 
-**Why not NSToolbar?** NSToolbar gives user customization (drag items in/out) and overflow menus, but requires `NSToolbarDelegate` boilerplate (~80 lines) and bridging to SwiftUI state. SwiftUI `.toolbar` + custom style gets 90% of the native look with 10% of the code.
-
-**Best for:** All toolbar buttons. Use `isOn: .constant(false)` for action buttons, `isOn: $binding` for toggle buttons.
+The `isOn` parameter doubles for "this is the default/active button" — pass `true` and the button takes the accent color.
 
 ---
 
+### Segmented from styled Buttons
+
+```swift
+struct FCPSegmented<T: Hashable>: View {
+    let items: [(label: String, value: T)]
+    @Binding var selection: T
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(items, id: \.value) { item in
+                Button(item.label) { selection = item.value }
+                    .buttonStyle(FCPButtonStyle(isOn: selection == item.value))
+            }
+        }
+    }
+}
+
+// Usage
+FCPSegmented(items: [("List", ViewMode.list), ("Grid", ViewMode.grid)],
+             selection: $viewMode)
+```
+
+---
+
+### `FCPCheckboxToggleStyle` — only if classic `.checkbox` isn't enough
+
+```swift
+struct FCPCheckboxToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 6) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(configuration.isOn ? Color.accentColor
+                                              : Color(nsColor: .gray.withAlphaComponent(0.25)))
+                    .frame(width: 14, height: 14)
+                    .overlay(RoundedRectangle(cornerRadius: 3)
+                               .stroke(Color.black.opacity(0.3), lineWidth: 1))
+                if configuration.isOn {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            }
+            configuration.label
+            Spacer(minLength: 0)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture { configuration.isOn.toggle() }
+    }
+}
+
+// Default `.checkbox` style usually suffices on macOS 26:
+Toggle("Show grid", isOn: $showGrid).toggleStyle(.checkbox)
+```
+
+---
+
+### Popup / Menu
+
+```swift
+Menu {
+    ForEach(formats, id: \.self) { f in Button(f) { selected = f } }
+} label: {
+    HStack {
+        Text(selected); Spacer()
+        Image(systemName: "chevron.up.chevron.down").font(.caption)
+    }
+    .frame(minWidth: 120)
+}
+.menuStyle(.borderlessButton)
+.buttonStyle(FCPButtonStyle())
+```
+
+Explicit `HStack { Text; Spacer; Image }` in the label avoids `Menu`'s default chevron-on-left layout.
+
+---
+
+### TextField
+
+```swift
+TextField("Search…", text: $query)
+    .textFieldStyle(.plain)
+    .padding(.horizontal, 6).padding(.vertical, 4)
+    .background(Color(nsColor: .textBackgroundColor))
+    .cornerRadius(4)
+    .overlay(RoundedRectangle(cornerRadius: 4)
+               .stroke(Color.gray.opacity(0.4), lineWidth: 1))
+```
+
+---
+
+### Slider
+
+```swift
+Slider(value: $opacity, in: 0...1)
+```
+
+macOS 26's default slider is acceptable — slim track, small accent-fill, classic thumb. No style override needed. Reach for `NSViewRepresentable<NSSlider>` only when you need a specific AppKit interaction (tick marks, custom hit-testing) that the SwiftUI Slider doesn't expose.
+
+---
+
+### `.helpButton` (niche AppKit escape)
+
+The one bezel Apple kept classic in the Tahoe redesign. Used for the small circular "?" button in dialogs.
+
+```swift
+struct AppKitHelpButton: NSViewRepresentable {
+    let action: () -> Void
+    func makeNSView(context: Context) -> NSButton {
+        let b = NSButton(title: "", target: context.coordinator,
+                         action: #selector(Coordinator.clicked))
+        b.bezelStyle = .helpButton
+        return b
+    }
+    func updateNSView(_ nsView: NSButton, context: Context) {
+        context.coordinator.action = action
+    }
+    func makeCoordinator() -> Coordinator { Coordinator(action: action) }
+    @MainActor final class Coordinator: NSObject {
+        var action: () -> Void
+        init(action: @escaping () -> Void) { self.action = action }
+        @objc func clicked() { action() }
+    }
+}
+```
+
+---
+
+### Code organization
+
+- Styles live in `Views/Styles/` — one file per style or per logical group. Reuse across the app.
+- Don't inline custom styles per call site — that loses the single-source-of-truth benefit.
+- The toolbar exception from earlier versions of this cookbook is gone — `FCPButtonStyle` IS the toolbar style; toolbar `Button`s just apply `.buttonStyle(FCPButtonStyle())`.
+
+### What changed (historical context)
+
+- **macOS 15 (Sonoma) and earlier:** AppKit `.rounded` / `.push` bezel = classic 4pt-corner rectangle. SwiftUI `.bordered` Button = same classic look. `NSViewRepresentable` wrappers were unnecessary but harmless.
+- **macOS 26 (Tahoe / Liquid Glass):** both SwiftUI built-in styles AND AppKit `NSButtonCell` were redesigned to capsule/pill shapes. The earlier cookbook claim "AppKit `.push` gives ~4pt corners" became false. Custom drawing on either side is the only escape.
+- **Per-view "compatibility" knobs that DO NOT roll back chrome on macOS 26** (don't bother): `UIDesignRequiresCompatibility = true` (helps some SwiftUI bezels but not `.push` or default-action), `NSView.prefersCompactControlSizeMetrics = true` (metrics only), `NSView.appearance = NSAppearance(named: .aqua)` (colors only, shape unchanged).
+
+### Deprecated AppKit bezel cases on macOS 26
+
+Only relevant if you DO reach for `NSViewRepresentable` (rare per above): `.rounded` → `.push`; `.regularSquare` → `.smallSquare`; `.recessed` → `.accessoryBar`; `.texturedSquare` → `.toolbar`; `.texturedRounded` → `.toolbar` or `.push`. New opt-IN case is `.glass` — don't pick by accident.
