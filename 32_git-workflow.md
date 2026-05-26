@@ -112,37 +112,71 @@ git branch -d feature/dark-mode
 
 ### After Merging
 
-Your main branch now has the new work. The feature branch is deleted (its history is preserved in main).
+**Tag the merge before deleting the branch** (see next section). Once `feature/dark-mode` is gone, the tag is your only named way back to that state.
 
 ---
 
 ## Tags for Releases
 
-### When to Tag
+**Tag every merge to `main`.** Branches get deleted; tags stay forever and cost nothing.
 
-- App is ready for distribution
-- Major milestone reached
-- Before significant changes (so you can go back)
+### The Rule
 
-### Creating Tags
+```
+merge feature → main
+    └── git tag -a release/vX.Y.Z -m "summary"
+    └── git push origin release/vX.Y.Z
+    └── git branch -d feature/...   ← only AFTER tagging
+```
+
+Use `/version` to do all of this with prompts (see `commands/version.md`).
+
+### Version Numbering (semver-ish)
+
+| Bump | When | Example |
+|------|------|---------|
+| **patch** `vX.Y.Z+1` | Small fix, doc update, tiny addition | `v0.1.0 → v0.1.1` |
+| **minor** `vX.Y+1.0` | New feature, backward-compatible | `v0.1.1 → v0.2.0` |
+| **major** `vX+1.0.0` | Breaking change | `v0.9.0 → v1.0.0` |
+
+Stay in `v0.x` until the project is genuinely stable.
+
+### Creating Tags Manually
 
 ```bash
-# Simple version tag
-git tag v1.0
+# Annotated tag (preferred — carries a message + author + date)
+git tag -a release/v0.2.0 -m "Add export feature and dark mode"
 
-# Version with message
-git tag -a v1.1 -m "Added export feature and dark mode"
+# Push it (normal git push does NOT include tags)
+git push origin release/v0.2.0
 
-# Tag a specific commit (retroactively)
-git tag -a v0.9 abc1234 -m "Last stable before refactor"
+# Tag a past commit retroactively
+git tag -a release/v0.1.0 abc1234 -m "Baseline"
+```
+
+### Jumping Back
+
+```bash
+# Look around (detached HEAD — read-only)
+git checkout release/v0.2.0
+
+# Branch off a release to fix or restore something
+git checkout -b restore/something release/v0.2.0
+
+# See what's changed since
+git diff release/v0.2.0..main
 ```
 
 ### Listing Tags
 
 ```bash
-git tag           # List all tags
-git show v1.0     # Show tag details
+git tag -l "release/v*" --sort=-v:refname   # newest first
+git show release/v0.2.0                     # tag details + diff
 ```
+
+### Other Tag Categories
+
+This repo also uses `phase/`, `safe/`, `wave/`, `decision/` for in-progress checkpoints — see `57_checkpoint-discipline.md`. `release/` is reserved for "this is what main looked like after that merge."
 
 ---
 
@@ -219,8 +253,10 @@ git log --oneline -10
 | Stage all | `git add .` |
 | Commit | `git commit -m "message"` |
 | Merge to main | `git checkout main && git merge branch` |
+| Tag release (after merge) | `/version` or `git tag -a release/vX.Y.Z -m "msg" && git push origin release/vX.Y.Z` |
 | Delete branch | `git branch -d branch-name` |
-| Tag release | `git tag -a v1.0 -m "message"` |
+| Jump back to a release | `git checkout release/vX.Y.Z` |
+| List releases | `git tag -l "release/v*" --sort=-v:refname` |
 | Undo last commit | `git reset --soft HEAD~1` |
 
 ---
@@ -242,6 +278,8 @@ Add to your CLAUDE.md:
 - Branch names: feature/, fix/, experiment/
 - Commit messages: what + why
 - Merge only when tested and working
+- Tag every merge to main as `release/vX.Y.Z` BEFORE deleting the branch
+  (use the `/version` slash command)
 ```
 
 ---
