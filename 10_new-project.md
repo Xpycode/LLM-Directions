@@ -22,26 +22,31 @@ LOAD: full
 
 ### Directory Structure
 
+The code goes in `01_Project/` per the universal rule in `13_folder-structure.md`. Inside the Xcode project, organize sources like this:
+
 ```
-ProjectName/
-├── Sources/
-│   ├── Models/          # Pure data structs (Codable, Sendable)
-│   ├── Services/        # Business logic (actors)
-│   ├── ViewModels/      # UI state (@MainActor, @Observable)
-│   └── Views/           # SwiftUI components
-├── Resources/           # Assets, configs
-├── Tests/               # Unit tests
-├── CLAUDE.md            # AI rules (required)
-├── AI-CONTEXT.md        # Session context (optional)
-├── README.md            # Project overview
-└── .gitignore           # Git ignore patterns
+ProjectName/                 # ← project root (git repo lives HERE, at this level)
+├── 01_Project/              # ← ALL Xcode/code (see 13_folder-structure.md)
+│   ├── ProjectName/
+│   │   ├── Models/          # Pure data structs (Codable, Sendable)
+│   │   ├── Services/        # Business logic (actors)
+│   │   ├── ViewModels/      # UI state (@MainActor, @Observable)
+│   │   ├── Views/           # SwiftUI components
+│   │   └── Resources/       # Assets, configs
+│   ├── ProjectName.xcodeproj/
+│   └── ProjectNameTests/    # Unit tests
+├── 02_Design/  03_Screenshots/  04_Exports/
+├── docs/                    # Directions
+├── CLAUDE.md                # AI rules (required)
+├── README.md                # Project overview
+├── .gitignore               # Git ignore patterns
+└── .git/                    # ← repo root, NOT inside 01_Project/
 ```
 
-- [ ] Create Sources folder structure
-- [ ] Create Resources folder
-- [ ] Create Tests folder
-- [ ] Initialize git repository (`git init`)
-- [ ] Create `.gitignore` (Xcode template)
+- [ ] Create the numbered folder structure (`01_Project/`, `02_Design/`, …) per `13_folder-structure.md`
+- [ ] Create the Xcode project inside `01_Project/`
+- [ ] Create `.gitignore` (template in `13_folder-structure.md`)
+- [ ] **Initialize git at the project root** — `git init` from `ProjectName/`, *not* from inside `01_Project/` (see `32_git-workflow.md`)
 
 ---
 

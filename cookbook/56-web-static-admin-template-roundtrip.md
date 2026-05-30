@@ -2,6 +2,8 @@
 
 **Source:** `lucesumbrarum.photos/admin/regen-leaf.php` + `admin/_test-regen.php` + `admin/templates/leaf.html.tpl`. Added 2026-04-23.
 
+> *Legacy path: the `01_Source/` reference in the example below predates the universal `01_Project/` code-home convention. New web projects put code in `01_Project/` — see `13_folder-structure.md`.*
+
 **Use case:** A static site (vanilla HTML, no framework) grows an admin layer whose writes must *regenerate* the public HTML — typically so public pages stay fast and SEO-friendly without client-side JS rendering. The admin deletes/reorders/uploads content and rewrites `slug.html` from a template + JSON manifest on every mutation. The risk is silent corruption: a template drift or a renderer bug breaks *every subsequent write* and may not surface until users notice a layout regression weeks later.
 
 The pattern: before you write any admin mutation endpoint, prove that `parse(committed_leaf) → render(manifest) == committed_leaf` **byte-for-byte** for every representative page. That test then becomes a permanent regression guard — every future template or renderer edit must keep it green. It also proves *constructively* that the parser (used by init-manifest) and the renderer (used by delete/reorder/upload) are consistent with each other, which is the hardest bug to catch by spot-checking output.

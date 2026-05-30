@@ -14,6 +14,21 @@ A consistent structure keeps projects clean, GitHub-friendly, and easy to naviga
 
 ---
 
+## The Universal Rule
+
+**This structure applies to *every* project — macOS, iOS, and web alike. The actual code always lives in `01_Project/`.** The numbered convention (`02_Design/`, `03_Screenshots/`, `docs/`, …) wraps around it identically regardless of platform, and the **git repo lives at the project root** wrapping all of it (see `32_git-workflow.md` → "Where the Repo Lives").
+
+| Platform | Code home |
+|----------|-----------|
+| macOS | `01_Project/` |
+| iOS | `01_Project/` |
+| Web — no-build / Strato (Pattern A) | `01_Project/` (also the lftp deploy stage) |
+| Web — framework / Vercel (Pattern B) | **⚠️ Repo root — the one exception** |
+
+**The single exception:** framework web apps (Next.js / Vite / Astro / SvelteKit) whose toolchain hard-requires `package.json`, `app/`, `public/` etc. at the repo root. Nesting them in `01_Project/` breaks the build unless you set a "Root Directory" override on the platform. For those, code stays at root and the numbered folders sit *alongside* it — see **Pattern B** below.
+
+---
+
 ## macOS / iOS Projects
 
 ```
@@ -52,13 +67,15 @@ MyApp/                              ← Project root (GitHub repo)
 │
 ├── old-docs/                       ← Migrated docs (if any)
 │
-├── .git/
+├── .git/                          ← Repo lives HERE, at the app root — NOT inside 01_Project/
 ├── .gitignore
 ├── CLAUDE.md                       ← Project-specific Claude context
 ├── README.md
 ├── LICENSE
 └── CHANGELOG.md                    ← Optional
 ```
+
+> **The repo lives at the app root**, wrapping `01_Project/`, `02_Design/`, `docs/`, etc. — so source *and* Directions docs are versioned together. Cloning an existing GitHub repo often drops `.git/` inside `01_Project/MyApp/` instead, silently leaving `docs/` and design files untracked. See **`32_git-workflow.md` → "Where the Repo Lives"** for verification (`git rev-parse --show-toplevel`) and the re-rooting recovery recipe.
 
 ### iOS with Extensions
 
@@ -86,18 +103,14 @@ Web projects split into two patterns depending on whether there's a framework bu
 
 ### Pattern A — No-build static + PHP (Strato-style)
 
-For sites that ship raw HTML/PHP/CSS/JS to shared hosting with no build step. The deploy is `lftp mirror -R <stage> /htdocs/<site>/`. See `29_web-strato-hosting.md` for the deploy recipe.
+For sites that ship raw HTML/PHP/CSS/JS to shared hosting with no build step. The deploy is `lftp mirror -R 01_Project /htdocs/<site>/`. See `29_web-strato-hosting.md` for the deploy recipe.
+
+Per the universal rule, the site code lives in `01_Project/` — and because there's no build step, **`01_Project/` *is* the lftp deploy stage** (source == what ships). The live SQLite DB stays in `04_Data/` (gitignored, *outside* `01_Project/`), so the upload step can never reach it (29_).
 
 ```
-MySite/                             ← Project root (GitHub repo)
+MySite/                             ← Project root (GitHub repo, .git/ HERE)
 │
-├── 01_Source/                      ← Authoring source (if separate from deploy stage)
-│   ├── components/                 ← e.g. PHP partials, Handlebars templates
-│   ├── pages/
-│   └── styles/
-│       └── _src.scss               ← Pre-compile sources, if any
-│
-├── 02_Frontend/                    ← Deploy stage — what lftp mirrors to /htdocs/
+├── 01_Project/                     ← ALL SITE CODE + lftp deploy stage
 │   ├── index.php                   ← (or index.html)
 │   ├── .htaccess                   ← Apache directives (deployed)
 │   ├── .htpasswd                   ← Basic-auth users (deployed; gitignored if real creds)
@@ -105,7 +118,8 @@ MySite/                             ← Project root (GitHub repo)
 │   │   ├── app.css
 │   │   ├── app.js
 │   │   └── assets/                 ← Logos, OG images, favicons
-│   └── lib/                        ← PHP includes (asset cache-busters, etc.)
+│   ├── lib/                        ← PHP includes (asset cache-busters, etc.)
+│   └── _src/                       ← Pre-compile sources (SCSS, partials) — only if you compile
 │
 ├── 03_Scripts/                     ← Deploy + DB ops + utilities
 │   ├── deploy.sh                   ← lftp mirror script (see 29_web-strato-hosting.md)
@@ -132,6 +146,7 @@ MySite/                             ← Project root (GitHub repo)
 │   ├── PROJECT_STATE.md
 │   └── sessions/
 │
+├── .git/                           ← Repo at the project root, wrapping everything
 ├── .gitignore
 ├── CLAUDE.md
 ├── README.md
@@ -140,14 +155,16 @@ MySite/                             ← Project root (GitHub repo)
 └── .env.local                      ← TURSO_URL, TURSO_AUTH_TOKEN, etc. (gitignored)
 ```
 
+> **Build step?** If you compile (SCSS, templating), keep authoring sources in `01_Project/_src/` and emit the shipped files into `01_Project/` itself — `build.sh` writes outputs next to `index.php`. `lftp` still mirrors `01_Project/`. Don't reintroduce a separate top-level source folder; one code home.
+
 **Deploy artifact placement:**
 
 | Artifact | Lives in | Notes |
 |---|---|---|
 | `deploy.sh` (lftp script) | `03_Scripts/` | Runs `chmod 644/755` normalize before `lftp mirror -R` |
-| `$STAGE_DIR` for lftp | `02_Frontend/` | What ships; never edit on server, never `--delete` |
-| `.htaccess` | `02_Frontend/` root | DirectoryIndex, rewrites, basic-auth references |
-| `.htpasswd` | `02_Frontend/` (deployed) | Real one gitignored; commit only sample with placeholder hashes |
+| `$STAGE_DIR` for lftp | `01_Project/` | What ships; never edit on server, never `--delete` |
+| `.htaccess` | `01_Project/` root | DirectoryIndex, rewrites, basic-auth references |
+| `.htpasswd` | `01_Project/` (deployed) | Real one gitignored; commit only sample with placeholder hashes |
 | Path-probe PHP | Anywhere temporary | **Delete after use** — leaks server topology (29_) |
 | libSQL local replica `.db` | `04_Data/` | Gitignored; rebuilt by `db.sync()` on fresh checkout |
 | Migration SQL files | `03_Scripts/migrations/NNN_name.sql` | Committed; applied to BOTH local + remote (39_ Rule 1) |
@@ -155,9 +172,9 @@ MySite/                             ← Project root (GitHub repo)
 
 ---
 
-### Pattern B — Framework app (Next.js / Vite / Astro / SvelteKit)
+### Pattern B — Framework app (Next.js / Vite / Astro / SvelteKit) — ⚠️ the `01_Project/` exception
 
-For sites where a framework owns the build and the platform (Vercel, Netlify, Cloudflare Pages) owns the deploy. The framework expects its own files at the **repo root** — `package.json`, `next.config.ts`, `vercel.json`, `app/`, `src/`, `public/` can't be tucked inside `01_Project/` without breaking the toolchain.
+**This is the one project type where code does NOT live in `01_Project/`.** A framework owns the build and the platform (Vercel, Netlify, Cloudflare Pages) owns the deploy. The framework expects its own files at the **repo root** — `package.json`, `next.config.ts`, `vercel.json`, `app/`, `src/`, `public/` can't be tucked inside `01_Project/` without breaking the toolchain (you'd need a "Root Directory" override on every platform and forced `rootDirectory` config everywhere). So code stays at root; the numbered convention applies *around* it.
 
 ```
 MyWebApp/                           ← Project root (GitHub repo)
@@ -253,10 +270,11 @@ Numbers keep folders sorted logically in Finder and terminals.
 | Trace files (.trace) | Delete | No |
 | Per-machine signing config | `Debug.local.xcconfig` (next to project) | No (28_) |
 | **— Web, Pattern A (no-build) —** | | |
-| Deploy stage (lftp source) | `02_Frontend/` | Yes |
-| `.htaccess` | `02_Frontend/` | Yes |
-| `.htpasswd` (real) | `02_Frontend/` | **No** (gitignore; commit only `.example`) |
-| Cache-buster helper (`asset.php`) | `02_Frontend/lib/` | Yes |
+| Site code + deploy stage (lftp source) | `01_Project/` | Yes |
+| `.htaccess` | `01_Project/` | Yes |
+| `.htpasswd` (real) | `01_Project/` | **No** (gitignore; commit only `.example`) |
+| Cache-buster helper (`asset.php`) | `01_Project/lib/` | Yes |
+| Pre-compile sources (SCSS, partials) | `01_Project/_src/` | Yes (only if you compile) |
 | Deploy script (`deploy.sh`) | `03_Scripts/` | Yes |
 | **— Web, Pattern B (framework) —** | | |
 | Framework source (`app/`, `src/`) | Repo root | Yes |
@@ -495,21 +513,26 @@ touch docs/PROJECT_STATE.md
 touch docs/decisions.md
 echo "# Session Index" > docs/sessions/_index.md
 
-echo "Created: 01_Project/ 02_Design/ 03_Screenshots/ 04_Exports/ docs/"
+# Initialize git AT THE PROJECT ROOT (never inside 01_Project/ — see 32_git-workflow.md)
+git init
+git add -A
+git commit -m "Initial commit: Directions structure + .gitignore"
+
+echo "Created: 01_Project/ 02_Design/ 03_Screenshots/ 04_Exports/ docs/  +  git repo at root"
 ```
 
 ### Web — Pattern A (no-build static + PHP)
 
 ```bash
-# Numbered folders + framework-free web layout
-mkdir -p 01_Source 02_Frontend/{public,lib} 02_Design/Exports 03_Screenshots \
+# Numbered folders + framework-free web layout (01_Project is code home AND deploy stage)
+mkdir -p 01_Project/{public,lib} 02_Design/Exports 03_Screenshots \
          03_Scripts/migrations 04_Data docs/sessions
 
 # Stub the deploy stage so lftp has something to mirror
-touch 02_Frontend/index.php 02_Frontend/.htaccess
+touch 01_Project/index.php 01_Project/.htaccess
 
 # .htpasswd template (real one is gitignored)
-cat > 02_Frontend/.htpasswd.example << 'EOF'
+cat > 01_Project/.htpasswd.example << 'EOF'
 # Generate with: htpasswd -nbB <user> <password>
 # admin:$2y$10$REPLACEME
 EOF
@@ -537,7 +560,7 @@ cat > .env.example << 'EOF'
 # Strato deploy
 STRATO_USER=stuNNNNNNN
 STRATO_HOST=ssh.strato.de
-STAGE_DIR=./02_Frontend
+STAGE_DIR=./01_Project
 SITE_NAME=mysite
 
 # libSQL/Turso (if used)
@@ -566,6 +589,11 @@ lftp -u "$STRATO_USER","$STRATO_PASS" -e "
 " sftp://$STRATO_HOST
 EOF
 chmod +x 03_Scripts/deploy.sh
+
+# Initialize git AT THE PROJECT ROOT (never inside 01_Project/ — see 32_git-workflow.md)
+git init
+git add -A
+git commit -m "Initial commit: Directions structure + Strato deploy skeleton"
 
 echo "Created Pattern A web project. Next: bind subdomain in control panel, then run 03_Scripts/deploy.sh"
 ```
@@ -653,14 +681,14 @@ Then update your `.xcodeproj` paths if needed (or recreate the project).
 Existing flat web project that ships to Strato/shared hosting:
 
 ```bash
-# Create the numbered layout
-mkdir -p 02_Frontend/{public,lib} 02_Design/Exports 03_Screenshots \
+# Create the numbered layout (01_Project = code home AND deploy stage)
+mkdir -p 01_Project/{public,lib} 02_Design/Exports 03_Screenshots \
          03_Scripts/migrations 04_Data docs/sessions
 
-# Move what ships to the host into the deploy stage
-mv index.php index.html .htaccess 02_Frontend/ 2>/dev/null || true
-mv css js images public/* 02_Frontend/public/ 2>/dev/null || true
-mv lib/* 02_Frontend/lib/ 2>/dev/null || true
+# Move what ships to the host into 01_Project (it IS the deploy stage)
+mv index.php index.html .htaccess 01_Project/ 2>/dev/null || true
+mv css js images public/* 01_Project/public/ 2>/dev/null || true
+mv lib/* 01_Project/lib/ 2>/dev/null || true
 
 # Move scripts (deploy, migrations) — anything you wouldn't ship
 mv deploy.sh build.sh 03_Scripts/ 2>/dev/null || true
@@ -680,7 +708,7 @@ rm -f _path-probe.php _phpinfo.php
 grep -n STAGE_DIR 03_Scripts/deploy.sh
 ```
 
-Then update your deploy script's `STAGE_DIR` to point at `./02_Frontend` (or whatever you renamed it to), and verify `lftp mirror -R "$STAGE_DIR" /htdocs/<site>/` still resolves correctly.
+Then update your deploy script's `STAGE_DIR` to point at `./01_Project`, and verify `lftp mirror -R "$STAGE_DIR" /htdocs/<site>/` still resolves correctly.
 
 ### Web — Pattern B (framework → numbered convention alongside)
 

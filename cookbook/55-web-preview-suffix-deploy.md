@@ -2,6 +2,8 @@
 
 **Source:** `lucesumbrarum.photos` rebuild — 16 pages deployed as `*-new.html` alongside live originals during multi-day migration. Added 2026-04-23.
 
+> *Legacy path: the `01_Source/` references in the examples below predate the universal `01_Project/` code-home convention. New web projects put code (and the lftp deploy stage) in `01_Project/` — see `13_folder-structure.md`.*
+
 **Use case:** You're rewriting a static site page-by-page over several sessions. The old site must stay live (real visitors, Google SEO, link equity) while you iterate on the new design. You don't have a staging environment, don't want to spin one up, and don't want to pay for Netlify preview deploys or Vercel branch URLs. Solution: deploy each new page with a `-new.html` suffix directly to production — shares the same origin (so images, fonts, CSS all resolve), but lives at a URL the public doesn't see. When ready, atomic rename + sitewide href-strip.
 
 **When to reach for it:**

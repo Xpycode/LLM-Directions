@@ -2,6 +2,8 @@
 
 **Source:** `lucesumbrarum.photos` rebuild — `01_Source/gallery.js` + `01_Source/css/lu.css` (`.gallery-grid[data-style="uniform"]` block). Added 2026-04-23.
 
+> *Legacy path: `01_Source/` predates the universal `01_Project/` code-home convention. New web projects put code in `01_Project/` — see `13_folder-structure.md`.*
+
 **Use case:** A photo gallery with **mostly landscape** images plus occasional portraits. A naive uniform grid (`aspect-ratio: 3/2` on every cell) crops portraits into ugly landscapes via `object-fit: cover`. A naive masonry layout leaves big vertical gaps beside tall portraits. This pattern: portraits detected on image load get `.portrait` class → spans 2 rows × 1 column with `aspect-ratio: 2/3`; surrounding landscapes auto-fill the remaining slots via `grid-auto-flow: dense`.
 
 Visual outcome:

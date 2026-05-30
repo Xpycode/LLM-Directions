@@ -123,7 +123,7 @@ lftp -u "$STRATO_USER","$STRATO_PASS" -e "
 Three things to know:
 
 - **No `--delete`** — protects server-only data (SQLite DBs, uploads, generated favicon caches). The cost is that removed source files stay on the server until cleaned up by hand. Worth it.
-- **Stage-then-mirror** — write changed files to a clean `$STAGE_DIR` (not your dev tree), then mirror that. The SQLite live DB is then *physically unreachable* from the upload step — there's no path that could cause it to be overwritten.
+- **`$STAGE_DIR` is `01_Project/`, the live DB lives in `04_Data/`** — for a no-build site, `01_Project/` is both the code home and what lftp mirrors (see `13_folder-structure.md` → Pattern A). The SQLite live DB sits in `04_Data/` (gitignored, *outside* `01_Project/`), so it's *physically unreachable* from the upload step — there's no path that could cause it to be overwritten. (If you build into a stage, point `$STAGE_DIR` at the emit dir; the DB-in-`04_Data/` separation is what guarantees safety, not a separate stage.)
 - **lftp uploads dotfiles by default** — `.htaccess`, `.htpasswd` land on the server even though the verbose listing hides them. Confirm via SFTP `ls -a`.
 
 ### Idempotent: lftp checksums skip unchanged files
