@@ -2,6 +2,8 @@
 
 **Source:** `lucesumbrarum.photos` rebuild — `01_Source/gallery.js` + `01_Source/css/lu.css` (`.gallery-grid[data-style="masonry"]` block). Added 2026-04-23.
 
+> *Legacy path: `01_Source/` predates the universal `01_Project/` code-home convention. New web projects put code in `01_Project/` — see `13_folder-structure.md`.*
+
 **Use case:** A photo gallery where images have varying aspect ratios (landscape, portrait, panoramic) and you want **masonry-style packing with reading order preserved** (left-to-right, top-to-bottom). CSS `column-count` masonry is dead-simple but fills column 1 entirely before column 2 — breaks narrative flow for a chronological photo series. This pattern uses CSS Grid with a tiny 8px row unit + JS that measures each image after load and sets `grid-row-end: span N`.
 
 **When to reach for it:**

@@ -142,19 +142,25 @@ After the interview:
 
 **Create the project folder structure** based on project type (see `docs/13_folder-structure.md` for full reference):
 
+Code always lives in `01_Project/` (the lone exception is framework web apps — code at repo root):
+
 ```bash
 # For macOS/iOS projects:
 mkdir -p 01_Project 02_Design/Exports 03_Screenshots 04_Exports docs/sessions
 
-# For web projects:
-mkdir -p 01_Source 02_Frontend 03_Scripts 04_Data docs/sessions
+# For no-build / Strato web projects (01_Project is the code home AND lftp deploy stage):
+mkdir -p 01_Project/{public,lib} 02_Design/Exports 03_Screenshots 03_Scripts/migrations 04_Data docs/sessions
 ```
 
-Also create the `.gitignore` from `docs/13_folder-structure.md` and the Directions working files:
+Also create the `.gitignore` from `docs/13_folder-structure.md` and the Directions working files, then initialize git **at the project root** (never inside `01_Project/` — see `docs/32_git-workflow.md`):
 
 ```bash
 touch docs/PROJECT_STATE.md docs/decisions.md
 echo "# Session Index" > docs/sessions/_index.md
+
+git init                 # at the project root — wraps 01_Project, docs/, everything
+git add -A
+git commit -m "Initial commit: Directions structure + .gitignore"
 ```
 
 Then create a `CLAUDE.md` in the project root with:
@@ -208,9 +214,12 @@ After extraction, run a **gap interview**:
 ## General Preferences
 
 ### Git Discipline
+- **Solo developer — NO pull requests.** Don't suggest opening a PR, a PR-based flow, or "pushing for review." Branch → commit → merge to `main` **locally**. (See `docs/32_git-workflow.md`.)
 - Never commit directly to main
 - Create feature branches: `feature/`, `fix/`, `experiment/`
+- Merge locally when tested: `git checkout main && git merge feature/x`
 - Commit messages: what + why
+- One repo per project, **`.git` at the project root** (not inside `01_Project/`)
 - Remind me about branching before implementation
 
 ### Communication Style

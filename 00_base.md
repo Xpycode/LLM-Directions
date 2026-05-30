@@ -57,10 +57,11 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 1. **Read this file** (you're doing that now)
 2. **Run `/interview`** - Multi-phase discovery
-3. **Create project folder structure** per `13_folder-structure.md`:
+3. **Create project folder structure** per `13_folder-structure.md` (code always lives in `01_Project/`):
    - macOS/iOS: `01_Project/`, `02_Design/`, `03_Screenshots/`, `04_Exports/`, `docs/sessions/`
-   - Web: `01_Source/`, `02_Frontend/`, `03_Scripts/`, `04_Data/`, `docs/sessions/`
-   - Create `.gitignore` from `13_folder-structure.md` template
+   - Web (no-build/Strato): `01_Project/` (code + deploy stage), `02_Design/`, `03_Scripts/`, `04_Data/`, `docs/sessions/`
+   - Web (framework/Vercel): code at repo root — the one `01_Project/` exception — with numbered folders alongside
+   - Create `.gitignore` from `13_folder-structure.md` template, then `git init` **at the project root** (32_)
 4. **Create initial files:**
    - `specs/[feature].md` with acceptance criteria
    - Update `PROJECT_STATE.md` with funnel position

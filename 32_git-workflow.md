@@ -1,5 +1,7 @@
 <!--
-TRIGGERS: git, commit, branch, merge, main, version control, undo, reset, tag, release
+TRIGGERS: git, commit, branch, merge, main, version control, undo, reset, tag, release,
+          git init, git clone, where does the repo live, .git location, repo root,
+          re-root repo, nested .git, untracked docs, clone into subfolder
 PHASE: any
 LOAD: full
 -->
@@ -10,6 +12,8 @@ LOAD: full
 
 *You work alone, but future-you is your teammate.*
 
+> **No pull requests.** This is a solo workflow — there's no reviewer and no remote review step. Never suggest opening a PR, "pushing for review," or a fork/PR flow. You branch, commit, and **merge to `main` locally** (see "Merging to Main" below). Pushing to GitHub, when a remote exists, is just a backup/mirror — not a review gate.
+
 ---
 
 ## The Golden Rule
@@ -17,6 +21,68 @@ LOAD: full
 **Never commit directly to `main`.**
 
 Main should always be deployable. Work on branches, merge when stable.
+
+---
+
+## Where the Repo Lives
+
+**The repository lives at the app root — one repo per app, wrapping everything.**
+
+```
+MyApp/                    ← git init HERE.  .git/ lives at this level.
+├── 01_Project/           ← Xcode project + source (tracked)
+│   └── MyApp/
+├── 02_Design/            ← tracked
+├── 03_Screenshots/       ← tracked
+├── 04_Exports/           ← gitignored, but inside the repo
+├── docs/                 ← Directions docs — MUST be tracked
+├── .git/                 ← ← ← right here, at the root
+├── .gitignore
+└── CLAUDE.md
+```
+
+One repo at the root tracks the source **and** the Directions docs, design files, and screenshots together. That's the point — your session logs, decisions, and `PROJECT_STATE.md` are versioned alongside the code that they describe.
+
+### ⚠️ The clone-into-subfolder trap
+
+The #1 way this goes wrong: you `git clone` an existing GitHub repo, and the clone drops `.git/` **inside** the cloned folder — typically `01_Project/MyApp/.git`. Now git only tracks the Xcode source. `docs/`, `02_Design/`, `03_Screenshots/`, and the `01_Project/` wrapper itself are all **outside the repo and silently untracked.**
+
+```bash
+# ❌ WRONG — produces 01_Project/MyApp/.git
+cd MyApp/01_Project
+git clone https://github.com/you/MyApp.git    # .git ends up nested
+
+# ✅ RIGHT — clone into a temp dir, then lift the source into 01_Project,
+#    and init the repo at the app root instead.
+```
+
+### Verify where your `.git` actually is
+
+```bash
+# From the app root — should print ".git" (root) , NOT "01_Project/MyApp/.git"
+git rev-parse --show-toplevel
+# or, to find every repo boundary in the tree:
+find . -name .git -maxdepth 4
+```
+
+If `--show-toplevel` points anywhere below the app root, the repo is misplaced.
+
+### Recovery — re-rooting a misplaced repo
+
+If `.git` is stuck in `01_Project/MyApp/`, move it up to the app root **without losing history**:
+
+```bash
+cd MyApp                                  # the app root
+mv 01_Project/MyApp/.git .                # lift the repo boundary up
+mv 01_Project/MyApp/.gitignore . 2>/dev/null || true
+git status                                # now sees 02_Design, docs/, etc. as untracked
+# Add a root .gitignore (see 13_folder-structure.md) BEFORE staging,
+# so 04_Exports/, DerivedData/, .DS_Store don't get committed.
+git add -A
+git commit -m "Re-root repo at app level: track docs, design, screenshots"
+```
+
+Do this with **no other session/agent active in that app** and a clean working tree (commit or stash first). If there's a remote, the remote URL is preserved by the move — verify with `git remote -v`.
 
 ---
 
