@@ -19,6 +19,7 @@ SPEC → PLAN → IMPLEMENT → REVIEW → VERIFY → COMMIT
 | Step | Action | Time |
 |------|--------|------|
 | **Spec** | Interview until clear | 10-30 min |
+| **Package?** | Before building: already a zPackages package, in another app, or mature OSS? (`45_packages.md`) | 2 min |
 | **Plan** | Break into 30-min phases | 5-10 min |
 | **Implement** | One phase at a time | <30 min each |
 | **Review** | Adversarial, 2-3 passes | 5-10 min |
