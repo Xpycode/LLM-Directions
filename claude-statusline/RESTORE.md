@@ -3,22 +3,25 @@
 A custom Claude Code status line that shows, on one row:
 
 ```
-Opus 4.8 (1M context) | 📁ClaudeSessions | ███████░░░░░ 111k / 200k (55%) | ⏱ 5h ◷2h12m 12.0M (16%) · 7d 29.5M (6%)
+Opus 4.8 (1M context) | 📁ClaudeSessions | ███████░░░░░ 111k / 200k (55%) | ⏱ 5h 12.0M (16%) · 7d 29.5M (6%)
 ```
 
 - **Context gauge** — tokens in context vs a manual `CLEAR_BUDGET` (default 200k, your `/clear` point). Blue → gold at 70% → red at 95%.
-- **5h** — countdown to the rolling usage-window reset + tokens used (% of `CAP_5H`).
+- **5h** — tokens used in the current 5h window (% of `CAP_5H`). No reset countdown: ccusage only knows clock-aligned blocks, not Anthropic's true rolling reset — check `/usage` for the real reset time.
 - **7d** — rolling 7-day tokens (% of `CAP_WEEK`).
 
 Usage numbers come from [`ccusage`](https://github.com/ryoppippi/ccusage), background-cached to `~/.claude/.usage-cache.json` and refreshed at most every 120s, so the status line never blocks.
 
+> **Wiring (dotfiles pattern):** `~/.claude/statusline.sh` is a **symlink** into this repo — the file here *is* the live script. Editing the status line edits this backup directly (no copy step); `git commit` here snapshots a version. Keep this repo at a stable path or the symlink dangles.
+
 ## Restore after a machine reset / on a new Mac
 
-1. **Copy the script into place:**
+1. **Symlink the script into place** (this repo file is the source of truth):
    ```bash
-   cp claude-statusline/statusline.sh ~/.claude/statusline.sh
-   chmod +x ~/.claude/statusline.sh
+   # run from the repo root
+   ln -sf "$(pwd)/claude-statusline/statusline.sh" ~/.claude/statusline.sh
    ```
+   The file is already executable (git mode 755). After this, `~/.claude/statusline.sh` points into the repo, so future edits auto-sync back here.
 
 2. **Wire it up** — merge the `statusLine` key from `settings-statusLine-snippet.json` into `~/.claude/settings.json` (top level; don't overwrite the whole file):
    ```json

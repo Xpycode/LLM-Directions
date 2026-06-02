@@ -227,12 +227,9 @@ if [[ -f "$USAGE_CACHE" ]]; then
     fiveh_tokens=$(echo "$vals" | cut -f2); fiveh_tokens=${fiveh_tokens%.*}; fiveh_tokens=${fiveh_tokens:-0}
     week_tokens=$(echo "$vals" | cut -f3); week_tokens=${week_tokens%.*}; week_tokens=${week_tokens:-0}
 
-    if (( reset_epoch > 0 )); then
-        win="${C_ACCENT}◷$(fmt_left $((reset_epoch - now_epoch)))${C_GRAY}"
-    else
-        win="${C_BAR_EMPTY}idle"
-    fi
-
+    # Note: no reset countdown. ccusage only knows clock-aligned 5h blocks, not
+    # Anthropic's true rolling reset (that lives behind /usage). A timer here would
+    # mislead — the tokens/% below are accurate; check /usage for the real reset.
     five_pct=""; week_pct=""
     if (( CAP_5H > 0 )); then
         p=$(( fiveh_tokens * 100 / CAP_5H )); (( p > 100 )) && p=100
@@ -245,7 +242,7 @@ if [[ -f "$USAGE_CACHE" ]]; then
         week_pct=" ${c}(${p}%)${C_GRAY}"
     fi
 
-    usage_seg="${C_GRAY}⏱ 5h ${win} $(fmt_tok $fiveh_tokens)${five_pct}  ·  7d $(fmt_tok $week_tokens)${week_pct}"
+    usage_seg="${C_GRAY}⏱ 5h $(fmt_tok $fiveh_tokens)${five_pct}  ·  7d $(fmt_tok $week_tokens)${week_pct}"
 else
     usage_seg="${C_GRAY}⏱ 5h —  ·  7d —  ${C_BAR_EMPTY}(loading…)"
 fi
