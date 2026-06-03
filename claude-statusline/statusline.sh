@@ -52,8 +52,8 @@ fmt_left() {  # seconds -> 2h13m / 13m
 USAGE_CACHE="$HOME/.claude/.usage-cache.json"
 USAGE_LOCK="$HOME/.claude/.usage-refresh.lock"
 USAGE_TTL=120        # min seconds between background refreshes
-CAP_5H=73500000      # calibrated 2026-06-02 from /usage: 11.03M tok = 15% used
-CAP_WEEK=475000000   # calibrated 2026-06-02 from /usage: 28.5M tok = 6% used (rough; small %)
+CAP_5H=12200000      # calibrated 2026-06-03 from /usage: 1.59M tok = 13% used
+CAP_WEEK=1945000000  # calibrated 2026-06-03 from /usage: 38.9M tok = 2% used (coarse; small %)
 
 now_epoch=$(date +%s)
 
