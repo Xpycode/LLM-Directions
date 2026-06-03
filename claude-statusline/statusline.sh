@@ -52,7 +52,8 @@ fmt_left() {  # seconds -> 2h13m / 13m
 USAGE_CACHE="$HOME/.claude/.usage-cache.json"
 USAGE_LOCK="$HOME/.claude/.usage-refresh.lock"
 USAGE_TTL=120        # min seconds between background refreshes
-CAP_5H=12200000      # calibrated 2026-06-03 from /usage: 1.59M tok = 13% used
+# 5h removed 2026-06-03: ccusage's cache-read-heavy raw tokens drift too fast
+# against /usage's weighted metric to show a trustworthy 5h %. Weekly only.
 CAP_WEEK=1945000000  # calibrated 2026-06-03 from /usage: 38.9M tok = 2% used (coarse; small %)
 
 now_epoch=$(date +%s)
@@ -220,31 +221,22 @@ else
     ctx="${empty_bar} ${C_ACCENT}~${count_k}k / ${budget_k}k ${C_GRAY}(~${pct}%)"
 fi
 
-# ---- Usage segment: 5h window reset + rolling 7-day (appended to row 1) ----
+# ---- Usage segment: rolling 7-day weekly limit (appended to row 1) ----
+# 5h dropped: its raw-token/weighted-% drift made the number untrustworthy.
 if [[ -f "$USAGE_CACHE" ]]; then
-    vals=$(jq -r '"\(.reset_epoch // 0)\t\(.fiveh_tokens // 0)\t\(.week_tokens // 0)"' "$USAGE_CACHE" 2>/dev/null)
-    reset_epoch=$(echo "$vals" | cut -f1); reset_epoch=${reset_epoch%.*}; reset_epoch=${reset_epoch:-0}
-    fiveh_tokens=$(echo "$vals" | cut -f2); fiveh_tokens=${fiveh_tokens%.*}; fiveh_tokens=${fiveh_tokens:-0}
-    week_tokens=$(echo "$vals" | cut -f3); week_tokens=${week_tokens%.*}; week_tokens=${week_tokens:-0}
+    week_tokens=$(jq -r '.week_tokens // 0' "$USAGE_CACHE" 2>/dev/null)
+    week_tokens=${week_tokens%.*}; week_tokens=${week_tokens:-0}
 
-    # Note: no reset countdown. ccusage only knows clock-aligned 5h blocks, not
-    # Anthropic's true rolling reset (that lives behind /usage). A timer here would
-    # mislead — the tokens/% below are accurate; check /usage for the real reset.
-    five_pct=""; week_pct=""
-    if (( CAP_5H > 0 )); then
-        p=$(( fiveh_tokens * 100 / CAP_5H )); (( p > 100 )) && p=100
-        c="$C_ACCENT"; (( p >= 70 )) && c="$C_GOLD"; (( p >= 90 )) && c="$C_RED"
-        five_pct=" ${c}(${p}%)${C_GRAY}"
-    fi
+    week_pct=""
     if (( CAP_WEEK > 0 )); then
         p=$(( week_tokens * 100 / CAP_WEEK )); (( p > 100 )) && p=100
         c="$C_ACCENT"; (( p >= 70 )) && c="$C_GOLD"; (( p >= 90 )) && c="$C_RED"
         week_pct=" ${c}(${p}%)${C_GRAY}"
     fi
 
-    usage_seg="${C_GRAY}⏱ 5h $(fmt_tok $fiveh_tokens)${five_pct}  ·  7d $(fmt_tok $week_tokens)${week_pct}"
+    usage_seg="${C_GRAY}⏱ 7d $(fmt_tok $week_tokens)${week_pct}"
 else
-    usage_seg="${C_GRAY}⏱ 5h —  ·  7d —  ${C_BAR_EMPTY}(loading…)"
+    usage_seg="${C_GRAY}⏱ 7d —  ${C_BAR_EMPTY}(loading…)"
 fi
 
 # Build output — row 1: Model | Dir | Context | Usage
