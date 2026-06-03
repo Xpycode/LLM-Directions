@@ -247,18 +247,21 @@ else
     usage_seg="${C_GRAY}⏱ 5h —  ·  7d —  ${C_BAR_EMPTY}(loading…)"
 fi
 
-# Build output — everything on row 1: Model | Dir | Branch | Context | Usage
-output="${C_ACCENT}${model}${C_GRAY} | 📁${dir}"
-[[ -n "$branch" ]] && output+=" | 🔀${branch} ${git_status}"
-output+=" | ${ctx}${C_GRAY} | ${usage_seg}${C_RESET}"
+# Build output — row 1: Model | Dir | Context | Usage
+# The branch segment moves to its own row (below) so a long branch/filename
+# never pushes the context gauge and usage off to the right.
+output="${C_ACCENT}${model}${C_GRAY} | 📁${dir} | ${ctx}${C_GRAY} | ${usage_seg}${C_RESET}"
 
 printf '%b\n' "$output"
+
+# Row 2: git branch + status (only when inside a repo)
+[[ -n "$branch" ]] && printf '%b\n' "${C_ACCENT}🔀${branch}${C_GRAY} ${git_status}${C_RESET}"
 
 # Get user's last message (text only, not tool results, skip unhelpful messages)
 if (( SHOW_LAST_MSG )) && [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
     # Calculate visible length (without ANSI codes) - 10 chars for bar + content
+    # Branch now lives on its own row, so it's excluded from row 1's width.
     plain_output="${model} | 📁${dir}"
-    [[ -n "$branch" ]] && plain_output+=" | 🔀${branch} ${git_status}"
     plain_output+=" | xxxxxxxxxxxxxxxxxxxx ${count_k}k / ${budget_k}k (${pct}%)"
     max_len=${#plain_output}
     last_user_msg=$(jq -rs '
