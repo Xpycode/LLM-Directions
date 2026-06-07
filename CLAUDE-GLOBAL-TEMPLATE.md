@@ -64,6 +64,61 @@ When implementing these UI patterns, **FIRST check** the cookbook at:
 
 ---
 
+## Directions Index (Read-on-Demand, Not Copied)
+
+The Directions guidance docs are the **single source of truth** in the master repo. Do **not** rely
+on a copy inside the current project — copies drift and never receive new house-style. When a task
+matches a trigger, **read the master doc on demand** from `[LOCAL_DIRECTIONS_PATH]/`:
+
+| When the task involves… | Read |
+|---|---|
+| Quick lookup / cheatsheet / prompts | `01_quick-reference.md` |
+| Validating AI code, red flags, mindset | `02_mental-model.md` |
+| Workflow phases (spec→plan→build→review) | `03_workflow-phases.md` |
+| Architecture / tech-stack decisions | `04_architecture-decisions.md` |
+| New project / folder structure | `10_new-project.md` · `13_folder-structure.md` |
+| Doc templates (README/CHANGELOG/etc.) | `11_ai-context-template.md` · `12_documentation-templates.md` |
+| Project identity / bundle id / signing | `14_project-identity.md` |
+| SwiftUI gotchas (UI not updating, @State) | `20_swiftui-gotchas.md` |
+| Coordinates / images / Retina / CGImage | `21_coordinate-systems.md` |
+| macOS sandbox / entitlements / menu-bar | `22_macos-platform.md` |
+| Claude Code CLI / MCP / hooks / commands | `23_claude-code-cli.md` |
+| Web gotchas / web UI | `24_web-gotchas.md` · `42_web-ui.md` |
+| Troubleshoot / debug / crash | `25_troubleshooting.md` · `31_debugging.md` |
+| Ecosystem / plugins / MCP servers | `26_ecosystem.md` |
+| codebase-memory-mcp / MCP indexing guard | `27_mcp-gotchas.md` |
+| Code signing / SourceKit false positives | `28_xcode-signing-and-sourcekit.md` |
+| Strato hosting / no-build deploy | `29_web-strato-hosting.md` |
+| Ship / production checklist / app minimums | `30_production-checklist.md` · `33_app-minimums.md` |
+| git workflow | `32_git-workflow.md` |
+| Testing / TDD / XCTest | `34_testing.md` |
+| AI code quality / complexity | `35_ai-code-quality.md` |
+| Changing existing UI | `36_ui-changes-protocol.md` |
+| Multi-Mac discipline / cross-Mac divergence | `37_multi-mac-discipline.md` |
+| iOS SwiftUI state (@AppStorage, etc.) | `38_ios-swiftui-state.md` |
+| libSQL / Turso sync | `39_libsql-turso-sync.md` |
+| Typography / fonts | `40_typography.md` |
+| "What is this UI element called" | `41_apple-ui.md` |
+| Data structures / algorithms | `43_data-structures.md` |
+| Glossary | `44_my-glossary.md` |
+| Packages / SPM / "could be a package" | `45_packages.md` |
+| Main menu / NSMenu / Commands | `46_main-menu.md` |
+| Context limits / planning / multi-session | `52_context-management.md` · `51_planning-patterns.md` |
+| LLM failure modes | `53_llm-failure-modes.md` |
+| Security / secrets / auth / OWASP | `54_security-rules.md` |
+| Spec / acceptance criteria | `55_spec-template.md` · `56_acceptance-criteria.md` |
+| Checkpoint discipline | `57_checkpoint-discipline.md` |
+| Context engineering | `58_context-engineering.md` |
+| Example mapping | `59_example-mapping.md` |
+| Model selection (Haiku/Sonnet/Opus) | `60_model-selection.md` |
+| Notarization / Developer ID / DMG | `61_distribution-notarization.md` |
+
+**Why read-on-demand:** Universal docs used to be copied into each project at `/setup`, so updates
+never reached already-set-up projects (N copies silently drift). This Index lets a running project —
+which only reliably reads global + local `CLAUDE.md` — pull the *current* master doc instead.
+
+---
+
 ## Project Detection (Run automatically on session start)
 
 Check the project state and act accordingly:
@@ -71,8 +126,11 @@ Check the project state and act accordingly:
 ### Step 1: Check for Directions
 
 ```
-Does docs/00_base.md exist?
+Does docs/PROJECT_STATE.md exist?
 ```
+
+(Sentinel is `PROJECT_STATE.md`, not `00_base.md` — the universal docs are no longer copied into
+projects; see the Directions Index above and Step 3.)
 
 **YES → Directions is set up.** Follow "Existing Projects with Directions" below.
 
@@ -114,29 +172,21 @@ No docs, no MDs, minimal files.
 Then:
 > "Want me to set up the Directions documentation system?"
 
-If yes, set up Directions by **executing this command** (do not create files manually):
+If yes, set up Directions by scaffolding **only the project-specific files** — **do NOT copy the
+universal docs** (they are read on demand from the master via the Directions Index above; copying
+them is what causes the copy-vs-drift flaw):
 
 ```bash
-# Primary: Copy from local master (rsync skips tool caches)
-mkdir -p docs && rsync -a \
-  --exclude='.git' \
-  --exclude='.serena' \
-  --exclude='.fastembed_cache' \
-  --exclude='.archive' \
-  /path/to/LLM-Directions/ ./docs/
-
-# Fallback if local not available: clone, then strip the inner .git
-# git clone --depth 1 https://github.com/Xpycode/LLM-Directions.git /tmp/_directions \
-#   && rsync -a --exclude='.git' /tmp/_directions/ ./docs/ \
-#   && rm -rf /tmp/_directions
+mkdir -p docs/sessions
+# Create these from the master's templates (base path = [LOCAL_DIRECTIONS_PATH]):
+#   docs/PROJECT_STATE.md   — use the master PROJECT_STATE.md as the structural template (sentinel)
+#   docs/sessions/_index.md
+#   docs/decisions.md
+#   docs/glossary.md        — project-specific terms only
 ```
 
-**Important:** Always copy ALL files from the source. Do not manually create a subset of files.
-
-**Don't** `git clone … docs` directly — that nests a live `.git` inside your repo and trips
-"embedded git repository" warnings on every commit.
-
-Then read `docs/00_base.md` and run the full discovery interview.
+Then run the full discovery interview (read `00_base.md` / `03_workflow-phases.md` from the master
+on demand if you need the system overview).
 
 After the interview:
 
@@ -167,7 +217,7 @@ Then create a `CLAUDE.md` in the project root with:
 - Project name and description
 - Tech stack decided
 - Key architecture decisions
-- Pointer to `docs/00_base.md`
+- Pointer to `docs/PROJECT_STATE.md` and the Directions Index in `~/.claude/CLAUDE.md`
 
 Then show the **Setup Complete** message:
 > "✓ **Setup complete!** Your project is ready.
@@ -181,7 +231,7 @@ Then show the **Setup Complete** message:
 
 ## Existing Projects with Directions
 
-If `docs/00_base.md` exists:
+If `docs/PROJECT_STATE.md` exists:
 
 1. Read `docs/PROJECT_STATE.md` for current phase/focus/blockers
 2. Show: "Phase: [X] | Focus: [Y] | Last session: [date]"
