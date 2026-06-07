@@ -20,7 +20,9 @@
   copies the universal `00–61` docs** — scaffolds only project-specific files (PROJECT_STATE, sessions/,
   decisions, glossary); universal guidance is read-on-demand from the master. (3) **Sentinel moved**
   `docs/00_base.md` → `docs/PROJECT_STATE.md` across `commands/setup.md`, template, and live config.
-  `46_main-menu.md` already committed (59ccfae). RESUME.md retired. ([log](sessions/2026-06-08.md))
+  `46_main-menu.md` already committed (59ccfae). RESUME.md retired. **Index is script-generated**
+  (`scripts/gen-directions-index.sh`, RESUME Option B) from each doc's `TRIGGERS:` header → can't
+  drift; marker-wrapped + idempotent, re-run with `--write FILE`. ([log](sessions/2026-06-08.md))
 - **Note:** the live `~/.claude/CLAUDE.md` is NOT in this repo; `CLAUDE-GLOBAL-TEMPLATE.md` is its
   tracked mirror (the two had drifted — itself proof of the copy-drift problem; now re-aligned).
 - **Open question (2026-06-06):** how to surface "current state of my work" across projects — lightweight on-demand HTML artifact (agent reads filesystem→emits one gitignored `dashboard.html`) vs. the committed `project.json` static-site generator designed 2026-03-24. **Build one, not both.**
