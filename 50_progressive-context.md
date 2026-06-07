@@ -1,8 +1,8 @@
 <!--
-TRIGGERS: token limit, context too big, CLAUDE.md bloated, large project,
-          router pattern, progressive loading
 PHASE: any
 LOAD: redirect
+(No TRIGGERS — this is a redirect stub; triggers live on the canonical 52_context-management.md
+so it isn't double-listed in the generated Directions Index.)
 -->
 
 # Progressive Context Loading → moved

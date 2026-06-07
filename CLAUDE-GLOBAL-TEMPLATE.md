@@ -110,7 +110,6 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | My Tech Glossary | `44_my-glossary.md` |
 | package, SPM, reusable, extract, shared code, zPackages … | `45_packages.md` |
 | main menu, menu bar, NSMenu, Commands, CommandMenu, CommandGroup … | `46_main-menu.md` |
-| token limit, context too big, CLAUDE.md bloated, large project | `50_progressive-context.md` |
 | planning, task tracking, persistent memory, context management, long task, multi-session | `51_planning-patterns.md` |
 | context, token limit, context too big, CLAUDE.md bloated, large project | `52_context-management.md` |
 | LLM Failure Modes | `53_llm-failure-modes.md` |
@@ -118,7 +117,6 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | spec, specification, requirements, PRD, mini-PRD, feature doc … | `55_spec-template.md` |
 | acceptance criteria, given when then, gherkin, BDD, testable requirements, test cases | `56_acceptance-criteria.md` |
 | checkpoint, git snapshot, rollback, save point, phase transition, safe state | `57_checkpoint-discipline.md` |
-| context engineering, prompt engineering, information environment | `58_context-engineering.md` |
 | example mapping, discovery, requirements, edge cases, rules, complex feature | `59_example-mapping.md` |
 | model, haiku, sonnet, opus, which model, slow … | `60_model-selection.md` |
 | notarization, notarytool, "Developer ID", Developer ID Application, staple, stapler … | `61_distribution-notarization.md` |
