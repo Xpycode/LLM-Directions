@@ -13,12 +13,16 @@
 - **Phase:** implementation
 - **Focus:** Cross-project Directions audit (2026-05-13 → -15) **fully closed**. All 6 quick-wins + M1 (50/52/58 → canonical `52_context-management.md`) + M2 (`29_`/`38_`/`39_`) + post-M1 polish (`13_folder-structure.md` web parity, Pattern A/B + deploy artifacts + setup scripts + migration recipes) + AutoRedact orphan split + 4 consumer-index backfills (MousePlus, SFTPmount, KinoBerlin local-only, Group Alarms script-side fix) + `sync-session-index.sh` `(./)` link-form patch. Audit reports `✓ in sync` across master + 10 consumer projects. **2026-05-16 follow-up:** real-product session on SFTPmount produced the 26.5 re-validation rev-3 input + canonized `37_multi-mac-discipline.md` (3 recurring cross-Mac incidents codified). 30s discipline range now contiguous 30–39. **1 housekeeping item remaining**: dogfood `/session-close` on a real session (can't be done retroactively).
 - **Status:** ready
-- **Last updated:** 2026-06-07
-- **⚡ Parked decision (2026-06-07) — see [RESUME.md](RESUME.md):** drafted `46_main-menu.md`
-  (uncommitted). Diagnosed a **copy-vs-drift flaw** — universal docs are copied into each project at
-  setup, so new house-style never reaches already-set-up projects. Proposed fix: a topic→doc **Index
-  in global CLAUDE.md** (docs already carry `TRIGGERS:`) + `/setup` stops cloning universal docs.
-  Awaiting go-ahead. ([log](sessions/2026-06-07.md))
+- **Last updated:** 2026-06-08
+- **✅ Copy-vs-drift fix SHIPPED (2026-06-08):** RESUME.md actions executed. (1) **Directions Index**
+  (topic→master-doc table, ~45 rows from live `TRIGGERS:` headers) added to live `~/.claude/CLAUDE.md`
+  **and** `CLAUDE-GLOBAL-TEMPLATE.md`, sibling to the Pattern Cookbook block. (2) **`/setup` no longer
+  copies the universal `00–61` docs** — scaffolds only project-specific files (PROJECT_STATE, sessions/,
+  decisions, glossary); universal guidance is read-on-demand from the master. (3) **Sentinel moved**
+  `docs/00_base.md` → `docs/PROJECT_STATE.md` across `commands/setup.md`, template, and live config.
+  `46_main-menu.md` already committed (59ccfae). RESUME.md retired. ([log](sessions/2026-06-08.md))
+- **Note:** the live `~/.claude/CLAUDE.md` is NOT in this repo; `CLAUDE-GLOBAL-TEMPLATE.md` is its
+  tracked mirror (the two had drifted — itself proof of the copy-drift problem; now re-aligned).
 - **Open question (2026-06-06):** how to surface "current state of my work" across projects — lightweight on-demand HTML artifact (agent reads filesystem→emits one gitignored `dashboard.html`) vs. the committed `project.json` static-site generator designed 2026-03-24. **Build one, not both.**
 
 ## Funnel Progress (Ralph-style)
@@ -61,6 +65,7 @@
 
 ## Active Decisions
 <!-- Last 3-5 decisions only. Full history in decisions.md -->
+- 2026-06-08: **Killed the copy-vs-drift flaw with a read-on-demand model.** Universal Directions docs (`00–61`) are now the single source of truth in the master repo, surfaced to every running project via a topic→doc **Directions Index** in global `~/.claude/CLAUDE.md` (+ tracked mirror in `CLAUDE-GLOBAL-TEMPLATE.md`). `/setup` stops copying them and scaffolds only project-specific files; the "is Directions set up?" sentinel moved `00_base.md` → `PROJECT_STATE.md`. Rationale: copied docs in N projects silently drift and never get new house-style — same problem packages solved with path-deps (single source of truth). Discovered live proof mid-task: the template and live global config had themselves drifted apart. Also reconciled a cross-Mac branch divergence (origin had duplicate cookbook #80/#81 from another Mac; local was a clean superset → `-s ours` merge, pushed `effe3f2`).
 - 2026-06-06: **Evaluated Thariq's "Unreasonable Effectiveness of HTML" for a cross-project status dashboard.** Thesis (Anthropic, 2026-05-09): human-facing agent output → self-contained `.html` beats markdown. Decision rule kept: HTML for human-facing/comparisons/dashboards; **markdown stays for short outputs, chained agents, anything git-tracked or iterated weekly.** Surveyed implementing skills (`dogum/html-artifacts`, `voidful/claude-html-report-skill` = reports→GitHub Pages, most relevant). **Diagnosis:** past web-dashboard attempts failed because they were *web apps* (server/build to maintain); the artifact pattern has none — agent reads filesystem, emits one static html. Cautions: keep dashboard disposable/gitignored, don't HTML-ify cookbook/Directions docs, usefulness gated by PROJECT_STATE quality. No code built; PoC `dashboard.html` pending go-ahead. See open question above + connects to 2026-03-24.
 - 2026-05-31: **Performer-voice "mood lightener" system made global.** Imported the user's `VOICES.md` (21 comedian/character voices) and promoted it from project-scoped to global: full roster + rules at `~/.claude/VOICES.md`, loaded via a new "Performer Voices (Mood Lightener)" section in `~/.claude/CLAUDE.md` (applies in every project). TARS-style dial, default **40%** (user adjusts: "go to 80% voices" / "drop to 20%"); voiced text wrapped in a `🎭 *(VoiceName, NN%)*` blockquote marker so the user can see when it's a joke; plain text = serious. Hard rule: never voice genuinely bad news (data loss / security / destructive ops). Project memory `feedback_voice-level-dial.md` keeps a pointer to the global home.
 - 2026-05-28: **Corrected Apple Developer team IDs in `~/.claude/apple-developer.md`.** `FDMSRXXN73` = paid Individual Developer Program (renewal 2026-09-27); `H56HM4MMZS` = free Personal Team. Docs had these swapped since 2026-03-10; all published apps were always on the correct team. Credentials file rebuilt with full cert inventory + New Project Checklist. **Watch date: renew membership before 2026-09-27.**
