@@ -73,6 +73,9 @@ build_body() {
   printf '|---|---|\n'
   for f in "$REPO"/[0-9][0-9]_*.md; do
     [ -e "$f" ] || continue
+    # Skip redirect stubs (consolidated docs that just point elsewhere) — their triggers live on
+    # the canonical doc, so they shouldn't be double-listed.
+    grep -qiE '^[[:space:]]*LOAD:[[:space:]]*redirect' "$f" && continue
     desc=$(describe "$f")
     desc=${desc//|/\/}                              # never let a pipe break the table
     printf '| %s | `%s` |\n' "$desc" "$(basename "$f")"

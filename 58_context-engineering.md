@@ -1,8 +1,8 @@
 <!--
-TRIGGERS: context engineering, prompt engineering, information environment,
-          context stack
 PHASE: any
 LOAD: redirect
+(No TRIGGERS — this is a redirect stub; triggers live on the canonical 52_context-management.md
+so it isn't double-listed in the generated Directions Index.)
 -->
 
 # Context Engineering → moved
