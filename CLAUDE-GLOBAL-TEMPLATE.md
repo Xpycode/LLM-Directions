@@ -8,6 +8,23 @@
 
 At the start of every session, **automatically run Project Detection (below)** to determine project state.
 
+### Multi-Mac pre-flight (run FIRST, before any work)
+
+If the project is a git repo, **`git fetch` before touching anything** — this codebase is edited
+from more than one Mac (see `37_multi-mac-discipline.md`, Rule 1). Fetch is read-only and safe; it
+does **not** merge or change the working tree.
+
+```bash
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git fetch --quiet 2>/dev/null
+git status -sb | head -1   # report ahead/behind to the user
+```
+
+- **behind > 0** → tell the user "origin has N commits you don't have — pull before working" and offer
+  to `git pull` (or reconcile if also ahead). Do this *before* editing, or you risk redoing work
+  another Mac already shipped (the copy-vs-drift duplicate-commit incident, 2026-06-08).
+- **ahead and behind** (diverged) → do **not** push; surface it and reconcile first.
+- **clean / ahead only** → proceed normally.
+
 After detection:
 - If Directions exists → show current status and ask what to work on
 - If no Directions → offer to set it up, then show commands menu
