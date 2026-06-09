@@ -157,7 +157,9 @@
       "Bash(plutil -extract LSMinimumSystemVersion raw /System/Library/ExtensionKit/Extensions/com.apple.fskit.ftp.appex/Contents/Info.plist)",
       "Bash(log show *)",
       "Bash(/usr/bin/log show *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(env)",
+      "WebFetch(domain:thariqs.github.io)"
     ]
   },
   "enableAllProjectMcpServers": true,
