@@ -14,6 +14,12 @@ say what something *means*, not what it's called.
 
 Do **not** read full session logs or `tasks-archive.md` unless the user asks to dig deeper.
 
+**Old-shape check (offer, don't force):** if `PROJECT_STATE.md` is old-shape — has a
+`## Active Decisions` section, or lacks both `## Now` and `## Recent`, or exceeds ~70 lines — add
+one line after the status: *"This PROJECT_STATE is the old verbose shape (N lines). Want me to
+migrate it to the lean digest?"* If yes, follow `<directions-master>/MIGRATE-PROJECT-STATE.md`.
+Never migrate without asking — `/status` is read-only by default.
+
 **Report — aim for ≤8 lines, plain English. Skip any line with nothing to say.**
 - **Phase / focus** — one sentence: where we are + what's active.
 - **Tasks** — one line `N/M sprint · X% overall`, only if `TASKS.md` exists.

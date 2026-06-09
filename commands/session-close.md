@@ -55,6 +55,12 @@ Don't auto-copy the session bullet verbatim — a one-line "decided X" in a sess
 
 ## Step 4 — Sync `PROJECT_STATE.md`
 
+**Old-shape check first:** if this `PROJECT_STATE.md` is still old-shape — has a `## Active Decisions`
+section, or lacks both `## Now` and `## Recent`, or exceeds ~70 lines — offer to migrate it now:
+*"PROJECT_STATE is the old verbose shape — migrate to the lean digest while we're here?"* If yes,
+follow `<directions-master>/MIGRATE-PROJECT-STATE.md` (it preserves decisions into `decisions.md`
+first, then slims the file), then continue Step 4 against the new shape.
+
 `PROJECT_STATE.md` is a **lean digest** (Now / Recent / index). Don't paste detail into it — detail
 lives in `decisions.md` and `sessions/_index.md`. Update only these:
 
