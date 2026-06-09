@@ -55,15 +55,17 @@ Don't auto-copy the session bullet verbatim — a one-line "decided X" in a sess
 
 ## Step 4 — Sync `PROJECT_STATE.md`
 
-Open `docs/PROJECT_STATE.md`. Check three things:
+`PROJECT_STATE.md` is a **lean digest** (Now / Recent / index). Don't paste detail into it — detail
+lives in `decisions.md` and `sessions/_index.md`. Update only these:
 
 | Field | Action |
 |---|---|
 | `Last updated:` | Bump to today's date. Always. |
-| `Focus:` | Does it still describe what we're actually working on? If the session shifted focus, propose new text. |
-| `Active Decisions` list | If a new decision was added in Step 3, prepend it (one-liner referencing `decisions.md`). Keep the list to 3–5 entries — drop the oldest to make room. |
+| `Now → Focus` | Still describe what we're actually working on? If the session shifted focus, propose new one-sentence text. |
+| `Now → Next` / `Blockers` | If the session changed what's next or surfaced/cleared a blocker, update the one-liner. |
+| `Recent` list | Prepend a **one-line, plain-language** entry for this session (no commit SHAs, no jargon). Keep the list to ~5 — drop the oldest. The full version is the `sessions/_index.md` row. |
 
-Also check **Status** and **Blockers** sections — if anything changed during the session, update them.
+If a real architectural decision was made (Step 3), it goes in `decisions.md` — **not** expanded into PROJECT_STATE.
 
 Don't blindly bump everything; only change fields the session evidence supports.
 

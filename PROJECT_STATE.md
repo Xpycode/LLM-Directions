@@ -1,109 +1,51 @@
 # Project State
 
-> **Size limit: <100 lines.** This is a digest, not an archive. Details go in session logs.
+> **Lean digest — target <50 lines.** Current state + a short changelog, then pointers to detail
+> files. History lives in `decisions.md` and `sessions/_index.md`, not here.
 
 ## Identity
-- **Project:** Directions
-- **One-liner:** LLM-assisted development framework with structured specs, plans, and verification
-- **Tags:** meta, framework, documentation, workflow, Claude
-- **Started:** 2024
+- **Project:** Directions — LLM-assisted development framework (specs, plans, verification)
+- **Tags:** meta, framework, documentation, workflow, Claude · **Started:** 2024
 
-## Current Position
-- **Funnel:** build
-- **Phase:** implementation
-- **Focus:** Cross-project Directions audit (2026-05-13 → -15) **fully closed**. All 6 quick-wins + M1 (50/52/58 → canonical `52_context-management.md`) + M2 (`29_`/`38_`/`39_`) + post-M1 polish (`13_folder-structure.md` web parity, Pattern A/B + deploy artifacts + setup scripts + migration recipes) + AutoRedact orphan split + 4 consumer-index backfills (MousePlus, SFTPmount, KinoBerlin local-only, Group Alarms script-side fix) + `sync-session-index.sh` `(./)` link-form patch. Audit reports `✓ in sync` across master + 10 consumer projects. **2026-05-16 follow-up:** real-product session on SFTPmount produced the 26.5 re-validation rev-3 input + canonized `37_multi-mac-discipline.md` (3 recurring cross-Mac incidents codified). 30s discipline range now contiguous 30–39. **1 housekeeping item remaining**: dogfood `/session-close` on a real session (can't be done retroactively).
-- **Status:** ready
-- **Last updated:** 2026-06-08
-- **✅ Copy-vs-drift fix SHIPPED (2026-06-08):** RESUME.md actions executed. (1) **Directions Index**
-  (topic→master-doc table, ~45 rows from live `TRIGGERS:` headers) added to live `~/.claude/CLAUDE.md`
-  **and** `CLAUDE-GLOBAL-TEMPLATE.md`, sibling to the Pattern Cookbook block. (2) **`/setup` no longer
-  copies the universal `00–61` docs** — scaffolds only project-specific files (PROJECT_STATE, sessions/,
-  decisions, glossary); universal guidance is read-on-demand from the master. (3) **Sentinel moved**
-  `docs/00_base.md` → `docs/PROJECT_STATE.md` across `commands/setup.md`, template, and live config.
-  `46_main-menu.md` already committed (59ccfae). RESUME.md retired. **Index is script-generated**
-  (`scripts/gen-directions-index.sh`, RESUME Option B) from each doc's `TRIGGERS:` header → can't
-  drift; marker-wrapped + idempotent, re-run with `--write FILE`. ([log](sessions/2026-06-08.md))
-- **Note:** the live `~/.claude/CLAUDE.md` is NOT in this repo; `CLAUDE-GLOBAL-TEMPLATE.md` is its
-  tracked mirror (the two had drifted — itself proof of the copy-drift problem; now re-aligned).
-- **Open question (2026-06-06):** how to surface "current state of my work" across projects — lightweight on-demand HTML artifact (agent reads filesystem→emits one gitignored `dashboard.html`) vs. the committed `project.json` static-site generator designed 2026-03-24. **Build one, not both.**
+## Now
+- **Phase:** build / implementation (~80%) — mature framework, ongoing refinement.
+- **Focus:** lean-digest refactor — slim PROJECT_STATE to Now/Recent/index; make `/status` succinct.
+- **Blockers:** none.
+- **Next:** decide the cross-project status view — throwaway gitignored `dashboard.html` vs the
+  committed `project.json` site generator (2026-03-24). **Build one, not both.**
 
-## Funnel Progress (Ralph-style)
-<!-- The 3-phase funnel that ships software -->
+## Recent
+<!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-06-09** — added cookbook #85/#86; caught + dropped duplicate work another Mac had pushed; slimmed this file and `/status`.
+- **2026-06-08** — shared guidance docs are now read on demand from one master copy instead of copied into each project (kills silent drift); added a session-start git-fetch check for cross-Mac collisions.
+- **2026-05-16** — wrote the multi-Mac discipline doc after 3 cross-Mac mix-ups in two weeks; re-validated the SFTPmount spike plan against macOS 26.5.
+- **2026-05-14** — cross-project cleanup: merged 3 overlapping context docs into one, added iOS/web/sync gotcha docs, fixed session-index drift across 10 projects.
+- **2026-05-01** — flattened the master repo layout so new projects bootstrap cleanly (no nested folders, no tool-cache bloat).
 
+## Progress
 | Funnel | Status | Gate |
 |--------|--------|------|
-| **Define** | done | Framework documented, patterns established |
-| **Plan** | done | Slash commands, templates, workflows defined |
-| **Build** | active | Iterating on improvements |
+| Define | ✅ done | Framework documented |
+| Plan   | ✅ done | Commands + templates defined |
+| Build  | 🔶 active | Iterating on improvements |
 
-## Phase Progress
-```
-[################....] 80% - Mature framework
-```
+| Dimension | Features | UI/Polish | Testing | Docs | Distribution |
+|-----------|----------|-----------|---------|------|--------------|
+| Status    | ✅ | 🔶 | ⚪ | ✅ | ✅ |
 
-| Phase | Status | Tasks |
-|-------|--------|-------|
-| Discovery | done | ✓ |
-| Planning | done | ✓ |
-| Implementation | **active** | ongoing |
-| Polish | ongoing | docs refinement |
-
-## Readiness
-<!-- Status per dimension: ⚪ not started | 🔶 WIP | ✅ done -->
-
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Features | ✅ done | Core framework complete |
-| UI/Polish | 🔶 WIP | Slash commands, templates |
-| Testing | ⚪ — | Manual verification |
-| Docs | ✅ done | Full documentation suite |
-| Distribution | ✅ done | GitHub repo, local master |
-
-## Validation Gates
-<!-- Backpressure checks before phase transitions -->
-- [x] **Define → Plan**: Framework spec complete
-- [x] **Plan → Build**: Commands and templates documented
-- [ ] **Build → Ship**: Ongoing refinement
-
-## Active Decisions
-<!-- Last 3-5 decisions only. Full history in decisions.md -->
-- 2026-06-08: **Killed the copy-vs-drift flaw with a read-on-demand model.** Universal Directions docs (`00–61`) are now the single source of truth in the master repo, surfaced to every running project via a topic→doc **Directions Index** in global `~/.claude/CLAUDE.md` (+ tracked mirror in `CLAUDE-GLOBAL-TEMPLATE.md`). `/setup` stops copying them and scaffolds only project-specific files; the "is Directions set up?" sentinel moved `00_base.md` → `PROJECT_STATE.md`. Rationale: copied docs in N projects silently drift and never get new house-style — same problem packages solved with path-deps (single source of truth). Discovered live proof mid-task: the template and live global config had themselves drifted apart. Also reconciled a cross-Mac branch divergence (origin had duplicate cookbook #80/#81 from another Mac; local was a clean superset → `-s ours` merge, pushed `effe3f2`).
-- 2026-06-06: **Evaluated Thariq's "Unreasonable Effectiveness of HTML" for a cross-project status dashboard.** Thesis (Anthropic, 2026-05-09): human-facing agent output → self-contained `.html` beats markdown. Decision rule kept: HTML for human-facing/comparisons/dashboards; **markdown stays for short outputs, chained agents, anything git-tracked or iterated weekly.** Surveyed implementing skills (`dogum/html-artifacts`, `voidful/claude-html-report-skill` = reports→GitHub Pages, most relevant). **Diagnosis:** past web-dashboard attempts failed because they were *web apps* (server/build to maintain); the artifact pattern has none — agent reads filesystem, emits one static html. Cautions: keep dashboard disposable/gitignored, don't HTML-ify cookbook/Directions docs, usefulness gated by PROJECT_STATE quality. No code built; PoC `dashboard.html` pending go-ahead. See open question above + connects to 2026-03-24.
-- 2026-05-31: **Performer-voice "mood lightener" system made global.** Imported the user's `VOICES.md` (21 comedian/character voices) and promoted it from project-scoped to global: full roster + rules at `~/.claude/VOICES.md`, loaded via a new "Performer Voices (Mood Lightener)" section in `~/.claude/CLAUDE.md` (applies in every project). TARS-style dial, default **40%** (user adjusts: "go to 80% voices" / "drop to 20%"); voiced text wrapped in a `🎭 *(VoiceName, NN%)*` blockquote marker so the user can see when it's a joke; plain text = serious. Hard rule: never voice genuinely bad news (data loss / security / destructive ops). Project memory `feedback_voice-level-dial.md` keeps a pointer to the global home.
-- 2026-05-28: **Corrected Apple Developer team IDs in `~/.claude/apple-developer.md`.** `FDMSRXXN73` = paid Individual Developer Program (renewal 2026-09-27); `H56HM4MMZS` = free Personal Team. Docs had these swapped since 2026-03-10; all published apps were always on the correct team. Credentials file rebuilt with full cert inventory + New Project Checklist. **Watch date: renew membership before 2026-09-27.**
-- 2026-05-16 (later): **Canonized `37_multi-mac-discipline.md`** (279L, slot 37 — closes the only open 30s slot). Three recurrences in two weeks pushed the cross-Mac pattern past the "interesting incident" threshold: `.claude/settings.local.json` union-merge (2026-05-14), SFTPmount duplicate spike commit detected at push (2026-05-15), M1-vs-M4 spike-context discovery (2026-05-16). Doc structure mirrors `39_libsql-turso-sync.md`: mental model + Rule 1 (`git fetch` first when crossing Macs) + Rule 2 (verify machine-specific OS state on the actual machine; record host identity in spike journals) + Rule 3 (union-merge for accumulating non-tracked files; `.stignore` to prevent recurrence) + Rule 4 (pivot-when-blocked-by-physical-machine pattern, productive substitute for redoing setup) + 30-second pre-flight template + 8-row cheatsheet. Inbound refs wired in `00_base.md` and `01_quick-reference.md`. Master commit `b372d58` pushed.
-- 2026-05-16: **Real-product session on SFTPmount.** Attempted Wave 0 Step 3 from M1 Max; pre-flight surfaced spike-context-on-other-machine (no `FSKitExp.app` here, no `~/scratch/sftpmount-spikes/`, no `fskitd` activity 2026-05-09 in retained log — confirmed via three diagnostic methods that the spike actually ran on M4 Pro per journal header). Pivoted to read-only re-validation of rev-3 plan corrections against macOS 26.5: three parallel checks (Info.plist+entitlements diff, log archaeology, FSKit framework surface). Result: 5/6 rev-3 corrections still hold; correction #5 needs `LSMinimumSystemVersion` 26.4 → 26.5; surfaced 6 additional Info.plist keys to mirror Apple's stock + 1 entitlement decision (drop `com.apple.security.network.server` for SFTP). Findings written into `01_Project/spike-r2-fskitd/NOTES.md` as a 5-item rev-3 punch list. SFTPmount commit `f146c66` pushed. **Cross-Mac collision pattern recurred a 3rd time** (the initial M1-vs-M4 confusion); now warrants its own Directions doc. **Pivot-when-blocked-by-physical-machine pattern proven**: when primary task needs other hardware, read-only validation that informs the next attempt is a productive substitute.
-- 2026-05-15: **Audit punch list fully closed.** AutoRedact 4-way split (filesystem only; `2026-04-05.md` 177L → 4 per-session files 43/57/44/34L; `.pre-split-backup` retained). Consumer-index backfills shipped: MousePlus `2026-05-01-a` (local), SFTPmount `2026-05-09-spike` (`Xpycode/SFTPmount 1eaf000`), KinoBerlin `2026-01-16-tmdb-ratings-plan` artifact (local-only repo `089137f`). Group Alarms was a false positive — entries already indexed in bullet list via `(./file.md)` form the audit regex rejected. Patched `sync-session-index.sh` (master `5c1ca10`) to accept `(./)` prefix; verified `✓ in sync` across 11 audits (4 backfilled + 6 regression + master self). Side-incident: SFTPmount remote had near-identical spike commits pushed from another Mac (cross-Mac collision pattern recurring); resolved via `git reset --hard` + redo of the unique `_index.md` row.
-- 2026-05-14: **M1 + post-M1 polish.** Consolidated `50_progressive-context.md` + `52_context-management.md` + `58_context-engineering.md` (1042L overlap) into canonical three-part `52_context-management.md` (Architecture + Runtime + Information Design), 1001L; 50/58 became 30-line breadcrumb stubs. Then expanded `13_folder-structure.md` 353L → 711L with Pattern A (no-build/Strato) + Pattern B (framework/Vercel), deploy-artifact tables, setup scripts, migration recipes — closes the web-target gap surfaced in the post-M1 audit.
-- 2026-05-14: **M2 COMPLETE — wrote `38_ios-swiftui-state.md`** (247 lines). Five iOS state patterns from Group Alarms incidents, all rooted in "SwiftUI property wrappers are View-only": `@AppStorage` on non-View classes silently fails; `SettingsResetService` over duplicate declarations; pessimistic disk + optimistic memory; two-gate guard for implicit actions; UUID Equatable trap. Bonus: Xcode 16 synced folders auto-track filesystem. M2 fully shipped (29_, 38_, 39_).
-- 2026-05-14: **M2 partial — wrote `39_libsql-turso-sync.md`** (198 lines). LEARNING's two libSQL/Turso CDC gotchas: DDL never replicates; raw sqlite3 DML bypasses CDC.
-- 2026-05-14: **M2 partial — wrote `29_web-strato-hosting.md`** (230 lines). Codifies Strato hosting gotchas rediscovered across 4 web projects. 20s gotchas range contiguous 20–29.
-- 2026-05-14: **Sync-conflict audit closed.** Resolved all sync-conflicts under `/ProgrammingProjects/` (AspectRatioUnifier Wave-7 bases, `.claude/settings.local.json` union-merges for MenuBarPLUS/SFTPmount, 4 `docs/sessions/` superset-dedupes). **Zero sync-conflicts remain.** Bootstrap-contamination sweep: **29 bit-identical session-log files removed across 4 consumers** (LUCESUMBRARUM, AvidMXFPeek, ePubReader, AutoRedact); all `✓ in sync`. *(detail in session logs)*
-- 2026-05-14: Shipped `commands/session-close.md` (122 lines) — six-step end-of-session checklist (NOT silent automation). Prevents all four audit-surfaced drift patterns at source: missing Next Session, stale PROJECT_STATE, decisions buried in prose, `_index.md` drift. Friction is intentional: human judgment beats auto-stubs for Next Session text and ADR entries.
-- 2026-05-14: Shipped `scripts/sync-session-index.sh` (154 lines, bash 3.2-compat) + `commands/check-index.md`. Detects + optionally fixes `_index.md` drift against files on disk. Supports both link-form and bare-date row formats. Surfaced 9-entry drift in master's own index + a shared 6-entry bootstrap-contamination pattern across 3 consumer projects.
-- 2026-05-14: Wrote `28_xcode-signing-and-sourcekit.md` (187 lines) — codifies the `Debug.local.xcconfig` per-machine signing pattern and SourceKit false-positive discipline that had been independently rediscovered in 6+ projects. Fills the open `28_` slot in the 20s gotchas range.
-- 2026-05-14: Archived `/0-DIRECTIONS/docs/` (second-gen parallel master, 452 KB, 2026-02-06) to `__archive/2026-02-06-pre-final-flatten-docs/`. Umbrella dir: 7 → 6 entries. Naming-ambiguity risk eliminated.
-- 2026-05-13: Archived dormant `/0-DIRECTIONS/` doc monolith (19 dirs + txt + 3 loose sessions, ~600 files, 12 MB, frozen 2026-01-07) to `__archive/2026-01-07-pre-flatten-monolith/` with summary ARCHIVE.md. Umbrella dir: 30 → 7 entries.
-- 2026-05-13: Renamed `55_ui-changes-protocol.md` → `36_ui-changes-protocol.md` (fixes duplicate `55_` prefix with `55_spec-template.md`; semantic fit in the 30s process-discipline range). Master refs updated; consumers update on next sync.
-- 2026-05-01: Flattened master — cookbook moved to root (`cookbook/` not `docs/cookbook/`); bootstrap is now rsync-with-excludes (no embedded `.git`, no tool-cache bloat). Eliminates `docs/docs/cookbook/` nesting in consumer projects. Cookbook at 62 entries (added 40–61).
-- 2026-04-28: Adopted MCP-hygiene pattern — PreToolUse guard on `index_repository` + new `hooks/mcp-guards/` dir; first instance documents codebase-memory-mcp's umbrella-cwd footgun in `27_mcp-gotchas.md`
-- 2026-03-24: Designing per-project static site generator — bottom-up complement to ProjectOverview aggregator
-- 2026-02-27: Wired `13_folder-structure.md` into setup flow — template, base, and setup command now auto-create numbered folders
-- 2026-02-18: Added XcodePreviews (Iron-Ham/XcodePreviews) to ecosystem — global `/preview` command, documented in 26_ecosystem.md and global CLAUDE.md
-
-## Blockers
-<!-- Empty = good. If blocked, include workaround attempts. -->
-
+## Detail (read only if needed)
+- **Why we decided things** → `decisions.md`
+- **Full session history** → `sessions/_index.md`
+- **Backlog / what's ahead** → `TASKS.md` (+ `tasks-archive.md`)
+- **Global config mirror** → `CLAUDE-GLOBAL-TEMPLATE.md` (the live `~/.claude/CLAUDE.md` is not in this repo)
 
 ## Infrastructure
-- **Global skills:** 261 installed at `~/.claude/skills/`
-- **Key skill sets:** SwiftUI, Swift concurrency, UI/UX, workflow patterns, debugging, TDD
-- **Update command:** `npx skills update`
-- **XcodePreviews:** `/Users/sim/ProgrammingProjects/0-DIRECTIONS/XcodePreviews/` — `/preview` command for SwiftUI visual capture
+- 261 global skills at `~/.claude/skills/` (update: `npx skills update`)
+- XcodePreviews `/preview` at `/Users/sim/ProgrammingProjects/0-DIRECTIONS/XcodePreviews/`
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
 
-
 ---
-*Updated by Claude. Source of truth for project position.*
+*Lean digest. Source of truth for current position; history lives in the linked files.*
+*Last updated: 2026-06-09.*
