@@ -22,17 +22,31 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git remote | grep -q .
     counts=$(git rev-list --left-right --count "@{u}...HEAD" 2>/dev/null)
     behind=$(printf '%s' "$counts" | awk '{print $1+0}')
     ahead=$(printf '%s' "$counts" | awk '{print $2+0}')
+    # Working-tree state: uncommitted edits left from a PRIOR session on THIS Mac are
+    # the seed of cross-Mac duplicates — Syncthing copies them to the other Mac, which
+    # commits + pushes; this Mac then redoes the work. Surface them up front.
+    dirty=$(git status --porcelain 2>/dev/null | head -1)
     echo "— Multi-Mac pre-flight —"
     if [ "${behind:-0}" -gt 0 ] && [ "${ahead:-0}" -gt 0 ]; then
       echo "⚠️  '$branch' has DIVERGED from $upstream: $ahead local / $behind remote."
       echo "    Do NOT push. Reconcile first (git fetch already done; see 37_multi-mac-discipline.md)."
     elif [ "${behind:-0}" -gt 0 ]; then
-      echo "⚠️  origin has $behind commit(s) you don't have on '$branch'."
-      echo "    PULL before editing — another Mac may have already done this work."
+      if [ -n "$dirty" ]; then
+        echo "⚠️  origin has $behind commit(s) you don't have — AND you have uncommitted changes."
+        echo "    Check first: those local edits may be the SAME work origin already shipped"
+        echo "    (Syncthing-carried duplicate). Compare before discarding; then fast-forward."
+      else
+        echo "✅ origin has $behind commit(s) ahead and your tree is CLEAN — safe fast-forward."
+        echo "    Offer to 'git pull' before editing (lossless); another Mac may have done this work."
+      fi
     elif [ "${ahead:-0}" -gt 0 ]; then
       echo "ℹ️  '$branch' is ahead of $upstream by $ahead unpushed commit(s)."
+      echo "    Push before switching Macs — unpushed commits are invisible to the other Mac."
+    elif [ -n "$dirty" ]; then
+      echo "⚠️  '$branch' in sync with $upstream, but you have UNCOMMITTED changes from a prior session."
+      echo "    Commit + push (or discard) before new work — stray edits are how cross-Mac duplicates start."
     else
-      echo "✓ '$branch' in sync with $upstream."
+      echo "✓ '$branch' in sync with $upstream, working tree clean."
     fi
     echo
   fi

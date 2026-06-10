@@ -17,13 +17,26 @@ does **not** merge or change the working tree.
 ```bash
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git fetch --quiet 2>/dev/null
 git status -sb | head -1   # report ahead/behind to the user
+git status --porcelain | head -1   # is the working tree dirty? (leftover work)
 ```
 
-- **behind > 0** → tell the user "origin has N commits you don't have — pull before working" and offer
-  to `git pull` (or reconcile if also ahead). Do this *before* editing, or you risk redoing work
-  another Mac already shipped (the copy-vs-drift duplicate-commit incident, 2026-06-08).
-- **ahead and behind** (diverged) → do **not** push; surface it and reconcile first.
-- **clean / ahead only** → proceed normally.
+Read **both** the ahead/behind counts and whether the tree is dirty, then act (these are *confirmed*
+actions — offer, don't silently mutate the tree):
+
+- **behind > 0, tree clean** → safe fast-forward. Offer to `git pull` *before* editing — it's lossless,
+  and another Mac may have already done the work you're about to start.
+- **behind > 0, tree dirty** → the local edits may be the *same* work origin already shipped, carried
+  over by Syncthing but never committed here (the recurring duplicate pattern). Compare local changes
+  against origin before discarding; once confirmed redundant, drop them and fast-forward.
+- **ahead and behind** (diverged) → do **not** push; surface it and reconcile first (Rule 1).
+- **ahead only** → unpushed commits the other Mac can't see; remind the user to push before switching.
+- **in sync but tree dirty** → uncommitted leftovers from a prior session. Offer to commit + push or
+  discard before new work — stray uncommitted edits are the seed of cross-Mac duplicates.
+- **in sync, clean** → proceed normally.
+
+**At session end** (or before walking away / switching Macs): run `/session-close`, which now offers to
+commit **and push** in one confirmed step. A local commit that never reaches origin is as invisible to
+the other Mac as an uncommitted file. See `37_multi-mac-discipline.md`.
 
 After detection:
 - If Directions exists → show current status and ask what to work on

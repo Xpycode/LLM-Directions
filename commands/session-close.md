@@ -94,9 +94,9 @@ Interpret the output:
 - **`MISSING`** including older logs — surface them to the user: "Your index is missing N entries from prior sessions. Want me to backfill them, or just today's?"
 - **`ORPHAN entries`** — flag and ask. Could be a typo, a moved file, or a deleted log. Never auto-remove.
 
-## Step 6 — Suggest a commit (don't run it)
+## Step 6 — Offer to commit AND push (confirmed, not silent)
 
-After Steps 1–5, summarise:
+After Steps 1–5, summarise, then **offer to commit and push** — don't just print a message and stop.
 
 > Session closed. Changes:
 > - `docs/sessions/<file>` — N lines added/modified
@@ -104,14 +104,27 @@ After Steps 1–5, summarise:
 > - `docs/PROJECT_STATE.md` — timestamp + N fields updated
 > - `docs/sessions/_index.md` — N rows added/modified
 >
-> Suggested commit message:
+> Commit + push now? (recommended before switching Macs)
 > ```
 > session: close <date> + sync state
 > ```
->
-> Run `git add` + `git commit` when ready.
 
-**Never auto-commit.** The user may have other in-flight work that shouldn't ride along.
+If the user says yes:
+
+1. **Check for in-flight work that shouldn't ride along.** Run `git status`. If there are unrelated
+   modified files (code mid-change, an experiment), name them and ask whether to stage only the
+   docs/session files or everything. Default to staging only what this close touched.
+2. `git add` the chosen files, `git commit` with the message above.
+3. **Push** — `git push`. In a multi-Mac repo an *unpushed* commit is as invisible to the other Mac
+   as an uncommitted file; closing the session without pushing leaves the duplicate-work window open
+   (see `37_multi-mac-discipline.md`). If the branch isn't `main`/`master`, push the feature branch;
+   never push directly to `main` if the user's git rules forbid it — merge locally first, then push.
+4. If `git push` is rejected ("fetch first"), STOP — origin moved under you (another Mac). Do **not**
+   force. Run the Rule 1 reconcile from `37_multi-mac-discipline.md`.
+
+**Still confirmed, never silent.** Ask before committing; ask before pushing if anything unrelated is
+staged. The change from older guidance is that the *offer now includes the push* — because stopping at
+a local commit defeats the whole point of closing cleanly when you work across machines.
 
 ## When to invoke
 

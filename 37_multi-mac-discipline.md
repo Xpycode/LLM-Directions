@@ -81,6 +81,56 @@ Before any non-trivial commit on a multi-Mac repo: `git fetch origin main` first
 
 Source: SFTPmount 2026-05-15 (committed local spike work; push rejected because the M4 Pro had pushed near-identical commits earlier; resolved via `git reset --hard origin/main` + a focused single-row `_index.md` commit, total 1 unique commit instead of 2 duplicates).
 
+### Rule 1a: The dual-carry trap — git AND Syncthing over the same working tree
+
+The duplicate-commit class has a quieter, more confusing variant when **the repo lives inside a
+Syncthing folder** (e.g. anything under `~/ProgrammingProjects`, which is a Syncthing root). Now every
+file is carried by *two* systems with different notions of "synced," and they race:
+
+1. **This Mac** edits tracked files (code, docs) and leaves them **uncommitted**.
+2. **Syncthing** silently copies those working-tree bytes to the other Mac — uncommitted edits and all.
+3. **Other Mac** commits them and pushes to origin.
+4. **This Mac** reopens: `git fetch` says "behind N," yet `git status` *still* shows the same files as
+   modified/untracked. They are **byte-identical to origin** (Syncthing kept them current) but git here
+   never recorded the commit. Result: a phantom "uncommitted duplicate of work that's already shipped."
+
+This is not a discipline failure — it's structural. **Git carries commits; Syncthing carries file-bytes
+including the *uncommitted* ones git can't see as done.** The tell: you're `behind` *and* dirty, and the
+dirty files diff clean against `origin` (`git diff origin/main -- <file>` shows zero lines).
+
+**Recovery** (when local dirty == origin, confirmed): discard the local copies and fast-forward —
+`git restore <tracked>` + `rm <untracked-dups>` + `git merge --ff-only origin/main`. Verify byte-identity
+first (`diff <(git show origin/main:path) path`) so you never discard genuinely-unique local work.
+
+**Two structural defenses:**
+
+- **Close the uncommitted-work window (lifecycle).** The race only opens while tracked work sits
+  *uncommitted* for Syncthing to carry. If every session **commits + pushes before you walk away**, the
+  other Mac gets a clean fast-forward and this Mac's tree is clean — no phantom dups. The Directions
+  hooks enforce this as *confirmed* (never silent) actions:
+  - `hooks/session-start.sh` (`SessionStart`) — fetches, reports ahead/behind **and** whether the tree
+    is dirty; flags a safe fast-forward vs. a probable Syncthing-carried duplicate.
+  - `hooks/session-stop.sh` (`Stop`) — debounced (~20 min) `systemMessage` nudge when work is
+    uncommitted or unpushed. Never blocks.
+  - `/session-close` Step 6 — offers to commit **and push** in one confirmed step (an unpushed commit is
+    as invisible to the other Mac as an uncommitted file).
+- **Stop the dual-carry (boundary).** Let git own tracked files and Syncthing carry only the gitignored
+  files that genuinely need it (session logs). In the Syncthing root's `.stignore`:
+
+  ```gitignore
+  // Directions master: git owns tracked files; Syncthing carries only the gitignored
+  // session logs. Kills the git+Syncthing dual-carry race. !include precedes the ignore.
+  !/0-DIRECTIONS/__DIRECTIONS/sessions/**
+  /0-DIRECTIONS/__DIRECTIONS/**
+  ```
+
+  `.git` is already excluded globally (syncing it makes branch checkouts look like mass deletions —
+  02_Design incident 2026-06-03). `.stignore` itself rides Syncthing, so the rule propagates; watch the
+  other Mac's sync status briefly after adding it, since a wrong pattern fails *silently*.
+
+Source: Directions master repo, 6 cross-Mac collisions Apr–Jun 2026; the dual-carry mechanism isolated
+2026-06-10 (behind-2 + dirty tree whose files diffed clean against origin).
+
 ---
 
 ## Rule 2: Verify machine-specific state on the actual machine before acting on it
@@ -259,6 +309,7 @@ If `git rev-list` shows `0 N`, pull before doing anything. If it shows `N M`, st
 |---|---|---|
 | `git push` rejected with "fetch first" | Rule 1 (divergent commits) | `git fetch && git rev-list --left-right --count HEAD...origin/main` to size the gap |
 | Duplicate-looking commits in `git log --left-right HEAD...origin/main` | Rule 1 | reset + redo only the unique parts (don't merge) |
+| `behind N` **and** dirty tree, but dirty files diff clean vs `origin` | Rule 1a (dual-carry) | confirm byte-identity, discard local dups, `merge --ff-only`; close the window with commit-on-end |
 | `mount -t <YourFS>` returns "not recognized" | Rule 2 (machine-specific state) | `pluginkit -m -v` / `systemextensionsctl list` to verify registration on *this* Mac |
 | Fixture / scratch dir referenced in journal isn't on disk | Rule 2 | check the journal's "Host machine" line; you may be on the wrong Mac |
 | `.sync-conflict-*` file in `.claude/` or similar accumulating dir | Rule 3 | union-merge with python; backup; add to `.stignore` |
