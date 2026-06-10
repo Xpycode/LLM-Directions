@@ -39,6 +39,14 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git remote | grep -q .
 fi
 # -----------------------------------------------------------------------------
 
+# --- Prune stale model-advisor state (paired with hooks/model-advisor.sh) -----
+# Per-session handshake files accumulate one pair per session; drop anything
+# older than a day so ~/.claude doesn't collect cruft.
+find "$HOME/.claude" -maxdepth 1 -type f \
+  \( -name '.current-model-*' -o -name '.model-suggestion-*' \) \
+  -mtime +1 -delete 2>/dev/null
+# -----------------------------------------------------------------------------
+
 cat << 'EOF'
 
 What would you like to do?

@@ -17,6 +17,12 @@ C_GRAY='\033[38;5;245m'  # explicit gray for default text
 C_BAR_EMPTY='\033[38;5;238m'
 C_GOLD='\033[38;5;178m'   # warning: >=70% of budget
 C_RED='\033[38;5;203m'    # critical: >=95% of budget
+
+# Per-model name colors (by capability tier)
+C_MODEL_FABLE='\033[38;5;203m'   # red    — Fable (most capable)
+C_MODEL_OPUS='\033[38;5;208m'    # orange — Opus
+C_MODEL_SONNET='\033[38;5;71m'   # green  — Sonnet
+C_MODEL_HAIKU='\033[38;5;255m'   # white  — Haiku
 case "$COLOR" in
     orange)   C_ACCENT='\033[38;5;173m' ;;
     blue)     C_ACCENT='\033[38;5;74m' ;;
@@ -32,62 +38,49 @@ esac
 
 input=$(cat)
 
-# ---- Formatting helpers for the usage line ----
-fmt_tok() {  # 10521657 -> 10.5M ; 59000 -> 59k
-    local t=${1:-0}
-    if   (( t >= 1000000 )); then printf "%d.%dM" $((t/1000000)) $(((t%1000000)/100000))
-    elif (( t >= 1000 ));    then printf "%dk" $((t/1000))
-    else                          printf "%d" "$t"
-    fi
-}
-fmt_left() {  # seconds -> 2h13m / 13m
-    local s=${1:-0}; (( s < 0 )) && s=0
-    local m=$((s/60))
-    if (( m >= 60 )); then printf "%dh%02dm" $((m/60)) $((m%60)); else printf "%dm" "$m"; fi
-}
-
-# ---- Usage limits (5h window + rolling 7-day), via ccusage, background-cached ----
-# ccusage is slow (~4s cold), so we NEVER block on it. We read a cache file that a
-# detached background job refreshes at most once per USAGE_TTL seconds.
-USAGE_CACHE="$HOME/.claude/.usage-cache.json"
-USAGE_LOCK="$HOME/.claude/.usage-refresh.lock"
-USAGE_TTL=120        # min seconds between background refreshes
-# 5h removed 2026-06-03: ccusage's cache-read-heavy raw tokens drift too fast
-# against /usage's weighted metric to show a trustworthy 5h %. Weekly only.
-CAP_WEEK=1945000000  # calibrated 2026-06-03 from /usage: 38.9M tok = 2% used (coarse; small %)
-
-now_epoch=$(date +%s)
-
-cache_mtime=0
-[[ -f "$USAGE_CACHE" ]] && cache_mtime=$(stat -f %m "$USAGE_CACHE" 2>/dev/null || stat -c %Y "$USAGE_CACHE" 2>/dev/null || echo 0)
-
-# Drop a stale lock left by a crashed refresh (>5 min old)
-if [[ -d "$USAGE_LOCK" ]]; then
-    lock_mtime=$(stat -f %m "$USAGE_LOCK" 2>/dev/null || stat -c %Y "$USAGE_LOCK" 2>/dev/null || echo 0)
-    (( now_epoch - lock_mtime > 300 )) && rmdir "$USAGE_LOCK" 2>/dev/null
-fi
-
-# If cache is stale and no refresh is running, kick one off in the background.
-# mkdir is atomic -> only one render wins the lock, so we never double-spawn ccusage.
-if (( now_epoch - cache_mtime > USAGE_TTL )) && mkdir "$USAGE_LOCK" 2>/dev/null; then
-    (
-        npx ccusage@latest blocks --json 2>/dev/null | jq '
-            def epoch: sub("\\.[0-9]+Z$";"Z") | fromdateiso8601;
-            (([.blocks[] | select(.isActive)])[0]) as $a |
-            {
-              reset_epoch:  ($a.endTime // "" | if . == "" then 0 else epoch end),
-              fiveh_tokens: ($a.totalTokens // 0),
-              week_tokens:  ([.blocks[] | select(.isGap|not)
-                              | select((.startTime|epoch) > (now - 604800))
-                              | .totalTokens] | add // 0)
-            }
-        ' > "$USAGE_CACHE.tmp" 2>/dev/null && mv "$USAGE_CACHE.tmp" "$USAGE_CACHE"
-        rmdir "$USAGE_LOCK" 2>/dev/null
-    ) >/dev/null 2>&1 &
-fi
-
 # Extract model, directory, and cwd
 model=$(echo "$input" | jq -r '.model.display_name // .model.id // "?"')
+
+# Pick a color for the model name by capability tier (case-insensitive match).
+# Falls back to the theme accent for anything unrecognized.
+# cur_tier (4=Fable 3=Opus 2=Sonnet 1=Haiku) feeds the model-advisor hint below.
+shopt -s nocasematch
+case "$model" in
+    *fable*)  C_MODEL="$C_MODEL_FABLE";  cur_tier=4 ;;
+    *opus*)   C_MODEL="$C_MODEL_OPUS";   cur_tier=3 ;;
+    *sonnet*) C_MODEL="$C_MODEL_SONNET"; cur_tier=2 ;;
+    *haiku*)  C_MODEL="$C_MODEL_HAIKU";  cur_tier=1 ;;
+    *)        C_MODEL="$C_ACCENT";       cur_tier=0 ;;
+esac
+shopt -u nocasematch
+
+# --- Model-advisor handshake (paired with hooks/model-advisor.sh) ---
+# Write the live model so the hook can read it, and read back any pending
+# model-switch suggestion to render a persistent " ⮕ sonnet?" hint.
+session_id=$(echo "$input" | jq -r '.session_id // empty')
+model_hint=""
+if [[ -n "$session_id" ]]; then
+    printf '%s' "$model" > "$HOME/.claude/.current-model-$session_id" 2>/dev/null
+    sugg_file="$HOME/.claude/.model-suggestion-$session_id"
+    if [[ -f "$sugg_file" ]]; then
+        sugg_label=$(cut -d'|' -f1 "$sugg_file" 2>/dev/null)
+        case "$sugg_label" in
+            fable)  sugg_tier=4 ;;
+            opus)   sugg_tier=3 ;;
+            sonnet) sugg_tier=2 ;;
+            haiku)  sugg_tier=1 ;;
+            *)      sugg_tier=0 ;;
+        esac
+        # Only show the hint while the mismatch still stands.
+        if (( sugg_tier > 0 && sugg_tier != cur_tier )); then
+            if (( sugg_tier < cur_tier )); then hc="$C_GOLD"; else hc="$C_RED"; fi
+            model_hint=" ${hc}⮕ ${sugg_label}?${C_RESET}"
+        else
+            rm -f "$sugg_file" 2>/dev/null   # resolved — clear it
+        fi
+    fi
+fi
+
 cwd=$(echo "$input" | jq -r '.cwd // empty')
 dir=$(basename "$cwd" 2>/dev/null || echo "?")
 
@@ -221,28 +214,10 @@ else
     ctx="${empty_bar} ${C_ACCENT}~${count_k}k / ${budget_k}k ${C_GRAY}(~${pct}%)"
 fi
 
-# ---- Usage segment: rolling 7-day weekly limit (appended to row 1) ----
-# 5h dropped: its raw-token/weighted-% drift made the number untrustworthy.
-if [[ -f "$USAGE_CACHE" ]]; then
-    week_tokens=$(jq -r '.week_tokens // 0' "$USAGE_CACHE" 2>/dev/null)
-    week_tokens=${week_tokens%.*}; week_tokens=${week_tokens:-0}
-
-    week_pct=""
-    if (( CAP_WEEK > 0 )); then
-        p=$(( week_tokens * 100 / CAP_WEEK )); (( p > 100 )) && p=100
-        c="$C_ACCENT"; (( p >= 70 )) && c="$C_GOLD"; (( p >= 90 )) && c="$C_RED"
-        week_pct=" ${c}(${p}%)${C_GRAY}"
-    fi
-
-    usage_seg="${C_GRAY}⏱ 7d $(fmt_tok $week_tokens)${week_pct}"
-else
-    usage_seg="${C_GRAY}⏱ 7d —  ${C_BAR_EMPTY}(loading…)"
-fi
-
-# Build output — row 1: Model | Dir | Context | Usage
+# Build output — row 1: Model | Dir | Context
 # The branch segment moves to its own row (below) so a long branch/filename
-# never pushes the context gauge and usage off to the right.
-output="${C_ACCENT}${model}${C_GRAY} | 📁${dir} | ${ctx}${C_GRAY} | ${usage_seg}${C_RESET}"
+# never pushes the context gauge off to the right.
+output="${C_MODEL}${model}${model_hint}${C_GRAY} | 📁${dir} | ${ctx}${C_RESET}"
 
 printf '%b\n' "$output"
 

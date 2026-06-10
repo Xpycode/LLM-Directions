@@ -16,11 +16,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-06-10** — statusline: removed the broken weekly-limit readout, color-coded model names by tier, and built a model-switch reminder system (UserPromptSubmit keyword hook + persistent statusline hint).
 - **2026-06-09** — added cookbook #85/#86; caught + dropped duplicate work another Mac had pushed; slimmed this file and `/status`.
 - **2026-06-08** — shared guidance docs are now read on demand from one master copy instead of copied into each project (kills silent drift); added a session-start git-fetch check for cross-Mac collisions.
 - **2026-05-16** — wrote the multi-Mac discipline doc after 3 cross-Mac mix-ups in two weeks; re-validated the SFTPmount spike plan against macOS 26.5.
 - **2026-05-14** — cross-project cleanup: merged 3 overlapping context docs into one, added iOS/web/sync gotcha docs, fixed session-index drift across 10 projects.
-- **2026-05-01** — flattened the master repo layout so new projects bootstrap cleanly (no nested folders, no tool-cache bloat).
 
 ## Progress
 | Funnel | Status | Gate |
@@ -45,7 +45,14 @@
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
+- **2026-06-10 — switched Macs mid-stream.** Today's repo work (statusline cleanup + model-name tier
+  colors + `model-advisor` model-switch hook + cookbook #87–90) is **committed & pushed**, so just
+  `git pull`. **Machine-local re-setup on the new Mac** (does NOT travel via git): re-register the
+  `UserPromptSubmit → ~/.claude/hooks/model-advisor.sh` hook in `~/.claude/settings.json`, and
+  re-create the symlink `ln -sf <repo>/hooks/model-advisor.sh ~/.claude/hooks/model-advisor.sh`.
+  Full detail in `sessions/2026-06-10.md` (gitignored — read it via Syncthing). **Still TODO:**
+  cookbook **#91** for the hook↔statusline handshake pattern; tune `model-advisor.sh` keyword lists.
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-06-09.*
+*Last updated: 2026-06-10.*
