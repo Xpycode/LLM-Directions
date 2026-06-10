@@ -9,13 +9,15 @@
 
 ## Now
 - **Phase:** build / implementation (~80%) — mature framework, ongoing refinement.
-- **Focus:** lean-digest refactor — slim PROJECT_STATE to Now/Recent/index; make `/status` succinct.
+- **Focus:** multi-Mac / multi-session safety hardening — git-collision guards, worktree workflow.
 - **Blockers:** none.
-- **Next:** decide the cross-project status view — throwaway gitignored `dashboard.html` vs the
+- **Next:** (1) run `bash hooks/install.sh` on the **other Mac** to wire the new session-collision
+  guard. (2) Parked decision — cross-project status view: throwaway gitignored `dashboard.html` vs the
   committed `project.json` site generator (2026-03-24). **Build one, not both.**
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-06-11** — built a guard that warns when two Claude sessions are open in the same folder (they share one git checkout, so a branch switch in one hits both); added a `/worktree` helper to split them safely, and wrote it up as Rule 5 in the multi-Mac doc.
 - **2026-06-10** — statusline: removed the broken weekly-limit readout, color-coded model names by tier, and built a model-switch reminder system (UserPromptSubmit keyword hook + persistent statusline hint).
 - **2026-06-09** — added cookbook #85/#86; caught + dropped duplicate work another Mac had pushed; slimmed this file and `/status`.
 - **2026-06-08** — shared guidance docs are now read on demand from one master copy instead of copied into each project (kills silent drift); added a session-start git-fetch check for cross-Mac collisions.
@@ -45,14 +47,12 @@
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
-- **2026-06-10 — switched Macs mid-stream.** Today's repo work (statusline cleanup + model-name tier
-  colors + `model-advisor` model-switch hook + cookbook #87–90) is **committed & pushed**, so just
-  `git pull`. **Machine-local re-setup on the new Mac** (does NOT travel via git): re-register the
-  `UserPromptSubmit → ~/.claude/hooks/model-advisor.sh` hook in `~/.claude/settings.json`, and
-  re-create the symlink `ln -sf <repo>/hooks/model-advisor.sh ~/.claude/hooks/model-advisor.sh`.
-  Full detail in `sessions/2026-06-10.md` (gitignored — read it via Syncthing). **Still TODO:**
-  cookbook **#91** for the hook↔statusline handshake pattern; tune `model-advisor.sh` keyword lists.
+- **Per-Mac wiring (does NOT travel via git):** on the **other Mac**, after `git pull`, run
+  `bash hooks/install.sh` once — it symlinks the hooks (now including `session-guard.sh`) and the
+  statusline into `~/.claude/` and registers them in `settings.json` (idempotent).
+- **Carried-over TODO:** cookbook **#91** for the hook↔statusline handshake pattern; tune
+  `model-advisor.sh` keyword lists. Possible cookbook entry for the process-inspection session detector.
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-06-10.*
+*Last updated: 2026-06-11.*
