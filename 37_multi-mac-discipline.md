@@ -114,6 +114,10 @@ first (`diff <(git show origin/main:path) path`) so you never discard genuinely-
     uncommitted or unpushed. Never blocks.
   - `/session-close` Step 6 — offers to commit **and push** in one confirmed step (an unpushed commit is
     as invisible to the other Mac as an uncommitted file).
+  - **The hook scripts travel via git; the wiring does not.** Run `bash hooks/install.sh` once per Mac
+    after cloning/pulling — it symlinks the hooks + statusline into `~/.claude/` and registers them in
+    `settings.json` (idempotent, preserves existing non-Directions hooks). `--dry-run` previews. The
+    forgotten-wiring-on-the-second-Mac gap was itself a recurring source of these collisions.
 - **Stop the dual-carry (boundary).** Let git own tracked files and Syncthing carry only the gitignored
   files that genuinely need it (session logs). In the Syncthing root's `.stignore`:
 
