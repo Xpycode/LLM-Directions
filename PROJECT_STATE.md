@@ -50,8 +50,8 @@
 - **Per-Mac wiring (does NOT travel via git):** on the **other Mac**, after `git pull`, run
   `bash hooks/install.sh` once — it symlinks the hooks (now including `session-guard.sh`) and the
   statusline into `~/.claude/` and registers them in `settings.json` (idempotent).
-- **Carried-over TODO:** cookbook **#91** for the hook↔statusline handshake pattern; tune
-  `model-advisor.sh` keyword lists. Possible cookbook entry for the process-inspection session detector.
+- **Carried-over TODO:** cookbook **#92** for the hook↔statusline handshake pattern (#91 is now the
+  process-inspection session detector); tune `model-advisor.sh` keyword lists.
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
