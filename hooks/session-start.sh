@@ -53,6 +53,23 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git remote | grep -q .
 fi
 # -----------------------------------------------------------------------------
 
+# --- Same-folder session collision guard (session-guard.sh) -------------------
+# If a SECOND Claude session is already running in THIS working directory, both
+# share one git checkout (one HEAD) — a checkout in either switches the branch for
+# both. Warn (warn-only) and point at the worktree fix. Resolve our own symlink so
+# the sibling script is found in the repo regardless of how the hook was wired.
+guard_src="${BASH_SOURCE[0]}"
+while [ -L "$guard_src" ]; do
+  link=$(readlink "$guard_src")
+  case "$link" in
+    /*) guard_src="$link" ;;
+    *)  guard_src="$(cd "$(dirname "$guard_src")" && pwd)/$link" ;;
+  esac
+done
+guard="$(cd "$(dirname "$guard_src")" && pwd)/session-guard.sh"
+[ -x "$guard" ] && "$guard"
+# -----------------------------------------------------------------------------
+
 # --- Prune stale model-advisor state (paired with hooks/model-advisor.sh) -----
 # Per-session handshake files accumulate one pair per session; drop anything
 # older than a day so ~/.claude doesn't collect cruft.

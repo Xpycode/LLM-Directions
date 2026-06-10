@@ -40,6 +40,7 @@ say
 LINKS=(
   "hooks/session-start.sh:$HOOKS_DIR/session-start.sh"
   "hooks/session-stop.sh:$HOOKS_DIR/session-stop.sh"
+  "hooks/session-guard.sh:$HOOKS_DIR/session-guard.sh"
   "hooks/model-advisor.sh:$HOOKS_DIR/model-advisor.sh"
   "claude-statusline/statusline.sh:$CLAUDE_DIR/statusline.sh"
 )

@@ -37,3 +37,24 @@ Never migrate without asking — `/status` is read-only by default.
 If phase is **polish** or **shipping**, add one line:
 
 > Run `/minimums` to check baseline features before release.
+
+## Same-Folder Session Collision Check
+
+Two Claude sessions open in the **same folder** share one git checkout (one HEAD) — if either
+runs `git checkout`, it switches the branch for **both**, which is how a commit lands on the wrong
+branch. Run the detector and surface the result:
+
+```bash
+bash ~/.claude/hooks/session-guard.sh 2>/dev/null \
+  || bash /Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/hooks/session-guard.sh 2>/dev/null
+```
+
+(The first path is the per-Mac symlink from `hooks/install.sh`; the fallback is the master repo,
+for when this Mac hasn't re-run install yet.)
+
+- **No output** → no collision; say nothing (don't pad the report with "no collision").
+- **A warning block** → show it. In plain language: *another Claude session is in this folder; you
+  share one checkout. Coordinate git in one session, or split off with `/worktree`.* Worktrees are
+  the clean fix — each gets its own branch. Two sessions in **different worktrees** are safe.
+
+This is read-only — it inspects running processes, never touches git.
