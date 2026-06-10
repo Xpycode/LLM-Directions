@@ -3,7 +3,9 @@ TRIGGERS: cross-mac, multi-mac, M1 Max, M4 Pro, multiple Macs, working from two 
           Syncthing sync-conflict, git push rejected "fetch first", divergent commits,
           duplicate commits across machines, "we did this on the other Mac",
           machine-specific state, per-machine spike context, fixture missing on this Mac,
-          settings.local.json conflict, .stignore, log archaeology
+          settings.local.json conflict, .stignore, log archaeology,
+          two Claude sessions same folder, shared checkout, commit on wrong branch,
+          git worktree, parallel sessions, session collision, /worktree
 PHASE: any (especially when state surfaces drift)
 LOAD: when working from more than one Mac on the same project, debugging "this worked yesterday on the other Mac" issues, recovering from a sync-conflict / push-rejection, or designing where to put state that needs to follow you between machines
 -->
@@ -276,6 +278,59 @@ Source: SFTPmount 2026-05-16 (Step 3 blocked on M4 Pro; ran 3 parallel read-only
 
 ---
 
+## Rule 5: Two sessions, one checkout — the same-Mac collision
+
+Rules 1–4 are about *two Macs*. This one is the opposite axis: **one Mac, two Claude sessions open in
+the same project folder.** It bites even when you never leave your desk.
+
+Two `claude` CLI sessions in the same directory share **one git checkout** — git keeps a single HEAD
+per working tree. The moment one session runs `git checkout other-branch`, it switches the branch for
+**both** sessions, and a commit from one can land on the branch the other just moved to. (Mirror of the
+Rule 1 duplicate-commit cost, but the "other worker" is *you, in the other window*, not the other Mac.)
+
+### Symptom
+
+You commit work in session A; it lands on a branch you didn't expect — because session B ran a
+`checkout` that silently moved HEAD under A. Or a commit you intended for `main` shows up on
+`feature/x`. The tell is that *nobody* on the other Mac was involved; the divergence is local and
+within the same minute.
+
+### The fix
+
+Don't try to share one checkout between two sessions — give the second its own. A **git worktree** is a
+second working directory with its **own HEAD**, backed by the same repo history:
+
+```bash
+git worktree add ../<repo>-<name> -b <branch>   # isolated dir + new branch
+cd ../<repo>-<name>                             # point the 2nd session here
+# ... when done:
+git worktree remove ../<repo>-<name>
+```
+
+Two sessions in **different worktrees** are safe — they don't share a HEAD. The `/worktree` command
+automates this; `/status` and the session-start hook both surface the collision so you catch it before
+a stray checkout.
+
+### The discipline
+
+- **Detection is wired.** `hooks/session-guard.sh` (run from `SessionStart` and `/status`) lists running
+  `claude` sessions, resolves each to its worktree toplevel, and warns — warn-only — when 2+ share one.
+  It's worktree-aware, so the safe split-across-worktrees pattern never false-positives. Pure local
+  process inspection (no lock files), so nothing goes stale and it never touches git.
+- **One git driver.** If you *do* keep two sessions in one folder, run all `git checkout` / branch ops in
+  exactly **one** of them; let the other only read or edit files.
+- **Worktrees are single-Mac, short-lived (don't cross Rule 1a with this).** A worktree's internal `.git`
+  link is an **absolute path** valid only on the Mac that made it — a worktree dir that rides Syncthing to
+  the other Mac is a broken reference there. Create it, use it, remove it in the same sitting; before
+  switching Macs, `remove` it and let the *commits* (which travel via git) carry the work. Keep worktree
+  dirs out of any file-by-file synced path.
+
+Source: Directions master repo, 2026-06-10 — the theme-editor incident (a second session ran `checkout
+feature/theme-editor`, moving HEAD for both, so the first session's docs commit landed on the wrong
+branch). Fixed with `hooks/session-guard.sh` + the `/worktree` helper.
+
+---
+
 ## Detection: pre-flight before machine-sensitive work
 
 Before resuming work that depends on machine-specific state, a 30-second pre-flight:
@@ -318,6 +373,8 @@ If `git rev-list` shows `0 N`, pull before doing anything. If it shows `N M`, st
 | Fixture / scratch dir referenced in journal isn't on disk | Rule 2 | check the journal's "Host machine" line; you may be on the wrong Mac |
 | `.sync-conflict-*` file in `.claude/` or similar accumulating dir | Rule 3 | union-merge with python; backup; add to `.stignore` |
 | `_index.md` reports drift between two Macs | Rule 1 + 3 | pre-flight `git fetch` first, then `sync-session-index.sh` after pull |
+| Commit landed on a branch you didn't expect, no other Mac involved | Rule 5 (same-folder collision) | check for a 2nd `claude` session in this folder; split it into a `/worktree` |
+| Two Claude sessions open in the same project folder | Rule 5 | one git driver, or isolate the 2nd with `git worktree add` |
 | Need the other Mac for the next step | Rule 4 | pivot to read-only re-validation that produces rev-N+1 input |
 | "It worked yesterday on the other Mac" | Any | run pre-flight; verify state on this Mac before assuming continuity |
 
@@ -328,6 +385,8 @@ If `git rev-list` shows `0 N`, pull before doing anything. If it shows `N M`, st
 > **Cross-machine state is opt-in. Git syncs commits. Syncthing syncs file-bytes. Nothing syncs the OS-level state your work depends on. Verify the machine before assuming the work.**
 
 When your future self sits down at a different Mac and tries to resume, the friction is *always* in one of three places: divergent commits at integration time (Rule 1), missing per-machine OS state (Rule 2), or accumulated config drift in non-tracked files (Rule 3). The 30-second pre-flight catches all three before they cost 30 minutes.
+
+And on a *single* Mac there's a fourth, orthogonal trap (Rule 5): two Claude sessions in one folder sharing one checkout, where a `checkout` in one moves HEAD for both. Different axis, same root reflex — **know which working tree you're actually in before you act on git.**
 
 ---
 
