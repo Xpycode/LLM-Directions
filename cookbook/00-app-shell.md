@@ -117,6 +117,80 @@ set in build settings. Switching to `info:` fixed it.*
 
 ---
 
+### 0.2. Same fix for a checked-in `.xcodeproj` (no xcodegen)
+
+§0.1 covers xcodegen's `info:` mechanism. When the project is a **committed
+`.xcodeproj`** (e.g. an XcodeBuildMCP scaffold) with `GENERATE_INFOPLIST_FILE = YES`,
+the failure mode is identical — `INFOPLIST_KEY_UIDesignRequiresCompatibility` is
+silently dropped on macOS — but the fix is different. There's no `info:` block;
+instead supply an explicit `Info.plist` and point the **app target** at it.
+
+**Three steps:**
+
+**1. Write an explicit `Info.plist`** in the app sources folder (`YourApp/Info.plist`).
+Keep it DRY — Xcode expands `$(BUILD_SETTING)` tokens during plist preprocessing,
+so reference the xcconfig values rather than hard-coding them. The one key that
+*must* be a literal is `UIDesignRequiresCompatibility`:
+
+```xml
+<key>CFBundleExecutable</key>       <string>$(EXECUTABLE_NAME)</string>
+<key>CFBundleIdentifier</key>       <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+<key>CFBundleName</key>             <string>$(PRODUCT_NAME)</string>
+<key>CFBundleShortVersionString</key><string>$(MARKETING_VERSION)</string>
+<key>CFBundleVersion</key>          <string>$(CURRENT_PROJECT_VERSION)</string>
+<key>CFBundlePackageType</key>      <string>APPL</string>
+<key>LSMinimumSystemVersion</key>   <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+<key>NSHighResolutionCapable</key>  <true/>
+<key>NSPrincipalClass</key>         <string>NSApplication</string>
+<key>UIDesignRequiresCompatibility</key><true/>   <!-- literal: the allowlist drops it -->
+```
+
+**2. Point only the app target's xcconfig at it.** With an `xcconfig` that's
+`#include`d by both app and test configs (the common scaffold shape), put the
+override in the **app-only** configs (`Debug.xcconfig` / `Release.xcconfig`),
+NOT the shared one — otherwise the test target loses its generated plist and
+fails to build:
+
+```
+// Debug.xcconfig AND Release.xcconfig (NOT Shared.xcconfig / Tests.xcconfig):
+GENERATE_INFOPLIST_FILE = NO
+INFOPLIST_FILE = YourApp/Info.plist
+```
+
+**3. Exclude the plist from the target's auto-membership** (Xcode 16+
+file-system-synchronized groups only). A `PBXFileSystemSynchronizedRootGroup`
+auto-adds every file in the folder — including `Info.plist` — to **Copy Bundle
+Resources**, producing the warning *"The Copy Bundle Resources build phase
+contains this target's Info.plist file"* and a stray plist in `Contents/Resources/`.
+Add a `membershipExceptions` entry so it isn't bundled as a resource (it's
+consumed via `INFOPLIST_FILE`, not copied):
+
+```
+/* in project.pbxproj — new exception set, referenced from the app folder's root group */
+8B…F1F /* Exceptions for "YourApp" folder in "YourApp" target */ = {
+    isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+    membershipExceptions = ( Info.plist, );
+    target = 8B…F00 /* YourApp */;
+};
+/* …then add to the YourApp PBXFileSystemSynchronizedRootGroup: */
+exceptions = ( 8B…F1F /* … */, );
+```
+
+**Verify on the built bundle** (the only check that matters — build settings lie):
+
+```bash
+APP="$(xcodebuild -scheme YourApp -showBuildSettings | grep -m1 ' BUILT_PRODUCTS_DIR' | awk '{print $3}')/YourApp.app"
+/usr/libexec/PlistBuddy -c "Print :UIDesignRequiresCompatibility" "$APP/Contents/Info.plist"  # → true
+ls "$APP/Contents/Resources/Info.plist"   # → No such file (good: not double-copied)
+```
+
+*Discovered 2026-06-13 during VEDC Phase 5: XcodeBuildMCP-scaffolded `.xcodeproj`
+with shared xcconfig + synchronized groups. Putting `INFOPLIST_FILE` in the
+shared xcconfig broke the test target; the synchronized group double-copied the
+plist into Resources until the `membershipExceptions` entry was added.*
+
+---
+
 ### 1. App Entry Point
 
 ```swift
