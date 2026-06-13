@@ -100,9 +100,26 @@ This is not a discipline failure — it's structural. **Git carries commits; Syn
 including the *uncommitted* ones git can't see as done.** The tell: you're `behind` *and* dirty, and the
 dirty files diff clean against `origin` (`git diff origin/main -- <file>` shows zero lines).
 
-**Recovery** (when local dirty == origin, confirmed): discard the local copies and fast-forward —
-`git restore <tracked>` + `rm <untracked-dups>` + `git merge --ff-only origin/main`. Verify byte-identity
-first (`diff <(git show origin/main:path) path`) so you never discard genuinely-unique local work.
+**Recovery** (when local dirty == origin, confirmed): the whole thing is one move —
+`git reset --hard origin/main`. It overwrites the modified *tracked* files **and** checks out the
+untracked-but-already-on-origin files (they exist in the target commit, so reset writes them and they
+become tracked & clean) — no separate `git restore`/`rm`/`clean` step. `git clean -nd` afterward should
+come back empty.
+
+**Verify byte-identity first — and use the right oracle.** Confirm each dirty path is identical to origin
+before discarding, so you never drop genuinely-unique local work. Two trustworthy tests:
+
+- `git hash-object <file>` **==** `git rev-parse origin/main:<file>` — compares the content SHA to origin's
+  blob; exact, fast, and immune to EOL/whitespace/trailing-newline noise. This is what `session-start.sh`
+  now runs automatically (≤200 dirty files) to print a *confirmed* "byte-identical phantom, lossless to
+  `reset --hard`" verdict instead of a guess.
+- `git diff --quiet origin/main -- <file>` — normalization-aware; exit 0 = identical.
+
+**Do NOT** trust `git show origin/main:<file> | diff -q - <file>` for this. `diff -q` exits at the first
+difference, killing the upstream `git show` with SIGPIPE; under `set -o pipefail` the pipeline then reports
+non-zero and can **invert** the verdict (flagging identical files as different, or vice-versa). A content
+oracle (hash-object) or a full `diff -` that reads both streams is the safe choice. (Burned by this
+2026-06-13 — three checks disagreed; the hash/`git diff --quiet` pair was right.)
 
 **Two structural defenses:**
 
@@ -111,7 +128,9 @@ first (`diff <(git show origin/main:path) path`) so you never discard genuinely-
   other Mac gets a clean fast-forward and this Mac's tree is clean — no phantom dups. The Directions
   hooks enforce this as *confirmed* (never silent) actions:
   - `hooks/session-start.sh` (`SessionStart`) — fetches, reports ahead/behind **and** whether the tree
-    is dirty; flags a safe fast-forward vs. a probable Syncthing-carried duplicate.
+    is dirty. In the `behind + dirty` case it hashes each dirty path against origin's blob and prints a
+    *computed* verdict: a confirmed "byte-identical Syncthing phantom — lossless to `reset --hard`" when
+    all match, or a per-file "compare before discarding" caution when any differs.
   - `hooks/session-stop.sh` (`Stop`) — debounced (~20 min) `systemMessage` nudge when work is
     uncommitted or unpushed. Never blocks.
   - `/session-close` Step 6 — offers to commit **and push** in one confirmed step (an unpushed commit is
@@ -135,7 +154,12 @@ first (`diff <(git show origin/main:path) path`) so you never discard genuinely-
   other Mac's sync status briefly after adding it, since a wrong pattern fails *silently*.
 
 Source: Directions master repo, 6 cross-Mac collisions Apr–Jun 2026; the dual-carry mechanism isolated
-2026-06-10 (behind-2 + dirty tree whose files diffed clean against origin).
+2026-06-10 (behind-2 + dirty tree whose files diffed clean against origin). Recurred 2026-06-13 at
+behind-10 after the *other* Mac was erased-and-restored: Syncthing had carried the current files onto
+this (stale-`.git`) Mac, so 9 modified + 12 untracked files all showed as local changes yet hashed
+byte-identical to origin — the textbook phantom. `git reset --hard origin/main` reconciled it in one move
+(the 12 untracked files were in the target commit, so they checked out clean; `git clean -nd` empty
+after). This is what hardened the hook into a computed verdict and added the `diff -q` SIGPIPE caveat.
 
 ### Rule 1b: The fresh/reset Mac — no `.git` at all (the bootstrap case)
 
@@ -406,7 +430,7 @@ If `git rev-list` shows `0 N`, pull before doing anything. If it shows `N M`, st
 |---|---|---|
 | `git push` rejected with "fetch first" | Rule 1 (divergent commits) | `git fetch && git rev-list --left-right --count HEAD...origin/main` to size the gap |
 | Duplicate-looking commits in `git log --left-right HEAD...origin/main` | Rule 1 | reset + redo only the unique parts (don't merge) |
-| `behind N` **and** dirty tree, but dirty files diff clean vs `origin` | Rule 1a (dual-carry) | confirm byte-identity, discard local dups, `merge --ff-only`; close the window with commit-on-end |
+| `behind N` **and** dirty tree, but dirty files diff clean vs `origin` | Rule 1a (dual-carry) | confirm byte-identity via `git hash-object` vs `git rev-parse origin/main:<file>` (not `diff -q` in a pipe), then `git reset --hard origin/main` (one move; handles tracked + untracked-in-target); close the window with commit-on-end |
 | `mount -t <YourFS>` returns "not recognized" | Rule 2 (machine-specific state) | `pluginkit -m -v` / `systemextensionsctl list` to verify registration on *this* Mac |
 | Fixture / scratch dir referenced in journal isn't on disk | Rule 2 | check the journal's "Host machine" line; you may be on the wrong Mac |
 | `.sync-conflict-*` file in `.claude/` or similar accumulating dir | Rule 3 | union-merge with python; backup; add to `.stignore` |

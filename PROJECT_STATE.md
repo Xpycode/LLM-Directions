@@ -11,12 +11,13 @@
 - **Phase:** build / implementation (~80%) — mature framework, ongoing refinement.
 - **Focus:** multi-Mac / multi-session safety hardening — git-collision guards, worktree workflow.
 - **Blockers:** none.
-- **Next:** (1) run `bash hooks/install.sh` on the **other Mac** to wire the new session-collision
-  guard. (2) Parked decision — cross-project status view: throwaway gitignored `dashboard.html` vs the
-  committed `project.json` site generator (2026-03-24). **Build one, not both.**
+- **Next:** (1) run `bash hooks/install.sh` on the **other Mac** (erased + restored 2026-06-13) to
+  re-wire the hooks + statusline. (2) Parked decision — cross-project status view: throwaway gitignored
+  `dashboard.html` vs the committed `project.json` site generator (2026-03-24). **Build one, not both.**
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-06-13** — the other Mac was erased and restored; Syncthing copied the current files back here but not git's history, so this Mac looked "10 commits behind with uncommitted changes" even though every file already matched origin. Confirmed it was harmless (a "phantom"), fixed it with one `git reset --hard`, then taught the session-start hook to detect this exact case and say "safe to reset" instead of guessing — and wrote up the `diff -q` gotcha that briefly faked a disagreement.
 - **2026-06-11** — built a guard that warns when two Claude sessions are open in the same folder (they share one git checkout, so a branch switch in one hits both); added a `/worktree` helper to split them safely, and wrote it up as Rule 5 in the multi-Mac doc.
 - **2026-06-10** — statusline: removed the broken weekly-limit readout, color-coded model names by tier, and built a model-switch reminder system (UserPromptSubmit keyword hook + persistent statusline hint).
 - **2026-06-09** — added cookbook #85/#86; caught + dropped duplicate work another Mac had pushed; slimmed this file and `/status`.
@@ -55,4 +56,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-06-11.*
+*Last updated: 2026-06-13.*

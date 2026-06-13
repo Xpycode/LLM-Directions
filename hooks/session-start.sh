@@ -25,16 +25,45 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git remote | grep -q .
     # Working-tree state: uncommitted edits left from a PRIOR session on THIS Mac are
     # the seed of cross-Mac duplicates — Syncthing copies them to the other Mac, which
     # commits + pushes; this Mac then redoes the work. Surface them up front.
-    dirty=$(git status --porcelain 2>/dev/null | head -1)
+    dirty=$(git status --porcelain 2>/dev/null)
     echo "— Multi-Mac pre-flight —"
     if [ "${behind:-0}" -gt 0 ] && [ "${ahead:-0}" -gt 0 ]; then
       echo "⚠️  '$branch' has DIVERGED from $upstream: $ahead local / $behind remote."
       echo "    Do NOT push. Reconcile first (git fetch already done; see 37_multi-mac-discipline.md)."
     elif [ "${behind:-0}" -gt 0 ]; then
       if [ -n "$dirty" ]; then
-        echo "⚠️  origin has $behind commit(s) you don't have — AND you have uncommitted changes."
-        echo "    Check first: those local edits may be the SAME work origin already shipped"
-        echo "    (Syncthing-carried duplicate). Compare before discarding; then fast-forward."
+        # Behind + dirty is the Syncthing dual-carry signature (Rule 1a): another Mac
+        # committed+pushed work whose uncommitted bytes Syncthing also copied here, so it
+        # shows as local changes that are really already on origin. Decide it exactly by
+        # comparing each path's content hash to origin's blob SHA — no diff/EOL/SIGPIPE noise.
+        n=$(printf '%s\n' "$dirty" | grep -c .)
+        phantom=1
+        if [ "${n:-0}" -gt 200 ]; then
+          phantom=2   # too many to hash cheaply at session start; stay cautious
+        else
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            p=${line#???}                 # strip porcelain "XY " status prefix
+            p=${p%\"}; p=${p#\"}          # best-effort unquote (cautious-fails below if wrong)
+            if [ ! -f "$p" ]; then phantom=0; break; fi
+            ob=$(git rev-parse "origin/main:$p" 2>/dev/null) || { phantom=0; break; }
+            wb=$(git hash-object "$p" 2>/dev/null)
+            [ "$ob" = "$wb" ] || { phantom=0; break; }
+          done <<DIRTY
+$dirty
+DIRTY
+        fi
+        if [ "$phantom" = 1 ]; then
+          echo "✓ origin has $behind commit(s) you don't have, and your $n local change(s) are"
+          echo "  BYTE-IDENTICAL to origin (Syncthing-carried phantom — Rule 1a). Lossless to run:"
+          echo "      git reset --hard origin/main"
+          echo "  Verified file-by-file via git hash-object vs origin's blobs; nothing unique is lost."
+        else
+          echo "⚠️  origin has $behind commit(s) you don't have — AND you have uncommitted changes."
+          echo "    Not all local edits are byte-identical to origin — they may be duplicate work or"
+          echo "    genuinely unique. Compare per file before discarding (Rule 1a):"
+          echo "      git hash-object <file>   vs   git rev-parse origin/main:<file>"
+        fi
       else
         echo "✅ origin has $behind commit(s) ahead and your tree is CLEAN — safe fast-forward."
         echo "    Offer to 'git pull' before editing (lossless); another Mac may have done this work."
