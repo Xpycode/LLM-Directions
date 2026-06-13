@@ -20,6 +20,30 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
+### 2026-06-13 - Cross-project status view: disposable `dashboard.html`, not a committed `project.json` generator
+
+**Context:** A "current state of all my work" view had been parked through two sessions with two competing designs. **2026-03-24** designed a bottom-up *committed generator*: every project emits `docs/site/index.html` + a `project.json` data contract, a master aggregator at `__DIRECTIONS/site/` scans all the `project.json` files, with auto-triggers wired into `/setup` and `/log`. **2026-06-06** (after reading Thariq Shihipar's "Unreasonable Effectiveness of HTML") proposed the opposite: a top-down, on-demand, *disposable* `dashboard.html` — one agent/script reads every project's `PROJECT_STATE.md` + git and emits a single static page; gitignored, no per-project files, no triggers. The standing instruction was "build one, not both." This session resolved it and built the proof-of-concept.
+
+**Options Considered:**
+1. **Committed `project.json` generator (2026-03-24)** — per-project committed artifacts + master aggregator + `/setup`/`/log` triggers.
+   - Pros: always-fresh (regenerates on every log); structured data contract reusable by other tools.
+   - Cons: reintroduces exactly what sank every prior web-dashboard attempt — standing maintenance surface (N committed `project.json` files that drift, two trigger integrations to keep working, an aggregator to maintain). Also violates its own motivating principle: the HTML-effectiveness decision rule says *markdown stays for anything git-tracked or iterated weekly* — committed, weekly-regenerated state files are precisely that case wearing an HTML hat.
+2. **Disposable gitignored `dashboard.html` (2026-06-06)** — one top-down script, scans `PROJECT_STATE.md` across the fleet, emits one self-contained page. Gitignored script + output. No per-project files, no triggers.
+   - Pros: zero standing surface; reversible; the scan itself measures whether a dashboard is even worth keeping (how many projects have fresh vs. drifted state); faithful to the essay's HTML-for-human-facing-dashboards rule.
+   - Cons: snapshot only (accurate at generation time); must be re-run manually.
+
+**Decision:** Option 2. Built `dashboard.py` (stdlib-only, ~Python 3.9) + its `dashboard.html` output, both **gitignored** alongside the existing local-tool precedent (`docs-browser.html`, `docs.sh`). Top-down: scans `~/ProgrammingProjects/<category>/<project>/docs/PROJECT_STATE.md` (+ the master at repo root), parses Phase/Focus/Blockers/one-liner, adds last-session date (from `sessions/*.md` filenames) and last git commit, emits one dark self-contained page with client-side search + phase/blocked filter chips, sorted by most-recent activity so stale projects sink. Option 1 (the 2026-03-24 committed generator) is **retired** — not building it.
+
+**Rationale:** Past web dashboards failed because they were *web apps* (server/build/committed artifacts to maintain), and Option 1 is the same shape. Option 2 has no standing surface, is reversible, and respects the principle that motivated the whole idea. Starting cheap and graduating only if it earns its keep is the correct risk order; starting heavy and discovering it wasn't worth it is the expensive mistake. If it proves repeatedly useful it can graduate to a `/dashboard` command or `voidful/claude-html-report-skill` later.
+
+**Consequences:**
+- The scan is itself a **drift detector**: on first run, 39/47 projects exposed a parseable `**Phase:**`, 34/47 a `**Focus:**`; the 6 with neither (ScreenshotFromVideos, PhoneticAlphabet, MousePlus, AutoRedact, LiveInterviewTool, GPSvideo) have `PROJECT_STATE.md` drifted from the lean template. The dashboard surfaces these for cleanup. Genuinely blocked at build time: zPackages.
+- Parser must tolerate format variance: `**Project:**` is often `Name — one-liner` / `Name → New (note)` (split on the first ` — `/` · `/` (`); `**Blockers:**` is usually omitted when empty and, when present, frequently reads `none for v1 …` / `none for dev …` (treat any "none…" prefix as no blocker). Both were real bugs caught on first run.
+- Nothing is committed and nothing touches consumer repos — no `project.json` written anywhere, no `/setup`/`/log` changes. Re-run with `python3 dashboard.py && open dashboard.html`.
+- Decision rule reaffirmed: **HTML for human-facing dashboards/comparisons; markdown stays in git repos and for agent-consumed docs.** Do NOT HTML-ify cookbook or Directions docs.
+
+---
+
 ### 2026-05-14 - `/session-close` is a six-step checklist, not silent automation
 
 **Context:** Audit found four recurring drift patterns: 15% of recent logs lack a Next Session pointer, PROJECT_STATE.md timestamps lag by weeks (Penumbra 3 weeks), decisions stay buried in session prose (LUCESUMBRARUM's re-pull-and-migrate, YTdl's `Window` swap, Group Alarms model invariants), `_index.md` falls out of sync (16/29 projects). All four are end-of-session hygiene failures. Q1's script catches `_index.md` drift retroactively; Q3 needs to prevent all four at source.

@@ -8,6 +8,10 @@
 docs-browser.html
 docs.sh
 
+# Cross-project status dashboard — disposable on-demand artifact (decision 2026-06-13)
+dashboard.html
+dashboard.py
+
 # Session logs (project-specific, not template)
 sessions/*.md
 !sessions/_index.md
