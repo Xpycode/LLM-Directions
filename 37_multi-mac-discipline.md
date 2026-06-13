@@ -63,7 +63,7 @@ Then choose based on overlap:
 
 | Their work vs yours | Action |
 |---|---|
-| Effectively identical | `git reset --hard origin/main` (drops your duplicate; recoverable via reflog) → re-apply only the genuinely-unique parts as a new focused commit |
+| Effectively identical | verify `git diff origin/main` shows no genuinely-unique local work, **then** `git reset --hard origin/main` (drops your duplicate; reflog-recoverable) → re-apply only the unique parts as a new focused commit |
 | Unrelated | `git pull --rebase` |
 | Your commit is a strict superset (their work + more) | `git pull --rebase` then push |
 | Both diverged with real conflicts | Inspect file by file; resolve manually |
@@ -136,6 +136,44 @@ first (`diff <(git show origin/main:path) path`) so you never discard genuinely-
 
 Source: Directions master repo, 6 cross-Mac collisions Apr–Jun 2026; the dual-carry mechanism isolated
 2026-06-10 (behind-2 + dirty tree whose files diffed clean against origin).
+
+### Rule 1b: The fresh/reset Mac — no `.git` at all (the bootstrap case)
+
+Rule 1a assumes a repo exists. A freshly-set-up or erased-and-restored Mac has the stronger version:
+Syncthing carried the **working tree**, but `.git` is globally excluded (above), so the project has
+**source on disk and no repo**. `git status` → "not a git repository." Canonical history lives **only on
+`origin`**.
+
+The trap: treating the on-disk files as authoritative and starting to edit/commit — or, worse, blindly
+`git init` + commit, forking a brand-new root history disconnected from origin's. Reconcile to origin
+**first**, without overwriting anything:
+
+```bash
+gh auth setup-git                        # GitHub here is HTTPS-via-gh (no SSH key on these Macs)
+git init -b main
+git remote add origin <project's canonical URL>   # from the project's PROJECT_STATE / `gh repo list`
+git fetch origin
+git reset --mixed origin/main            # HEAD+index → origin; WORKING TREE LEFT UNTOUCHED
+git status --short --untracked-files=no   # ← THE CHECK
+```
+
+Read the check:
+- **0 tracked changes** → on-disk == origin. Done; adopt as-is. **Do not `reset --hard`** — nothing to
+  gain, only risk.
+- **Any tracked diff** → Syncthing carried Mac-local work origin lacks (or the local copy is *stale* and
+  origin is newer). **Stop**, `git diff origin/main -- <file>` each path, and reconcile by hand — re-apply
+  your genuinely-unique edits *onto* origin's current version. Never blind-`--hard` either direction.
+
+`--mixed` (not `--hard`) is the whole point: it reveals the truth *before* anything is overwritten — the
+same "verify byte-identity first" discipline as Rule 1a's recovery, applied to a from-scratch repo.
+
+Full generalized procedure + per-Mac constants (commit identity, gh auth, expected-clean untracked tool
+dirs): the global **`git-bootstrap` skill**.
+
+Source: Conjoyn 2026-06-13 (fresh Mac, no `.git`; mixed-reset proved 0 tracked drift → clean adopt, no
+`--hard` needed). Counter-case same day: bootstrapping *this* master found the local copy **stale vs
+origin** (missing Rule 5 + `/worktree`) — the check caught it, so the doc edit was re-applied onto
+origin's version instead of clobbering it.
 
 ---
 
