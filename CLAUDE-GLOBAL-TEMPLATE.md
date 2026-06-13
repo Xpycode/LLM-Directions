@@ -48,6 +48,8 @@ After detection:
 |---------|--------------|
 | `/setup` | Re-run project detection, set up or migrate Directions |
 | `/status` | Check current phase, focus, blockers, last session |
+| `/arrive` | Sit-down handover check: what the other Mac did, am I behind, where I left off |
+| `/depart` | Leaving a Mac: sync log + state, commit (stamped with this Mac), push |
 | `/log` | Create or update today's session log |
 | `/decide` | Record an architectural/design decision |
 | `/interview` | Run the full discovery interview |

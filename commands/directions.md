@@ -10,6 +10,8 @@ Show all available Directions commands and system info.
 | `/directions` | Show this list |
 | `/setup` | Detect project state, set up or migrate Directions |
 | `/status` | Check current phase, focus, blockers, last session |
+| `/arrive` | Sit-down check: what the other Mac did, am I behind, where I left off |
+| `/depart` | Leaving a Mac: sync log + state, commit (stamped with this Mac), push |
 | `/log` | Create or update today's session log |
 | `/phase` | Change project phase |
 | `/context` | Show project context summary |
@@ -55,6 +57,8 @@ Show all available Directions commands and system info.
 
 ## Tips
 
+- Run `/arrive` when you sit down at a Mac (especially after switching machines)
+- Run `/depart` when you leave a Mac — it syncs, commits, and pushes for the handover
 - Run `/status` for a quick check of where you are
 - Run `/log` before ending a session to save progress
 - Run `/decide` after making architectural choices
