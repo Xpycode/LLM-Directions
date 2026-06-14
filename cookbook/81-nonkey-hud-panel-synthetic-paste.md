@@ -127,6 +127,6 @@ SwiftUI's `.toggleStyle(.button)` renders its accent highlight only in a **key/a
 
 ---
 
-**Pairs with** #65 (cursor-anchored non-activating panel — the *key* sibling that closes-before-pasting), #08 (keyboard/event synthesis), #10 (selection/multi-select), #04 (NSHostingView).
+**Pairs with** #65 (cursor-anchored non-activating panel — the *key* sibling that closes-before-pasting), #08 (keyboard/event synthesis), #10 (selection/multi-select), #04 (NSHostingView), **#109 (the sequel — when the same HUD ALSO needs bare-key verbs, gate `canBecomeKey` dynamically instead of going back to a static `true`)**.
 
 **One-line tell:** *a floating HUD that pastes into other apps must be non-key, post flag-cleared keystrokes, serialize its emits, and stamp its own pasteboard writes.*
