@@ -38,6 +38,12 @@ UI POLISH
 ├── [ ] Keyboard shortcuts (and document them)
 └── [ ] About window
 
+APP CITIZENSHIP  (use the shared packages — don't rebuild per app)
+├── [ ] Send Feedback + Support/Donate + About  → AppCitizenshipKit (one line)
+├── [ ] In-app Help (Help menu + content)        → HelpMenu (appHELP), vendored
+├── [ ] Editable shortcuts (if app has hotkeys)  → ShortcutKit
+└── [ ] App icon at all sizes                     → cookbook #76 generator
+
 PLATFORM-SPECIFIC
 ├── macOS: Menu bar (About, Preferences, Quit)
 ├── macOS: Window state restoration
@@ -290,6 +296,77 @@ class ViewModel: ObservableObject {
 
 ---
 
+## App Citizenship (Shared Packages — Don't Rebuild)
+
+**Why:** Feedback, Donate, About, and Help are identical across apps — they have nothing to do with
+what an app *does*. A 2026-06-14 portfolio audit (30 macOS apps) found them wired ad-hoc or missing:
+**Donate 0/30, Feedback 2/30, a custom About 1/30, real Help 3/30.** These all have drop-in packages.
+Adopt the package; never hand-roll them again.
+
+### Feedback + Donate + About → `AppCitizenshipKit`
+
+One package, one line. Adds Help › Send Feedback, Help › Support <App>, and a link-rich About.
+
+```swift
+// Package: https://github.com/Xpycode/AppCitizenshipKit  (private, from: "0.1.0")
+import AppCitizenshipKit
+
+private let citizenship = CitizenshipConfig(
+    appID: "myapp",              // lowercase slug — feedback allow-list AND donate ?app=
+    appName: "MyApp",
+    accent: .blue,
+    websiteURL: URL(string: "https://apps.lucesumbrarum.com/myapp"),
+    privacyURL: URL(string: "https://apps.lucesumbrarum.com/privacy"),
+    logProvider: { DiagnosticLogger.shared.recentTail(maxLines: 80) }  // optional
+)
+
+var body: some Scene {
+    WindowGroup { ContentView() }
+        .commands { CitizenshipCommands(citizenship) }   // ← all three menu items
+}
+```
+
+**Non-code steps (once per app):**
+1. Pick a lowercase `appID` slug; use it for *both* feedback and donate.
+2. **Feedback:** add the slug to `ALLOWED_APPS` in `feedback-submit.php` (server). Cookbook #49.
+3. **Donate:** register the slug in `donate.html` so the page self-personalizes. Cookbook #100.
+
+`AppCitizenshipKit` re-exports **FeedbackKit** (`Xpycode/FeedbackKit`, the underlying feedback engine),
+so you don't add it separately. It does **not** wrap Help or shortcuts — those stay below.
+
+### In-app Help → `HelpMenu` (appHELP)
+
+Help is *not* in AppCitizenshipKit because it needs per-app content (`.md` files) and is **vendored**
+(copied) into each app, not fetched. Engine lives at `1-macOS/appHELP`.
+
+```swift
+// project.yml:  packages: { HelpMenu: { path: HelpMenu } }   (vendor the source in)
+import HelpMenu
+
+private let helpContent = (try? HelpContent(manifest: "help-manifest", in: .main))
+    ?? HelpContent(topics: [], windowTitle: "MyApp Help")
+// in .commands:
+HelpMenuCommands(content: helpContent, appName: "MyApp")
+```
+Ship a `help-manifest.json` + `help-*.md` in the app target. Reference apps: Conjoyn, Penumbra.
+
+### Editable shortcuts → `ShortcutKit` (only if the app has hotkeys)
+
+Local package at `1-macOS/zPackages` (local-path dep, no remote). `ShortcutRecorder(shortcut:title:)`
++ `ShortcutStore<Action>`. Reference app: ClipSmart. Hardcoded `.keyboardShortcut(...)` does **not**
+count as user-editable.
+
+### Updates → Sparkle (directly)
+
+**Not** the `AppUpdater` app (that's a standalone MacUpdater-clone that scans *other* apps — not a
+library). Self-update = Sparkle + EdDSA appcast. See [Auto-Update Mechanism](#auto-update-mechanism)
+above. 6/30 apps had it wired; one (AvidMXFPeek) links Sparkle but never calls it — verify it's live.
+
+> **Paid licensing ≠ donate.** `PaymentOptions` (`4-Other/`) is unbuilt *paid-licensing* design
+> (Paddle, signed entitlements), a separate large project. Donations are just the `donate.html` link.
+
+---
+
 ## Platform-Specific
 
 ### macOS Menu Bar
@@ -401,6 +478,12 @@ Run through this before every release:
 - [ ] Keyboard shortcuts work
 - [ ] About window has current version
 
+### App Citizenship
+- [ ] `AppCitizenshipKit` added → Send Feedback + Support/Donate + About all present
+- [ ] Feedback slug allow-listed in `feedback-submit.php`; donate slug registered in `donate.html`
+- [ ] Help menu has real content (HelpMenu + manifest), not the empty default
+- [ ] App icon populated at all sizes (not a blank/generic icon)
+
 ### Platform
 - [ ] macOS: Menu bar items work
 - [ ] macOS: Window state restores
@@ -423,6 +506,9 @@ Things you've forgotten before:
 | No empty states | Users think app is broken | Design from empty first |
 | Hardcoded debug URLs | Ships with wrong endpoints | Use build config |
 | Missing keyboard shortcuts | Power users frustrated | Standard shortcuts + docs |
+| No Feedback / Donate / About | No user channel, no support income, looks unfinished | `AppCitizenshipKit` (one line) |
+| Hand-rolled Help/feedback per app | Drift, wasted effort | Use the shared packages, not bespoke |
+| Blank/generic app icon | Screams "unfinished" | Generate all sizes (cookbook #76) |
 
 ---
 

@@ -9,23 +9,23 @@
 
 ## Now
 - **Phase:** build / implementation (~80%) — mature framework, ongoing refinement.
-- **Focus:** multi-Mac / multi-session safety hardening — git-collision guards, worktree workflow.
+- **Focus:** portfolio **"app citizenship" rollout** — shared Help/Feedback/Donate/About across all
+  macOS apps. Audited 30 apps (2026-06-14); built `AppCitizenshipKit` (zPackages/, builds+tests green).
 - **Blockers:** none.
-- **Next:** run `bash hooks/install.sh` on the **other Mac** (erased + restored 2026-06-13) to
-  re-wire the hooks + statusline. (The parked cross-project status-view decision was resolved
-  2026-06-13 — disposable `dashboard.py`/`dashboard.html`, both gitignored; see Recent + decisions.md.)
+- **Next:** **integrate `AppCitizenshipKit` into a first reference app** (DiskVerdict or Conjoyn) to
+  prove the end-to-end wiring, then capture a cookbook entry + roll to the first wave. *(Published to
+  `Xpycode/AppCitizenshipKit` 0.1.0 + "App Citizenship" tier added to `33_app-minimums.md` — both done
+  2026-06-14.)* Separate sweep: fix 19/30 missing/empty AppIcons (cookbook #76). Also still open: run
+  `bash hooks/install.sh` on the **other Mac** (erased+restored 2026-06-13) to re-wire hooks.
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-06-14** — surveyed all 30 macOS apps for the "every app should have this" features (Help, Settings, Feedback, Donate, About, updates, onboarding, app icon) and found donate missing from every single app, feedback and a proper About almost everywhere, and 19 apps shipping a blank icon. Then built `AppCitizenshipKit` — one small package an app adds in a single line to get Send-Feedback + Support/Donate + a links-rich About in its menus. It reuses the existing FeedbackKit and adds the first reusable "Donate" link (pointing at the shared donate web page). Builds and tests pass; not yet published or wired into an app.
 - **2026-06-13** — added two "switching Macs" commands. `/arrive` (sit down) fetches and tells you in plain words what the other Mac did, whether you're behind, and where you left off; `/depart` (leaving) syncs the log + state, commits, and pushes — stamping each commit with which Mac it came from so the other side can read it back. The clever bit: the Mac name lives in git's own commit data (never conflicts), not in a synced file. Machine identity comes from a tiny per-Mac file `~/.claude/this-mac` (outside Syncthing) with the Mac's own name as fallback.
 - **2026-06-13** — resolved the long-parked "see all my projects at a glance" question. Two old designs competed: a heavyweight one that commits a data file into every project and stitches them together (auto-runs on every log), versus a throwaway single page generated on demand. Picked the throwaway: a small gitignored script reads each project's PROJECT_STATE.md + last commit and writes one self-contained `dashboard.html` (search, phase filters, stale-project dimming) — nothing committed, nothing touches other projects. The scan itself doubled as a health check: 6 projects have a drifted PROJECT_STATE worth tidying, and only zPackages is truly blocked.
 - **2026-06-13** — the other Mac was erased and restored; Syncthing copied the current files back here but not git's history, so this Mac looked "10 commits behind with uncommitted changes" even though every file already matched origin. Confirmed it was harmless (a "phantom"), fixed it with one `git reset --hard`, then taught the session-start hook to detect this exact case and say "safe to reset" instead of guessing — and wrote up the `diff -q` gotcha that briefly faked a disagreement.
 - **2026-06-11** — built a guard that warns when two Claude sessions are open in the same folder (they share one git checkout, so a branch switch in one hits both); added a `/worktree` helper to split them safely, and wrote it up as Rule 5 in the multi-Mac doc.
 - **2026-06-10** — statusline: removed the broken weekly-limit readout, color-coded model names by tier, and built a model-switch reminder system (UserPromptSubmit keyword hook + persistent statusline hint).
-- **2026-06-09** — added cookbook #85/#86; caught + dropped duplicate work another Mac had pushed; slimmed this file and `/status`.
-- **2026-06-08** — shared guidance docs are now read on demand from one master copy instead of copied into each project (kills silent drift); added a session-start git-fetch check for cross-Mac collisions.
-- **2026-05-16** — wrote the multi-Mac discipline doc after 3 cross-Mac mix-ups in two weeks; re-validated the SFTPmount spike plan against macOS 26.5.
-- **2026-05-14** — cross-project cleanup: merged 3 overlapping context docs into one, added iOS/web/sync gotcha docs, fixed session-index drift across 10 projects.
 
 ## Progress
 | Funnel | Status | Gate |
@@ -58,4 +58,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-06-13.*
+*Last updated: 2026-06-14.*
