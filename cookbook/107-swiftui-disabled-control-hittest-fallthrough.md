@@ -1,4 +1,4 @@
-# 100 — A `.disabled()` SwiftUI control drops out of hit-testing → taps fall THROUGH to an ancestor gesture
+# 107 — A `.disabled()` SwiftUI control drops out of hit-testing → taps fall THROUGH to an ancestor gesture
 
 **Problem.** A container view has a catch-all gesture — `.contentShape(Rectangle()).onTapGesture { … }` on the background — *and* an interactive child control (a `Button`) layered on top. Normally the `Button` consumes its own click and the background gesture never sees it. But when that button is **`.disabled(…)`**, clicking it does something surprising: the tap **passes through** to the ancestor's `.onTapGesture`, silently firing the background action the user never aimed at.
 
