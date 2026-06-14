@@ -89,5 +89,22 @@ clickAwayMonitor = NSEvent.addGlobalMonitorForEvents(
 - **`hide()` should drop the panel + hosting view** (`orderOut`, then nil them) so the next summon rebuilds with fresh content and current geometry.
 - **`orderFrontRegardless()` not `makeKeyAndOrderFront`** — the latter activates your app and defeats the whole non-activating point.
 - This is the HUD-overlay shell; it is deliberately **not** the App Shell Standard (HSplitView). Don't run shell-check against an app built this way.
+- **Auto-dismiss + hover-pause needs a real-cursor failsafe, or the HUD can stick forever.** The usual design pauses the dismiss timer on `onHoverChange(true)` and resumes on `onHoverChange(false)`. But SwiftUI `.onHover` rides **mouse-moved tracking**, and a non-activating panel can *miss the exit event*: the cursor leaves via `CGWarpMouseCursorPosition` (no moved event), a fast flick, or the panel appears **under a stationary cursor** (enter fires, exit never does). The dismiss task stays cancelled and the HUD is stranded on screen — with no max-lifetime guard, the pause is unbounded. Add a watchdog that runs *only while paused* and polls the **real** cursor against the panel frame; resume dismissal once it's genuinely outside (a small outset gives hysteresis so an active hover-to-drag is never yanked):
+  ```swift
+  private func startHoverWatchdog() {
+      hoverWatchdog?.cancel()
+      hoverWatchdog = Task { [weak self] in            // @MainActor-inherited (class is @MainActor)
+          while !Task.isCancelled {
+              try? await Task.sleep(for: .milliseconds(500))
+              guard let self, let panel = self.panel, panel.isVisible else { return }
+              if !panel.frame.insetBy(dx: -2, dy: -2).contains(NSEvent.mouseLocation) {
+                  self.startDismiss()                  // exit was dropped → resume countdown + cancel watchdog
+                  return
+              }
+          }
+      }
+  }
+  ```
+  `NSEvent.mouseLocation` and `panel.frame` are both global, bottom-left screen coords, so the containment check is correct **across displays** (no flipping). Arm it from `pauseDismiss()`, cancel it from `startDismiss()`. (Source: QuickScreenShot `CaptureHUDController.swift`, 2026-06-14.)
 
 **Best for:** a hotkey-summoned overlay (stats HUD, command palette, quick switcher) in an `LSUIElement` app with no menu bar. Pairs with #64 (Carbon global hotkey), #57 (⌘W override), #60 (closure-bridged AppKit).

@@ -68,5 +68,19 @@ final class HotKeyService {
 - **Rebinding = unregister + register.** There's no "update in place"; tear down and re-create on a settings change.
 - **Silent failure on conflict.** If another app already owns the combo, `RegisterEventHotKey` may not fire and gives no user-visible error — pair with a sensible default + an in-app rebind UI.
 - Swift-6 strict concurrency: the trampoline `Task { @MainActor in … }` is what keeps `onTrigger` access legal from the C callback.
+- **Multiple hotkeys on the shared app event target: a `noErr` handler starves its siblings.** Each `HotKeyService` instance installs its handler on the *same* `GetApplicationEventTarget()`. Carbon dispatches an event to those handlers **most-recently-installed-first**, and returning `noErr` means *"handled — stop propagation."* So if every handler returns `noErr`, only the **last-registered** hotkey ever fires: register window then region → region's handler runs first, returns `noErr` for *every* press (including the window id), and the window hotkey is silently dead. Each handler must read the fired id synchronously and **return `eventNotHandledErr` when it isn't its own**, so Carbon keeps propagating to the sibling that owns it. The id read needs `instanceID` to be `nonisolated let` so the C callback can touch it without an actor hop:
+  ```swift
+  nonisolated let instanceID: UInt32   // 1 = window, 2 = region, …
+  // inside the C handler:
+  var firedID = EventHotKeyID()
+  GetEventParameter(event, EventParamName(kEventParamDirectObject),
+                    EventParamType(typeEventHotKeyID), nil,
+                    MemoryLayout<EventHotKeyID>.size, nil, &firedID)
+  let svc = Unmanaged<HotKeyService>.fromOpaque(userData).takeUnretainedValue()
+  guard firedID.id == svc.instanceID else { return OSStatus(eventNotHandledErr) } // not ours → let siblings see it
+  Task { @MainActor in svc.onTrigger?() }
+  return OSStatus(noErr)                                                          // ours → claim it
+  ```
+  This only bites with **N≥2** hotkeys, so a single-hotkey smoke test passes and the bug surfaces later. (Source: QuickScreenShot `HotKeyService.swift`, 2026-06-14.)
 
 **Best for:** a menu-bar-less / `LSUIElement` utility that's summoned only by a hotkey, where requiring an Accessibility grant would be unacceptable friction. Pairs with #65 (cursor-anchored NSPanel HUD), #60 (closure-bridged AppKit).
