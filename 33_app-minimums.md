@@ -29,27 +29,36 @@ INFRASTRUCTURE
 ├── [ ] Diagnostic logging (to ~/Library/Application Support/)
 ├── [ ] Preferences system (@AppStorage)
 ├── [ ] Error handling with user feedback
-└── [ ] Progress feedback for async operations
+├── [ ] Progress feedback for async operations
+├── [ ] Drag-and-drop import        (if the app takes user files)
+└── [ ] Security-scoped bookmarks   (if sandboxed + re-opens files across launches)
 
 UI POLISH
 ├── [ ] Empty states with clear CTAs
 ├── [ ] Loading states (not blank screens)
 ├── [ ] Error states with retry option
-├── [ ] Keyboard shortcuts (and document them)
+├── [ ] Standard keyboard shortcuts — Command-Comma = Settings, Command-Shift-? = Help,
+│       plus Command-Q/W/N/O/S as applicable (and document them)
 └── [ ] About window
 
 APP CITIZENSHIP  (use the shared packages — don't rebuild per app)
 ├── [ ] Send Feedback + Support/Donate + About  → AppCitizenshipKit (one line)
-├── [ ] In-app Help (Help menu + content)        → HelpMenu (appHELP), vendored
-├── [ ] Editable shortcuts (if app has hotkeys)  → ShortcutKit
+├── [ ] In-app Help (Help menu + content)        → HelpMenu (appHELP), vendored — reachable via Command-Shift-?
+├── [ ] Editable shortcuts (if app has hotkeys)  → ShortcutKit OR an equivalent in-app recorder
 └── [ ] App icon at all sizes                     → cookbook #76 generator
 
 PLATFORM-SPECIFIC
-├── macOS: Menu bar (About, Preferences, Quit)
+├── macOS: Menu bar (About, Preferences = Command-Comma, Quit)
 ├── macOS: Window state restoration
 ├── iOS: Review prompt (at the right moment)
 ├── iOS: What's New on update
 └── Web: Favicon, meta tags, 404 page
+
+HUD / AGENT APP  (only if LSUIElement / menu-bar / overlay app — NOT for windowed apps)
+├── [ ] Global hotkey to summon (Carbon RegisterEventHotKey — permission-free)
+├── [ ] Non-activating panel (doesn't steal focus from the frontmost app)
+├── [ ] First-run hint (teach the summon hotkey — agent apps have no window to discover)
+└── [ ] Launch-at-login option (SMAppService)
 ```
 
 ---
@@ -214,6 +223,44 @@ class ViewModel: ObservableObject {
 }
 ```
 
+### Drag-and-Drop Import
+
+**Why:** For any app that takes user files, drop is expected *alongside* the file picker — users
+drag a file/folder onto the window as readily as they click Import. Found in 4/10 recently-shipped
+apps (Penumbra, Conjoyn, TimeCodeEditor, ScreenshotFromVideos). Minimum **for file-consuming apps**;
+skip it for apps that don't ingest files.
+
+**Pattern:** `.dropDestination(for: URL.self)` (SwiftUI) or `NSItemProvider` (AppKit). Resolve the
+dropped URL the same way as a picked one (the empty-state CTA should literally say "Drag files here").
+Validate type + reachability before acting; mark the handler `@MainActor` so the drop mutates state
+safely. See cookbook **#11** (drag-drop) and **#05** (file dialogs).
+
+### Security-Scoped Bookmarks
+
+**Why:** A **sandboxed** app loses access to user-picked files the moment it relaunches — the picker
+grants a one-session-only door. To re-open a file/folder next launch (recents, watched folders,
+"last project"), persist a *security-scoped bookmark*, not a raw path. Found in 4/10 apps (Penumbra,
+DiskVerdict, Conjoyn, TimeCodeEditor). Minimum **for sandboxed apps that remember files across
+launches**.
+
+**Pattern:**
+```swift
+// Save (at pick time)
+let data = try url.bookmarkData(options: .withSecurityScope,
+                                includingResourceValuesForKeys: nil, relativeTo: nil)
+// Restore (next launch)
+var stale = false
+let url = try URL(resolvingBookmarkData: data, options: .withSecurityScope,
+                  relativeTo: nil, bookmarkDataIsStale: &stale)
+guard url.startAccessingSecurityScopedResource() else { /* access denied */ }
+defer { url.stopAccessingSecurityScopedResource() }
+if stale { /* re-save the refreshed bookmark */ }
+```
+**Gotchas:** balance every `start…` with a `stop…`; handle the `stale` flag (re-mint the bookmark);
+non-sandboxed apps don't need this (a plain path works) — it's a sandbox tax. *(No dedicated cookbook
+entry yet — candidate for `/cookbook add` once extracted from the 4 apps above; #52 touches URL
+identity.)*
+
 ---
 
 ## UI Polish
@@ -267,20 +314,29 @@ class ViewModel: ObservableObject {
 
 ### Keyboard Shortcuts
 
-**Why:** Power users expect them. macOS apps especially.
+**Why:** Power users expect them, and macOS reserves specific keys for specific actions — using the
+standard ones means the system menu items, Settings scene, and Help all wire up for free.
 
-**Must-have for macOS:**
-- ⌘Q — Quit
-- ⌘, — Preferences
-- ⌘W — Close window
-- ⌘N — New (if applicable)
-- ⌘O — Open (if applicable)
-- ⌘S — Save (if applicable)
+**The two non-negotiables (every app, even a single-window utility):**
+- **Command-Comma → Settings/Preferences.** This is the system-standard Settings shortcut; SwiftUI's
+  `Settings { }` scene binds it automatically. If you hand-roll a settings window, bind Command-Comma
+  yourself (see cookbook #71 for the LSUIElement self-managed case).
+- **Command-Shift-? → Help.** The standard macOS Help shortcut; the Help menu's search field binds it
+  automatically. Point it at the in-app Help (HelpMenu) — not an empty default menu.
+
+**The rest, as applicable:**
+- Command-Q — Quit
+- Command-W — Close window (override if it should close a tab/pane first — cookbook #57)
+- Command-N — New
+- Command-O — Open
+- Command-S — Save
 
 **Document them:**
-- In Help menu → Keyboard Shortcuts
-- In onboarding or tips
+- In Help → Keyboard Shortcuts
+- In onboarding / first-run tips
 - In README
+
+> Write shortcuts as words (Command-Comma), not glyphs — house style.
 
 ### About Window
 
@@ -372,7 +428,7 @@ above. 6/30 apps had it wired; one (AvidMXFPeek) links Sparkle but never calls i
 ### macOS Menu Bar
 
 **Required menus:**
-- **App menu:** About, Preferences (⌘,), Quit (⌘Q)
+- **App menu:** About, Preferences (Command-Comma), Quit (Command-Q)
 - **File menu:** (if file-based) New, Open, Save, Close
 - **Edit menu:** Undo, Redo, Cut, Copy, Paste, Select All
 - **Window menu:** Minimize, Zoom, standard window commands
@@ -438,6 +494,28 @@ if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
 
 ---
 
+## HUD / Agent App Minimums (conditional tier)
+
+**Only for `LSUIElement` / menu-bar / overlay apps** (no main window — ClipSmart, QuickStatsPanel,
+LaunchAway). These are *not* universal minimums; forcing them on a windowed app is wrong. But when an
+app is a summon-on-demand agent, this set is what separates "works" from "feels native":
+
+| Feature | Why it's a minimum for this category | Reference |
+|---------|--------------------------------------|-----------|
+| **Global hotkey to summon** | The app has no Dock/window to click — the hotkey *is* the entry point. Use Carbon `RegisterEventHotKey` (no Accessibility/Input-Monitoring permission). | cookbook **#64** |
+| **Non-activating panel** | Summoning must not steal focus from the user's frontmost app (esp. if it pastes/acts into it). `NSPanel` `.nonactivatingPanel`, `orderFrontRegardless`. | cookbook **#65**, #81, #109 |
+| **First-run hint** | With no window to discover, a new user doesn't know the summon key exists → teach it once on first launch. | cookbook #71 (self-managed window) |
+| **Launch-at-login option** | An agent the user must remember to start isn't an agent. `SMAppService.mainApp.register()`, surfaced as a Settings toggle. | — |
+
+**Adjacent (only if the app has a rebindable hotkey):** an **in-app shortcut recorder** so the user
+can change the summon key — `ShortcutKit` or an equivalent recorder view (cookbook #64 covers
+rebind). Esc-to-dismiss on a non-key panel: cookbook #72.
+
+> **Observed gap:** of the three agent apps, only ClipSmart ships launch-at-login; QuickStatsPanel and
+> LaunchAway don't. That's the most-skipped item in this tier — check it explicitly.
+
+---
+
 ## Architecture Patterns (Your Defaults)
 
 Based on your codebase patterns:
@@ -470,12 +548,15 @@ Run through this before every release:
 - [ ] Preferences save and restore correctly
 - [ ] Errors show user-friendly messages
 - [ ] Progress shows for long operations
+- [ ] Drag-and-drop import works (if the app takes files)
+- [ ] Security-scoped bookmarks restore files after relaunch (if sandboxed)
 
 ### UI Polish
 - [ ] Empty states have clear CTAs
 - [ ] Loading states show (not blank)
 - [ ] Error states have retry option
-- [ ] Keyboard shortcuts work
+- [ ] Command-Comma opens Settings; Command-Shift-? opens Help
+- [ ] Other keyboard shortcuts work and are documented
 - [ ] About window has current version
 
 ### App Citizenship
@@ -490,6 +571,12 @@ Run through this before every release:
 - [ ] iOS: Review prompt triggers appropriately
 - [ ] iOS: What's New shows after update
 - [ ] Web: Favicon, meta, 404 all present
+
+### HUD / Agent App (only if LSUIElement / menu-bar / overlay)
+- [ ] Global hotkey summons the app
+- [ ] Panel doesn't steal focus from the frontmost app
+- [ ] First-run hint teaches the summon hotkey
+- [ ] Launch-at-login toggle present (the most-skipped item)
 
 ---
 
@@ -506,9 +593,13 @@ Things you've forgotten before:
 | No empty states | Users think app is broken | Design from empty first |
 | Hardcoded debug URLs | Ships with wrong endpoints | Use build config |
 | Missing keyboard shortcuts | Power users frustrated | Standard shortcuts + docs |
+| Settings not on Command-Comma / Help not on Command-Shift-? | Feels non-native; system wiring skipped | Use the standard shortcuts — SwiftUI binds them for free |
 | No Feedback / Donate / About | No user channel, no support income, looks unfinished | `AppCitizenshipKit` (one line) |
 | Hand-rolled Help/feedback per app | Drift, wasted effort | Use the shared packages, not bespoke |
 | Blank/generic app icon | Screams "unfinished" | Generate all sizes (cookbook #76) |
+| File picked, gone after relaunch (sandboxed) | "Why won't it remember my folder?" | Security-scoped bookmark, not a raw path |
+| File-app with no drag-drop | Feels clunky vs every peer app | `.dropDestination` alongside the picker (#11) |
+| Agent app with no launch-at-login | User forgets to start it → "broken" | `SMAppService` toggle in Settings |
 
 ---
 
