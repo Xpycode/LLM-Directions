@@ -107,4 +107,40 @@ clickAwayMonitor = NSEvent.addGlobalMonitorForEvents(
   ```
   `NSEvent.mouseLocation` and `panel.frame` are both global, bottom-left screen coords, so the containment check is correct **across displays** (no flipping). Arm it from `pauseDismiss()`, cancel it from `startDismiss()`. (Source: QuickScreenShot `CaptureHUDController.swift`, 2026-06-14.)
 
-**Best for:** a hotkey-summoned overlay (stats HUD, command palette, quick switcher) in an `LSUIElement` app with no menu bar. Pairs with #64 (Carbon global hotkey), #57 (⌘W override), #60 (closure-bridged AppKit).
+**Spotlight-style growing panel (top-anchored dynamic height).** A search/command palette should open as a *bare search bar* and grow downward as results arrive (Spotlight/Alfred/Raycast), not be a fixed box with empty space. Two rules make it clean:
+
+- **Let the SwiftUI content report a deterministic height; the controller resizes the window.** Don't measure SwiftUI's `fittingSize` and feed it back — that risks a layout feedback loop. Instead pin fixed metrics (search-bar height, row height, max visible rows → then scroll) so the view can *compute* its total height and hand it to the controller via a closure:
+  ```swift
+  // View: fixed metrics → exact height, no measurement
+  private var contentHeight: CGFloat {
+      let n = min(results.count, maxVisibleRows)
+      let list = n == 0 ? 0 : CGFloat(n) * rowH + CGFloat(n - 1) * rowGap + 2 * listPad
+      return searchBarH + (list > 0 ? dividerH + list : 0)
+  }
+  // report on appear + whenever results change (results recompute on every keystroke)
+  .onAppear { onHeightChange(contentHeight) }
+  .onChange(of: results) { _, _ in onHeightChange(contentHeight) }
+  ```
+- **Anchor the TOP edge, not the center — macOS origin is bottom-left, so grow by *dropping* `origin.y`.** Capture the anchor once per summon (so it doesn't drift if the cursor moves while typing); recompute the frame for each reported height, keeping the top pinned:
+  ```swift
+  func summon() {
+      anchorVF   = mouseScreen().visibleFrame
+      anchorTopY = anchorVF.maxY - anchorVF.height * 0.20   // bar sits ~20% down (Spotlight spot)
+      panel.setFrame(frame(forHeight: compactHeight), display: false)   // open as bare bar
+      panel.makeKeyAndOrderFront(nil); installClickAwayMonitor()
+  }
+  func setContentHeight(_ h: CGFloat) {                      // called by the view via the owner
+      guard panel.isVisible else { return }                 // offscreen reset → next summon re-bases
+      panel.setFrame(frame(forHeight: h), display: true)
+  }
+  private func frame(forHeight h0: CGFloat) -> NSRect {
+      let vf = anchorVF, h = min(h0, vf.height)
+      var y = anchorTopY - h                                 // top fixed, list unfurls downward
+      if y < vf.minY { y = vf.minY }; if y + h > vf.maxY { y = vf.maxY - h }
+      let x = min(max(vf.midX - panelWidth/2, vf.minX), vf.maxX - panelWidth)
+      return NSRect(x: x, y: y, width: panelWidth, height: h)
+  }
+  ```
+  Set the hosting view's `autoresizingMask = [.width, .height]` so the SwiftUI content fills each new size. Open at `compactHeight` (the query resets to empty on dismiss, so every summon starts as a bare bar). Pairs with the empty-query = no-results model in the search engine. (Source: LaunchAway `LauncherView.swift` + `LauncherPanelController.swift`, 2026-06-15.)
+
+**Best for:** a hotkey-summoned overlay (stats HUD, command palette, quick switcher, search launcher) in an `LSUIElement` app with no menu bar. Pairs with #64 (Carbon global hotkey), #57 (⌘W override), #60 (closure-bridged AppKit), #71 (self-managed Settings window + ⌘, routing).

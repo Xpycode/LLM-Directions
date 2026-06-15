@@ -50,6 +50,16 @@ var body: some Scene {
 - **`activate(ignoringOtherApps: true)` is required, not optional** — an accessory app is `.accessory` activation policy; the window won't come to the front or become key until the app activates.
 - **If the window opens *behind* the frontmost app** despite activating, the app likely needs a momentary `NSApp.setActivationPolicy(.regular)` around the show (and `.accessory` again on close). Most apps don't need this; reach for it only if fronting genuinely fails.
 - **Don't keep a `Settings { SettingsView() }` scene *and* a self-managed window** — you'd get two live `SettingsView` instances editing the same state. Pick the self-managed window; leave the scene `EmptyView()`.
+- **Even `Settings { EmptyView() }` isn't inert — it hijacks ⌘,.** The SwiftUI `Settings` scene auto-installs a "Settings…" menu item bound to ⌘,. `NSApp.sendEvent` matches that **menu key equivalent against the main menu *before*** the keystroke reaches your key window's responder chain — so ⌘, opens the blank `EmptyView` scene as a stray light-mode window *and* shadows any in-app `.onKeyPress(⌘,)` handler you wrote to open the real window. Symptom: "⌘, does nothing useful and a blank window appears." Fix is one idiomatic line — **remove the command** so ⌘, falls through to your handler:
+  ```swift
+  var body: some Scene {
+      Settings { EmptyView() }
+      .commands {
+          CommandGroup(replacing: .appSettings) { }   // drop the auto ⌘, "Settings…" item
+      }
+  }
+  ```
+  Then ⌘, reaches the panel/window's own `.onKeyPress(keys: [","])` handler (guard on `.command`) → `SettingsWindowController.show()`. Prefer this over runtime menu surgery (locating the item and clearing its `keyEquivalent`): no private `showSettingsWindow:` selector, no dependence on *when* SwiftUI builds the menu. (Source: LaunchAway `LaunchAwayApp.swift`, 2026-06-15.)
 - `NSWindow(contentViewController:)` sizes to the hosting view's `fittingSize`, so give `SettingsView` a definite width (`.frame(width: 380)`) and let height fit (`.fixedSize(horizontal: false, vertical: true)`).
 
 **Best for:** any `LSUIElement` menu-bar / agent / HUD app that needs a Settings (or About, or recorder) window opened from in-app UI. Pairs with #65 (non-activating HUD panel), #64 (Carbon global hotkey), #60 (closure-bridged AppKit).
