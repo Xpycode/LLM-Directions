@@ -257,9 +257,9 @@ defer { url.stopAccessingSecurityScopedResource() }
 if stale { /* re-save the refreshed bookmark */ }
 ```
 **Gotchas:** balance every `start…` with a `stop…`; handle the `stale` flag (re-mint the bookmark);
-non-sandboxed apps don't need this (a plain path works) — it's a sandbox tax. *(No dedicated cookbook
-entry yet — candidate for `/cookbook add` once extracted from the 4 apps above; #52 touches URL
-identity.)*
+non-sandboxed apps don't need this (a plain path works) — it's a sandbox tax. Full pattern (mint /
+store / resolve / re-mint, queue over-release defense, the `.nofollow` + slow-resolve gotchas):
+cookbook **#112**, extracted from Penumbra / Conjoyn / TimeCodeEditor / DiskVerdict.
 
 ---
 
