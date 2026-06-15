@@ -508,8 +508,9 @@ app is a summon-on-demand agent, this set is what separates "works" from "feels 
 | **Launch-at-login option** | An agent the user must remember to start isn't an agent. `SMAppService.mainApp.register()`, surfaced as a Settings toggle. | — |
 
 **Adjacent (only if the app has a rebindable hotkey):** an **in-app shortcut recorder** so the user
-can change the summon key — `ShortcutKit` or an equivalent recorder view (cookbook #64 covers
-rebind). Esc-to-dismiss on a non-key panel: cookbook #72.
+can change the summon key — `ShortcutKit` or an equivalent recorder view (cookbook **#111** for the
+SwiftUI click-to-record field; **#64** for the Carbon registration behind it). Esc-to-dismiss on a
+non-key panel: cookbook #72.
 
 > **Observed gap:** of the three agent apps, only ClipSmart ships launch-at-login; QuickStatsPanel and
 > LaunchAway don't. That's the most-skipped item in this tier — check it explicitly.
