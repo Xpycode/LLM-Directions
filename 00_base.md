@@ -150,6 +150,7 @@ swift test        # Tests pass?
 | Skills, SKILL.md, slash command | `23_claude-code-cli.md` (Skills section) |
 | Context full, degrading, compacting | `52_context-management.md` |
 | Cross-Mac, two Macs, "fetch first", "we did this on the other Mac", `.sync-conflict-*` | `37_multi-mac-discipline.md` |
+| Final stretch, last 10%, "this seems off", almost done but won't ship, polish vs ship-blocker, define done, v1 vs v1.1 | `62_final-stretch-triage.md` |
 
 ---
 

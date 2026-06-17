@@ -152,6 +152,7 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | example mapping, discovery, requirements, edge cases, rules, complex feature | `59_example-mapping.md` |
 | model, haiku, sonnet, opus, which model, slow … | `60_model-selection.md` |
 | notarization, notarytool, "Developer ID", Developer ID Application, staple, stapler … | `61_distribution-notarization.md` |
+| final stretch, last 10%, last 1%, "this seems off", almost done, can't ship, polish, ship-blocker, triage, v1 vs v1.1, define done, endgame drags … | `62_final-stretch-triage.md` |
 
 **Why read-on-demand:** Universal docs used to be copied into each project at `/setup`, so updates
 never reached already-set-up projects (N copies silently drift). This Index lets a running project —
