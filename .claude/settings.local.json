@@ -159,7 +159,9 @@
       "Bash(/usr/bin/log show *)",
       "Bash(git *)",
       "Bash(env)",
-      "WebFetch(domain:thariqs.github.io)"
+      "WebFetch(domain:thariqs.github.io)",
+      "Bash(scutil --get LocalHostName)",
+      "Bash(hostname -s)"
     ]
   },
   "enableAllProjectMcpServers": true,
