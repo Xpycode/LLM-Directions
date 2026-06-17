@@ -18,9 +18,14 @@ For each category, ask: "**[Category]** - all good, or missing something?"
 
 ## Step 3: Note Gaps
 
-If anything is missing, ask:
-- "Want to add this to the current session's tasks?"
-- "Should I create a TODO for this?"
+If anything is missing, **capture it — don't fix mid-check** (see `docs/62_final-stretch-triage.md`,
+Rule 1). Sort each gap into a bucket so a cosmetic miss isn't treated like a ship-blocker:
+- **Bucket 1 (ship-blocker)** — a missing minimum that breaks core use or risks data → fix before ship
+- **Bucket 2/3** — survivable or cosmetic → route to v1.1 by default
+
+Then ask:
+- "Want to add the bucket-1 gaps to the current session's tasks?"
+- "Should I create TODOs for the rest (v1.1)?"
 
 ## Step 4: Summary
 
