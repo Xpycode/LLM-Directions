@@ -2,6 +2,25 @@
 
 Create a specification before implementation using the mini-PRD template.
 
+## Step 0 — Model tier check (nudge)
+
+Speccing resolves ambiguity and shapes a feature — **Opus-tier** judgment work (Fable if it's gnarly).
+Record the phase and read the model:
+
+```bash
+SID=$(ls -t "$HOME"/.claude/.current-model-* 2>/dev/null | head -1 | sed "s:.*/.current-model-::")
+[ -n "$SID" ] && printf 'spec' > "$HOME/.claude/.session-phase-$SID"
+MODEL=$(cat "$HOME/.claude/.current-model-$SID" 2>/dev/null)
+echo "phase: spec · current model: ${MODEL:-unknown}"
+```
+
+If `MODEL` is Sonnet or Haiku (under-powered for open-ended spec work), **nudge once, then continue
+anyway** (don't gate — being slightly over- or under-powered for a spec is rarely costly):
+
+> 🔴 **You're on `<MODEL>` — speccing is Opus-tier judgment work. Consider `/model opus`.**
+
+If already Opus/Fable, say nothing and proceed.
+
 ## Step 1: Gather Core Info
 
 Ask:

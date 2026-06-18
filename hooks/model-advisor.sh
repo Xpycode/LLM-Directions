@@ -95,13 +95,18 @@ token="${suggest_label}|${model}"
 printf '%s' "$token" > "$sugg_file" 2>/dev/null
 [[ "$last" == "$token" ]] && exit 0
 
-# Phrase the nudge by direction.
+# Phrase the nudge by direction — loud, imperative, CAPS.
+# NOTE: macOS ships bash 3.2 — no ${var^^} expansion. Uppercase via tr.
+sugg_upper=$(printf '%s' "$suggest_label" | tr '[:lower:]' '[:upper:]')
+cur_upper=$(printf '%s' "$cur_label" | tr '[:lower:]' '[:upper:]')
 if (( suggest_tier < cur_tier )); then
-    verb="this looks like ${suggest_label}-tier work — consider /model ${suggest_label} to save cost"
+    verb="THIS IS ${sugg_upper}-TIER WORK — SWITCH DOWN TO SAVE COST: /model ${suggest_label}"
 else
-    verb="this looks demanding — consider /model ${suggest_label} for more capability"
+    verb="THIS LOOKS DEMANDING — SWITCH UP FOR MORE CAPABILITY: /model ${suggest_label}"
 fi
 
-# systemMessage is shown to the user (not injected into my context).
-jq -cn --arg msg "💡 You're on ${cur_label}; ${verb}." '{systemMessage: $msg}'
+# systemMessage is shown to the user (not injected into my context). This channel
+# renders plain text — ANSI color would leak as literal escape codes, so loudness
+# comes from CAPS + 🔴 emoji. True red lives in the statusline (a terminal line).
+jq -cn --arg msg "🔴 MODEL CHECK — YOU'RE ON ${cur_upper}. ${verb} 🔴" '{systemMessage: $msg}'
 exit 0

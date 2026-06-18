@@ -2,6 +2,23 @@
 
 Enter planning mode to create or update IMPLEMENTATION_PLAN.md.
 
+## Step 0 — Model tier check (nudge)
+
+Planning = decomposition + architecture = **Opus-tier** reasoning. Record the phase and read the model:
+
+```bash
+SID=$(ls -t "$HOME"/.claude/.current-model-* 2>/dev/null | head -1 | sed "s:.*/.current-model-::")
+[ -n "$SID" ] && printf 'plan' > "$HOME/.claude/.session-phase-$SID"
+MODEL=$(cat "$HOME/.claude/.current-model-$SID" 2>/dev/null)
+echo "phase: plan · current model: ${MODEL:-unknown}"
+```
+
+If `MODEL` is Sonnet or Haiku (under-powered for architecture), **nudge once, then continue anyway**:
+
+> 🔴 **You're on `<MODEL>` — planning is Opus-tier reasoning. Consider `/model opus`.**
+
+If already Opus/Fable, say nothing and proceed.
+
 ## When to Use
 
 - Starting a new feature
