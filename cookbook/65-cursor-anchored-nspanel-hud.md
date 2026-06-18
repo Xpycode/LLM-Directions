@@ -141,6 +141,6 @@ clickAwayMonitor = NSEvent.addGlobalMonitorForEvents(
       return NSRect(x: x, y: y, width: panelWidth, height: h)
   }
   ```
-  Set the hosting view's `autoresizingMask = [.width, .height]` so the SwiftUI content fills each new size. Open at `compactHeight` (the query resets to empty on dismiss, so every summon starts as a bare bar). Pairs with the empty-query = no-results model in the search engine. (Source: LaunchAway `LauncherView.swift` + `LauncherPanelController.swift`, 2026-06-15.)
+  Set the hosting view's `autoresizingMask = [.width, .height]` so the SwiftUI content fills each new size. Open at `compactHeight` (the query resets to empty on dismiss, so every summon starts as a bare bar). Pairs with the empty-query = no-results model in the search engine. (Source: LaunchAway `LauncherView.swift` + `LauncherPanelController.swift`, 2026-06-15.) **To make this growing panel draggable** (Raycast/Alfred-style, position remembered for the session) see **#123** — it promotes this section's `anchorTopY` scalar to a top-left point and adds an `isMovableByWindowBackground` + `windowDidMove` drag-capture path.
 
 **Best for:** a hotkey-summoned overlay (stats HUD, command palette, quick switcher, search launcher) in an `LSUIElement` app with no menu bar. Pairs with #64 (Carbon global hotkey), #57 (⌘W override), #60 (closure-bridged AppKit), #71 (self-managed Settings window + ⌘, routing).
