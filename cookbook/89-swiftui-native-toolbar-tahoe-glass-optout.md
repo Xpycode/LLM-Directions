@@ -80,6 +80,50 @@ Going native deletes code rather than adding it — the native toolbar provides 
 
 There is **no clean public per-item opt-out** for the toolbar glass on macOS 26 — the compat flag is the supported lever and it's all-or-nothing. That's fine when the app's whole aesthetic is bespoke (custom `Theme`, custom buttons, forced dark mode) — glass would clash everywhere, so opting out wholesale is correct and makes you match the older-SDK reference apps exactly. If instead you *want* the native Tahoe look, do the opposite: **drop your custom item backgrounds** and let the glass capsule *be* the background (no double layer).
 
+## Spreading toolbar items edge-to-edge: the three-zone rule
+
+Getting items to the *edges* (cluster left, one button hard-right; or cluster **centered**) trips
+people up because the obvious moves silently fail:
+
+- **`.navigation` + `.primaryAction` alone do NOT spread.** With only a leading and a trailing group,
+  AppKit sizes each to its content and butts them together on the left — the trailing item lands
+  mid-toolbar, not at the right edge.
+- **A `Spacer()` only expands inside the zone that holds it.** Dropping `Spacer()` into a
+  `.navigation` group does nothing: that group is content-sized, so the spacer has zero width to grow
+  into. (Same trap as putting everything in one group hoping the spacer pushes the last item right.)
+- **The fix: add a `.principal` (center) zone.** Its presence is what makes the toolbar lay out as
+  three full-width zones — leading / center / trailing — which finally pushes `.primaryAction` flush
+  to the right edge.
+
+```swift
+.toolbar {
+    // LEFT cluster
+    ToolbarItemGroup(placement: .navigation) { /* leading buttons */ }
+
+    // CENTER — also the lever that spreads the toolbar. Put real content here
+    // to center it, OR an empty Spacer() purely to force the three-zone layout.
+    ToolbarItemGroup(placement: .principal) {
+        MyCenteredButtons()        // centered in the toolbar's middle
+        // Spacer()                // ← use this instead if you only want the spread
+    }
+
+    // RIGHT — now actually flush-right because .principal exists
+    ToolbarItem(placement: .primaryAction) {
+        Button { … } label: { Image(systemName: "gearshape") }
+    }
+}
+.toolbarRole(.editor)   // required: .editor is what enables navigation/primaryAction edge anchoring
+```
+
+- **Want a cluster horizontally centered?** Put it *in* `.principal` (the centered "title" slot) —
+  not in `.navigation`. Note it centers in the space *between* the leading and trailing zones, so a
+  heavy trailing item nudges it slightly off true window-center (optically re-balance with a leading
+  item or a small trailing pad if it bothers you).
+- **No `ToolbarSpacer` below macOS 26.** macOS 26 (Tahoe) adds a real flexible `ToolbarSpacer`, but
+  if your deployment target is macOS 14/15 it doesn't exist — the empty-`.principal`-`Spacer()` trick
+  is the cross-version way to spread. (Source: Magpie `ContentView.swift`, modeled on Penumbra's
+  three-zone `.toolbar`.)
+
 ## Verify without Screen Recording permission
 
 A CLI `screencapture` of your own app often fails (no Screen Recording perm for the shell). You can't see the bubbles yourself — drive a **user eyeball** instead, but make it a *correctness* check by reading the values out of the source first, and confirm the build/plist facts programmatically (PlistBuddy above). The visual "are the capsules gone?" is the only part that needs a human.
