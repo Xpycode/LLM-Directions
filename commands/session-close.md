@@ -126,6 +126,36 @@ If the user says yes:
 staged. The change from older guidance is that the *offer now includes the push* — because stopping at
 a local commit defeats the whole point of closing cleanly when you work across machines.
 
+## Step 7 — Next-session model reminder
+
+The last thing before the user clears. **Why here:** switching models re-reads the whole context
+(a cache miss); doing it mid-session at a full context is the expensive moment, doing it right after
+`/clear` at an empty context is nearly free. So the ritual is **clear → switch → start** — and this
+reminder exists so the next session begins on the right tier instead of silently burning the wrong one.
+
+Read this session's recorded phase (written by `/spec`, `/plan`, or `/execute` at Step 0):
+
+```bash
+SID=$(ls -t "$HOME"/.claude/.current-model-* 2>/dev/null | head -1 | sed "s:.*/.current-model-::")
+PHASE=$(cat "$HOME/.claude/.session-phase-$SID" 2>/dev/null)
+echo "this session phase: ${PHASE:-unknown}"
+rm -f "$HOME/.claude/.session-phase-$SID" 2>/dev/null   # consume it — fresh phase set next session
+```
+
+Map the phase to the usual next step and show a **loud** reminder (chat can't render true red — use
+**bold + 🔴 + CAPS**; the statusline carries the real red):
+
+| This session was | Usual next | Show |
+|---|---|---|
+| `spec` | planning | 🔴 **NEXT: PLANNING → `/model opus`** |
+| `plan` | executing | 🔴 **NEXT: EXECUTING → `/model sonnet`** |
+| `execute` | more execution, or planning | 🔴 **More execution? STAY ON SONNET. Planning next? → `/model opus`** |
+| unknown / empty | — | skip — no phase was recorded this session |
+
+Always append the cheap-switch order: **"Clear FIRST, then `/model <X>`, then start."**
+
+This is a reminder, not an action — the user switches when they open the next session.
+
 ## When to invoke
 
 - At the end of a working session, before closing the terminal / IDE.

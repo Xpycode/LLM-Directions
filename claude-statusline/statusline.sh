@@ -73,8 +73,13 @@ if [[ -n "$session_id" ]]; then
         esac
         # Only show the hint while the mismatch still stands.
         if (( sugg_tier > 0 && sugg_tier != cur_tier )); then
-            if (( sugg_tier < cur_tier )); then hc="$C_GOLD"; else hc="$C_RED"; fi
-            model_hint=" ${hc}⮕ ${sugg_label}?${C_RESET}"
+            # LOUD alarm: bold white on a filled bright-red bar (bg 256-color 196)
+            # + CAPS + imperative, so a wrong-tier session can't be skimmed past.
+            # A filled block reads as "alarm" far more than colored text alone, and
+            # background fills are supported everywhere (unlike ANSI blink). Inner
+            # padding spaces give the bar margins; 1;97 = bold white, 48;5;196 = red bg.
+            sugg_upper=$(printf '%s' "$sugg_label" | tr '[:lower:]' '[:upper:]')
+            model_hint=" \033[1;97;48;5;196m ⮕ /MODEL ${sugg_upper} \033[0m"
         else
             rm -f "$sugg_file" 2>/dev/null   # resolved — clear it
         fi

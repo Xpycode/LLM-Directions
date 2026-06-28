@@ -112,6 +112,38 @@ Without the classification, all three look like FDA failures.
 
 ---
 
+## Prime the FDA list entry before opening System Settings
+
+A second, independent UX failure (same incident): the user clicks "Open System Settings", lands on the Full Disk Access list, and **the app isn't in it** — because macOS only auto-adds an app once it has actually *attempted* a TCC-protected read. So they toggle a name-adjacent app and assume they granted access.
+
+Radix ([github.com/colinvkim/Radix](https://github.com/colinvkim/Radix), `SystemIntegration.swift`) has the clean fix: **probe a protected path first, then open Settings.** The failed probe is what registers the app in the list, so the user arrives to find it already there, just needing the toggle.
+
+```swift
+static func prepareAndOpenFullDiskAccessSettings() -> Bool {
+    primeFullDiskAccessListEntry()          // attempt a protected read → macOS adds us to the FDA list
+    return openFullDiskAccessSettings()     // x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles
+}
+
+static func primeFullDiskAccessListEntry() {
+    _ = probeFullDiskAccess()               // the read attempt itself is the registration side-effect
+}
+```
+
+Always pair the deep-link with the prime — the deep-link alone drops the user on a list that may not contain their app.
+
+---
+
+## Don't let the FDA *detection* heuristic rot across OS versions
+
+There is **no public API to ask "do I have Full Disk Access."** Every app *infers* it by reading sentinel paths that FDA unlocks (`~/Library/Mail`, `~/Library/Safari`, `/Library/Preferences/com.apple.TimeMachine.plist`, the per-app `Containers` …). Two ways this inference silently breaks:
+
+1. **Sentinel absent → false negative.** If the chosen sentinel doesn't exist on that Mac (no Mail account, Time Machine never configured, Stocks never launched), the read fails for a reason unrelated to permission, and a catch-all reports `notGranted` *even though FDA is granted*. Require **≥2 sentinels readable** out of several candidates, and only count sentinels that actually exist (`fileExists` before adding the probe).
+2. **OS-version-gated probe path that's tuned for an unreleased OS.** Radix branches on `operatingSystemVersion.majorVersion >= 27` into a *separate, unverified* probe set (TimeMachine.plist + Stocks container). On a macOS 27 **beta**, those sentinels behave differently than the code assumes, so the app can *never* report `granted` no matter how many times the user toggles the switch — the exact "I granted it but it won't recognise it" report. **Lesson:** a version-gated detection branch for an OS still in beta is a liability; prefer one stable sentinel set with a quorum, log the per-sentinel outcome (this entry's whole point), and fall back to the proven path rather than guessing the new OS's TCC layout.
+
+Never pick a path that stays unreadable *even with FDA* (e.g. `/Library/Application Support/com.apple.TCC` itself is root-owned/SIP-protected) — matching it would suggest a grant that can never resolve the warning.
+
+---
+
 ## When to apply this
 
 - Any pre-flight that gates a **destructive UI** (delete, overwrite, rename) on a permission probe.
