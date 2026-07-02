@@ -1,5 +1,7 @@
 # 153 — Gate a destructive, irreversible macOS action with a confirmation *ladder* (one-time first-run warning → per-run count-confirm → the OS's own dialog) — and report the outcome honestly
 
+**Tags:** confirmation ladder, @AppStorage, count-confirm, deleteAssets, destructive action, #147, #154, Stop race, honest reporting
+
 **Extracted from:** CompressPhotos (2026-07-02)
 
 You're shipping an action that **deletes the user's data** (here: compress photos, then delete the

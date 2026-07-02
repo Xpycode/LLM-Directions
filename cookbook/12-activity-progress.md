@@ -1,5 +1,7 @@
 ## Activity & Progress Bars
 
+**Tags:** progress bar, activity indicator, determinate, cancel, ProgressView, status bar
+
 Bottom bars, progress indicators, and status displays for background tasks. Every pro app needs at least a status bar; most need progress for exports, scans, or batch operations.
 
 ---

@@ -1,5 +1,7 @@
 ## Template Round-Trip Invariant — Admin-Write Safety Net for Static Sites
 
+**Tags:** template round-trip, strtr, parse render invariant, static admin, regression guard, PHP CLI, byte-for-byte
+
 **Source:** `lucesumbrarum.photos/admin/regen-leaf.php` + `admin/_test-regen.php` + `admin/templates/leaf.html.tpl`. Added 2026-04-23.
 
 > *Legacy path: the `01_Source/` reference in the example below predates the universal `01_Project/` code-home convention. New web projects put code in `01_Project/` — see `13_folder-structure.md`.*

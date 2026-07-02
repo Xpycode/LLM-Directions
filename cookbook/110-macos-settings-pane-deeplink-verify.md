@@ -1,5 +1,7 @@
 # 110 — Deep-linking into macOS System Settings panes (`x-apple.systempreferences:`) and verifying the bundle ids against the installed ExtensionKit registry
 
+**Tags:** x-apple.systempreferences, ExtensionKit, appex, CFBundleIdentifier, PlistBuddy, LaunchTarget, NSWorkspace.open, sandbox
+
 **Extracted from:** LaunchAway (2026-06-15)
 
 You want a launcher / menu-bar utility / onboarding flow to jump straight to a System Settings pane — type "wifi", land on Wi-Fi. The mechanism is a URL:

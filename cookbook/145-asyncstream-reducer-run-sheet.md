@@ -1,5 +1,7 @@
 # 145 — Consume an engine's `AsyncThrowingStream` into `@Observable` UI via a reducer + run sheet
 
+**Tags:** AsyncThrowingStream, @Observable, reducer, for try await, run sheet, interactiveDismissDisabled, progress bar, onTermination
+
 **Best for:** a SwiftUI macOS app that drives a long, multi-phase operation (copy → verify →
 geotag, build, export, batch transcode) whose engine already streams progress as
 `AsyncThrowingStream<Event, Error>`, and you need a live progress UI then a final report. The

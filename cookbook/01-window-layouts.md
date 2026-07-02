@@ -1,5 +1,7 @@
 ## Window Layouts
 
+**Tags:** NavigationSplitView, HSplitView, multi-window, autosave divider, NSTableView, window layout
+
 ### Split-Pane Decision Tree (read this first)
 
 Pick based on whether the divider is user-resizable — this is a decision tree, not a

@@ -1,5 +1,7 @@
 # Pattern #50 — Detachable Windows (WindowGroup for UUID)
 
+**Tags:** WindowGroup, UUID scene, WindowManager, openWindow, Transferable, UTType, dropDestination, detach
+
 **Source project:** MyOwnTerminal  
 **Best for:** Apps with tabs or items that users want to pop out into their own independent window — each with its own state manager.
 

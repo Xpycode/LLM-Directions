@@ -1,5 +1,7 @@
 # 96 — macOS app indexer silently misses Safari (and Cryptex system apps) → `contentsOfDirectory(at:)` drops symlinks, use the path variant
 
+**Tags:** contentsOfDirectory atPath, isDirectoryKey drops symlink, Cryptex volume, Safari missing, app indexer, .app enumeration, Bundle(url:), count mismatch
+
 **Extracted from:** LaunchAway (2026-06-13)
 
 You scan `/Applications`, `/System/Applications`, `/System/Applications/Utilities`, `~/Applications` for `.app` bundles to build a launcher/index. It finds 96 apps, everything looks right — but **Safari never appears** (typing "saf" matches "Kagi for Safari" but not Safari itself). Other system apps may be missing too. The matcher, the engine, the ranking are all provably correct; the candidate set simply doesn't contain Safari.

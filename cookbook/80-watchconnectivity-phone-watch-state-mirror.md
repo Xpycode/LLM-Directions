@@ -1,5 +1,7 @@
 # Phone ↔ Watch full-state mirror over WatchConnectivity (App Groups don't cross devices)
 
+**Tags:** WatchConnectivity, WCSession, updateApplicationContext, App Groups, didReceiveApplicationContext, complication, reloadAllTimelines, state mirror
+
 **Source:** `2-iOS/Group Alarms/` — `PhoneConnectivityManager.swift`, `Group Alarms Watch Watch App/WatchConnectivityManager.swift`, `SharedDataManager.swift`, `Group_Alarms_WatchApp.swift` (2026-06-05).
 
 A paired-device app keeps its data in an **App Group** (`UserDefaults(suiteName:)`) so the app, its widgets, and its watch app all read the same store. The trap: **App Group containers are per-device.** `group.X` on the iPhone and `group.X` on the Apple Watch are *separate sandboxes* — they do **not** sync. The only bridge is **WatchConnectivity**. If you never push the data across, the watch app (and any watch complication) reads a store that only its **own** local writes ever populated → empty on a fresh install, stale forever after.

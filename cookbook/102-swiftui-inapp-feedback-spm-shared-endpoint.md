@@ -1,5 +1,7 @@
 # 102 — Drop-in in-app feedback sheet (SPM package → shared multi-app PHP endpoint)
 
+**Tags:** FeedbackKit, FeedbackConfig, CommandGroup(after:.help), URLSessionTaskDelegate, 302 redirect, MainActor.assumeIsolated, honeypot
+
 **Best for:** adding a **"Send Feedback / Report a Bug"** sheet to a macOS app that POSTs to the shared
 self-hosted `feedback-submit.php` (cookbook **#49** — multi-app, keyed by an `app` field +
 `ALLOWED_APPS`, brings the admin board / public board / rate-limit / email-notify for free). This is the

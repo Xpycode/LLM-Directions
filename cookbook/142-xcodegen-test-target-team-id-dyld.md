@@ -1,5 +1,7 @@
 # 142 — xcodegen unit-test target won't load: dyld "different Team IDs"
 
+**Tags:** xcodegen, DEVELOPMENT_TEAM, different Team IDs, dyld, TEST_HOST, BUNDLE_LOADER, xcconfig, configFiles, CODE_SIGN_STYLE
+
 **Best for:** any macOS xcodegen project where you add a `bundle.unit-test` target and `xcodebuild test`
 suddenly fails at *load* time (the code compiles fine) with a `dlopen` / "different Team IDs" error.
 

@@ -1,5 +1,7 @@
 ## App Lifecycle & Initialization
 
+**Tags:** @main, task init order, scenePhase, Manager.configure, FolderManager, app lifecycle
+
 ### Standard App Entry Point
 
 **Source:** `MusicServer/MusicServerApp.swift`

@@ -1,5 +1,7 @@
 ## Design Tokens — Typography, Spacing, Iconography, Radii
 
+**Tags:** design tokens, type scale, 8pt grid, SF Symbol weight, corner radius, clamp, Theme
+
 **Source:** `1-macOS/Penumbra/01_Project/Penumbra/` — the canonical reference implementation.
 Specifically: `App/PenumbraApp.swift`, `Views/ContentView.swift`, `Views/ToolbarButtonStyles.swift`, `Utils/ThemeManager.swift`.
 

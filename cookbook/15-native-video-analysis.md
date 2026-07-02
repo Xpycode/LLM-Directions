@@ -1,5 +1,7 @@
 ## Native Video Analysis (AVFoundation)
 
+**Tags:** video analysis, shot detection, scene detection, Y-plane histogram, motion scoring, frame differencing
+
 ### Shot/Scene Detection — Y-Plane Histogram Chi-Square
 
 **Source:** `VideoScout/Services/NativeShotDetector.swift`

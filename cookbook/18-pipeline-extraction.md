@@ -1,5 +1,7 @@
 ## Pipeline Extraction Pattern
 
+**Tags:** pipeline extraction, shared logic, caller-owned I/O, reusable processing
+
 **Problem:** Multiple code paths reimplement the same processing pipeline (e.g., normal export vs. rename-on-conflict export). Pipelines drift apart — one path adds a step, the other doesn't.
 
 **Solution:** Extract the pipeline into a method that returns processed results WITHOUT saving. Callers handle I/O (URL construction, saving) independently.

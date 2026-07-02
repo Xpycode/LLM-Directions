@@ -1,5 +1,7 @@
 # Permission-free Esc-to-dismiss via a *scoped* Carbon hotkey (+ ID-filtered multi-instance `HotKeyService`)
 
+**Tags:** Carbon hotkey, Escape dismiss, EventHotKeyID filter, kEventParamDirectObject, non-key panel, scoped hotkey, onVisibilityChanged, click-away
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Services/HotKeyService.swift`, `AppDelegate.swift`, `Panel/PanelWindowController.swift` (2026-06-05, v0.2.0).
 
 You have a non-activating HUD panel (#65) that **never becomes key** (so the user keeps typing in their real app), and you want **Esc to dismiss it**. The trap everyone hits: a non-key panel never receives `keyDown` / SwiftUI `.onKeyPress` — Esc goes to whatever app actually has focus. A global *keyboard* monitor would catch it but needs **Input-Monitoring permission** (this is what #65 originally said made Esc "not free").

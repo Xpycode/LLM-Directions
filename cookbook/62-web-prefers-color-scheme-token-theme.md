@@ -51,6 +51,8 @@ Every component already reads `var(--token)`. So re-theming the entire site is ~
 
 ```bash
 # hardcoded colours that are NOT var(...) — these need explicit dark patches
+
+**Tags:** prefers-color-scheme, design tokens, color-scheme, dark mode, CSS custom properties, currentSrc, picture element, webp
 grep -nE "#[0-9A-Fa-f]{3,6}|rgba?\(" css/*.css | grep -vi "var("
 ```
 

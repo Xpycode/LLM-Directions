@@ -1,5 +1,7 @@
 # Pattern 25: Extension File Splitting
 
+**Tags:** extensions, file splitting, access level, private to internal, refactor
+
 **Source:** P2toMXF (2026-04-13)
 **Use when:** Any Swift file exceeds ~500 lines, or a class has clearly separable responsibilities
 

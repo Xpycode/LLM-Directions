@@ -1,5 +1,7 @@
 # 90 — Off-main file logger: mirror an in-memory feed to disk, bounded + rotated (sandbox-aware)
 
+**Tags:** off-main file logger, LogFileWriter, DispatchQueue serial, FileHandle seekToEnd, log rotation, Sendable, applicationSupportDirectory sandbox, activateFileViewerSelecting
+
 **Problem.** You have an `@Observable @MainActor` logger feeding a live in-app console — newest-first array, great for a Debug Console view. But it's **in-memory only**: the moment the user quits, every log line is gone, so a bug report tells you nothing. And the array grows **unbounded** — a long session leaks RAM one log line at a time. This is a `/minimums` ship gap: *diagnostic logging to disk* is a baseline, not a nicety.
 
 The naive fix — `try String(contentsOf:) + "\n" + line` then `.write(to:)` inside the `@MainActor log()` — is wrong twice over: it does **file I/O on the main thread** (jank when you log from a hot path like export/waveform), and it **rewrites the whole file every call** (O(n²) as the log grows).

@@ -2,97 +2,72 @@
 
 Manage the reusable code patterns cookbook.
 
-**Location:** Detect automatically:
-- Master repo: `./PATTERNS-COOKBOOK.md` (root)
-- Installed projects: `./docs/PATTERNS-COOKBOOK.md`
+## Structure (read this first)
+
+The cookbook is **split**, not a monolith:
+
+- **`cookbook/NNN-*.md`** — one file per pattern. Each starts with an H1 title, then a
+  `**Tags:**` line (searchable keywords), then the full write-up + code.
+- **`PATTERNS-COOKBOOK.md`** — a lean **router index**: one row per pattern
+  (`| # | File | one-line summary |`). It is loaded on every trigger, so it must stay small.
+  **Never paste full patterns or code into it.**
+
+**Location** (auto-detect):
+- Master repo: `./PATTERNS-COOKBOOK.md` + `./cookbook/` (root)
+- Installed projects: `./docs/PATTERNS-COOKBOOK.md` + `./docs/cookbook/`
+
+## Looking a pattern up (grep-first — never read the whole index)
+
+1. Grep the index for a keyword, then read only the matching file:
+   `grep -i '<keyword>' PATTERNS-COOKBOOK.md` → open the `cookbook/NNN-*.md` in the row's link.
+2. Or grep the files' `**Tags:**` lines directly, skipping the index:
+   `grep -ril '<keyword>' cookbook/`
+
+Read **only** the one matching file. Do not load `PATTERNS-COOKBOOK.md` wholesale.
 
 ## Commands
-
-### `/cookbook` or `/cookbook update`
-
-Full rescan of ProgrammingProjects to find new patterns.
-
-**Process:**
-1. Scan the user's projects directory for Swift files containing:
-   - Window layouts (HSplitView, NavigationSplitView, WindowGroup)
-   - Export dialogs (NSSavePanel, NSOpenPanel)
-   - File pickers (.fileImporter, drag-and-drop)
-   - App lifecycle (@main, AppDelegate, scenePhase)
-   - Service patterns (Manager, Coordinator, @Observable)
-
-2. Compare against existing cookbook entries
-
-3. For new patterns found, ask:
-   > "Found new pattern in [Project]: [Description]. Add to cookbook?"
-
-4. If yes, append to PATTERNS-COOKBOOK.md with:
-   - Pattern name
-   - Source file path
-   - Code snippet (20-50 lines)
-   - "Best for" description
-
-5. Update Vestige memory with new patterns
-
----
 
 ### `/cookbook add`
 
 Quick-add a pattern you just built.
 
-**Process:**
-1. Ask: "What pattern did you just build? (e.g., 'custom progress indicator', 'multi-window state sync')"
+1. Ask (one turn): "What pattern did you just build, which file has the working code, and what's it
+   best for in one line?"
+2. Compute the next number `NNN` = highest existing `cookbook/NNN-*.md` + 1.
+3. Create `cookbook/NNN-<kebab-slug>.md`:
+   - `# NNN — <title>`
+   - `**Tags:** <5–10 comma-separated search keywords>` (APIs, symbols, error strings, concepts)
+   - `**Extracted from:** <project> (<date>)`
+   - The write-up: the problem, the gotcha/why, and a **≤~50-line** code snippet. Keep the whole
+     file **≤~10KB**.
+4. Add **exactly one** row to `PATTERNS-COOKBOOK.md`:
+   `| NNN | [NNN-slug.md](cookbook/NNN-slug.md) | <≤200-char summary> |`
+   Add it in numeric order. The summary is a distillation — the detail lives in the file.
+5. Confirm: "Added #NNN to the cookbook (file + index row)."
 
-2. Ask: "Which file contains the working code?"
+### `/cookbook update`
 
-3. Read the file and extract the relevant code
+Rescan `~/ProgrammingProjects` for new reusable patterns not yet captured.
 
-4. Ask: "What's it best for? (one line)"
-
-5. Append to PATTERNS-COOKBOOK.md under appropriate section:
-   - Window Layouts
-   - Export & File Dialogs
-   - App Lifecycle & Initialization
-   - **Other Patterns** (new section if needed)
-
-6. Store in Vestige for automatic recall
-
-7. Confirm: "Added [pattern name] to cookbook and Vestige."
-
----
+1. Look for Swift/web files with reusable, non-obvious patterns (a gotcha that took >30 min, code
+   copied across projects, a SwiftUI/AppKit quirk).
+2. Compare against existing `cookbook/` files (grep Tags + filenames).
+3. For each genuinely new one, ask before adding, then follow `/cookbook add` steps 2–4.
 
 ### `/cookbook search <query>`
 
-Search existing patterns.
+`grep -i '<query>'` the index, and `grep -ril '<query>' cookbook/` the files' Tags lines; present
+the matching rows and read the top file(s).
 
-**Process:**
-1. Search Vestige for matching patterns
-2. Read relevant sections from PATTERNS-COOKBOOK.md
-3. Present matches with code snippets
+## When to add a pattern
 
----
+**Add when:** you built something that took >30 min to figure out · you copied code across projects ·
+you solved a SwiftUI/AppKit/web quirk · you want to remember "how we did X in project Y".
 
-## Pattern Categories
+**Don't add:** one-off hacks · project-specific logic · obvious/trivial code.
 
-| Category | Keywords to Detect |
-|----------|-------------------|
-| Window Layouts | HSplitView, VSplitView, NavigationSplitView, WindowGroup, NSSplitView |
-| Export & File Dialogs | NSSavePanel, NSOpenPanel, .fileImporter, .fileExporter |
-| App Lifecycle | @main, AppDelegate, scenePhase, .task, .onAppear |
-| State Management | @Observable, @StateObject, @EnvironmentObject, Manager |
-| Concurrency | actor, async/await, Task, MainActor |
-| Persistence | UserDefaults, bookmarkData, securityScoped |
+## Size discipline (keep the router lean)
 
----
-
-## When to Add Patterns
-
-Add a pattern when:
-- You built something that took >30 min to figure out
-- You copied code from another project
-- You solved a SwiftUI/AppKit quirk
-- You want to remember "how we did X in Project Y"
-
-**Don't add:**
-- One-off hacks
-- Project-specific logic
-- Obvious/trivial code
+- Index row summary ≤ 200 chars — no code, no pairs-with lists, no source credits.
+- Pattern file ≤ ~10KB; if a pattern is genuinely huge, split it and cross-reference (see #00).
+- The index never carries a changelog — history lives in git.

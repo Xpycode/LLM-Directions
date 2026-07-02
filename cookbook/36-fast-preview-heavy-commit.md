@@ -1,5 +1,7 @@
 # Fast Preview + Heavy Commit Split
 
+**Tags:** preview vs commit, onChange, NSImage, live slider, subprocess, render pipeline
+
 **Use when:** your app has both a live-updating preview **and** an expensive commit step (subprocess, network POST, disk-write-and-fsync). Naive approach wires both through the same async pipeline; slider/gesture-driven previews become laggy.
 
 **Source:** `1-macOS/CVI/` (Sigil) — `IconRenderer.swift`, `VolumeDetailView.swift`.

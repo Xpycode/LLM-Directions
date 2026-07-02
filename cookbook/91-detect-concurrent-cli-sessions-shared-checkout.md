@@ -25,6 +25,8 @@ pgrep the agent binary  →  each PID's cwd (lsof)  →  resolve to git worktree
 ```bash
 #!/bin/bash
 # Warn when 2+ `claude` CLI sessions share ONE git working tree. Exits 0 always.
+
+**Tags:** concurrent CLI sessions, shared HEAD, pgrep -x, lsof cwd, rev-parse --show-toplevel, git worktree, session guard hook, no lockfile
 target="${1:-$PWD}"
 here=$(git -C "$target" rev-parse --show-toplevel 2>/dev/null) || exit 0   # worktree toplevel
 command -v pgrep >/dev/null 2>&1 && command -v lsof >/dev/null 2>&1 || exit 0

@@ -1,5 +1,7 @@
 # Destructive-Copy Guard (`src == dest`)
 
+**Tags:** standardizedFileURL, destructive copy, removeItem, copyItem, src == dest, guard
+
 **Use when:** you have a file-copy utility that overwrites its destination (remove-then-copy, truncate-then-write, or rename-replace), and callers might sometimes pass a source URL that happens to equal the destination URL.
 
 **Source:** `1-macOS/CVI/` (Sigil) — `IconCache.swift`. Discovered via the re-apply-from-cache flow introduced in cookbook 37.

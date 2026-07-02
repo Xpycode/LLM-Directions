@@ -1,5 +1,7 @@
 # CommandGroup That Updates From `@Published`
 
+**Tags:** CommandGroup, Commands, ObservedObject, Published, menu items, live update
+
 **Use when:** a SwiftUI menu item needs to display live state from an `ObservableObject`
 (e.g., "Current Temp: <volume>", "Project: <name>", enabled-based-on-selection), but
 the naive `.commands { CommandGroup(...) }` approach doesn't refresh.

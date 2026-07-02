@@ -1,5 +1,7 @@
 # #106 — `xcodebuild` "Cycle inside <target>" from an in-place re-sign script phase
 
+**Tags:** Cycle inside target, xcodebuild, Run Script phase, outputPaths, DERIVED_FILE_DIR stamp, re-sign, App Intents metadata
+
 **Extracted from:** Penumbra (2026-06-14)
 
 A Run Script build phase that **modifies a bundle file in place** — the classic case is

@@ -1,5 +1,7 @@
 # 129 — A reveal/hide password field that keeps focus and text: cross-fade `SecureField` ⇄ `TextField` in a `ZStack`, never `if/else`
 
+**Tags:** SecureField TextField toggle, reveal password, @FocusState, ZStack opacity, allowsHitTesting, structural identity, onChange refocus
+
 **Extracted from:** Passwordy (2026-06-23)
 
 You want a password field with an eye button that toggles between masked (`SecureField`) and

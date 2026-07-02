@@ -1,5 +1,7 @@
 # 101 — In-app Settings search: result→control highlight pulse + ⌘F focus + Form scroll-to
 
+**Tags:** settingsHighlight, searchable, makeFirstResponder, NSSearchField, ScrollViewReader, scrollTo, onAppear onChange
+
 **Best for:** a macOS Settings window (sidebar `NavigationSplitView` of `Form`-based panes) that gains a
 **search field** which, on a query, lists *individual controls* across every pane; clicking a result
 opens that pane and **pulses the matched control** — the macOS Ventura+ System Settings behavior. Covers

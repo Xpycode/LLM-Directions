@@ -1,5 +1,7 @@
 # 115 — SwiftUI polled-status feedback: seed state in `init` (no flash on open), animate only on a live change
 
+**Tags:** State initialValue, onAppear flash, AXIsProcessTrusted, withAnimation spring, symbolEffect, didBecomeActive, TCC cdhash stale grant
+
 **Problem.** A permission / status row reflects something you can only learn by *polling* — e.g.
 Accessibility trust (`AXIsProcessTrusted()`), which fires **no** system notification when it flips.
 You want two things at once, and the naïve wiring gives you neither cleanly:

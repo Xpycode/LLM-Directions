@@ -1,5 +1,7 @@
 # #133 — Labeled on/off "pill" for a toolbar `Menu` — `.menuStyle(.button)` replaces the macOS pull-down bezel with your own `ButtonStyle`
 
+**Tags:** menuStyle(.button), toolbar Menu, labelStyle titleAndIcon, ButtonStyle pill, double background, Liquid Glass opt-out, activeTint
+
 **Extracted from:** Magpie (2026-06-25)
 
 You have several `Menu`s in a macOS toolbar (each a feature with sub-options). Two problems:

@@ -1,5 +1,7 @@
 # 112 — Security-scoped bookmarks: re-open user-picked files/folders across launches (sandboxed macOS)
 
+**Tags:** bookmarkData, withSecurityScope, startAccessingSecurityScopedResource, bookmarkDataIsStale, Powerbox, standardizedFileURL, AccessResult, .nofollow
+
 **Extracted from:** Penumbra (canonical — the only sandboxed one), Conjoyn, TimeCodeEditor, DiskVerdict (2026-06-15)
 
 A **sandboxed** macOS app loses access to a user-picked file the moment it relaunches. `NSOpenPanel` (Powerbox) grants access for *this session only*; the path you saved is just a string with no permission behind it. To re-open the file next launch — recents, watched folders, a persisted job queue, "last project" — you persist a **security-scoped bookmark** (an opaque `Data` blob carrying the grant), not the path.

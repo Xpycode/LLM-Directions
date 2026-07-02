@@ -1,5 +1,7 @@
 # Data-driven SwiftUI tile strip — descriptor array kills the type-checker timeout
 
+**Tags:** type-check timeout, TupleView, ForEach descriptor, data-driven, CaseIterable, visibleStats, stable identity, SwiftUI
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Model/StatDescriptor.swift` + `Views/StatsStripView.swift` (2026-06-04, v0.1.1).
 
 A row of N hardcoded subviews (stat tiles, toolbar chips, badges) plus a conditional one eventually trips:

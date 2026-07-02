@@ -1,5 +1,7 @@
 # Subprocess fire-and-collect (`waitUntilExit` + `readDataToEndOfFile`)
 
+**Tags:** Process, waitUntilExit, readDataToEndOfFile, readabilityHandler, Task.detached, ffprobe, stderr
+
 **Source:** `1-macOS/AvidMXFPeek/` — `BMXWrapper.runAndCollect(at:arguments:)` (2026-04-20)
 
 For short-lived subprocess invocations where you need a single discrete stdout blob at the end — not streaming progress — use `waitUntilExit() + readDataToEndOfFile()`, not `readabilityHandler`. Simpler code, no handler-cleanup dance, no tail-byte race at the process-termination boundary.

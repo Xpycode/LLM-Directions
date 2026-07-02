@@ -1,5 +1,7 @@
 # 107 — A `.disabled()` SwiftUI control drops out of hit-testing → taps fall THROUGH to an ancestor gesture
 
+**Tags:** disabled, hit-testing, onTapGesture, contentShape, fall-through, allowsHitTesting, isEnabled
+
 **Problem.** A container view has a catch-all gesture — `.contentShape(Rectangle()).onTapGesture { … }` on the background — *and* an interactive child control (a `Button`) layered on top. Normally the `Button` consumes its own click and the background gesture never sees it. But when that button is **`.disabled(…)`**, clicking it does something surprising: the tap **passes through** to the ancestor's `.onTapGesture`, silently firing the background action the user never aimed at.
 
 Real incident (Aloft Paste Queue HUD). The HUD's ▶ "Paste next" button was `.disabled(queue.isFinished || queue.isEmitting)`. After each paste, an `isEmitting` re-entrancy lock held for ~0.27s and the button went disabled. The HStack behind it had `.onTapGesture { engagePasteQueueKeyboard() }` (a deliberate "click the body to enter keyboard mode" affordance). A user clicking ▶ **rapidly** landed a click during the disabled window → the tap fell through to the body gesture → the HUD entered keyboard mode → it became the key window → every subsequent synthetic ⌘V routed into the HUD instead of the target app (**system beep**, see #81/#82). Symptom as reported: *"enqueued 7, first ~4 pasted, the rest just beep as if focus was lost."* It looked like a paste/focus bug; the actual trigger was a UI hit-testing leak two layers up.

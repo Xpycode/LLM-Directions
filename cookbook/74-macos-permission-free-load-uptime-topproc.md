@@ -1,5 +1,7 @@
 # Permission-free load average / uptime / top-process — and the libproc same-user gate
 
+**Tags:** getloadavg, kern.boottime, proc_listallpids, proc_pid_rusage, CHECK_SAME_USER, ri_phys_footprint, proc_pidpath, libproc
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Sampling/{LoadAverageSampler,UptimeSampler,TopProcessSampler}.swift` (2026-06-05, v0.1.x). Phase A of the stat-tile roadmap; siblings of #66 (disk), #68 (network), #69 (battery) — same sampler family.
 
 Three more permission-free Mac stats for a HUD/utility. Load average and uptime are one-call libc/sysctl reads. Top-process is the interesting one: it *looks* like it needs elevated privileges (it doesn't, mostly) and the exact reason is a kernel-source detail worth writing down.

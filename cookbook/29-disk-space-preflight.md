@@ -1,5 +1,7 @@
 # Disk-Space Preflight
 
+**Tags:** URLResourceKey, volumeAvailableCapacity, disk space, preflight, ENOSPC, same-volume
+
 **Use when:** an app writes large files (video conversion, archive creation, backup)
 that could fail mid-process with ENOSPC. Check free space up-front and fail fast with
 a named-volume message instead of a cryptic libc error after minutes of work.

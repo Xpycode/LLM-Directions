@@ -1,5 +1,7 @@
 # macOS firmlinks and `canonicalPath` (`/var` vs `/private/var` gotcha)
 
+**Tags:** firmlink, canonicalPath, resolvingSymlinksInPath, APFS, /private/var, URL equality, FileManager
+
 **Source:** `1-macOS/AvidMXFPeek/` — `MXFFolderScannerTests.withTempFolder` (2026-04-21)
 
 When comparing a `URL` you constructed from a temp-path prefix against a `URL` that came out of `FileManager`'s enumerator, `file:///var/folders/...` can fail equality against `file:///private/var/folders/...` even though both point at the same file. The culprit is an **APFS firmlink** — `/var → /private/var` on Catalina and later — which `URL.resolvingSymlinksInPath()` deliberately ignores. Use `URLResourceValues.canonicalPath` (or `realpath(3)`) to resolve it.

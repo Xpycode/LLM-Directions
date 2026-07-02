@@ -1,5 +1,7 @@
 # AsyncStream with bounded-concurrency TaskGroup (drain-and-refill)
 
+**Tags:** withTaskGroup, AsyncStream, bounded concurrency, maxConcurrent, fan-out, backpressure
+
 **Source:** `1-macOS/AvidMXFPeek/` — `MXFFolderScanner.scan(folder:)` (2026-04-20)
 
 Fan out N expensive async operations across a large input without spawning N tasks at once. Bound the in-flight count; stream results out as they complete. The drain-and-refill loop is the subtle bit — a naive `addTask` per input spawns everything upfront and queues them behind the executor.

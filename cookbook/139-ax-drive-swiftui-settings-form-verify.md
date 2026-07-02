@@ -1,5 +1,7 @@
 ## Drive & verify a SwiftUI Settings Form headlessly via the Accessibility API
 
+**Tags:** Accessibility API drive form, AXUIElementPerformAction kAXPressAction, kAXFocusedAttribute, paste Cmd-V, kAXEnabledAttribute, AXDescription match, JSON oracle, AXManualAccessibility
+
 **Source:** SearchAway — `docs/verification/settings_forms_harness.swift` (AX-driven, asserts against `scopes.json` / `saved-searches.json`). Companion to the CGEvent HUD driver `bugD_harness.swift` / `ac5_harness.swift` (#73). Added 2026-06-28.
 
 **Use case:** You want to *prove*, in the real shipped build, that a SwiftUI Settings **Form** works — an add-rule form writes the right row to disk, a "New → Save" form persists the right record. A single text field (a HUD search bar) is drivable with blind `CGEventPost` keystrokes (#73), but a **Form is a tree of buttons + fields** where Tab order is unreliable and there's no obvious place to click. The robust approach: locate controls by role+title via the **Accessibility API** (`AXUIElement`) and press them; enter text by AX-focusing the field then pasting; and use the **on-disk JSON the form writes** as the oracle. The host process just needs Accessibility trust (the same trust that lets you `CGEventPost` — a terminal running the harness usually has it).

@@ -33,6 +33,8 @@ This is the key move. Drive the native client through `expect` and branch on **w
 
 ```expect
 # pen_connect.exp — detect ban vs auth, then (if open) run pwd/ls
+
+**Tags:** fail2ban, IP ban, ssh, sftp, Connection closed pre-auth, Permission denied, expect probe, lftp password special chars, sshpass -f, security find-internet-password
 set timeout 25
 set fp [open "/tmp/pw" r]; set pw [read -nonewline $fp]; close $fp
 spawn sftp -o StrictHostKeyChecking=yes -o NumberOfPasswordPrompts=1 \

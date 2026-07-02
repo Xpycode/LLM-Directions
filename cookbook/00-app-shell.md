@@ -59,6 +59,8 @@ Verify with:
 /usr/libexec/PlistBuddy -c "Print :UIDesignRequiresCompatibility" \
   "$(xcodebuild -scheme YourApp -showBuildSettings | grep BUILT_PRODUCTS_DIR | awk '{print $3}')/YourApp.app/Contents/Info.plist"
 # Expected: true
+
+**Tags:** app shell, Theme, FCPToolbarButtonStyle, HSplitView, hiddenTitleBar, toolbarRole editor, migration
 # Actual (with INFOPLIST_KEY_*): Entry … Does Not Exist
 ```
 

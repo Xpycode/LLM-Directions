@@ -1,5 +1,7 @@
 ## swift-subprocess `.strings()` deadlocks on a huge single line — use `.unbounded`
 
+**Tags:** swift-subprocess strings(), bufferingPolicy .unbounded, maxLineLength deadlock, pipe buffer block, yt-dlp -J, StringSequence BufferingPolicy, regression 600KB line
+
 **Source:** zPackages — `Sources/ProcessKit/ProcessRunner.swift` + `RunSpec.swift` (ProcessKit, the `swift-subprocess` wrapper). Surfaced while **proving ProcessKit in Magpie** (the released yt-dlp app). Added 2026-06-27.
 
 **Use case:** You wrap Apple's [`swift-subprocess`](https://github.com/swiftlang/swift-subprocess) to stream a child process's output line-by-line, reading `execution.standardOutput.strings()` inside the `Subprocess.run { execution in … }` closure. It works on every test (`echo`, small command output) and then **hangs forever** the first time a real tool emits a very large line with no newline — e.g. `yt-dlp -J` returns a **single ~580 KB JSON blob on one line**. The process never exits; the consuming `for try await` never ends. No error, no crash — a pure deadlock.

@@ -39,6 +39,8 @@ stat -f "built: %Sm" "<that path>"     # → built: Jun 25 03:41:10 2026
 ```bash
 git log --pretty="%h %cd %s" --date=format:'%Y-%m-%d %H:%M' -8
 # 6befd0c 2026-06-25 05:42  the fix
+
+**Tags:** stale build, running binary mtime, ps aux stat -f, LSUIElement out-of-band, Release rebuild relaunch, gated engine probe, verify not assume
 # 44aa60c 2026-06-25 04:54  the earlier fix this bug needed
 # running binary: 03:41  →  predates BOTH. Case closed.
 ```

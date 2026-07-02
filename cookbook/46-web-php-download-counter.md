@@ -1,5 +1,7 @@
 ## Web Download Counter — PHP + Flat-File JSON, No Backend
 
+**Tags:** download counter, PHP, flock, counts.json, 302 redirect, GET-only, flat-file, bot filter
+
 **Source:** `apps.lucesumbrarum.com/public/dl.php` + `public/downloads/counts.json` + `public/js/download-stats.js`. Added 2026-04-21.
 
 **Use case:** A static (or static-ish) marketing/portfolio site that hosts downloadable assets — DMGs, ZIPs, installers, PDFs — and wants per-asset download counts shown on the page, without standing up a backend, database, or third-party analytics. The whole apparatus is ~50 lines of PHP + ~20 lines of JS + a `{}` JSON file. Apache serves the actual bytes; PHP just tallies and 302-redirects.

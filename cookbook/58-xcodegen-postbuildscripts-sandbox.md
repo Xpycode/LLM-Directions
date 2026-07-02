@@ -1,5 +1,7 @@
 # #58 — `xcodegen` postBuildScripts: sandbox-safe + dependency-analysis-friendly
 
+**Tags:** xcodegen, postBuildScripts, inputFiles, outputFiles, sandbox, file-read-data, xcfilelist, incremental build
+
 **Extracted from:** MyOwnTerminal (2026-04-25)
 
 A `postBuildScripts` entry that copies resources at build time fails in two ways out of the box:

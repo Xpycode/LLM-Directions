@@ -1,5 +1,7 @@
 # 98 — SwiftUI list shows stale rows after the data filters → an `.id(index)` modifier silently overrode `ForEach`'s element identity
 
+**Tags:** ForEach identity, .id(index) override, stale rows, positional id, ScrollViewReader scrollTo, element.id, filtered list, enumerated
+
 **Extracted from:** LaunchAway (2026-06-13)
 
 A search/results list updates its data correctly on every keystroke — you can log `engine.results` narrowing 66 → 17 → 1 — but **the screen keeps showing the old rows**. Type "saf" and the engine holds `[Kagi for Safari]` (1 item), yet the panel still renders "Accessibility" (whatever was first in the unfiltered list). The data and the view disagree, and `body` *is* re-running. It looks like a broken `@Observable` binding; it isn't.

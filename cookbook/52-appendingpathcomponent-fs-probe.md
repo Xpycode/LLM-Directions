@@ -1,5 +1,7 @@
 # `URL.appendingPathComponent(_:)` fs-probe gotcha (URL equality flips when the directory appears)
 
+**Tags:** appendingPathComponent, hasDirectoryPath, URL equality, isDirectory, directoryHint, Set URL, cache key
+
 **Source:** `1-macOS/AvidMXFPeek/` — `Services/PreviewCache.swift::directoryURL(for:)` and its `prepareOutputDirWipesPriorContents` test (2026-04-22, Wave P5).
 
 Two calls to `rootDir.appendingPathComponent("some-hash")` on the same actor at two different times can return **two different URLs** that compare unequal — because the single-argument overload of `appendingPathComponent` performs a filesystem probe to decide whether the result should be a *directory* URL (trailing-slash semantics) or a *file* URL. The probe result flips once the directory gets created between the two calls, so:

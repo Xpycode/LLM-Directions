@@ -82,6 +82,8 @@ check "no token → 403"       403 "$(code -X POST $BASE/validate -d '{}')"
 check "unknown action → 404" 404 "$(code -X POST $BASE/frobnicate -H "x-app-token: $T" -d '{}')"
 check "oversize → 413"       413 "$(code -X POST $BASE/validate -H "x-app-token: $T" -d "$BIG")"
 # live: invalid key forwards the UPSTREAM's real 404 verbatim (not a proxy 404)
+
+**Tags:** fail-open proxy, license relay, verdict vs fail-open codes, verbatim upstream, hash_equals, rate limit, PHP relay, status code partition
 check "forwards upstream 404" 404 "$(code -X POST $BASE/validate -H "x-app-token: $T" -d '{"key":"bad","instance_id":"x"}')"
 ```
 

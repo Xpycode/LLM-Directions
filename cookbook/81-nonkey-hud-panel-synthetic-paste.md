@@ -1,5 +1,7 @@
 # 81 — A floating HUD that drives synthetic paste into another app
 
+**Tags:** NSPanel, nonactivatingPanel, canBecomeKey, FirstMouseHostingView, acceptsFirstMouse, cgSessionEventTap, synthetic paste, changeCount, frontmost vs key
+
 **Problem.** You have a floating control panel (a "paste queue" emitter, a snippet sender, a macro HUD) that must **stay visible while it pastes into whatever app the user is working in**. The user clicks a button on your HUD → you write the pasteboard → you synthesize ⌘V into the frontmost app. It "kinda works": the HUD's counter advances, but **nothing actually pastes**. Or pastes drop intermittently. Or the pasted strings reappear in your own clipboard history.
 
 Three distinct gotchas hide here. All three bit a real Paste Queue HUD (Aloft/ClipSmart, 2026-06-06).

@@ -1,5 +1,7 @@
 # 131 — ProGate: one-flag Pro-feature gating for a SwiftUI macOS app
 
+**Tags:** ProGate, isPro, @Observable freemium, proGated view swap, LockedFeaturePanel, route to upsell, gate seam test, LSUIElement upsell window
+
 **Best for:** gating paid features behind a single `isPro` flag in a freemium macOS
 app — swap whole surfaces for an upsell, route individual controls to an upsell, and
 never destroy the feature's backing data on downgrade. Built for Aloft/ClipSmart

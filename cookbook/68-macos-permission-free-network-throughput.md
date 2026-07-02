@@ -1,5 +1,7 @@
 # Permission-free network throughput — `getifaddrs` `AF_LINK` byte counters (delta per tick)
 
+**Tags:** getifaddrs, AF_LINK, if_data, ifi_ibytes, ifi_obytes, IFF_LOOPBACK, network throughput, per-tick delta
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Sampling/NetworkSampler.swift` (2026-06-04, v0.1.1).
 
 You want live up/down network throughput in a **permission-free** utility (agent app, no TCC prompts). Packet capture (`libpcap`/`BPF`) needs elevated rights and is overkill for a glanceable readout. The kernel already exposes cumulative per-interface byte counters through `getifaddrs(3)` — no permission, one call. Like IOKit disk I/O (#66), the counters are **cumulative-since-boot**, so you report the **delta between ticks** over the sample interval.

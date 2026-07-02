@@ -1,5 +1,7 @@
 ## Live volume mount/unmount monitoring inside an `@Observable @MainActor` model
 
+**Tags:** NSWorkspace, didMountNotification, @Observable, @MainActor, nonisolated(unsafe), deinit, MainActor.assumeIsolated, removeObserver
+
 **Source:** PhotoIngest — `01_Project/PhotoIngest/PhotoIngest/IngestModel.swift` (the card-list state spine the whole ingest UI hangs off). Added 2026-06-29.
 
 **Use case:** A SwiftUI macOS app whose UI state is an `@Observable @MainActor` model (the modern Observation shape, same as a `ThemeManager`) needs a list that **stays live** as the user inserts/ejects SD cards — or any volume — without a refresh button. The model itself owns the `NSWorkspace.didMountNotification` / `didUnmountNotification` observers (this is the "CardMonitor" layer an offline `mountedCards()`/`isCardLike` scanner can't provide), refreshes the list on every event, and removes its observers in `deinit`. Two Swift-concurrency traps make the obvious code fail — one at compile time, one only under strict concurrency.

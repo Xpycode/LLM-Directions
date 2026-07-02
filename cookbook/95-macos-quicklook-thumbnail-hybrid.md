@@ -1,5 +1,7 @@
 # 95 — QuickLook-first video thumbnails with an FFmpeg fallback (hybrid)
 
+**Tags:** QLThumbnailGenerator, QuickLookThumbnailing, generateBestRepresentation, representationTypes .thumbnail, out-of-process decode, ThumbnailsAgent cache, FFmpeg fallback, poster frame
+
 **Trigger keywords:** video thumbnail in a list re-decodes every scan, FFmpeg `extractFrame`
 per row spawns a subprocess, thumbnail I/O contention with scan/export, `QLThumbnailGenerator`
 swap, QuickLook poster frame for a clip, system-cached thumbnail, thumbnail strip beachball on a

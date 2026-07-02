@@ -1,5 +1,7 @@
 # 121 — Web: clone-and-retint a new single-app marketing site
 
+**Tags:** clone site, retint, --accent, site.css, appcast.xml, scrub bundle-id, grep donorslug, WCAG nav-cta, deploy.sh
+
 **Problem.** You ship a family of single-app marketing/download sites that share one design
 system (`css/site.css`) and one deploy mechanism, hosted as sibling document roots on one
 webspace. Each new app needs its own site. Building from scratch re-litigates solved problems;

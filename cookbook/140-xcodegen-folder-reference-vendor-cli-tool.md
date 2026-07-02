@@ -1,5 +1,7 @@
 # #140 — Vendor an opaque CLI/tool tree into a macOS app via an `xcodegen` folder-reference (+ injectable path for tests)
 
+**Tags:** xcodegen, folder reference, type: folder, buildPhase resources, Bundle.main, #filePath, vendor CLI, exiftool
+
 **Extracted from:** PhotoIngest (2026-06-28) — bundling the ExifTool 13.58 pure-Perl tree (T1.2) + the injectable `ExifToolRunner` (T2.5).
 
 You need to ship a third-party command-line tool *and its support tree* (a Perl script + `lib/`, a Node bundle, a binary + data files) **inside** a macOS `.app` so it lands at `Contents/Resources/<tool>/` and runs at launch. Two things bite:

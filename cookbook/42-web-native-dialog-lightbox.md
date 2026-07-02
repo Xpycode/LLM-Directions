@@ -1,5 +1,7 @@
 ## Web Lightbox — Native `<dialog>` + Delegated Click Handler
 
+**Tags:** dialog, lightbox, backdrop, img.src, focus trap, ESC close, tabindex, a11y
+
 **Source:** `apps.lucesumbrarum.com/public/css/site.css` (the `.lightbox` block) + `public/js/lightbox.js` + the `<dialog>` markup in each `public/apps/*.html`. Added 2026-04-20.
 
 **Use case:** Click any thumbnail in a gallery to enlarge it in a fullscreen overlay — the GitHub-style image viewer. Specifically for static-site marketing/portfolio pages with screenshot galleries on per-product detail pages. Single shared `<dialog>` per page, JS swaps the image source on each open. No library, no framework, ~40 lines of JS.

@@ -1,5 +1,7 @@
 ## Drag & Drop
 
+**Tags:** onDrop, drag drop, TaskGroup, reorder, NSTableView, NSItemProvider
+
 Two categories: **external drops** (files from Finder into your app) and **internal drag** (reordering items within or between panes). Most apps need external drops; internal drag is for editors and organizers.
 
 ---

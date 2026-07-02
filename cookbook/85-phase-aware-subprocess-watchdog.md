@@ -1,5 +1,7 @@
 # 85 — A no-progress watchdog that doesn't false-alarm during legitimately-silent phases
 
+**Tags:** watchdog, subprocess, false positive, ffprobe scan, moov flush, didStartEncoding, sawProgressEnd, precedence ladder, hardTimeout, indeterminate ProgressView
+
 **Problem.** You run a long subprocess (ffmpeg/ffprobe export, a batch encode, a big upload) and want to warn the user when it's *genuinely* stuck. The naive rule —
 
 ```swift

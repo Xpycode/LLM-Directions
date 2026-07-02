@@ -1,5 +1,7 @@
 # Hermetically test a macOS download → codesign-check → self-replace flow (no network, no mocks, no real apps)
 
+**Tags:** URLSession.download, file:// URL, codesign -s -, ditto, SecStaticCodeCheckValidityWithErrors, CFBundleShortVersionString, TeamIdentifier, self-replace
+
 **Source:** AppUpdater — `01_Project/AppUpdaterPackage/Tests/AppUpdaterFeatureTests/SparkleExecutorEndToEndTests.swift` (2026-07-01, Wave 5). Proves `SparkleExecutor.downloadAndInstall(...)` — the download→EdDSA-verify→extract→Team-ID-check→quit→Trash→swap flow — end to end. Pairs with [[150-sparkle-eddsa-cryptokit-silent-selfupdate]] (the flow being tested).
 
 ## The problem

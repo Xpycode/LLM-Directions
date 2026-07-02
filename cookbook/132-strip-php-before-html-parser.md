@@ -1,5 +1,7 @@
 # Strip `<?php …?>` before feeding source to an HTML parser — or it captures the whole script as "text"
 
+**Tags:** HTMLParser handle_data, strip PHP, re.DOTALL, unterminated ?>, \Z EOF, superset language parsing, string extractor
+
 **Source:** Translations (`81-Translations`, `01_Project/translations/extract_web.py`) — a Python string-extractor scanning `.php` site files for user-facing HTML copy. General gotcha for any **text/string extraction over PHP-templated sites**; sibling-in-spirit to [[24-web-gotchas]].
 
 `html.parser.HTMLParser` (Python) — like most lenient HTML parsers — has **no concept of PHP**. Anything that isn't a recognized tag becomes a **data node**, so it fires `handle_data` on it. A `.php` file is mostly server code with small islands of HTML, so an HTML parser **inverts what you want**: it hands you the PHP source (regex literals, SQL, `$variables`, `=>` arrays) as "visible text" and ignores almost nothing. In the Translations scan this dumped **entire admin scripts** into the term table as 35 backslash-laden blobs (hundreds of junk "terms").

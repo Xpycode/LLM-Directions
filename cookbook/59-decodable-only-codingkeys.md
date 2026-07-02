@@ -1,5 +1,7 @@
 # `Decodable`-only types with custom `init(from:)` need explicit `CodingKeys`
 
+**Tags:** CodingKeys, Decodable, init(from:), SE-0166, Codable synthesis, cannot find CodingKeys, keyedBy
+
 **Source:** `1-macOS/_Published/syncthingStatus/` — `Models.swift::RemoteNeedItem` (2026-04-29, v1.6.0).
 
 A struct that conforms to `Decodable` only (not full `Codable`) and provides its own `init(from decoder:)` will **not** get a synthesized `CodingKeys` enum. The compiler error is:

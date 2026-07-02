@@ -1,5 +1,7 @@
 ## Sparkle Auto-Updates (macOS)
 
+**Tags:** Sparkle, auto-update, appcast, INFOPLIST_KEY_, SUFeedURL, updater
+
 ### Integration Checklist
 
 1. **Add Sparkle via SPM** — `https://github.com/sparkle-project/Sparkle` (>= 2.8.1)

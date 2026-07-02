@@ -1,5 +1,7 @@
 # 130 — "You have unsaved changes" when clicking away mid-edit: intercept a `List(selection:)` switch by pinning the selection back, then commit after the dialog
 
+**Tags:** List selection veto, unsaved changes prompt, onChange selection, pendingSwitchID, .id detail teardown, dirty vs editing, Equatable draft
+
 **Extracted from:** Passwordy (2026-06-23)
 
 A master/detail app edits the selected item in place. The user starts editing entry A, then clicks

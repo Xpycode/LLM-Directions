@@ -1,5 +1,7 @@
 # 104 — SwiftUI menu bar: `CommandGroup(after:)` draws **no separators** and stacks by **declaration order** → add explicit `Divider()`s (incl. a divider-only group to flank a command from a package you can't edit) — plus the family "Donate surface" recipe
 
+**Tags:** CommandGroup(after:), Divider, declaration order, @CommandsBuilder, ellipsis HIG, DonateCommands, NSWorkspace.open
+
 **Extracted from:** Conjoyn (2026-06-14)
 
 You add a menu item to an existing menu via `CommandGroup(after: .help) { Button("Donate") { … } }`, expecting it to appear as its own visually separated entry like the items around it. It shows up in the right **position** — but with **no separator line** above or below it. The menu reads as one undivided run of items (`Conjoyn Help` / `Send Feedback…` / `Donate`) when you wanted `Conjoyn Help` / —— / `Send Feedback…` / —— / `Donate`.

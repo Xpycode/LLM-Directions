@@ -31,6 +31,8 @@ ls -l master.png                      # 455 bytes = it rendered NOTHING. Red fla
 
 ```bash
 # -t thumbnail, -s size, -o output DIR (writes <name>.svg.png into that dir)
+
+**Tags:** qlmanage, ImageMagick, rsvg-convert, favicon, .ico container, apple-touch-icon, SVG render, glyph 16px
 qlmanage -t -s 1024 -o /tmp/fav icon.svg
 file /tmp/fav/icon.svg.png            # PNG image data, 1024 x 1024, RGBA  ✓
 ```

@@ -1,5 +1,7 @@
 # Stop a streamed run by cancelling the PRODUCER, not the consumer (run-handle pattern)
 
+**Tags:** AsyncStream, run handle, cancel producer, makeStream, Task.detached, .stopping phase, onTermination, #153, terminal event
+
 **Source:** `1-macOS/CompressPhotos/` — `Services/CompressionRun.swift` (`Run` handle) +
 `AppModel.swift` (`startRun`/`stopRun`) + `Views/RunProgressBar.swift` ("Stopping…" state) (2026-07-02)
 

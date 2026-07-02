@@ -1,5 +1,7 @@
 # 116 — A bare-letter `.keyboardShortcut` is swallowed by a focused `TextField` → hand focus off on a state change
 
+**Tags:** keyboardShortcut modifiers [], FocusState, TextField swallows, state machine, Phase Equatable onChange, sibling button opacity(0), defaultAction
+
 **Problem.** You want a single-key accelerator for the primary action of a screen — `Q` to enqueue, `D` to download, `R` to run — the kind of bare-letter verb a power user expects once a result is on screen. You attach `.keyboardShortcut("q", modifiers: [])` to the action button and… nothing happens. The keystroke types a literal "q" somewhere instead of firing the button.
 
 Real incident (YTdl preview card). The card has a URL `TextField` at the top and a **Download** button below. The user pastes a link, a probe runs, a preview appears, and we wanted `Q` to enqueue the previewed video. But the `TextField` still held keyboard focus from the paste, so every `Q` press went *into the field as text* and the button's shortcut never fired. The accelerator looked broken; the real cause was **focus**, two controls up.

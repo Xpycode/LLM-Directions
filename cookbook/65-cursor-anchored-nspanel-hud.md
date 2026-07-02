@@ -1,5 +1,7 @@
 # Cursor-anchored non-activating `NSPanel` HUD with permission-free dismiss
 
+**Tags:** NSPanel, nonactivatingPanel, orderFrontRegardless, acceptsFirstMouse, visibleFrame, HUD overlay, global mouse monitor, canJoinAllSpaces
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Panel/PanelWindowController.swift` + `AppDelegate.swift` (2026-06-04, v0.1.0). Lineage: MousePlus `RingWindowController`.
 
 You want a transient overlay — a stats strip, a quick action bar, a HUD — that **appears over whatever app is focused without stealing focus**, anchors near the cursor (or a fixed spot), stays fully on-screen, and dismisses when the user clicks away. Three pieces make it behave:

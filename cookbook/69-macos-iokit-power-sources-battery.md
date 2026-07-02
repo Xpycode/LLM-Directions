@@ -1,5 +1,7 @@
 # Permission-free battery — IOKit Power Sources + the Copy/Get ownership rule
 
+**Tags:** IOKit Power Sources, IOPSCopyPowerSourcesInfo, takeRetainedValue, takeUnretainedValue, kIOPSTimeToEmpty, battery, isPresent, Unmanaged
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Sampling/BatterySampler.swift` (2026-06-04, v0.1.1).
 
 You want battery charge / charging state / time-remaining in a permission-free utility. The IOKit **Power Sources** API (`IOKit.ps`) is the same snapshot the menu-bar battery reads — no entitlement. Unlike CPU/disk/network counters this is **not a delta**: each read is an *absolute* state, so there's no `previous…` baseline and no first-tick zero.

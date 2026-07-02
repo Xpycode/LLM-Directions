@@ -1,5 +1,7 @@
 # 113 — macOS appearance picker: drive `NSApplication.shared.appearance`, NOT `.preferredColorScheme`
 
+**Tags:** NSApplication.appearance, preferredColorScheme nil, NSAppearance darkAqua, effectiveAppearance, onChange initial, Match System, Theme NSColor(name:)
+
 Adaptive appearance (system light/dark) is the app-shell default — see
 `cookbook/00-app-shell.md` §2. That default needs no picker: the app simply omits
 `.preferredColorScheme()` and follows the system. This cookbook entry is the how-to for the

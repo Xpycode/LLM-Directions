@@ -1,5 +1,7 @@
 # 87 — Insert a token at the caret of a SwiftUI text field (wrap `NSTextField`, restore caret across the binding bounce)
 
+**Tags:** NSTextField, NSViewRepresentable, currentEditor, selectedRange, field editor, caret insertion, makeFirstResponder, DispatchQueue.main.async, updateNSView guard
+
 **Problem.** A token/pattern editor — rename-pattern field, snippet editor, template builder — has buttons that should insert `{date}`, `:emoji:`, `${var}` **at the text caret**, replacing any selection, then leave focus + caret right after the inserted token so the user keeps typing. SwiftUI's `TextField` makes this impossible: it exposes **neither the selection range nor the field editor**, so a button can only append to the end (`text += token`) — which drops the token in the wrong place and blows away the user's cursor. The handoff for Conjoyn's "Rename Joined Files" popover specified true caret insertion; SwiftUI alone can't do it.
 
 ## Pattern — `NSViewRepresentable` over `NSTextField` + a controller that owns the field editor

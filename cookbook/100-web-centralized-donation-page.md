@@ -1,5 +1,7 @@
 # 100 — Web centralized donation / tip-jar page (one hub, `?app=`-aware, many free apps)
 
+**Tags:** donate.html, ?app= query, Ko-fi, tip jar, nested-anchor, APPS map, ref attribution
+
 **Best for:** a multi-app site (marketing portal + per-app pages) where the apps are **free** and you
 want an **optional donation / "buy me a coffee"** path — *especially* when many future apps will live
 only on a portal grid with **no page of their own**, and where one or two apps have a **paid tier and

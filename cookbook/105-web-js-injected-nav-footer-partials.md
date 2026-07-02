@@ -1,5 +1,7 @@
 # 105 — Single-source JS-injected nav / footer partials for a static multi-page site
 
+**Tags:** nav.js, footer partial, createElement, data- attribute, CLS min-height, noscript, TMG imprint, replaceChildren
+
 **Best for:** a static multi-page site (plain `.html`, maybe one `.php` index) whose **header and
 footer are hand-copied into every page** and have therefore **drifted** — the nav shows different
 links depending where you are, a label means the wrong thing, the footer's copyright/link-set varies.

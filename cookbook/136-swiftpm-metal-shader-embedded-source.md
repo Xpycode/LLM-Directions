@@ -1,5 +1,7 @@
 ## Metal shader in a Swift package — compile from an embedded source string
 
+**Tags:** SwiftPM Metal shader, Bundle.module no member, makeLibrary source options, makeDefaultLibrary, resource_bundle_accessor, embedded shader string, default.metallib
+
 **Source:** zPackages — `Sources/PlayerKit/MetalVideoRenderer.swift` (PlayerKit Phase 1, the AVFoundation+Metal video engine lifted from Penumbra). Added 2026-06-26.
 
 **Use case:** You're moving Metal-rendering code **out of an app and into a Swift package** (a reusable renderer, an image filter, a video engine). The app loaded its shader with `device.makeDefaultLibrary()`, which reads the **app's main bundle** — but a package has no main bundle of its own, and the obvious fix (`device.makeDefaultLibrary(bundle: .module)`) fails to even compile:

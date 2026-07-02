@@ -1,5 +1,7 @@
 # Clone-and-rename an existing Xcode project
 
+**Tags:** xcodeproj clone, rename target, bundle id, cp -R, sed, xcuserdata, build phases
+
 **Source:** `1-macOS/AvidMXFPeek/` (forked from `1-macOS/P2toMXF/`, 2026-04-20)
 
 When a new app needs the same toolchain bundling, entitlements, Run Script phases, and codesigning setup as an existing app, **clone the working `.xcodeproj` instead of scaffolding from Xcode's template**. Build-phase archaeology is the failure mode you're avoiding.

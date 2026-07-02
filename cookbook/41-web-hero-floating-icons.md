@@ -1,5 +1,7 @@
 ## Web Hero — Floating-Icon Constellation
 
+**Tags:** web hero, floating icons, drop-shadow, keyframes, coprime periods, aria-hidden, landing page
+
 **Source:** `apps.lucesumbrarum.com/public/index.html` + `public/css/site.css` (the `.hero-stage` / `.float-icon` block, added 2026-04-20).
 
 **Use case:** A landing-page hero where the centered text alone leaves too much negative space, but the brand voice forbids compressing the type or pulling the cards-below up into the first viewport. Fill the negative space *around* the headline with the product's own icons, scattered at gentle angles with soft shadows, optionally drifting on slow staggered loops. Reuses existing assets — no new artwork.

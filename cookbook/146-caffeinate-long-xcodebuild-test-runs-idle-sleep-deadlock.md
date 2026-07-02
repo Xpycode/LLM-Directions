@@ -1,5 +1,7 @@
 # A long local `xcodebuild test` run that "hangs" for hours is usually the Mac idle-sleeping — wrap it in `caffeinate -is` + per-test timeouts
 
+**Tags:** caffeinate -is, xcodebuild test, idle sleep, waitUntilExit, -test-timeouts-enabled, -default-test-execution-time-allowance, SIGKILL, Process
+
 **Source:** TimeCodeEditor — Wave 6.2 build/test run (2026-06-30). A `clean test` ran ~100 tests, then sat on a single test for **~2.5 hours** with no progress; root cause was the laptop idle-sleeping while unattended, not the code. Pairs with [[141-exiftool-geotag-end-to-end-test-no-fixtures]] and [[144-elicit-verification-verdicts-corrupt-output-and-couldnt-run]] (the real-`Process` integration tests this bites).
 
 ## The problem

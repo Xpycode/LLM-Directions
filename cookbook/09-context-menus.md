@@ -1,5 +1,7 @@
 ## Context Menus
 
+**Tags:** contextMenu, ViewBuilder, NSMenuDelegate, NSTableView, conditional menu
+
 Right-click menus that change based on which pane the user clicked and what's selected. Four patterns from simple to advanced.
 
 ---

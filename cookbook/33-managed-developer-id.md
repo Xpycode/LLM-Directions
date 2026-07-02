@@ -1,5 +1,7 @@
 # Managed Developer ID — Xcode GUI Distribution Workflow
 
+**Tags:** Developer ID, Direct Distribution, notarytool, Archive, notarization, code signing
+
 **Source project:** `1-macOS/Sigil/`
 
 > **Trigger:** you want to ship a notarized macOS app via GitHub Releases (direct distribution), AND `security find-identity -p codesigning -v` doesn't show a `Developer ID Application` cert, AND you don't feel like creating one

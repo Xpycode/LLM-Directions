@@ -1,5 +1,7 @@
 # #47 — xcodegen + SwiftTerm Setup Gotchas
 
+**Tags:** xcodegen, SwiftTerm, ATSApplicationFontsPath, UIDesignRequiresCompatibility, Color ambiguity, TTF fonts
+
 **Extracted from:** MyOwnTerminal (2026-04-21)
 
 Four non-obvious issues that surface together when setting up an Xcode project with xcodegen that includes SwiftTerm.

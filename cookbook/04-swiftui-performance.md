@@ -1,5 +1,7 @@
 ## SwiftUI Performance
 
+**Tags:** SwiftUI performance, diffing, ViewBuilder anti-pattern, equatable, image cache flash
+
 ### The Core Principle: Diffing Checkpoints
 
 **Source:** [SwiftUI Performance Article](https://www.swiftdifferently.com/blog/swiftui/swiftui-performance-article)

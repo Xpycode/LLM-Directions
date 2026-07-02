@@ -1,5 +1,7 @@
 # #57 — Overriding `⌘W` (System Close Window) in SwiftUI macOS Apps
 
+**Tags:** CommandGroup, saveItem, ⌘W, close tab, CommandMenu disabled, confirmationDialog, multi-tab
+
 **Extracted from:** MyOwnTerminal (2026-04-25)
 
 When a multi-tab/multi-pane macOS app needs `⌘W` to close the **active tab or pane** (not the whole window), the system default `File > Close Window` keeps stealing the shortcut whenever your replacement button is `.disabled`. The fix is `CommandGroup(replacing: .saveItem)` + a button that is **never** `.disabled` and handles all three cases internally (close pane → close tab → spawn fresh tab to keep window non-empty).

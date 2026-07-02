@@ -1,5 +1,7 @@
 # Self-managed settings `NSWindow` for `LSUIElement` agent apps (`showSettingsWindow:` no-ops)
 
+**Tags:** LSUIElement, showSettingsWindow, NSWindow, NSHostingController, makeKeyAndOrderFront, CommandGroup appSettings, agent app, settings scene
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Panel/SettingsWindowController.swift` + `AppDelegate.swift` + `QuickStatsPanelApp.swift` (2026-06-04, v0.1.0).
 
 You have an agent app (`LSUIElement = YES`: no Dock icon, no menu bar) and want a real Settings window — opened from an in-app affordance like a gear button. The obvious SwiftUI path is a `Settings { … }` scene plus `NSApp.sendAction(Selector(("showSettingsWindow:")), …)`. **In an `LSUIElement` app this silently fails:** with no regular activation, the responder chain often can't reach the `Settings` scene's window manager, so the action no-ops. The telltale symptom: clicking the button **shifts focus** (because your `NSApp.activate` ran) but **no window appears**.

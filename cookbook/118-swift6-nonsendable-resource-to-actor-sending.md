@@ -1,5 +1,7 @@
 # 118 — Hand a non-Sendable resource to an actor with `sending` (and observe it *through* the actor)
 
+**Tags:** sending, non-Sendable, actor, region-based isolation, @unchecked Sendable, data race, let local vs var property, @MainActor test
+
 **Best for:** giving a single non-`Sendable` resource — an `mmap`'d store, a file handle, a DB
 connection, a C stream — to a Swift 6 `actor` that becomes its sole accessor, without tripping
 "sending '…' risks causing data races." The companion rule is the one that actually bites: once you

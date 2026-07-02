@@ -1,5 +1,7 @@
 # Closure-bridged AppKit from a model-layer `@MainActor` ObservableObject
 
+**Tags:** closure injection, @MainActor, ObservableObject, NSWindow, AppKit layer boundary, weak capture, dismissAction, testable
+
 **Source:** `1-macOS/_Published/syncthingStatus/` — `Client.swift::StuckDeletesController` + `App.swift::StuckDeletesWindowController` (2026-04-29, v1.6.0).
 
 When a SwiftUI view bound to an `ObservableObject` controller needs to **trigger AppKit behaviour** (close the hosting window, open a System Settings deep-link, reveal in Finder, present an `NSAlert`), the obvious move is to make the controller hold an AppKit reference:

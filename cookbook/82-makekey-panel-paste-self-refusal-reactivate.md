@@ -1,5 +1,7 @@
 # 82 — A key panel that synth-pastes into another app must reactivate its target
 
+**Tags:** makeKey, orderFrontRegardless, NSRunningApplication, wouldPasteIntoSelf, frontmostApplication, activate, secure input, fallback ladder
+
 **Problem.** A borderless overlay/launcher panel (a clipboard picker, a snippet palette, a command bar) **needs to be the key window** so it can host a search field and keyboard navigation. The user picks an item → you write the pasteboard → close the panel → synthesize ⌘V into "the frontmost app." It works most of the time, but **intermittently nothing pastes** — and it's most visible when the target is **Finder** (the file lands sometimes, not others), or any app whose window visibly deactivates when your panel appears.
 
 This is the **mirror image of #81**. #81 is a HUD that must *never* take key. This is a panel that *must* take key — and that's exactly what breaks the paste.

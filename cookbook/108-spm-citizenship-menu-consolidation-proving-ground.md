@@ -1,5 +1,7 @@
 # 108 — Consolidate per-app Feedback/Donate/About menu wiring into one shared SPM `Commands` — and migrate the *source* app first to harden the package (proving-ground)
 
+**Tags:** AppCitizenshipKit, CitizenshipCommands, CommandGroup, Divider, replacing:.appInfo, SPM tag, AppleScript menu, tip jar
+
 **Extracted from:** Conjoyn × AppCitizenshipKit (2026-06-14)
 
 You have several apps that each **hand-assemble** the same "app citizenship" menu surfaces — a `FeedbackCommands` (from a feedback SPM, #102), a hand-rolled `DonateCommands`, divider-only groups to flank them (#104), maybe a custom About. You package the common shape behind one config (`AppCitizenshipKit`: `CitizenshipCommands(config)` → Feedback + Tip Jar + About in one line) and now want to adopt it. **Which app do you integrate first, and what does "integrate" actually cost?**

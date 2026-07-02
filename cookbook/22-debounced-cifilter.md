@@ -1,5 +1,7 @@
 ## Debounced CIFilter Preview Cache
 
+**Tags:** CIFilter, debounce, live preview, fallback cache, Core Image, SwiftUI
+
 **Source:** `1-macOS/CropBatch/` — `BlurEditorView.swift` (v1.5)
 
 When you need live preview of Core Image filters (blur, pixelate, etc.) in SwiftUI but applying CIFilter per-frame is too expensive. Pre-render all effects into a single composite at display resolution, then clip from it.

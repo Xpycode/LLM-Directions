@@ -1,5 +1,7 @@
 # SwiftUI click-to-record hotkey field (the field IS the control)
 
+**Tags:** HotKeyRecorderView, addLocalMonitorForEvents, keyDown return nil, Carbon keyCode kVK, ModifierFlags, .searchable field, RoundedRectangle fixed frame
+
 **Source:** `1-macOS/LaunchAway/` — `01_Project/LaunchAway/Settings/HotKeyRecorderView.swift` (2026-06-15, v1.0.0).
 
 You want a Settings control where the user **records a keyboard shortcut** — click it, press ⌃⌥⌘Space, it saves. The reflex is a **read-only box showing the current combo + a separate "Record" button** beside it. That reflex produces two bugs, one visual and one behavioural:

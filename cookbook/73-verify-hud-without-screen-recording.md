@@ -1,5 +1,7 @@
 # Verifying a non-activating HUD / agent app without Screen-Recording permission
 
+**Tags:** CGWindowListCopyWindowInfo, CGEventPost, cgAnnotatedSessionEventTap, screencapture, hotkey capture, eventHotKeyExistsErr, headless verify, LSUIElement
+
 **Source:** `1-macOS/QuickStatsPanel/` — verification session for #72 (2026-06-05). Test scripts are ephemeral `swift /tmp/*.swift` one-shots; this captures the *technique*.
 
 You need to verify a HUD panel / `LSUIElement` agent app actually shows, hides, and captures a global hotkey — but you're driving from a sandboxed shell (Claude Code, CI) where `screencapture` is blocked ("could not create image from display" = no Screen-Recording permission) and there's no visible UI to click. You can still get **deterministic, pixel-free** proof.

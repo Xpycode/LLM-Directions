@@ -1,5 +1,7 @@
 # Volume Enumeration — The "External Drive" Heuristic
 
+**Tags:** volume enumeration, external drive, volumeIsRemovableKey, isInternal, disk image, mountedVolumeURLs
+
 **Source project:** `1-macOS/Sigil/`
 
 > **Trigger:** listing mounted volumes in a macOS app, distinguishing "external drives" from "system/boot/DMG"

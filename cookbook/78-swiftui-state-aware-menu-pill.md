@@ -1,5 +1,7 @@
 # State-aware menu pill — one tap means "go here" or "switch here" depending on where you are
 
+**Tags:** state-aware pill, tapTarget, menu switcher, navigation, SwiftUI Menu, accessibility, keyboard shortcut, last-used default
+
 **Source:** `1-macOS/ClipSmart/` (Aloft) — `Views/ContentView.swift` `reservoirMenu` / `listsMenu` (2026-06-05).
 
 A header "pill" that is **both a navigation target and a switcher**: it represents a surface (Saved / a Smart List) *and* offers a menu of alternatives (other groups / lists). The naive designs both annoy:

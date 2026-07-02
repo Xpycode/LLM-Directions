@@ -1,5 +1,7 @@
 # Permission-free disk stats — `statfs` capacity + IOKit I/O counters (not `fs_usage`)
 
+**Tags:** statfs, IOBlockStorageDriver, IOKit, disk throughput, f_bavail, per-tick delta, IOObjectRelease, ByteCountFormatter
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Sampling/DiskSampler.swift` (2026-06-04, v0.1.0).
 
 You want live disk stats — **free/used capacity** and **read/write throughput** — in a utility that must stay **permission-free** (no prompts, agent app). The obvious "reuse" is shelling out to `/usr/bin/fs_usage`, but that **requires root or Full Disk Access** and runs a continuous subprocess parsing syscall traces. Wrong tool for a glanceable HUD. Both stats are available permission-free through lower-level APIs:

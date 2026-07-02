@@ -1,5 +1,7 @@
 ## Subprocess & URL Patterns
 
+**Tags:** URL.path, subprocess, security-scoped, async pipeline, Process, file path
+
 ### URL Path for Subprocesses — Avoid `url.path()`
 
 **Source:** `CutSnaps/Services/FFmpegService.swift`

@@ -19,6 +19,8 @@
 
 ```bash
 # debug tell — run with -d and watch the connect program:
+
+**Tags:** lftp, sftp, ~/.netrc, ssh username in URL, Connection closed port 22, DRY_RUN, no --delete, exclude server-managed, deploy-common.sh, umask 077
 lftp -d -e "cls -la; quit" sftp://HOST
 #   ---- Running connect program (ssh -a -x -s HOST sftp)   ← NO -l user → it will fail
 # add the user:

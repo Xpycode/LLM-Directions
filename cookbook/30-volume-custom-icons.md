@@ -1,5 +1,7 @@
 # Custom Volume Icons — The Two-Step Write
 
+**Tags:** volume icon, .VolumeIcon.icns, com.apple.FinderInfo, xattr, utimes, NSWorkspace.setIcon
+
 **Source project:** `1-macOS/Sigil/`
 
 > **Trigger:** writing a custom icon to a mounted volume's root on macOS 13+

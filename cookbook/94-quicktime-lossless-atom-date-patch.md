@@ -1,5 +1,7 @@
 # 94 — Lossless in-place QuickTime/ISO-BMFF date patch in pure Swift (no ffmpeg), proven by AVAssetWriter + byte-diff
 
+**Tags:** QuickTime atom, ISO-BMFF, mvhd tkhd mdhd, creation_time, FileHandle forUpdating, 1904 epoch, version-0 uint32 overflow, BytePatch, AVAssetWriter byte-diff, ByteSource
+
 **Problem.** You want to change a video's **embedded** encode date (`mvhd`/`tkhd`/`mdhd` `creation_time`) on MP4/M4V/MOV. Every reference app shells out to **ffmpeg/ffprobe** — a Homebrew dependency, sandbox friction, and a full **re-mux that rewrites the whole file**. AVFoundation's `AVAssetExportSession`/`AVAssetWriter` can't write back to the source URL either: they produce a *new* file → need enclosing-**directory** sandbox access (a single user-selected *file* grant isn't that), reset the FS creation date, and may drop the sandbox grant on the new inode.
 
 **Key realization:** those date fields are **fixed-width** integers. Overwriting them never changes a box size, never shifts `mdat`, never invalidates the `stco`/`co64` chunk-offset tables. So the edit is a handful of **same-length byte overwrites at known offsets** — lossless, instant, no re-encode, no external binary, and sandbox-correct because you mutate the exact file the sandbox granted via `FileHandle(forUpdating:)`.

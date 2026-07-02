@@ -1,5 +1,7 @@
 ## Anti-Patterns to Avoid
 
+**Tags:** anti-patterns, mistakes, code smells, pitfalls
+
 | Anti-Pattern | Problem | Solution |
 |--------------|---------|----------|
 | @ViewBuilder methods for subviews | No performance benefit — re-executes fully | Use separate view structs |

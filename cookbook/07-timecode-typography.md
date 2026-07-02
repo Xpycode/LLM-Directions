@@ -1,5 +1,7 @@
 ## Timecode Display Typography
 
+**Tags:** timecode, monospacedDigit, SF Pro, typography, weight hierarchy
+
 **Source:** `1-macOS/Penumbra/` (TimecodeView, ControlsRow, CurrentSelectionView)
 **Use case:** Any video app displaying SMPTE timecode (HH:MM:SS:FF)
 

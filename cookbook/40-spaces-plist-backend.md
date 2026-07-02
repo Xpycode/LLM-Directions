@@ -36,6 +36,8 @@ use this approach.
 
 ```bash
 # Exploration
+
+**Tags:** com.apple.spaces, Mission Control, Space UUID, spans-displays, CGS SPI, AsyncStream, plist
 defaults read com.apple.spaces
 defaults read com.apple.spaces spans-displays   # Int: 0 or 1
 ```

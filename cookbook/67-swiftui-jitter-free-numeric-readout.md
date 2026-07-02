@@ -1,5 +1,7 @@
 # Jitter-free numeric readout — hidden worst-case template + monospaced digits
 
+**Tags:** monospacedDigit, ZStack template, jitter-free readout, widest value, fixed-width numeric, SwiftUI layout, fittingSize
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Views/StatTileView.swift` (2026-06-04, v0.1.0). Simpler, general form of Penumbra's `TimecodeView`.
 
 A live-updating number (stat readout, timecode, countdown, rate) makes its container **resize and shift every time the value changes width** — "9,2 GB" → "284,76 GB", "7%" → "100%". In a content-sized window/panel that means the whole layout dances; even in a fixed layout, neighbouring elements jump. Two cheap pieces stop it cold:

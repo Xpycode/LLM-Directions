@@ -1,5 +1,7 @@
 # Make a non-activating `NSPanel` overlay draggable (Raycast/Alfred-style), position remembered for the session
 
+**Tags:** NSPanel draggable, isMovableByWindowBackground, windowDidMove, NSWindowDelegate, setFrame feedback loop, anchorTopLeft, non-activating
+
 **Source:** LaunchAway — `Panel/LauncherPanel.swift` + `Panel/LauncherPanelController.swift` (2026-06-18). Extends **#65** (the cursor-anchored non-activating `NSPanel` HUD + its top-anchored growing-panel section — read that first; this only adds the drag).
 
 You have a #65-style summoned overlay (command palette / launcher / HUD) and the user wants to **drag it to a preferred spot**, the way Raycast and Alfred let you reposition their bar. Four pieces, and three of them exist only to stop the drag from fighting the panel's own repositioning logic.

@@ -1,5 +1,7 @@
 # 117 — ImageRenderer appearance/theme snapshot testing (verify a Theme system PAINTS the right tokens)
 
+**Tags:** ImageRenderer, renderer.scale 1, gamma bias, luminance polarity, WCAG contrast, environment colorScheme, NSViewRepresentable unsupported, ThemedRoot
+
 **Best for:** proving a SwiftUI theme system (Light/Dark × presets) actually *renders* the right colors —
 not just that the resolver returns them. A pure-function test (`make(scheme:preset:) == expected`) proves
 the resolver; this proves the next link: the **real views**, wired through the **real environment-injection

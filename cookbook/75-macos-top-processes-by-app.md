@@ -1,5 +1,7 @@
 # Top processes by CPU / memory / disk, grouped by app — two engines (in-process vs. `top`)
 
+**Tags:** rusage_info_v4, ri_user_time, mach_timebase_info, /usr/bin/top, proc_pidpath, app grouping, per-tick rate, sandbox
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Sampling/TopProcessSampler.swift` (2026-06-05, v0.1.x). Sequel to #74 (top-by-memory): adds **CPU% + disk-I/O rates**, **app grouping**, and folds the lists into the CPU/Mem/Disk tile popovers (iStat-Menus style) instead of a standalone tile.
 
 > ## ⚖️ Decide first: which engine?

@@ -1,5 +1,7 @@
 # 120 — Add a memory-hard KDF (Scrypt/PBKDF2) via swift-crypto — verify the PR actually shipped, and never mix `import CryptoKit` with `import Crypto`
 
+**Tags:** swift-crypto, CryptoKit, SymmetricKey, KDF.Scrypt, _CryptoExtras, PBKDF2, xcodegen SwiftCrypto, SymmetricKey type mismatch
+
 **Best for:** wiring a password-stretching KDF (Scrypt or PBKDF2) into a macOS app — a password
 manager's `VaultCrypto`, an encrypted store, anything that derives an AES key from a passphrase. Two
 traps bite before you write a single line of real crypto: (1) depending on an API that was *proposed*

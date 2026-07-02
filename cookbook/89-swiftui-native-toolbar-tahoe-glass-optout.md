@@ -1,5 +1,7 @@
 # #89 — Native titlebar toolbar grows Liquid Glass "bubbles" on the macOS 26 SDK → opt out with `UIDesignRequiresCompatibility`
 
+**Tags:** UIDesignRequiresCompatibility, Liquid Glass, toolbarRole editor, macOS 26 Tahoe, INFOPLIST_KEY allowlist, GENERATE_INFOPLIST_FILE, principal zone, ToolbarSpacer, xcodegen INFOPLIST_FILE
+
 **Extracted from:** Conjoyn (2026-06-10g)
 
 You migrate a macOS app's top bar from a **custom `HStack` titlebar** (the FCP-style "the source bar IS the titlebar" pattern: `.hiddenTitleBar` + a 52 pt view + traffic lights overlaying a hand-tuned leading inset) to a **native SwiftUI `.toolbar { }`** (App Shell Standard: `.toolbar` + `.toolbarRole(.editor)`). The toolbar works — but **every toolbar item now sits in its own translucent rounded capsule** ("bubbles" behind the buttons / path well). The custom bar never had them; sibling apps (Penumbra, CropBatch) don't have them either.

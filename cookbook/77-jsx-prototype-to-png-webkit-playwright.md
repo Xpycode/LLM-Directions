@@ -1,5 +1,7 @@
 # 77 · Render a Babel-in-browser JSX design prototype to PNGs (no Chrome)
 
+**Tags:** Playwright, WebKit, Babel standalone, JSX prototype, deviceScaleFactor, data-render-ready, element.screenshot, networkidle
+
 **Problem.** A design handoff ships as a React + `@babel/standalone` prototype
 (`.html` that `<script type="text/babel" src="*.jsx">`-loads sibling modules from a
 CDN). You want static PNGs of each design section — to drop in docs, compare

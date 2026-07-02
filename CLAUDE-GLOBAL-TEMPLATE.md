@@ -83,16 +83,16 @@ After detection:
 
 ## Pattern Cookbook (Auto-Trigger)
 
-When implementing these UI patterns, **FIRST check** the cookbook at:
-`[LOCAL_DIRECTIONS_PATH]/PATTERNS-COOKBOOK.md`
+When implementing a Swift/SwiftUI/web/macOS pattern, treat the cookbook as a **grep-first router** —
+never read the whole index. It's 155 patterns, one one-line summary each. Two-step lookup:
 
-**Trigger keywords:**
-- Window layouts (HSplitView, NavigationSplitView, 2-pane, 3-pane, sidebar)
-- Export dialogs (NSSavePanel, NSOpenPanel, file picker)
-- File import (drag-and-drop, .fileImporter, security-scoped bookmarks)
-- App lifecycle (@main, AppDelegate, scenePhase, service initialization)
+1. **Grep the index**, then read only the matching pattern file (the row's link is the file):
+   `grep -i '<keyword>' [LOCAL_DIRECTIONS_PATH]/PATTERNS-COOKBOOK.md`
+2. Or **grep the pattern files directly** by their `**Tags:**` line, skipping the index entirely:
+   `grep -ril '<keyword>' [LOCAL_DIRECTIONS_PATH]/cookbook/`
 
-**Also search Vestige** for semantic matches - patterns are stored there too.
+Read **only** the one matching `cookbook/NNN-*.md`. Do **not** load `PATTERNS-COOKBOOK.md` wholesale
+— that's the anti-pattern this router exists to prevent.
 
 ---
 

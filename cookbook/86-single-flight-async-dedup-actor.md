@@ -1,5 +1,7 @@
 # 86 — Single-flight async dedup in an actor (kill a check-then-act-across-`await` race)
 
+**Tags:** single-flight, dedup, actor, inFlight Task ledger, TOCTOU across await, join in-flight, @Sendable, ffprobe race
+
 **Problem.** Several callers each want the same expensive async result for the same key — N tasks calling "load keyframes for this clip / fetch this URL / generate this thumbnail." The obvious guard looks safe:
 
 ```swift

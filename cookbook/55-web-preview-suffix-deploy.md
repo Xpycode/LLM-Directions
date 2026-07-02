@@ -58,6 +58,8 @@ This is the *only* coordination cost. Every deploy session, every new cross-link
 
 ```bash
 # Verify no preview page accidentally links to a production page
+
+**Tags:** preview deploy, static site, -new suffix, SFTP, sed rename, shared hosting, staging
 grep -rn 'href="[a-z][^"]*\.html"' 01_Source/*.html \
   | grep -v '\-new\.html\|https\?://\|youtube\.'
 # Should return only the brand link in the index file pointing to itself.

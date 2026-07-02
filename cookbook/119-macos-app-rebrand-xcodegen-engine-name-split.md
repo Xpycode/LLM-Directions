@@ -1,5 +1,7 @@
 # 119 — Rename a macOS app in place (xcodegen) when the app's name is derived from the third-party engine it wraps
 
+**Tags:** xcodegen rename, case-sensitive sed, YTdl yt-dlp, git mv, project.yml PRODUCT_NAME, CFBundleIdentifier PlistBuddy, feedback slug allowlist, bundle id
+
 **Problem.** You need to rebrand a macOS app — folders, Xcode target/scheme/project, bundle id,
 `PRODUCT_NAME`, the on-screen name, the data dir, a feedback slug — and the app's old name is a
 lightly-disguised version of a **third-party binary it bundles**. Here: **YTdl** (the app) wraps

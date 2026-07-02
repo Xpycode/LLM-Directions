@@ -1,5 +1,7 @@
 ## Controls on macOS 26 — Custom SwiftUI styles, not AppKit wrappers
 
+**Tags:** NSButton, NSCheckbox, NSPopUpButton, NSSegmentedControl, NSSlider, NSTextField, NSViewRepresentable
+
 > **Rewritten 2026-05-26.** Earlier versions of this entry recommended `NSViewRepresentable`-wrapped AppKit controls to escape SwiftUI's default Tahoe chrome. **That advice was wrong.** Apple redesigned `NSButtonCell` drawing at the cell level on macOS 26, so AppKit wrappers do NOT escape Liquid Glass either. The correct escape is **custom SwiftUI styles**.
 
 ### The rule

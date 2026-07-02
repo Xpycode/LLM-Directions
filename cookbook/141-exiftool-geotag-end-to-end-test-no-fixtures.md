@@ -1,5 +1,7 @@
 # Verify an ExifTool geotag pass end-to-end with NO binary fixtures (timezone-robust)
 
+**Tags:** ExifTool, -geotag, GPX, DateTimeOriginal, timezone, GeoMaxExtSecs, CGImageDestination, #filePath, exit 2
+
 **Source:** PhotoIngest — `01_Project/PhotoIngest/PhotoIngestTests/GeotaggerTests.swift` (2026-06-28, T5.2 `Geotagger`). Pairs with [[140-xcodegen-folder-reference-vendor-cli-tool]] (how the exiftool tree gets into the bundle) — this is how you *prove the tagging actually works* in CI without committing a `.jpg`/`.gpx` to the repo.
 
 ## The problem

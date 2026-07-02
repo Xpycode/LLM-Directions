@@ -1,5 +1,7 @@
 # 109 — A non-key floating HUD that ALSO needs bare-key verbs: gate `canBecomeKey` dynamically
 
+**Tags:** canBecomeKey, NSPanel nonactivating, keyboardModeEngaged, didBecomeKey didResignKey, makeKey, charactersIgnoringModifiers, local keyDown monitor
+
 **Problem.** Cookbook #81 establishes the rule for a floating HUD that pastes into the user's frontmost app: it must be **non-key**, or the synthetic ⌘V is delivered to *your* panel instead of the target. So you ship a plain `.nonactivatingPanel` (`canBecomeKey == false`) and the mouse path works blink-free.
 
 Then you want **keyboard verbs** on that same HUD — bare keys to drive it (Space = paste next, R = reverse, Esc = stop) without reaching for the mouse. But a local `NSEvent` keyDown monitor only fires while the panel is the **key window**. You're stuck between two requirements that #81 framed as mutually exclusive: *non-key so paste lands*, vs *key so the monitor fires*.

@@ -1,5 +1,7 @@
 # SwiftUI "destination popup" — a `Menu` (not `Picker`) as a save-location chooser with a default + a "Choose…" escape hatch
 
+**Tags:** SwiftUI Menu vs Picker, NSOpenPanel, save destination, gridColumnAlignment, Menu fitting size, checkmark Label, truncationMode
+
 **Source:** VideoContainerSwitcher — `01_Project/VideoContainerSwitcher/Views/FileQueueView.swift` (`OutputDestinationMenu`) + its `GridRow` in `ContentView.swift` (2026-06-21).
 
 You have a setting that is **"a sensible default, OR a thing the user picks from a file panel"** — an output folder ("Same as input" / a chosen directory), a save location, a target device, an account. The naïve UI is three controls fighting over one piece of state: a read-only field showing the current value, a checkbox for the default, and a `Browse…` button. That's redundant — the field already shows "Same as input", so the checkbox restates it, and the button is a fourth thing to align. Collapse all of it into **one popup menu whose label IS the current choice** — the native macOS save-location idiom (Screenshot.app's "Save to", export sheets).

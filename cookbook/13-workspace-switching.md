@@ -1,5 +1,7 @@
 ## Workspace Switching
 
+**Tags:** workspace switching, view mode, tool picker, AppStorage, sidebar-driven, sub-modes
+
 Toolbar-driven mode or view switching that replaces the entire content area. Three patterns from lightweight pane toggles to full workspace systems.
 
 ---

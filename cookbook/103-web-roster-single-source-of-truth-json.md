@@ -1,5 +1,7 @@
 # 103 — One JSON roster as the single source of truth across PHP, JS & server-rendered HTML
 
+**Tags:** apps.json, single source of truth, allow-list, DirectoryIndex, JSON-LD, double-fill, select.options.length
+
 **Best for:** a list that the same multi-page site repeats in several languages — the classic case is
 a **roster of apps / products / tabs / categories** that shows up as a PHP allow-list, an HTML
 `<select>` or card grid, one or more JS name-maps, and a JSON-LD `hasPart` block. Because PHP, JS and

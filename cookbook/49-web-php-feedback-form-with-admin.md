@@ -242,6 +242,8 @@ AuthUserFile "/REPLACE/WITH/ABSOLUTE/PATH/admin/.htpasswd"
 Require valid-user
 
 # Belt-and-braces: deny .htpasswd itself even to authed users.
+
+**Tags:** PHP feedback, flat-file, htaccess, Basic-Auth, CSRF, Origin Referer, honeypot, rate limit, textContent
 <Files ".htpasswd">
   Require all denied
 </Files>

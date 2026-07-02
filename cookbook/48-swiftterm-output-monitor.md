@@ -1,5 +1,7 @@
 # #48 — SwiftTerm Output Monitoring + PTY Input Bridge
 
+**Tags:** SwiftTerm, dataReceived, LocalProcessTerminalView, PTY, sendInput, rolling buffer, Observable
+
 **Extracted from:** MyOwnTerminal (2026-04-21)  
 **Use case:** Intercept terminal output for pattern matching (prompt detection, attention badges, logging) without breaking SwiftTerm's internal delegate chain.
 

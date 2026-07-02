@@ -1,5 +1,7 @@
 # 97 — Debugging a launched macOS app: `NSLog` is invisible to `log show` for an `open`-launched app → run the binary directly and capture stderr
 
+**Tags:** NSLog invisible, log show predicate, open LaunchServices, nohup disown, stderr capture, LSUIElement agent, body-level NSLog probe, layered diagnosis
+
 **Extracted from:** LaunchAway (2026-06-13)
 
 You're debugging a running macOS app (especially an `LSUIElement` agent app with no console UI). You sprinkle `NSLog("DIAG: …")` to trace state, then read it back with:

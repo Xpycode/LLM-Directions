@@ -1,5 +1,7 @@
 # 93 — Sorting a list beachballs: keep the computed view-feed pure, prewarm the expensive key off-main
 
+**Tags:** pure sort comparator, body main-thread I/O, off-main prewarm, Task.detached, @Published token, decorate-sort-undecorate, updateValue nil, Date?? cache
+
 **Problem.** A list is sorted by a computed property the view reads in `body`:
 
 ```swift

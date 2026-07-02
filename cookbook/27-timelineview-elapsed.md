@@ -1,5 +1,7 @@
 # TimelineView for Elapsed-Time UIs
 
+**Tags:** TimelineView, .periodic, elapsed time, countdown, Timer, objectWillChange
+
 **Use when:** a view needs to display elapsed / remaining / wall-clock time that
 ticks while other state (from `@Published` or `@Observable`) is unreliable or
 sparse. Replaces manual `Timer.scheduledTimer` + `objectWillChange.send()` plumbing.

@@ -1,5 +1,7 @@
 # Privileged subprocess: detect the privilege-failure, don't show a false "running" — and `fs_usage` needs root, not Full Disk Access
 
+**Tags:** fs_usage, Process.run, terminationHandler, stderr, root uid 0, Full Disk Access, @Observable, SMAppService, @Sendable callback
+
 **Source:** `1-macOS/StatsWindow/` — `Sampling/FSUsageSampler.swift` + `AppStore.swift` (2026-07-01).
 
 You spawn a **root-only** CLI tool (here `/usr/bin/fs_usage`) with `Foundation.Process` and stream its stdout. The trap: **`process.run()` succeeds when the binary merely _launches_**, not when it's actually doing its job. `fs_usage` without root prints `'fs_usage' must be run as root...` to **stderr** and exits milliseconds later — but `run()` already returned success, so a naive app sets `state = .running` and shows a green "live" badge over a table that will never fill. There's no way for the user to tell "no activity" from "denied privileges."

@@ -1,5 +1,7 @@
 # 92 — Greedy `Color.clear`/`Spacer` balloons a row; pad-based inset to align a header over list columns
 
+**Tags:** Color.clear greedy, Spacer unconstrained axis, header alignment, RowMetrics, padding leading inset, fixed-width columns, lineLimit(1), nested HStack spacing
+
 **Problem.** You're adding a Finder-style **clickable column header** above a custom list (each row is
 an `HStack` of checkbox · disclosure · thumbnail · flexible title · fixed meta columns). Two things
 go wrong:

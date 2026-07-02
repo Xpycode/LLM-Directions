@@ -1,5 +1,7 @@
 # 76 · macOS app icon from a design spec — native Core Graphics generator
 
+**Tags:** AppIcon.appiconset, Core Graphics, CGContext, oklch to sRGB, Contents.json, ASSETCATALOG_COMPILER_APPICON_NAME, actool, continuous corner radius
+
 **Problem.** You have a vector icon design (gradient squircle shell + simple
 shapes) specified in a web prototype (CSS/JSX, often with `oklch` colors), and you
 need a real `AppIcon.appiconset` — all 10 macOS sizes + `Contents.json` — without

@@ -1,5 +1,7 @@
 ## Keyboard Shortcuts
 
+**Tags:** keyboard shortcuts, SwiftUI Commands, onKeyPress, NSEvent monitor, keyEquivalent
+
 Pro apps are keyboard-first. Four tiers from simplest to most advanced — pick the lightest tier that covers your needs.
 
 ---

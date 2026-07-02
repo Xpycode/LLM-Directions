@@ -1,5 +1,7 @@
 # 114 — macOS light/dark Dock icon: swap at RUNTIME, the bundle icon can't vary by appearance
 
+**Tags:** applicationIconImage, effectiveAppearance KVO, actool unassigned children, assetutil, iconutil icns, IconPreference, bestMatch
+
 **Problem.** A designer ships a macOS app icon in two appearances (dark + light surround, constant
 brand mark) and a HANDOFF that says *"set the AppIcon image set to Appearances: Any, Dark and macOS
 swaps automatically with the system theme."* You wire a combined `AppIcon.appiconset` (light PNGs in

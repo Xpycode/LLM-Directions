@@ -1,5 +1,7 @@
 ## Web Portrait-Aware Uniform Grid — `grid-auto-flow: dense` + `.portrait`
 
+**Tags:** uniform grid, aspect-ratio, portrait, grid-row span, grid-auto-flow dense, naturalHeight, gallery
+
 **Source:** `lucesumbrarum.photos` rebuild — `01_Source/gallery.js` + `01_Source/css/lu.css` (`.gallery-grid[data-style="uniform"]` block). Added 2026-04-23.
 
 > *Legacy path: `01_Source/` predates the universal `01_Project/` code-home convention. New web projects put code in `01_Project/` — see `13_folder-structure.md`.*

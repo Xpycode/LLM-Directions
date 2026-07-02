@@ -1,5 +1,7 @@
 # Verify a Sparkle appcast update with CryptoKit (no Sparkle.framework) + swap the app in safely
 
+**Tags:** Sparkle, SUPublicEDKey, Curve25519.Signing, isValidSignature, EdDSA, mappedIfSafe, Team-ID, NSRunningApplication.terminate, ~/.Trash
+
 **Source:** AppUpdater — `01_Project/AppUpdaterPackage/Sources/AppUpdaterFeature/Services/{SparkleSignatureVerifier,SparkleExecutor,CodeSigningVerifier,AppQuitter}.swift` (2026-07-01, Waves 1–4). For a tool that *checks other apps' updates* MacUpdater-style, not an app self-updating via its own Sparkle. Existing [[16-sparkle-auto-updates]] is the opposite case (integrating Sparkle.framework into your own app). Test it hermetically with [[150-sparkle-eddsa-cryptokit-silent-selfupdate]]'s sibling, [[149-macos-hermetic-download-codesign-selfreplace-test]].
 
 ## Why not just link Sparkle?

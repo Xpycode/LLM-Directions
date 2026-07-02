@@ -1,5 +1,7 @@
 ## Z-Order Overlay Dimming
 
+**Tags:** zIndex, overlay, out-of-bounds, visual feedback, z-order
+
 **Source:** `1-macOS/CropBatch/` — `CropEditorView.swift` (v1.5)
 
 When interactive content (blur regions, annotations, etc.) can extend outside a valid area (crop boundaries, selection, etc.), use z-order to visually communicate "this part is excluded" without explicit badges or warnings.

@@ -133,6 +133,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PLIST_DIR="$SCRIPT_DIR/launchd"
 
 # Detect node
+
+**Tags:** launchd, KeepAlive, Node service, plist, Apple Silicon PATH, scheduled task
 if [ -x /opt/homebrew/bin/node ]; then
     echo "Found node at: /opt/homebrew/bin/node"
 elif [ -x /usr/local/bin/node ]; then

@@ -1,5 +1,7 @@
 # Probe-and-classify, not catch-all — TCC / FDA pre-flight without false positives
 
+**Tags:** TCC, Full Disk Access, fileReadNoPermission, CocoaError, AccessProbeResult, fileExists isDirectory, permission probe, false positive
+
 **Source:** `1-macOS/_Published/syncthingStatus/` — `Client.swift::StuckDeletesController.probeFolderAccess` (2026-04-29, v1.6.0 hotfix).
 
 A pre-flight access check that uses a catch-all `catch { return false }` is a **false-positive generator** for the destructive UI it gates. The user grants Full Disk Access (FDA) in System Settings, comes back, hits the same gate, granted again, gives up — *because the actual error wasn't a permission error in the first place.*

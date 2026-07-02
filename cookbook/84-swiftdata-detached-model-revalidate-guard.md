@@ -1,5 +1,7 @@
 # 84 — A row-level closure that re-runs on a deleted `@Model` must guard `modelContext != nil`
 
+**Tags:** SwiftData, @Model, modelContext nil, EXC_BREAKPOINT, detached model, deleted row, persisted property getter, @Query, .onReceive
+
 **Problem.** A SwiftUI list of SwiftData `@Model` rows. A per-row closure — `.task(id:)`, `.onReceive(...)`, `.onChange`, an `onAppear` async — reads one of the row's **persisted properties** (`item.imageData`, `item.fileURL`, `item.tags`, …). Most of the time it's fine. Then, seemingly at random — after a **Clear All**, a **cap-trim**, or any bulk delete, and often triggered by an *unrelated* action like copying a new item — the app **hard-crashes**:
 
 ```

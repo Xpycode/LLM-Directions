@@ -1,5 +1,7 @@
 # 151 · Wire an Icon Composer `.icon` as a macOS app icon (Xcode 26, via xcodegen)
 
+**Tags:** Icon Composer, .icon, type: file, ASSETCATALOG_COMPILER_APPICON_NAME, actool, Liquid Glass, CFBundleIconName, Assets.car
+
 **Problem.** You designed the app icon in **Icon Composer** (Xcode 26) — a `Foo.icon` bundle
 (`icon.json` describing gradient fills + layer transforms, plus `Assets/*.png` layers). You want to
 ship *that* as the app icon and get the macOS 26 **Liquid Glass** appearance variants

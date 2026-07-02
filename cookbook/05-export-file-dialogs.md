@@ -1,5 +1,7 @@
 ## Export & File Dialogs
 
+**Tags:** NSSavePanel, NSOpenPanel, fileImporter, security-scoped bookmarks, async panel, export dialog
+
 ### NSSavePanel with Progress
 
 **Source:** `Phosphor/Views/Export/ExportSheet.swift`

@@ -1,5 +1,7 @@
 # 147 — A SwiftUI `.alert`/`.confirmationDialog`/`.sheet` attached to a **toolbar item** freezes the window; attach it to the content-view **body** instead
 
+**Tags:** ToolbarItem, confirmationDialog, sheet, alert, isPresented, soft-lock, toolbarRole editor, content body
+
 **Extracted from:** CompressPhotos (2026-06-30)
 
 You add a toolbar button that should raise a confirmation. The natural-looking code hangs the button's

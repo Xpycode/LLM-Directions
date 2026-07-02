@@ -1,5 +1,7 @@
 ## Web Development Patterns
 
+**Tags:** Jinja2, ES modules, dependency injection, shared state, web
+
 ### Data Injection Pattern (Jinja2 → External JS)
 
 **Source:** `PDF2Calendar/01_Project/templates/stats.html` + `static/js/stats.js`

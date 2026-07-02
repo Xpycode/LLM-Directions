@@ -1,5 +1,7 @@
 ## Actor Re-Entrancy: When TOCTOU is NOT Possible
 
+**Tags:** actor reentrancy, TOCTOU, await suspension, synchronous sequence, race condition, check-then-act
+
 **Rule:** Between two lines with no `await`, an actor cannot re-enter. Two callers cannot interleave in a synchronous sequence.
 
 ```swift

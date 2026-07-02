@@ -1,5 +1,7 @@
 # Permission-free global hotkey via Carbon `RegisterEventHotKey`
 
+**Tags:** RegisterEventHotKey, Carbon, EventHotKeyID, userData trampoline, kVK_ANSI, cmdKey, global hotkey, permission-free
+
 **Source:** `1-macOS/QuickStatsPanel/` — `Services/HotKeyService.swift` (2026-06-04, v0.1.0).
 
 You want a **system-wide hotkey** that fires no matter which app is focused — to summon a HUD, toggle an overlay, trigger an action. The reflex is `NSEvent.addGlobalMonitorForEvents(matching: .keyDown)`, but a global **keyboard** monitor requires the user to grant **Accessibility / Input Monitoring** permission (first-launch friction, and it can only *observe* — it can't consume the event). For a simple trigger you don't need any of that.

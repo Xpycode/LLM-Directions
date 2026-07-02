@@ -1,5 +1,7 @@
 # Closure-struct dependency injection — `.live` / `.inert` for system side-effects
 
+**Tags:** closure struct DI, AppSystemActions, .live .inert, protocol witness, SwiftUI Preview no-op, NSWorkspace FileManager seam, Task.detached
+
 **Source:** external study — [github.com/colinvkim/Radix](https://github.com/colinvkim/Radix) (`Radix/Services/AppSystemActions.swift`, `AppQuickLookActions`). An LLM-built disk analyzer; this is the one pattern worth lifting wholesale.
 
 Every side-effecting system call an app makes — `open`, `reveal`, `moveToTrash`, `fullDiskAccessStatus`, `presentOpenPanel`, volume capacity — is a **closure field on a plain struct**, not a method on a singleton and not behind a protocol. The struct ships with two prebuilt instances: `.live` (wires each closure to the real `SystemIntegration` call) and `.inert` (every closure is a safe no-op / fixed return).

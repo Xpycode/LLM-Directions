@@ -1,5 +1,7 @@
 # Author + verify an arbitrary start timecode on a lossless `-c copy` trim (and a synthetic burned-in-TC test clip)
 
+**Tags:** ffmpeg -timecode, -c copy trim, tmcd stream tag, ffprobe stream_tags, -ss before -i, nb_read_packets duration, FCP conform, drawtext timecode
+
 **Source:** Penumbra — `docs/spikes/fcp-consolidate-roundtrip/run_spike.sh` (2026-06-25 FCP-consolidate gating spike). Sibling of [[07-timecode-typography]] (TC *display*) and [[15-native-video-analysis]]. Underpins any "trim a sub-range losslessly and round-trip it into an NLE by timecode" feature.
 
 ## The problem

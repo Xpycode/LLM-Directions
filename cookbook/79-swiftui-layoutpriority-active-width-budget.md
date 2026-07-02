@@ -1,5 +1,7 @@
 # Truncation in an HStack is a priority contest, not a maxWidth ceiling — fix it with layoutPriority
 
+**Tags:** layoutPriority, HStack truncation, maxWidth, Spacer greedy, width budget, SwiftUI layout, isActive, ideal size
+
 **Source:** `1-macOS/ClipSmart/` (Aloft) — `Views/ContentView.swift` surface pills (2026-06-05).
 
 **Symptom:** a row of labels (pills, chips, breadcrumb segments) inside an `HStack` with `Spacer`s. One label truncates ("Current App" → "Curre…") even though the math says it should fit, and bumping its `.frame(maxWidth:)` does nothing.

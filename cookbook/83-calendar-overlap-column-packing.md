@@ -1,5 +1,7 @@
 # Overlapping calendar events: cluster, then first-free-column with a half-open free test
 
+**Tags:** calendar overlap, column packing, first-free-column, transitive cluster, half-open interval, Gantt lanes, columnCount, EventLike protocol
+
 **Source:** `1-macOS/MyOwnCalendar/` — `Kernel/TimeGridLayout.swift` (2026-06-07). Week time-grid; 8/8 unit tests.
 
 **Problem:** a day/week time-grid has to place overlapping events side-by-side without collisions, and *without* needlessly narrowing events that have no neighbours. Apple Calendar does this; everyone who builds a calendar, Gantt chart, or resource timeline re-derives it. The naïve "one column per event" wastes horizontal space; "shrink everything to the day's max concurrency" makes a single 8 AM clash shrink your 3 PM solo meeting to half-width.

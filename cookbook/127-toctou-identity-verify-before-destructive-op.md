@@ -1,5 +1,7 @@
 # Verify file identity before a destructive op — close the scan→act TOCTOU gap
 
+**Tags:** TOCTOU, lstat st_dev st_ino, verify before delete, fileResourceIdentifierKey, TrashSafetyPolicy, stale path, inode reuse
+
 **Source:** external study — [github.com/colinvkim/Radix](https://github.com/colinvkim/Radix) (`Radix/Services/AppSystemActions.swift::verifyTrashIdentity`). Also the destructive-op sibling of [[38-destructive-copy-guard]] and [[52-appendingpathcomponent-fs-probe]].
 
 A scan/listing is a **snapshot**. The user acts on a row seconds or minutes later — by then the path may point at a *different file* (replaced, rotated, moved-and-recreated, symlink retargeted). Acting on the stale path sends the **wrong file** to the Trash. This is a time-of-check-to-time-of-use (TOCTOU) hole, and a path string carries no identity to detect it.

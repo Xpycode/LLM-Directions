@@ -1,5 +1,7 @@
 # 128 · Freshly-built macOS app shows a generic Dock icon — it's the IconServices cache, not the build
 
+**Tags:** Dock icon generic, IconServices cache, lsregister, CFBundleIconName, iconservices.store, killall Dock, DARWIN_USER_CACHE_DIR, actool Emplaced
+
 **Problem.** You generated `AppIcon.appiconset`, the build *succeeded*, `actool` logged
 `Emplaced … AppIcon.icns` — but the app launches with the **generic/placeholder** icon in the
 Dock (and Cmd-Tab, Finder). The instinct is "the icon didn't build" → you regenerate the asset

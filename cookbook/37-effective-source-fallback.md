@@ -1,5 +1,7 @@
 # Effective Source Fallback in Editors
 
+**Tags:** pending ?? cached, effective source, dirty detection, commit gate, cache self-heal, editor binding
+
 **Use when:** an editor operates on either a freshly-picked file (drop / Browse) **or** an already-persisted one loaded from cache. Typical case: asset editors where changing framing / settings of a previously-saved item shouldn't require re-importing the source.
 
 **Source:** `1-macOS/CVI/` (Sigil) — `VolumeDetailView.swift`, `IconCache.swift`.

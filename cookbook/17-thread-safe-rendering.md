@@ -1,5 +1,7 @@
 ## Thread-Safe Offscreen Rendering
 
+**Tags:** NSBitmapImageRep, thread-safe, TaskGroup, offscreen rendering, concurrent
+
 **Problem:** `NSImage.lockFocus()` is main-thread-only. Using it from `TaskGroup` background tasks causes crashes or corrupted output.
 
 **Solution:** Use `NSBitmapImageRep` + `NSGraphicsContext(bitmapImageRep:)` for an isolated offscreen context.

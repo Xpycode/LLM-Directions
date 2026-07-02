@@ -1,5 +1,7 @@
 ## Web Masonry — CSS Grid + JS-Computed `grid-row-end: span N`
 
+**Tags:** masonry, CSS grid, grid-row-end span, grid-auto-rows, column-count, aspect ratio, debounce
+
 **Source:** `lucesumbrarum.photos` rebuild — `01_Source/gallery.js` + `01_Source/css/lu.css` (`.gallery-grid[data-style="masonry"]` block). Added 2026-04-23.
 
 > *Legacy path: `01_Source/` predates the universal `01_Project/` code-home convention. New web projects put code in `01_Project/` — see `13_folder-structure.md`.*

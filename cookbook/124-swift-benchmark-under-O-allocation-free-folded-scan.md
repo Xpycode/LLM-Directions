@@ -1,5 +1,7 @@
 # 124 — Benchmark perf-critical Swift under `-O` (never Debug); allocation-free folded-byte scan over an mmap
 
+**Tags:** SWIFT_OPTIMIZATION_LEVEL, -O benchmark, @testable Release, allocation-free scan, mmap bytes, ASCII case-fold, top-N selection, xcodebuild test
+
 **Best for:** any hot path you hand-optimize in Swift — a byte scanner, parser, hash, image kernel,
 or a linear scan over a memory-mapped blob — where you need a *trustworthy* latency number and an
 allocation-free inner loop. Two linked lessons: (1) **never trust a Debug benchmark** of hand-rolled

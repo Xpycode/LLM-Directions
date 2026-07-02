@@ -1,5 +1,7 @@
 # 148 · Verify a web app's video export end-to-end (no Chrome) — Playwright WebKit + MediaRecorder + magic-byte check
 
+**Tags:** Playwright, WebKit, MediaRecorder, captureStream, isTypeSupported, download event, ftyp, EBML, python3 http.server
+
 **Problem.** A browser-side tool renders to `<canvas>` and exports a **video file**
 via `MediaRecorder` + `canvas.captureStream()` (a test-pattern generator, a screen-
 recorder UI, a GIF/clip maker). You want to prove — headless, in CI or before

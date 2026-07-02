@@ -1,5 +1,7 @@
 # Pattern #51 — SwiftUI Recursive Split Pane
 
+**Tags:** split pane, indirect enum, SplitNode, HSplitView, VSplitView, ViewBuilder, result builder, recursive view
+
 **Source project:** MyOwnTerminal  
 **Best for:** Terminal emulators, code editors, or any app needing user-resizable H/V split layouts with arbitrary nesting depth.
 

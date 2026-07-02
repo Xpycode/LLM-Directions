@@ -1,5 +1,7 @@
 ## Swift 6 Concurrency: @MainActor + @Observable
 
+**Tags:** Swift 6, MainActor, Observable, concurrency, main-thread mutation, actor isolation
+
 **Rule:** All `@Observable` model classes that drive UI should be `@MainActor`. Without it, Swift 6 permits mutation from any concurrency context — the compiler can't protect you.
 
 ```swift

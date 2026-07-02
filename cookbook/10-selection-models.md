@@ -1,5 +1,7 @@
 ## Selection Models
 
+**Tags:** selection, Set<ID>, multi-select, grid selection, NSTableView sync, cross-pane, two-level
+
 How selection works in pro apps: single item, multi-select, cross-pane propagation, and keyboard navigation. The core principle is **one source of truth** — selection lives in a shared `@Observable` model, not scattered across views.
 
 ---

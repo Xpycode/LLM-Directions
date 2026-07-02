@@ -1,5 +1,7 @@
 # Inherited-project dead-code sweep
 
+**Tags:** dead code, pbxproj, sed, Xcode fork, PBXFileSystemSynchronizedRootGroup, LOC cleanup
+
 **Source:** `1-macOS/AvidMXFPeek/` — Wave 4.6-B (2026-04-20). Project was forked from `P2toMXF` using the [34-xcodeproj-clone-rename](34-xcodeproj-clone-rename.md) recipe; ~65% of the inherited Swift code was dead at the destination project's runtime but still compiled as an internal cluster.
 
 Bulk-remove dead Swift files from an Xcode project when the dead-code graph is **self-contained** (dead files reference each other but nothing live references them). Combines disk-level `rm`, sed-based pbxproj cleanup, in-place trim of partially-dead files, and a unit-test safety net. Handles the cases that doing it one file at a time through the Xcode navigator doesn't.

@@ -1,5 +1,7 @@
 # NSWorkspace Notifications → AsyncStream Bridge
 
+**Tags:** NSWorkspace, AsyncStream, mount notification, actor, observer cleanup, continuation
+
 **Source project:** `1-macOS/Sigil/`
 
 > **Trigger:** you want to `for await` on mount/unmount/space-change/app-launch notifications from `NSWorkspace.shared.notificationCenter` inside modern structured-concurrency code

@@ -1,5 +1,7 @@
 ## Layout Templates
 
+**Tags:** layout templates, archetypes, browser, editor, organizer, dual viewer, workspace
+
 Named archetypes for common pro-app layouts. All build on the [App Shell Standard](#app-shell-standard) — hidden title bar, dark mode, FCPToolbarButtonStyle, Theme struct. **Pick the template closest to your app, then customize.**
 
 Every template uses the same state pattern for pane visibility:

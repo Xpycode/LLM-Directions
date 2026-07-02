@@ -1,5 +1,7 @@
 # Elicit specific verification verdicts on demand — corrupt-output via 1-frame `-c copy`, and `chmod 000` the source for the "couldn't-run" state
 
+**Tags:** -f streamhash, -c copy, chmod 000, EACCES, security-scoped bookmark, verification ladder, tmcd, packet count
+
 **Source:** TimeCodeEditor — `01_Project/TimeCodeEditorTests/FFmpegCorrectionIntegrationTests.swift` (2026-06-30, Verification V2 phase 6). Pairs with [[141-exiftool-geotag-end-to-end-test-no-fixtures]] (the no-fixtures sibling), [[134-ffmpeg-copy-trim-timecode-author-verify]] (the same `-c copy`/`tmcd` toolbox), and [[73-verify-hud-without-screen-recording]] (driving a verdict without Screen-Recording permission).
 
 ## The problem
