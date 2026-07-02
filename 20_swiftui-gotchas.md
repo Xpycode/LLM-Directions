@@ -39,41 +39,76 @@ video.activeSelection = selection
 **Problem:** Toggle buttons stuck, UI doesn't respond to state changes.
 
 ```swift
-// BROKEN: @State doesn't observe class changes
+// BROKEN: @State doesn't observe a plain class's property changes
 @State private var manager = SomeManager.shared
 
-// WORKS: Use explicit state + refresh trigger
+Button("Toggle") {
+    manager.toggle()  // View never re-renders — SwiftUI can't see into an unobserved class
+}
+```
+
+**Why:** `@State` is designed for value types (structs) or `@Observable` reference types. A plain
+class's property mutations are invisible to SwiftUI's dependency tracking.
+
+**Modern fix — mark the class `@Observable`:**
+```swift
+@Observable
+final class SomeManager {
+    var isEnabled = false
+
+    func toggle() {
+        isEnabled.toggle()
+    }
+}
+
+// View
+let manager = SomeManager.shared
+
+Button("Toggle") {
+    manager.toggle()  // @Observable tracks the read in body; view updates automatically
+}
+```
+
+**Old workaround (pre-`@Observable`, avoid in new code):** force a refresh by bumping an unrelated
+`@State` value whenever the class mutates:
+```swift
 @State private var isEnabled = false
 @State private var refreshTrigger = UUID()
 
 Button("Toggle") {
     manager.toggle()
     isEnabled = manager.isEnabled
-    refreshTrigger = UUID()  // Force view refresh
+    refreshTrigger = UUID()  // Force view refresh — unnecessary once manager is @Observable
 }
 ```
 
-**Why:** `@State` is designed for value types (structs). Class reference changes don't trigger view updates.
-
-**Rule:** For class-backed state, use explicit `@State` properties that you manually update, or use `@Observable` properly.
+**Rule:** For class-backed state, mark the class `@Observable` rather than working around observation with manual refresh triggers.
 
 ---
 
-### 3. HSplitView Layout Bugs
+### 3. Split-Pane Choice: HSplitView vs. HStack + Divider
 
-**Problem:** Large empty spaces, content doesn't fill vertical space, unpredictable sizing.
+**Problem:** Picking the wrong split-pane primitive for the job — `HStack(spacing: 0)` with a
+fixed `.frame(width:)` doesn't give the user a draggable divider; `HSplitView`/`VSplitView`
+used for a genuinely fixed-width sidebar adds resize behavior nobody asked for.
+
+**Rule — this is a decision tree, not a default:**
+- **User-resizable panes** (draggable divider) → `HSplitView` (horizontal) or `VSplitView`
+  (vertical). Reference: Penumbra (`HSplitView`), Conjoyn (`VSplitView`).
+- **Fixed-width sidebar / non-resizable layout** → `HStack(spacing: 0)` with an explicit
+  sidebar width and an optional `Divider()`. Reference: CropBatch.
 
 ```swift
-// BROKEN: HSplitView on macOS has quirks
+// User-resizable: draggable divider
 HSplitView {
     SidebarView()
     ContentView()
 }
 
-// WORKS: Manual layout with dividers
+// Fixed-width: no draggable divider
 HStack(spacing: 0) {
     SidebarView()
-        .frame(width: sidebarWidth)
+        .frame(width: sidebarWidth)   // fixed, not minWidth
 
     Divider()
 
@@ -81,9 +116,10 @@ HStack(spacing: 0) {
 }
 ```
 
-**Why:** `HSplitView` on macOS doesn't properly fill vertical space in all configurations.
-
-**Rule:** Prefer `HStack` + `Divider()` for predictable macOS layouts.
+**Why it matters:** using `HStack` for a pane that should resize removes the drag handle users
+expect; using `HSplitView` for a pane that should stay fixed adds unwanted resize affordance.
+Pick the branch that matches the actual interaction, not habit. See `cookbook/00-app-shell.md`
+§5 and `cookbook/01-window-layouts.md` for the full decision tree and code patterns.
 
 ---
 
@@ -378,8 +414,8 @@ If values are wrong → Logic bug, trace the data flow.
 | Issue | Symptom | Fix |
 |-------|---------|-----|
 | Nested mutation | UI doesn't update | Reassign parent property |
-| @State + class | Buttons stuck | Use explicit @State + refreshTrigger |
-| HSplitView | Layout gaps | Use HStack + Divider |
+| @State + class | Buttons stuck | Mark the class `@Observable` |
+| Split-pane choice | Wrong resize affordance | HSplitView/VSplitView if resizable, HStack + Divider if fixed |
 | PreferenceKey conditional | Sizing breaks | Always use max(value, nextValue()) |
 | .clipped() | Overlay escapes | Use .clipShape(Rectangle()) |
 | Conditional view | Layout shifts | Use .overlay() + opacity, not if/ZStack |

@@ -22,7 +22,7 @@ Show all available Directions commands and system info.
 |---------|--------------|
 | `/interview` | Run the full discovery interview |
 | `/spec` | Create feature specification (mini-PRD) |
-| `/plan` | Create implementation plan with task waves |
+| `/make-plan` | Create implementation plan with task waves |
 | `/execute` | Wave-based parallel execution with fresh contexts |
 | `/example-map` | Example mapping for acceptance criteria |
 

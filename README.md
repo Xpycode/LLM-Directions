@@ -61,7 +61,7 @@ with the path to your local clone (the install script prints it).
    project-specific files: `docs/PROJECT_STATE.md` (the "is Directions set up?" sentinel),
    `docs/sessions/`, `docs/decisions.md`, `docs/glossary.md`. Nothing else is copied.
 2. Run `/interview` to create your first spec
-3. Run `/plan` to break into tasks, `/execute` to build
+3. Run `/make-plan` to break into tasks, `/execute` to build
 
 ### For Existing Projects (older copied-docs layout)
 
@@ -72,7 +72,7 @@ read-on-demand. Your project-specific files (state, sessions, decisions) are unt
 ### Core Workflow
 
 ```
-/interview  →  /plan  →  /execute  →  /reflect  →  /compound
+/interview  →  /make-plan  →  /execute  →  /reflect  →  /compound
     │            │           │            │            │
   Spec       Tasks       Build        Review      Learn
 ```
@@ -114,7 +114,7 @@ LLM-Directions/ (this repo — read on demand, never copied)
 | Command | Phase | Purpose |
 |---------|-------|---------|
 | `/interview` | Define | Multi-phase discovery, creates spec |
-| `/plan` | Plan | Creates IMPLEMENTATION_PLAN.md with waves |
+| `/make-plan` | Plan | Creates IMPLEMENTATION_PLAN.md with waves |
 | `/execute` | Build | Wave-based execution with subagents |
 | `/next` | Build | Pick next task with full context |
 | `/reflect` | Review | Multi-perspective code review |

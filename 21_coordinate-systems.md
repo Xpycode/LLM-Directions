@@ -52,10 +52,10 @@ let pointWidth = CGFloat(cgImage.width) / scaleFactor
 let pointHeight = CGFloat(cgImage.height) / scaleFactor
 
 // Get scale factor from NSImage
-let scaleFactor = nsImage.representations.first?.pixelsWide ?? 1
-                  / Int(nsImage.size.width)
-// Or assume 2x for Retina
-let scaleFactor: CGFloat = 2.0
+let pixelsWide = nsImage.representations.first?.pixelsWide ?? Int(nsImage.size.width)
+let scaleFactor = CGFloat(pixelsWide) / nsImage.size.width
+// Or assume 2x for Retina:
+// let scaleFactor: CGFloat = 2.0
 ```
 
 ### Real Bug Example (CropBatch)
@@ -148,12 +148,23 @@ let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil)
 
 ```swift
 // CORRECT: Apply EXIF orientation before processing
-func normalizedCGImage(from nsImage: NSImage) -> CGImage? {
-    // Create a bitmap context with the correct orientation
-    let rect = CGRect(origin: .zero, size: nsImage.size)
-    return nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil)
-    // Or use CIImage which handles orientation:
-    // CIImage(cgImage: cgImage).oriented(forExifOrientation: orientation)
+func normalizedCGImage(from url: URL) -> CGImage? {
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+          let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil) else {
+        return nil
+    }
+
+    let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
+    let rawOrientation = properties?[kCGImagePropertyOrientation] as? UInt32 ?? 1
+    let orientation = CGImagePropertyOrientation(rawValue: rawOrientation) ?? .up
+
+    guard orientation != .up else { return cgImage }
+
+    // CIImage applies the orientation transform to pixel data (not just metadata),
+    // then we re-render into a new CGImage that reflects the correct rotation.
+    let ciImage = CIImage(cgImage: cgImage).oriented(orientation)
+    let context = CIContext()
+    return context.createCGImage(ciImage, from: ciImage.extent)
 }
 ```
 

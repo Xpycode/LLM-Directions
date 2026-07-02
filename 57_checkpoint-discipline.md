@@ -163,7 +163,7 @@ release/v0.1.0-rc1
 /interview complete
     └── git tag phase/define-complete
 
-/plan complete
+/make-plan complete
     └── git tag phase/plan-approved
 
 /execute wave 1 complete
@@ -208,13 +208,19 @@ Add to your workflow:
 
 ```bash
 # Checkpoint before phase transition
-alias phase-checkpoint='git tag -a phase/$(date +%Y%m%d)-$1'
+phase-checkpoint() {
+    git tag -a "phase/$(date +%Y%m%d)-$1" -m "${2:-Phase checkpoint}"
+}
 
 # Quick safety checkpoint
-alias safe-checkpoint='git tag safe/before-$(date +%Y%m%d-%H%M)'
+safe-checkpoint() {
+    git tag "safe/before-$(date +%Y%m%d-%H%M)"
+}
 
 # List recent checkpoints
-alias checkpoints='git tag -l --sort=-creatordate | head -10'
+checkpoints() {
+    git tag -l --sort=-creatordate | head -10
+}
 ```
 
 ---

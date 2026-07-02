@@ -452,4 +452,4 @@ And on a *single* Mac there's a fourth, orthogonal trap (Rule 5): two Claude ses
 
 ---
 
-*Related: `27_mcp-gotchas.md` (MCP / Syncthing umbrella-cwd pattern — same per-machine-state class), `28_xcode-signing-and-sourcekit.md` (per-machine `Debug.local.xcconfig` pattern — Rule 2 in concrete form), `32_git-workflow.md` (git baseline conventions).*
+*Related: `27_mcp-gotchas.md` (MCP / Syncthing umbrella-cwd pattern — same per-machine-state class), `28_xcode-signing-and-sourcekit.md` (per-machine `Debug.local.xcconfig` pattern — Rule 2 in concrete form), `32_git-workflow.md` (git baseline conventions — its "never commit to main" rule is scoped to application code; docs repos, including this one, commit straight to `main` as their normal workflow, which is what Rule 1's commit-before-you-walk-away discipline above assumes).*

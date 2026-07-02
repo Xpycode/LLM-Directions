@@ -89,7 +89,7 @@ Spec created: specs/[feature-name].md
 Next steps:
 1. Review and refine acceptance criteria
 2. Resolve open questions
-3. Run /plan to create implementation tasks
+3. Run /make-plan to create implementation tasks
 ```
 
 Update `PROJECT_STATE.md` with spec reference.

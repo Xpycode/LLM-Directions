@@ -88,7 +88,7 @@ npm install -g @beads/bd
 | `PROJECT.md` | Project vision and constraints |
 | `ROADMAP.md` | Phases and milestones |
 | `STATE.md` | Current progress |
-| `PLAN.md` | Structured tasks |
+| `IMPLEMENTATION_PLAN.md` | Structured tasks |
 | `SUMMARY.md` | Committed outcomes |
 | `ISSUES.md` | Deferred work |
 

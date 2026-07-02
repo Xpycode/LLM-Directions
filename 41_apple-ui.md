@@ -330,12 +330,14 @@ Common values: 10pt (buttons), 12pt (cards), 20pt+ (sheets)
 
 These preferences apply to all projects unless explicitly overridden in project CLAUDE.md.
 
-### 1. No Tahoe Sidebar
+### 1. No Tahoe Sidebar in the Primary Window
 
-Do **not** use `NavigationSplitView` or the macOS Tahoe liquid glass sidebar style. These create opinionated navigation that's hard to customize and introduces platform-version coupling.
+Do **not** use `NavigationSplitView` or the macOS Tahoe liquid glass sidebar style **for the
+primary app window**. These create opinionated navigation that's hard to customize and
+introduces platform-version coupling.
 
 ```swift
-// ❌ AVOID
+// ❌ AVOID in the primary app window
 NavigationSplitView {
     SidebarContent()
 } detail: {
@@ -346,12 +348,23 @@ NavigationSplitView {
 .navigationSplitViewStyle(.prominentDetail)
 ```
 
-### 2. HStack + Divider Panes
+**Exception:** `NavigationSplitView` is acceptable in a **secondary utility window** (e.g. a
+Help window), where the stock navigation chrome is fine and the platform-version coupling
+doesn't affect the app's primary identity. See `cookbook/01-window-layouts.md`.
 
-Use `HStack(spacing: 0)` with `Divider()` for split layouts. This gives full control over widths, collapse behavior, and avoids `HSplitView` layout bugs (see `20_swiftui-gotchas.md` gotcha #3).
+For the primary window, use the split-pane decision tree instead (see `cookbook/00-app-shell.md`
+§5 and `cookbook/01-window-layouts.md`): `HSplitView`/`VSplitView` for user-resizable panes,
+`HStack` + `Divider()` for a fixed-width sidebar.
+
+### 2. HStack + Divider Panes — the Fixed-Width Branch
+
+`HStack(spacing: 0)` with `Divider()` is the **fixed-width / non-resizable** branch of the
+split-pane decision tree — use it when the sidebar has no draggable divider. It gives full
+control over widths and collapse behavior. For a **resizable** pane (draggable divider), use
+`HSplitView`/`VSplitView` instead — see `cookbook/00-app-shell.md` §5.
 
 ```swift
-// ✅ PREFERRED
+// ✅ Fixed-width sidebar (no draggable divider)
 HStack(spacing: 0) {
     SidebarContent()
         .frame(width: sidebarWidth)
@@ -363,10 +376,10 @@ HStack(spacing: 0) {
 }
 ```
 
-For three-column layouts:
+For three-column fixed layouts:
 
 ```swift
-// ✅ PREFERRED
+// ✅ Fixed-width three-column layout
 HStack(spacing: 0) {
     NavigationPane()
         .frame(width: navWidth)

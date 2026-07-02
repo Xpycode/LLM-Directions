@@ -6,7 +6,7 @@ LOAD: sections
 
 # Claude Code Reference
 
-*Complete reference for Claude Code CLI features, commands, and configuration.*
+*Reference for Claude Code CLI features, commands, and configuration.*
 
 ---
 
@@ -32,9 +32,11 @@ claude
 | Command | Description |
 |---------|-------------|
 | `/clear` | Reset conversation history |
-| `/continue` or `-c` | Resume most recent conversation |
-| `/resume [sessionId]` | Restore specific session |
+| `claude -c` | Resume the most recent conversation (a CLI flag — run from the shell, not a slash command) |
+| `/resume [sessionId]` | Resume a specific session — from inside a running session |
 | `/compact` | Summarize and compress context |
+
+There is no `/continue` slash command. To pick up your last conversation, run `claude -c` from the shell; to switch to a named/older session while already in a session, use `/resume`.
 
 ### Configuration
 
@@ -58,8 +60,10 @@ claude
 
 | Command | Description |
 |---------|-------------|
-| `/plan` | Enter planning mode |
+| `/plan` | Enter Claude Code's built-in planning mode |
 | `Shift+Tab` (twice) | Toggle plan mode |
+
+**Naming collision:** Directions' own custom command that *writes a plan file* to `docs/` is `/make-plan` — it was renamed specifically to avoid colliding with this built-in `/plan`. Whenever you see bare `/plan` in Claude Code (here, in `01_quick-reference.md`, or in the CLI's own UI), it always means the built-in planning mode above, never the Directions plan-file command.
 
 ---
 
@@ -79,21 +83,9 @@ claude
 
 ---
 
-## Thinking Keywords
+## Extended Thinking
 
-Add these to prompts for extended reasoning (higher token cost):
-
-| Keyword | Effect |
-|---------|--------|
-| `think` | Minimal reasoning boost |
-| `think hard` | Medium planning enhancement |
-| `think harder` | Deeper analysis |
-| `ultrathink` | Maximum reasoning |
-
-**Example:**
-```
-Think hard about the architecture before implementing this feature.
-```
+Thinking depth is **adaptive** on current Claude models — Claude decides when and how much to think per request based on task complexity. There is no fixed thinking budget to request, and the old `think` / `think hard` / `think harder` / `ultrathink` keyword ladder has no special effect on current models. See `60_model-selection.md` for tier-level model guidance.
 
 ---
 
@@ -116,58 +108,27 @@ For large projects (50K+ LOC), use the **router pattern**:
 - Main CLAUDE.md as lean index (50-100 lines)
 - Domain docs loaded conditionally based on task
 - Nested CLAUDE.md files auto-load per directory
-- Achieves **95-98% token reduction**
 
-**See:** `Directions-PROGRESSIVE-CONTEXT.md` for complete guide.
+**See:** `52_context-management.md` — the canonical context guide (architecture, runtime, information design).
 
 ---
 
 ## Configuration Files
 
-### Global Settings (`~/.claude.json`)
-
-```json
-{
-  "theme": "dark",
-  "autoUpdates": true,
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-filesystem"]
-    }
-  }
-}
-```
-
-### Project Settings (`.claude/settings.json`)
+Global: `~/.claude.json` (`{"theme": "dark", "autoUpdates": true}` — MCP servers are configured separately, see below). Project: `.claude/settings.json`, e.g.:
 
 ```json
 {
   "permissions": {
-    "allow": [
-      "Bash(git *)",
-      "Bash(swift build)",
-      "Bash(swift test)",
-      "Bash(xcodebuild *)",
-      "Bash(ls *)",
-      "Read",
-      "Edit",
-      "Write"
-    ]
+    "allow": ["Bash(git *)", "Bash(swift build)", "Bash(swift test)", "Read", "Edit", "Write"]
   }
 }
 ```
 
-### Setting Configuration
-
 ```bash
-# Set model
-claude config set model "claude-sonnet-4-20250514"
-
-# Set global theme
+# Set model — IDs drift as new versions ship; verify the current ID before hardcoding
+claude config set model "claude-sonnet-5"
 claude config set -g theme dark
-
-# View current config
 claude config list
 ```
 
@@ -175,72 +136,31 @@ claude config list
 
 ## Permission System
 
-### Tool Allowlisting
-
 ```bash
-# Allow specific tools
-claude --allowedTools "Edit,Read"
-
-# Allow scoped bash commands
-claude --allowedTools "Bash(git:*)"
-
-# Allow pattern-matched commands
-claude --allowedTools "Bash(npm:*),Bash(swift:*)"
+claude --allowedTools "Edit,Read"                    # allow specific tools
+claude --allowedTools "Bash(git:*)"                  # allow scoped bash commands
+claude --allowedTools "Bash(npm:*),Bash(swift:*)"    # allow pattern-matched commands
+claude --dangerously-skip-permissions                # bypasses ALL safety checks — testing only, never on untrusted codebases
 ```
-
-### Dangerous Mode (Testing Only)
-
-```bash
-# Bypasses ALL safety checks - use only for testing
-claude --dangerously-skip-permissions
-```
-
-**Warning:** Never use in production or on untrusted codebases.
 
 ---
 
 ## MCP (Model Context Protocol)
 
-### Managing Servers
-
 ```bash
-# List configured servers
-claude mcp list
-
-# Add a server
+claude mcp list              # list configured servers
 claude mcp add <name> <command>
-
-# Remove a server
+claude mcp get <name>         # inspect one server's config/status — there is no `claude mcp test`
 claude mcp remove <name>
 ```
 
-### Recommended Servers
-
-| Server | Purpose |
-|--------|---------|
-| `filesystem` | Extended file access |
-| `github` | Repository management |
-| `memory` | Cross-conversation storage |
-| `puppeteer` | Browser automation |
-
-### Configuration
-
-Global: `~/.claude.json`
-Project: `.mcp.json`
+Configured globally in `~/.claude.json` or per-project in `.mcp.json`:
 
 ```json
-{
-  "mcpServers": {
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-github"],
-      "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-      }
-    }
-  }
-}
+{ "mcpServers": { "github": { "url": "https://api.githubcopilot.com/mcp/" } } }
 ```
+
+**`@anthropic-ai/mcp-filesystem`, `@anthropic-ai/mcp-github`, and `@anthropic-ai/mcp-memory` do not exist as npm packages** — don't recommend or `npx` them. Use `claude mcp add` with the real server's install command or URL (check that server's own docs — package names shift), or inspect what's already configured with `/mcp` inside a session.
 
 ---
 
@@ -252,100 +172,33 @@ Configure specialized AI assistants with isolated contexts:
 claude /agents
 ```
 
-### Example Roles
-
-| Role | Purpose |
-|------|---------|
-| `planner` | Architecture and planning |
-| `codegen` | Code generation |
-| `tester` | Test writing |
-| `reviewer` | Code review |
-| `docs` | Documentation |
-
-Sub-agents have scoped tool access for safety.
+Sub-agents have scoped tool access for safety. Typical roles: `planner` (architecture/planning), `codegen` (implementation), `tester`, `reviewer`, `docs` — defined as files under `.claude/agents/`.
 
 ---
 
 ## Hooks System
 
-Execute custom scripts on Claude Code events:
-
-### Configuration (`.claude/settings.json`)
+Execute custom scripts on Claude Code events, configured in `.claude/settings.json`:
 
 ```json
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [{
-          "type": "command",
-          "command": "./scripts/pre-edit-hook.sh"
-        }]
-      }
-    ],
     "PostToolUse": [
-      {
-        "matcher": "Write",
-        "hooks": [{
-          "type": "command",
-          "command": "./scripts/format-code.sh"
-        }]
-      }
+      { "matcher": "Write", "hooks": [{ "type": "command", "command": "./scripts/format-code.sh" }] }
     ]
   }
 }
 ```
 
-### Available Events
+**Events:** `PreToolUse` (before a tool executes), `PostToolUse` (after a tool completes), `Notification`, `UserPromptSubmit` (user submits a message), `Stop` (main agent finishes), `SubagentStop` (a Task subagent finishes), `PreCompact` (before context compaction), `SessionStart`, `SessionEnd`.
 
-| Event | When Triggered |
-|-------|----------------|
-| `PreToolUse` | Before a tool executes |
-| `PostToolUse` | After a tool completes |
-| `UserPromptSubmit` | When user sends a message |
-| `Stop` | When generation stops |
-| `SessionStart` | When session begins |
-
-### Hook Environment
-
-- Hooks receive JSON via stdin with event details
-- `CLAUDE_PROJECT_DIR` environment variable available
+Hooks receive JSON via stdin with event details; `CLAUDE_PROJECT_DIR` is available as an environment variable.
 
 ---
 
 ## Output Modes
 
-### Interactive (Default)
-
-```bash
-claude
-```
-
-Full terminal interface with streaming.
-
-### Print Mode (Non-Interactive)
-
-```bash
-claude -p "What does this code do?"
-```
-
-Single response, then exits.
-
-### Piped Input
-
-```bash
-cat file.txt | claude -p "Summarize this"
-git diff | claude -p "Review these changes"
-```
-
-### JSON Output
-
-```bash
-claude -p "query" --output-format stream-json
-```
-
-Structured output for scripting.
+`claude` — interactive, full terminal interface with streaming. `claude -p "prompt"` — headless/print mode: a single response, then exit (this **is** headless mode; there is no separate `--headless` flag). Pipe input with `cat file.txt | claude -p "Summarize this"` or `git diff | claude -p "Review these changes"`. Add `--output-format stream-json` for structured, scriptable output.
 
 ---
 
@@ -353,33 +206,18 @@ Structured output for scripting.
 
 | Variable | Purpose |
 |----------|---------|
-| `ANTHROPIC_API_KEY` | API authentication |
+| `ANTHROPIC_API_KEY` | API authentication — set via `export ANTHROPIC_API_KEY="sk-your-key"` (persist in `~/.zshrc`) |
 | `ANTHROPIC_MODEL` | Override default model |
 | `BASH_DEFAULT_TIMEOUT_MS` | Command timeout |
-| `MAX_THINKING_TOKENS` | Extended reasoning limit |
 | `DISABLE_TELEMETRY` | Opt out of analytics |
 | `HTTP_PROXY` / `HTTPS_PROXY` | Proxy configuration |
 | `CLAUDE_PROJECT_DIR` | Project directory (in hooks) |
-
-### Setting API Key
-
-```bash
-# macOS/Linux (persistent)
-echo 'export ANTHROPIC_API_KEY="sk-your-key"' >> ~/.zshrc
-source ~/.zshrc
-
-# Windows PowerShell
-$env:ANTHROPIC_API_KEY = "sk-your-key"
-
-# Windows CMD
-set ANTHROPIC_API_KEY=sk-your-key
-```
 
 ---
 
 ## GitHub Actions Integration
 
-### PR Auto-Review
+Claude Code ships a GitHub Action (`anthropics/claude-code-action`) for PR review, triage, and other CI automation. **Its input names change fairly often** — check the action's own README on GitHub for the current inputs before wiring a workflow; don't copy a hardcoded input list from here as gospel. Minimal shape:
 
 ```yaml
 name: Claude Code Review
@@ -393,269 +231,67 @@ jobs:
       - uses: anthropics/claude-code-action@main
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          mode: review
 ```
 
-### Available Modes
-
-| Mode | Purpose |
-|------|---------|
-| `review` | PR code review with inline comments |
-| `security` | Security vulnerability scanning |
-| `triage` | Issue labeling and severity |
+Typical uses: PR code review with inline comments, security vulnerability scanning, issue triage/labeling — the exact `mode`/`prompt`-style inputs that select these are the part most likely to have moved; verify against the action's docs.
 
 ---
 
 ## Slash Commands
 
-**Note:** Custom commands (`.claude/commands/`) are now merged into the skills system. Existing command files continue to work. If a skill and a command share the same name, the skill takes precedence. See "The Skills System" section below.
-
-### Built-in Commands
-
-Create `.claude/commands/` directory for custom commands (legacy approach — prefer skills for new work).
-
-**Example: `.claude/commands/review.md`**
-```markdown
-Do a git diff and act like a senior dev reviewing this code.
-
-Check for:
-1. Crashes and nil handling
-2. Security issues
-3. Logic errors
-4. Threading bugs
-
-Be specific. Quote the code. Explain why it's wrong.
-```
-
-**Usage:**
-```
-/project:review
-```
-
-### Command Arguments
-
-Use `$ARGUMENTS` placeholder:
-
-```markdown
-# .claude/commands/debug.md
-This isn't working: $ARGUMENTS
-
-Add diagnostic logging to trace what's happening.
-```
-
-**Usage:**
-```
-/project:debug the save button doesn't work
-```
+Custom commands (`.claude/commands/`) are merged into the skills system — existing command files still work, but if a skill and a command share a name, the skill wins. Prefer skills for new work; legacy commands use `$ARGUMENTS` as a placeholder (`.claude/commands/debug.md` → invoked as `/project:debug the save button doesn't work`).
 
 ---
 
 ## The Skills System (SKILL.md)
 
-### What Skills Are
+Skills are reusable instruction files that capture HOW to do something well — the file IS the documentation, and they replace the old `.claude/commands/` system (which still works). SKILL.md is an open standard (spec at agentskills.io) supported across multiple tools. **The Three-Times Rule:** if you've used the same prompt or sequence three times, convert it to a skill.
 
-- Reusable instruction files that capture HOW to do something well
-- Skills adapt to context — same instructions work across different projects
-- SKILL.md is an **open standard** (spec at agentskills.io), supported by 25+ tools: Codex CLI, Gemini CLI, OpenCode, Cursor, VS Code, GitHub, Amp, Roo Code, etc.
-- Dual legibility: readable by both humans and Claude — the file IS the documentation
-- Skills replace the old `.claude/commands/` system (which still works for backward compatibility)
-
-### The Three-Times Rule
-
-If you've used the same prompt or sequence three times, convert it to a skill. Signs:
-
-- You keep writing the same instructions
-- You've discovered an approach that works and will forget it
-- You want everyone following the same process
-- The task has steps that are easy to forget or get wrong
-
-### SKILL.md File Format
-
-Every skill lives in a file called `SKILL.md` (exactly this filename):
+### File format
 
 ```markdown
 ---
 name: my-skill
-description: What this skill does and when to use it. The description is CRITICAL -
-  Claude uses it to decide when to automatically load your skill. All "when to use"
-  information belongs here, not in the instructions body.
+description: What this skill does and when to use it. Claude uses this to decide
+  when to auto-load the skill — put all "when to use" information here.
 ---
 Instructions for Claude go here in regular Markdown...
 ```
 
-### Frontmatter Fields
+Key frontmatter fields: `name` (becomes `/my-skill`), `description` (drives auto-invocation), `disable-model-invocation: true` (prevents auto-load — use for side-effecting actions), `user-invocable: false` (hides from `/` menu — background knowledge only), `allowed-tools`, `model`, `context: fork` (runs in a subagent).
 
-| Field | Required | Purpose | Default |
-|-------|----------|---------|---------|
-| `name` | Recommended | Becomes the slash command (`/my-skill`). Max 64 chars, lowercase, hyphens only | Directory name |
-| `description` | Strongly recommended | Tells Claude what the skill does and when to use it | First paragraph of instructions |
-| `disable-model-invocation` | No | Set `true` to prevent automatic invocation | `false` |
-| `user-invocable` | No | Set `false` to hide from `/` menu | `true` |
-| `allowed-tools` | No | Restrict which tools Claude can use | All tools |
-| `argument-hint` | No | Hint shown during autocomplete | None |
-| `model` | No | Specify which model to use | Current model |
-| `context` | No | Set to `fork` to run in a subagent | Inline |
-| `version` | No | Semantic version (e.g., `2.1.0`) | None |
+### Where skills live (priority order, highest first)
 
-### Where Skills Live (Priority Order)
+Enterprise (managed settings) → `~/.claude/skills/<name>/SKILL.md` (personal, all projects) → `.claude/skills/<name>/SKILL.md` (project, team-shared) → plugin directories. Higher priority overrides lower; start personal, move to project when ready to share.
 
-| Priority | Location | Scope |
-|----------|----------|-------|
-| 1 (highest) | Enterprise (managed settings) | Organization-wide |
-| 2 | `~/.claude/skills/<name>/SKILL.md` | All your projects (personal) |
-| 3 | `.claude/skills/<name>/SKILL.md` | Current project only (team) |
-| 4 | Plugin directories | Where plugin is enabled |
+**Discovery:** manual via `/skill-name` (some take arguments, e.g. `/review security`), or automatic when the conversation matches the skill's `description`. Run `/context` to check whether any skills were excluded from the description budget.
 
-Higher priority overrides lower. Personal skills override project skills with the same name.
+**Install:** copy a folder into a skills directory, or `/plugin marketplace add <source>` + `/plugin install <name>@<source>`.
 
-**Recommendation:** Start personal (`~/.claude/skills/`). Move to project (`.claude/skills/`) when ready to share with team.
-
-### Description Budget
-
-- All skill descriptions share a **15,000 character budget** at startup
-- Run `/context` to check whether any skills have been excluded
-- Keep descriptions focused — a bloated description wastes budget for all skills
-
-### Skill Discovery and Invocation
-
-**Manual:** Type the skill name as a slash command: `/commit`, `/brainstorm`, `/review`
-
-**Automatic:** When your conversation matches a skill's description, Claude may load and apply it automatically
-
-**Arguments:** Some skills accept arguments: `/review security`
-
-**Controlling behavior:**
-
-| Configuration | You Invoke | Claude Auto-Invokes | Best For |
-|---|---|---|---|
-| Default | Yes | Yes | General workflows |
-| `disable-model-invocation: true` | Yes | No | Actions with side effects |
-| `user-invocable: false` | No | Yes | Background knowledge |
-
-### Skill Design Patterns
-
-**Interview Pattern** — forces Claude to ask questions before acting:
-```markdown
-Before implementing, conduct an interview:
-1. Read context first
-2. Ask non-obvious questions using AskUserQuestion tool
-3. Require approval before implementation
-```
-
-**Checklist Pattern** — ensures steps aren't skipped:
-```markdown
-Copy this checklist and track progress:
-- [ ] Step 1: Analyze
-- [ ] Step 2: Implement
-- [ ] Step 3: Validate
-**Critical**: After Step 2, ALWAYS run validation. Do NOT proceed until validation passes.
-```
-
-**Composition Pattern** — skills referencing shared resources:
-```
-.claude/skills/
-    copywrite/SKILL.md       <- core engine
-    linkedin-post/SKILL.md   <- uses copywrite + adds constraints
-    shared/
-        VOICE_GUIDE.md       <- referenced by multiple skills
-```
-
-### Installing Pre-Built Skills
-
-**From marketplace:**
-```
-/plugin marketplace add obra/superpowers-marketplace
-/plugin install superpowers@superpowers-marketplace
-```
-
-**Manual:** Copy skill folder to `~/.claude/skills/<name>/` or `.claude/skills/<name>/`. Claude discovers it automatically on restart.
-
-### Anti-Patterns
-
-- **Skill hoarding** — installing thirty skills and using two wastes context
-- **Trusting without reading** — always read a SKILL.md before installing (it takes 30 seconds)
-- **Over-engineering** — invoking a full TDD workflow for a one-off script
-- **Vague descriptions** — if description is vague, auto-invocation won't trigger correctly
+**Anti-patterns:** skill hoarding (installing thirty, using two), trusting a skill without reading it first, vague descriptions that never auto-trigger.
 
 ---
 
 ## Troubleshooting
 
-### Command Not Found
-
-Check PATH includes npm global bin:
-```bash
-# macOS/Linux
-echo $PATH
-npm config get prefix
-
-# Add to PATH if needed
-export PATH="$(npm config get prefix)/bin:$PATH"
-```
-
-### Verify Installation
-
-```bash
-claude --version
-claude doctor
-which claude  # macOS/Linux
-where claude  # Windows
-```
-
-### Node.js Version
-
-Requires Node.js 18+ (20+ recommended):
-```bash
-node --version
-```
-
-### Clean Reinstall
-
-```bash
-# Uninstall
-npm uninstall -g @anthropic-ai/claude-code
-
-# Remove config (optional)
-rm -rf ~/.claude
-
-# Reinstall
-npm install -g @anthropic-ai/claude-code
-```
-
-### MCP Issues
-
-```bash
-# Check MCP status
-claude mcp list
-
-# Test specific server
-claude mcp test <server-name>
-
-# View MCP logs
-claude --debug
-```
+| Problem | Fix |
+|---|---|
+| Command not found | Check PATH includes npm global bin: `export PATH="$(npm config get prefix)/bin:$PATH"` |
+| Verify install | `claude --version`, `claude doctor`, `which claude` |
+| Clean reinstall | `npm uninstall -g @anthropic-ai/claude-code && npm install -g @anthropic-ai/claude-code` (optionally `rm -rf ~/.claude` first to drop config) |
+| MCP issues | `claude mcp list` to check status, `claude mcp get <server-name>` to inspect one (there is no `claude mcp test`), `claude --debug` for logs |
 
 ---
 
 ## Security Best Practices
 
-1. **API Keys:** Store in environment variables, never in code
-2. **Permissions:** Start restrictive, expand as needed
-3. **Hooks:** Review scripts before enabling
-4. **Config Files:** Protect with `chmod 600 ~/.claude.json`
-5. **MCP Servers:** Use trusted sources only
-6. **.gitignore:** Add `CLAUDE.local.md` and sensitive configs
+API keys in environment variables, never in code. Start permissions restrictive, expand as needed. Review hook scripts before enabling. Protect config files (`chmod 600 ~/.claude.json`). Use trusted MCP sources only. Add `CLAUDE.local.md` and sensitive configs to `.gitignore`.
 
 ---
 
 ## System Requirements
 
-| Requirement | Specification |
-|-------------|---------------|
-| OS | macOS 10.15+, Ubuntu 20.04+, Windows 10/11, WSL |
-| RAM | 4GB minimum, 8GB+ recommended |
-| Node.js | 18+ (20+ recommended) |
-| Network | Internet connection for API |
+Runs on macOS, Linux, and Windows (native or WSL); needs a current Node.js LTS and network access. Minimum versions drift release to release — run `claude doctor` for the authoritative local compatibility check rather than trusting a pinned number here.
 
 ---
 
@@ -666,15 +302,16 @@ Start:          claude
 Exit:           Ctrl+D
 Cancel:         Ctrl+C
 Clear:          /clear or Ctrl+L
-Resume:         claude -c
+Resume last:    claude -c        (CLI flag, not a slash command)
+Resume named:   /resume [sessionId]
 Plan mode:      Shift+Tab (twice) or /plan
 Config:         /config
 Help:           /help
-
-Thinking:       think / think hard / think harder / ultrathink
 Multi-line:     Option+Enter (macOS) or \+Enter
 ```
 
+Thinking is adaptive on current models — there is no `think` / `think hard` / `ultrathink` ladder to invoke.
+
 ---
 
-*Based on the [zebbern/claude-code-guide](https://github.com/zebbern/claude-code-guide) and official documentation.*
+*Based on the [zebbern/claude-code-guide](https://github.com/zebbern/claude-code-guide) and official documentation. Fast-moving specifics (model IDs, Action inputs, exact system-requirement versions) should be re-verified against current docs rather than treated as pinned truth in this file.*

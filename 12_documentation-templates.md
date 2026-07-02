@@ -192,8 +192,8 @@ We will post any changes to this policy on this page with an updated date.
 
 > One-line description of what this does.
 
-[![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-blue)]()
-[![Swift](https://img.shields.io/badge/swift-5.9-orange)]()
+[![Platform](https://img.shields.io/badge/platform-macOS-blue)]()  <!-- version per-app, see 14_project-identity.md -->
+[![Swift](https://img.shields.io/badge/swift-6.0-orange)]()
 [![License](https://img.shields.io/badge/license-MIT-green)]()
 
 ## Why This Tool Exists
@@ -228,7 +228,7 @@ open Project.xcodeproj
 
 ## Requirements
 
-- macOS 14.0 (Sonoma) or later
+- macOS [minimum version] or later — per-app target, see `14_project-identity.md`
 - [Any additional requirements]
 
 ## Installation
@@ -392,8 +392,8 @@ xcodebuild test -scheme ProjectName
 
 ## Tech Stack
 
-- Swift 5.9 / SwiftUI
-- Minimum: macOS 14.0
+- Swift / SwiftUI — per-app target, see `14_project-identity.md` (Swift 6.0 baseline)
+- Minimum: macOS — per-app, see `14_project-identity.md`
 - Architecture: MVVM with Actors
 - Persistence: JSON files
 

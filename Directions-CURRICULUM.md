@@ -1,3 +1,5 @@
+> **Human reading only — do NOT load into Claude sessions.**
+
 # Prompt Developer Curriculum
 
 **A progressive path from first app to production workflow.**
@@ -520,32 +522,25 @@ Do a project health check:
 - Create custom hooks for automation
 - Optimize workflow with thinking keywords
 
-### Lesson 6.1: Thinking Keywords
+### Lesson 6.1: Extended Thinking (Adaptive)
 
-**Concept:** Extended reasoning produces better results for complex tasks.
+**Concept:** Current Claude models think **adaptively** — Claude decides when and how much to
+reason based on task complexity. There is no keyword ladder to invoke and no fixed thinking budget
+to request; the old `think` / `think hard` / `think harder` / `ultrathink` keywords have no special
+effect on current models.
 
 **Exercise:**
-1. Take a complex architectural question
-2. Ask it with different thinking levels:
+1. Take a complex architectural question and ask it plainly, stating the constraints that matter:
    ```
-   // Normal
    How should I structure authentication?
-
-   // With thinking
-   Think hard about how I should structure authentication.
    Consider security, maintainability, and edge cases.
    ```
-3. Compare the depth of responses
+   Clear problem framing — not a magic word — is what elicits deeper reasoning.
+2. For genuinely hard problems, reach for a more capable **model tier** rather than a keyword
+   (see `60_model-selection.md`).
 
-**Thinking Levels:**
-| Keyword | Use For |
-|---------|---------|
-| `think` | Quick clarifications |
-| `think hard` | Architecture decisions |
-| `think harder` | Complex debugging |
-| `ultrathink` | Security review, critical code |
-
-**Milestone:** You've used thinking keywords to get deeper analysis.
+**Milestone:** You understand that thinking is adaptive — you shape depth with clear framing and
+model-tier choice, not keywords.
 
 ### Lesson 6.2: Memory Hierarchy
 
@@ -592,25 +587,23 @@ Enterprise → User → Project → Local
    claude mcp list
    ```
 
-2. Add a useful server:
+2. Add a useful server (package names and availability shift — check the server's own docs
+   before copying; there are no `@anthropic-ai/mcp-*` packages):
    ```bash
-   # GitHub integration
-   claude mcp add github npx @anthropic-ai/mcp-github
+   # Cross-session memory (reference server under @modelcontextprotocol)
+   claude mcp add memory npx @modelcontextprotocol/server-memory
 
-   # Or memory for cross-session storage
-   claude mcp add memory npx @anthropic-ai/mcp-memory
+   # Local filesystem access, scoped to a directory
+   claude mcp add fs npx @modelcontextprotocol/server-filesystem /path/to/dir
    ```
 
 3. Configure in project (`.mcp.json`):
    ```json
    {
      "mcpServers": {
-       "github": {
+       "memory": {
          "command": "npx",
-         "args": ["-y", "@anthropic-ai/mcp-github"],
-         "env": {
-           "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-         }
+         "args": ["-y", "@modelcontextprotocol/server-memory"]
        }
      }
    }
@@ -634,13 +627,14 @@ Enterprise → User → Project → Local
            "matcher": "Write",
            "hooks": [{
              "type": "command",
-             "command": "swift-format format --in-place $FILE"
+             "command": "jq -r '.tool_input.file_path' | xargs swift-format format --in-place"
            }]
          }
        ]
      }
    }
    ```
+   Hook commands receive a JSON payload on stdin (not environment variables like `$FILE`); pipe it through `jq` to extract the field you need, here `.tool_input.file_path`.
 
 2. Create a notification hook:
    ```json
@@ -672,7 +666,7 @@ Enterprise → User → Project → Local
 
    `.claude/commands/full-review.md`:
    ```markdown
-   Think hard about this code review.
+   Review this code thoroughly and systematically.
 
    1. Run git diff
    2. Check for thread safety issues

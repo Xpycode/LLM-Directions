@@ -26,7 +26,7 @@ LLMs fail in predictable ways. Knowing these patterns helps you:
 | Mode | What Happens | Signs | Mitigation |
 |------|--------------|-------|------------|
 | **Context Drift** | Information shifts meaning across conversation | Earlier decisions forgotten, contradictory statements, "didn't we decide X?" | Anchor with files. Summarize decisions. Use PROJECT_STATE.md. |
-| **Memory Coherence Loss** | Facts/relationships forgotten mid-session | Reintroducing already-discussed patterns, forgetting file locations, repeated questions | Reference files explicitly. Keep context under 60%. Spawn subagents. |
+| **Memory Coherence Loss** | Facts/relationships forgotten mid-session | Reintroducing already-discussed patterns, forgetting file locations, repeated questions | Reference files explicitly. Watch the context zone table (`52_context-management.md`). Spawn subagents. |
 | **System Prompt Drift** | Core instructions overridden by conversation | Behavioral changes, ignoring established patterns, style shifts | Re-anchor to CLAUDE.md. Explicit reminders. Fresh session if severe. |
 | **Entropy Collapse** | Quality degrades as complexity increases | Increasingly vague responses, "let me know if you need more", incomplete implementations | Break into smaller tasks. Fresh context for each. Wave-based execution. |
 
@@ -112,7 +112,7 @@ What could make this conclusion wrong?
 4. Assume model is wrong about version-specific features
 
 ### For Context Degradation
-1. Keep context under 60% capacity
+1. Follow the context-threshold zone table in `52_context-management.md`
 2. Use files as external memory
 3. Spawn subagents for heavy implementation
 4. Summarize don't duplicate
@@ -163,7 +163,7 @@ Output malformed?
 **Don't:**
 - Trust confident claims without verification
 - Continue when quality is degrading
-- Let context exceed 60% for complex tasks
+- Ignore the context zone table (`52_context-management.md`) for complex tasks
 - Rely on search for critical files
 - Accept "should work" without testing
 
@@ -179,7 +179,7 @@ Output malformed?
 | Metric | Threshold | Action |
 |--------|-----------|--------|
 | Semantic Drift (ΔS) | > 0.45 | Re-anchor to source files |
-| Context Usage | > 60% | Spawn subagent or fresh session |
+| Context Usage | Yellow zone or higher — see `52_context-management.md` zone table | Spawn subagent or fresh session |
 | Repeated Errors | > 2 same error | Change approach |
 | Contradictions | Any | Stop and clarify |
 | "Should work" claims | Any | Require proof |

@@ -1,23 +1,34 @@
 ## Window Layouts
 
-### 2-Column: NavigationSplitView (Sidebar + Detail)
+### Split-Pane Decision Tree (read this first)
 
-**Source:** `Directions/DirectionsFeature/Views/MainView.swift`
+Pick based on whether the divider is user-resizable — this is a decision tree, not a
+one-size-fits-all default:
+
+- **User-resizable panes** (draggable divider) → `HSplitView` (horizontal) or `VSplitView`
+  (vertical). This is the app-shell standard for the *main window* split when panes resize.
+  Reference: Penumbra (`HSplitView`), Conjoyn (`VSplitView`). See the examples below.
+- **Fixed-width sidebar / non-resizable layout** → `HStack(spacing: 0)` with an explicit
+  sidebar width and an optional `Divider()` for the visual seam. Reference: CropBatch. See
+  "Fixed-Width Sidebar: HStack + Divider" below.
+
+`NavigationSplitView` is **banned for the primary app window** (see `41_apple-ui.md`) — it
+creates opinionated, hard-to-customize navigation and couples the app to platform-version
+chrome. It is acceptable only in a **secondary utility window** (e.g. a Help window) where
+that stock navigation chrome is fine:
 
 ```swift
+// Acceptable ONLY in a secondary utility window, e.g. a Help window:
 NavigationSplitView(columnVisibility: $columnVisibility) {
-    SidebarView(
-        manager: manager,
-        searchText: $searchText
-    )
-    .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 350)
+    SidebarView(manager: manager, searchText: $searchText)
+        .navigationSplitViewColumnWidth(min: 200, ideal: 250, max: 350)
 } detail: {
     DetailView(manager: manager)
 }
 .navigationSplitViewStyle(.balanced)
 ```
 
-**Best for:** App navigation with hierarchy, master-detail patterns.
+**Source:** `Directions/DirectionsFeature/Views/MainView.swift`
 
 ---
 
@@ -269,17 +280,15 @@ HSplitView { ... }
 
 ---
 
-### Anti-Pattern: Avoid HSplitView Layout Bugs
+### Fixed-Width Sidebar: HStack + Divider
 
-**From Analysis:** HSplitView on macOS doesn't properly fill vertical space in all configurations.
-
-**Solution:** Use HStack + Divider instead for more predictable behavior:
+The fixed-layout branch of the split-pane decision tree above — use when the sidebar is
+**not** user-resizable (no draggable divider), e.g. CropBatch's fixed sidebar:
 
 ```swift
-// Instead of HSplitView, use:
 HStack(spacing: 0) {
     leftPane
-        .frame(minWidth: 300)
+        .frame(width: 300)   // fixed, not minWidth — no drag handle
 
     Divider()
 
@@ -287,6 +296,9 @@ HStack(spacing: 0) {
         .frame(minWidth: 400)
 }
 ```
+
+Don't reach for this as a generic `HSplitView` substitute when the pane genuinely needs to
+resize — use `HSplitView`/`VSplitView` for that case (see the decision tree above).
 
 ---
 

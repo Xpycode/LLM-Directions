@@ -308,9 +308,12 @@ You DO NOT modify code files directly.
 
 ## How to Accomplish Tasks
 1. Identify which module is affected
-2. Spawn a headless Claude instance in that subdirectory:
+2. Delegate the work. Prefer a **native subagent** (the Task/Agent tool) — it shares this
+   session's context and reports structured results, and is the modern replacement for
+   shell-spawning a separate CLI. If you *do* shell out, headless mode is `claude -p` (there is
+   no `--headless` flag):
    ```bash
-   cd src/frontend && claude --headless "implement feature"
+   cd src/frontend && claude -p "implement feature"
    ```
 3. The subdirectory Claude loads its own specialized CLAUDE.md
 4. Monitor progress and coordinate between modules
@@ -425,7 +428,7 @@ Every file has a purpose and a size constraint:
 | File | Purpose | Limit |
 |------|---------|-------|
 | `PROJECT_STATE.md` | Current position | <80 lines |
-| `PLAN.md` | Active execution | Delete when done |
+| `IMPLEMENTATION_PLAN.md` | Active execution | Delete when done |
 | `RESUME.md` | Session bridge | Delete after use |
 | Session logs | Daily record | ~200 lines |
 | `decisions.md` | Decision history | Grows (but summarize in PROJECT_STATE) |
@@ -441,7 +444,7 @@ Every file has a purpose and a size constraint:
 - `CLAUDE.md` — project instructions
 
 **Temporary (execution artifacts):**
-- `PLAN.md` — delete after execution completes
+- `IMPLEMENTATION_PLAN.md` — delete after execution completes
 - `RESUME.md` — delete after resuming
 
 Temporary files prevent stale context from accumulating.
@@ -452,7 +455,7 @@ The main conversation should never exceed 40% context.
 
 ```
 Main Context (orchestrator)
-├── Reads PROJECT_STATE.md, PLAN.md
+├── Reads PROJECT_STATE.md, IMPLEMENTATION_PLAN.md
 ├── Spawns subagents for heavy work
 ├── Collects results
 ├── Updates state files
@@ -483,6 +486,8 @@ Each task in a wave runs in a fresh subagent context.
 ### 5. The 70% Rule
 
 Community-derived guideline: treat ~70% context usage as your practical ceiling.
+
+**This zone table is the single source of truth for context-threshold guidance across Directions docs.** Other docs that mention compaction thresholds point here rather than restating their own numbers.
 
 | Zone | Usage | Action |
 |------|-------|--------|
@@ -604,11 +609,11 @@ definitions always loaded). Disable via `/mcp` to reclaim context. CLI tools lik
 4. `PROJECT_STATE.md` — maintain position
 
 ### For Implementation (GSD-style)
-1. Create `PLAN.md` with waves and tasks
+1. Create `IMPLEMENTATION_PLAN.md` with waves and tasks
 2. `/execute` — run wave-based execution
 3. Subagents do heavy lifting with fresh contexts
 4. Atomic commits per task
-5. Delete `PLAN.md` when done
+5. Delete `IMPLEMENTATION_PLAN.md` when done
 
 ### For Session Handoff
 1. Create `RESUME.md` with exact next step
@@ -634,11 +639,11 @@ definitions always loaded). Disable via `/mcp` to reclaim context. CLI tools lik
 
 ### Implementing a Feature
 ```
-1. Create PLAN.md with tasks grouped into waves
+1. Create IMPLEMENTATION_PLAN.md with tasks grouped into waves
 2. Run /execute
 3. Subagents execute each task with fresh context
 4. Each task = one atomic commit
-5. Delete PLAN.md when complete
+5. Delete IMPLEMENTATION_PLAN.md when complete
 6. Update PROJECT_STATE.md
 ```
 
@@ -906,7 +911,7 @@ When asking me to do something:
 | **The Kitchen Sink** | Mixing unrelated tasks fills context with noise | `/clear` between unrelated tasks |
 | **The Correction Spiral** | Three rounds of corrections = half the context is failed approaches | After 2 failed corrections, `/clear` + rewrite the prompt |
 | **Heavy work in main context** | Orchestrator does implementation directly | Spawn subagents; orchestrator stays light |
-| **Stale temp files** | `PLAN.md`/`RESUME.md` linger after use | Delete aggressively when done |
+| **Stale temp files** | `IMPLEMENTATION_PLAN.md`/`RESUME.md` linger after use | Delete aggressively when done |
 | **Bloated session logs** | Logs grow past 200 lines | Summarize, archive old details to decisions.md |
 | **Just-in-case context** | Reading files "in case we need them" | Load only what the current task requires |
 
@@ -943,7 +948,7 @@ Context Full?
 Starting Session?
 ├── RESUME.md exists → read it, delete it, continue
 ├── No RESUME.md → read PROJECT_STATE.md, latest session log
-└── /execute in progress → continue from PLAN.md state
+└── /execute in progress → continue from IMPLEMENTATION_PLAN.md state
 
 Ending Session?
 ├── Clean stop → update PROJECT_STATE.md, /log
@@ -966,7 +971,7 @@ Ending Session?
 | File | Created | Read | Deleted |
 |------|---------|------|---------|
 | `PROJECT_STATE.md` | Project setup | Every session start | Never (lives forever) |
-| `PLAN.md` | Before `/execute` | During waves | Right after completion |
+| `IMPLEMENTATION_PLAN.md` | Before `/execute` | During waves | Right after completion |
 | `RESUME.md` | Mid-task pause | Next session start | After resuming |
 | `sessions/YYYY-MM-DD.md` | Each session | Optional | Never (archived) |
 | `decisions.md` | When architectural choice made | When reviewing rationale | Never |

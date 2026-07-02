@@ -145,6 +145,6 @@ If a proposed UI change would introduce any of these, flag it before implementin
 ## Related
 
 - `/spec` — Creates feature specification with exploration phase
-- `/plan` — Implementation planning with task breakdown
+- `/make-plan` — Implementation planning with task breakdown
 - `54_security-rules.md` — Similar "check first" pattern for security
 - `41_apple-ui.md` — Apple UI reference with project UI conventions

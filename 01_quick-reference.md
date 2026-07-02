@@ -83,7 +83,7 @@ Is this thread-safe? Should any classes be actors?
 | Command | Purpose |
 |---------|---------|
 | `/clear` | Reset conversation |
-| `/continue` or `-c` | Resume last session |
+| `claude -c` | Resume last session (CLI flag, not a slash command) |
 | `/compact` | Compress context |
 | `/config` | Settings wizard |
 | `/model` | Switch models |
@@ -122,34 +122,26 @@ Is this thread-safe? Should any classes be actors?
 | Situation | Action |
 |-----------|--------|
 | Starting a session | Check `/context` for baseline |
-| Context at 50-70% | Plan to `/compact` soon |
-| Context at 70-85% | `/compact` now with focus instructions |
-| Context over 85% | `/clear` — start fresh with better prompt |
+| Context 50-70% (Yellow) | Start thinking about compacting |
+| Context 70-85% (Orange) | `/compact` with focus; don't read more files than needed |
+| Context 85-95% (Red) | Stop new work — `/compact` now |
+| Context 95%+ (Critical) | `/clear` immediately (write a handoff first) |
 | Switching topics | `/rename`, then `/clear` |
 | Resuming later | `/resume session-name` |
 
 **Quick compaction:** `/compact Focus on [what matters most]`
 
+*Canonical zone table: `52_context-management.md` (§ "The 70% Rule") — this row set mirrors it.*
+
 **The correction spiral fix:** After 2 failed corrections, `/clear` and rewrite your initial prompt.
-
----
-
-## Thinking Keywords
-
-| Keyword | When to Use |
-|---------|-------------|
-| `think` | Simple questions |
-| `think hard` | Architecture decisions |
-| `think harder` | Complex debugging |
-| `ultrathink` | Security, critical code |
-
-**Example:** `Think hard about the thread safety here.`
 
 ---
 
 ## Plan Mode
 
 **Enter:** `Shift+Tab` twice (or `/plan`)
+
+**Note:** `/plan` here is Claude Code's built-in plan mode. Directions' own custom command that writes a plan file to `docs/` is `/make-plan` — a different command, renamed to avoid this collision.
 
 **Use for:**
 - New features

@@ -1,5 +1,12 @@
 # 113 — macOS appearance picker: drive `NSApplication.shared.appearance`, NOT `.preferredColorScheme`
 
+Adaptive appearance (system light/dark) is the app-shell default — see
+`cookbook/00-app-shell.md` §2. That default needs no picker: the app simply omits
+`.preferredColorScheme()` and follows the system. This cookbook entry is the how-to for the
+next layer up — apps that expose a **user-facing** Light / Dark / Match System picker on top
+of that default — and the pitfall that makes the naive `.preferredColorScheme` wiring fail on
+the "revert to system" case.
+
 **Problem.** A Light / Dark / **Match System** appearance menu (persisted via `@AppStorage`) wired the
 obvious SwiftUI way — `.preferredColorScheme(pref.colorScheme)`, where Match System returns `nil`.
 Symptom: **Dark → Match System leaves the UI dark** (when the OS is Light it should go light). Dark →
@@ -12,11 +19,11 @@ On macOS, `.preferredColorScheme(.dark)` writes a **concrete** `NSWindow.appeara
 writes a concrete `aqua` that overrides the prior concrete value; the **`nil` reset is the broken path**,
 and Match System is the only preference that uses it.
 
-This bites **twice as hard if your `Theme` is appearance-adaptive** (see #00): adaptive tokens built with
-`NSColor(name: nil) { appearance in … }` resolve against the **window's live `NSAppearance`**. While that
-window is stuck on `darkAqua`, every token keeps returning its dark value — so even a correct
-`@Environment(\.colorScheme)` wouldn't save you; the *colors themselves* are reading a stale window
-appearance.
+This bites **twice as hard if your `Theme` is appearance-adaptive** (see `cookbook/00-app-shell.md` §2,
+Adaptive Theme): adaptive tokens built with `NSColor(name: nil) { appearance in … }` resolve against the
+**window's live `NSAppearance`**. While that window is stuck on `darkAqua`, every token keeps returning
+its dark value — so even a correct `@Environment(\.colorScheme)` wouldn't save you; the *colors
+themselves* are reading a stale window appearance.
 
 **Fix — move the control up one level to `NSApplication.shared.appearance`, where `nil` DOES revert.**
 App-level appearance with `nil` means "follow the system"; every window/view inherits via
@@ -85,7 +92,7 @@ level and remove the modifier.
   `initial: true` re-applies.
 
 **Source.** Conjoyn `01_Project/Conjoyn/ConjoynApp.swift` (`AppearancePreference.nsAppearance` +
-`.onChange(of: appearance, initial: true)`), fix commit `feb3c43`. Pairs with **#00** (App Shell Standard —
-the adaptive `Theme` whose `NSColor(name:)` tokens resolve against the live `NSAppearance`, which is *why*
-a stuck window appearance also freezes the colors), #06 (app lifecycle / scene wiring), #62 (the web
-analogue — `prefers-color-scheme` token theming).
+`.onChange(of: appearance, initial: true)`), fix commit `feb3c43`. Pairs with **`cookbook/00-app-shell.md`
+§2** (Adaptive Theme — the app-shell default this picker builds on, and why a stuck window appearance
+also freezes `NSColor(name:)` tokens), #06 (app lifecycle / scene wiring), #62 (the web analogue —
+`prefers-color-scheme` token theming).

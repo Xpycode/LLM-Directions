@@ -143,7 +143,7 @@ Confirm understanding:
 - Re-triangulate if needed
 
 **If confirmed:**
-> "Spec complete. Ready to move to planning? Run `/plan` to create implementation tasks."
+> "Spec complete. Ready to move to planning? Run `/make-plan` to create implementation tasks."
 
 ---
 
@@ -161,7 +161,7 @@ After validation, add discovered tasks to `docs/TASKS.md` Backlog:
 - [ ] [Task derived from acceptance criterion 2]
 ```
 
-> "Added [N] tasks to Backlog. Run `/plan` to move them to Current Sprint."
+> "Added [N] tasks to Backlog. Run `/make-plan` to move them to Current Sprint."
 
 ---
 

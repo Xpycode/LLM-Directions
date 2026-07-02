@@ -15,8 +15,8 @@ LOAD: full
 ### Xcode Setup
 
 - [ ] Create new Xcode project (App or Package)
-- [ ] Set minimum deployment target (macOS 14.0 / iOS 17.0)
-- [ ] Set Swift version (5.9+)
+- [ ] Set minimum deployment target — per-app, see `14_project-identity.md`
+- [ ] Set Swift version — per-app, see `14_project-identity.md` (Swift 6.0 baseline)
 - [ ] Configure bundle identifier
 - [ ] Set up code signing (Development / Distribution)
 
@@ -72,8 +72,8 @@ Create `CLAUDE.md` in project root with:
 xcodebuild -scheme ProjectName -configuration Debug build
 
 ## Tech Stack
-- Swift 5.9 / SwiftUI
-- Minimum: macOS 14.0
+- Swift / SwiftUI — per-app target, see `14_project-identity.md` (Swift 6.0 baseline)
+- Minimum: macOS — per-app, see `14_project-identity.md`
 - Architecture: MVVM with Actors
 - Persistence: JSON files
 

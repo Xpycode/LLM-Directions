@@ -46,7 +46,7 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git remote | grep -q .
             p=${line#???}                 # strip porcelain "XY " status prefix
             p=${p%\"}; p=${p#\"}          # best-effort unquote (cautious-fails below if wrong)
             if [ ! -f "$p" ]; then phantom=0; break; fi
-            ob=$(git rev-parse "origin/main:$p" 2>/dev/null) || { phantom=0; break; }
+            ob=$(git rev-parse "@{u}:$p" 2>/dev/null) || { phantom=0; break; }
             wb=$(git hash-object "$p" 2>/dev/null)
             [ "$ob" = "$wb" ] || { phantom=0; break; }
           done <<DIRTY
@@ -56,13 +56,13 @@ DIRTY
         if [ "$phantom" = 1 ]; then
           echo "✓ origin has $behind commit(s) you don't have, and your $n local change(s) are"
           echo "  BYTE-IDENTICAL to origin (Syncthing-carried phantom — Rule 1a). Lossless to run:"
-          echo "      git reset --hard origin/main"
-          echo "  Verified file-by-file via git hash-object vs origin's blobs; nothing unique is lost."
+          echo "      git reset --hard @{u}"
+          echo "  Verified file-by-file via git hash-object vs the upstream's blobs; nothing unique is lost."
         else
           echo "⚠️  origin has $behind commit(s) you don't have — AND you have uncommitted changes."
           echo "    Not all local edits are byte-identical to origin — they may be duplicate work or"
           echo "    genuinely unique. Compare per file before discarding (Rule 1a):"
-          echo "      git hash-object <file>   vs   git rev-parse origin/main:<file>"
+          echo "      git hash-object <file>   vs   git rev-parse @{u}:<file>"
         fi
       else
         echo "✅ origin has $behind commit(s) ahead and your tree is CLEAN — safe fast-forward."

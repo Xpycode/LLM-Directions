@@ -49,7 +49,7 @@ new Chart(ctx, {
 
 Pattern for orchestrating multiple parallel tasks with fresh context per task:
 
-**PLAN.md structure:**
+**IMPLEMENTATION_PLAN.md structure:**
 ```markdown
 ### Wave 1 (parallel - no dependencies)
 - [ ] Task 1.1: Create file A
@@ -72,7 +72,7 @@ Task(subagent_type="developer", prompt="Task 1.3: ...")
 
 // Wait for all Wave 1 to complete
 // Commit: git commit -m "feat(wave-1): description"
-// Update PLAN.md checkboxes to [x]
+// Update IMPLEMENTATION_PLAN.md checkboxes to [x]
 
 // Wave 2: Sequential or parallel based on dependencies
 Task(subagent_type="developer", prompt="Task 2.1: ...")
@@ -81,7 +81,7 @@ Task(subagent_type="developer", prompt="Task 2.1: ...")
 **Key principles:**
 1. **Fresh context per task** - Each subagent starts clean, no conversation history
 2. **Atomic commits** - One wave = one commit (easy rollback)
-3. **State in files** - PLAN.md is source of truth, not conversation
+3. **State in files** - IMPLEMENTATION_PLAN.md is source of truth, not conversation
 4. **Orchestrator stays light** - Delegate heavy work to subagents
 
 **Best for:** Multi-file refactors, feature implementations, any work that can be parallelized.

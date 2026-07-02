@@ -151,7 +151,7 @@ Explicitly excluded from this spec:
 2. Create spec        → Use this template
 3. Review spec        → Check for gaps, contradictions
 4. Get approval       → User confirms understanding
-5. /plan             → Break into tasks
+5. /make-plan             → Break into tasks
 6. Reference during build → Spec is source of truth
 ```
 
@@ -159,7 +159,7 @@ Explicitly excluded from this spec:
 
 ## Spec Review Checklist
 
-Before moving to `/plan`:
+Before moving to `/make-plan`:
 
 - [ ] Problem statement is clear (not solution-focused)
 - [ ] Acceptance criteria are testable (Given/When/Then)

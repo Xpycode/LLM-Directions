@@ -56,7 +56,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 **The Problem:** Big features become abandoned features.
 
-**The Solution:** Atomic tasks with backpressure (see `/plan`)
+**The Solution:** Atomic tasks with backpressure (see `/make-plan`)
 
 > "Never be more than 30 minutes from working code."
 
@@ -148,7 +148,6 @@ and you HATE this implementation. What would you criticize?
 
 **Options:**
 - Copy code to Gemini for review
-- Use `/zen` tools to consult other models
 - Ask a different Claude session (fresh context)
 
 ---
@@ -183,7 +182,7 @@ Restart. Check persistence. Verify against acceptance criteria.
 
 ```
 1. /interview - Create spec with acceptance criteria
-2. /plan - Break into atomic tasks with waves
+2. /make-plan - Break into atomic tasks with waves
 3. /execute - Implement wave by wave
 4. /reflect - Adversarial review
 5. /compound - Extract learnings

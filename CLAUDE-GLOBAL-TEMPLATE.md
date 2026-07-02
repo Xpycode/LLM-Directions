@@ -72,7 +72,7 @@ After detection:
 | `/build-fix` | Xcode/Swift error resolution guide |
 | `/cookbook` | Manage reusable code patterns cookbook |
 | `/spec` | Create feature specification (mini-PRD) before implementation |
-| `/plan` | Create implementation plan with task waves |
+| `/make-plan` | Create implementation plan with task waves |
 | `/checkpoint` | Create git tag checkpoints for safe rollback |
 | `/next` | Get next steps based on current state |
 | `/reflect` | Session reflection and lessons learned |

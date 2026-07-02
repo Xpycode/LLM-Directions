@@ -18,9 +18,11 @@ LOAD: full
 
 ## The Golden Rule
 
-**Never commit directly to `main`.**
+**Never commit application code directly to `main`.**
 
 Main should always be deployable. Work on branches, merge when stable.
+
+This rule is scoped to **application code changes** — features, fixes, refactors inside `01_Project/` or equivalent source trees. **Documentation repos (like Directions itself) and doc-only changes** — session logs, `PROJECT_STATE.md`, `decisions.md`, cookbook entries, this file — commit straight to `main` as their normal workflow; there's no build to break and no deploy gate to protect. See `37_multi-mac-discipline.md` for the docs-repo workflow this exemption covers.
 
 ---
 
@@ -304,7 +306,7 @@ Don't commit to main directly.
 Add to your CLAUDE.md:
 ```markdown
 ## Git Rules
-- Never commit directly to main
+- Never commit application code directly to main — docs-only changes are exempt (see 37_multi-mac-discipline.md)
 - Branch names: feature/, fix/, experiment/
 - Commit messages: what + why
 - Merge only when tested and working

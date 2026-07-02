@@ -98,7 +98,7 @@ Update PROJECT_STATE.md:
 
 ## Quick Start
 
-If user just types `/plan`:
+If user just types `/make-plan`:
 
 1. Check if IMPLEMENTATION_PLAN.md exists
    - **Yes**: "Found existing plan. Review and update, or start fresh?"

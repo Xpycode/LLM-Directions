@@ -49,7 +49,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 | Funnel | Purpose | Key Command | Gate |
 |--------|---------|-------------|------|
 | **Define** | Understand scope | `/interview` | Spec reviewed, edge cases clear |
-| **Plan** | Atomic tasks | `/plan` | Tasks <30min, backpressure defined |
+| **Plan** | Atomic tasks | `/make-plan` | Tasks <30min, backpressure defined |
 | **Build** | Implement | `/execute` | Tests pass, review done |
 
 **Principle:** 80% on Define + Plan, 20% on Build.
@@ -88,7 +88,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 | Command | When | What |
 |---------|------|------|
 | `/interview` | New feature | Multi-phase discovery, creates spec |
-| `/plan` | After spec | Creates IMPLEMENTATION_PLAN.md |
+| `/make-plan` | After spec | Creates IMPLEMENTATION_PLAN.md |
 | `/execute` | Ready to build | Wave-based execution with subagents |
 | `/next` | During build | Pick next task with context |
 | `/reflect` | After work | Multi-perspective review |
@@ -103,7 +103,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 | File | Purpose | Updated |
 |------|---------|---------|
 | `PROJECT_STATE.md` | Current position, funnel, blockers | Every session |
-| `IMPLEMENTATION_PLAN.md` | Task list with waves | During /plan, /execute |
+| `IMPLEMENTATION_PLAN.md` | Task list with waves | During /make-plan, /execute |
 | `AGENTS.md` | Subagent context, patterns | When patterns emerge |
 | `specs/[feature].md` | Feature specifications | During /interview |
 | `decisions.md` | Architecture choices | When decisions made |
@@ -240,7 +240,7 @@ master repo and are read on demand — they are NOT copied here.
 
 ```
 1. /interview        → Create spec with acceptance criteria
-2. /plan            → Break into atomic tasks
+2. /make-plan            → Break into atomic tasks
 3. /execute         → Implement wave by wave
 4. /reflect         → Adversarial review
 5. /compound        → Extract learnings

@@ -200,7 +200,6 @@ struct MyApp: App {
         WindowGroup {
             ContentView()
                 .frame(minWidth: 900, minHeight: 600)
-                .preferredColorScheme(.dark)
         }
         .windowStyle(.hiddenTitleBar)     // no system title bar
         .commands {
@@ -217,14 +216,59 @@ struct MyApp: App {
 **Key decisions:**
 - `UIDesignRequiresCompatibility = true` in Info.plist — **prerequisite** for all other styling
 - `.windowStyle(.hiddenTitleBar)` — removes the standard title bar chrome
-- `.preferredColorScheme(.dark)` — forced dark mode, consistent across system settings
+- **Adaptive appearance by default** — no `.preferredColorScheme()` modifier, so the app follows the system light/dark setting. See §2 below. Forced dark mode is an explicit **per-app opt-in**, not the mandate — see §2.1.
 - No `.navigationTitle()` — title bar is hidden, so titles go in custom info strips or toolbars
 
 ---
 
-### 2. Theme Struct
+### 2. Theme — Adaptive by Default
 
-Centralized dark color palette. Use `Theme.xxx` everywhere instead of hardcoded colors.
+Adaptive appearance is the default for all macOS apps: the app follows the system light/dark
+setting rather than forcing one. Two approaches, in order of preference:
+
+**A. Semantic system colors** — simplest, correct out of the box:
+```swift
+Color(nsColor: .windowBackgroundColor)   // adapts automatically
+Color(nsColor: .controlBackgroundColor)
+Color.primary                            // adapts automatically
+Color.secondary
+```
+
+**B. Asset-catalog color sets** — when you need custom brand colors that still adapt:
+define a color set in `Assets.xcassets` with "Any, Dark" appearance variants, then reference
+by name:
+```swift
+Color("AccentColor")   // resolves Any vs Dark automatically via the asset catalog
+```
+
+**Avoid hardcoded dark-only colors** — `Color(white: 0.10)` and similar literals do not adapt
+and will look wrong (or invisible) in light mode. If a token must be dynamic at runtime rather
+than baked into the asset catalog, back it with an `NSColor(name:)` dynamic provider (see
+[cookbook #113](113-macos-appearance-preference-nsapp-not-preferredcolorscheme.md) for driving
+a Light/Dark/Match-System picker through `NSApplication.shared.appearance`, not
+`.preferredColorScheme` — the latter's `nil` case cannot revert a previously forced window
+appearance).
+
+**Usage:** `Theme.primaryBackground`, `Theme.accent`, etc. still apply as the *naming*
+convention below — just back each token with an adaptive color source instead of a hardcoded
+one when adopting this default.
+
+---
+
+### 2.1. Forced-Dark Theme (Opt-In)
+
+Some apps make an explicit product decision to force dark mode regardless of the system
+setting (e.g. Penumbra, a video-editing tool where a fixed dark palette matches its
+reference/waveform imagery). This is a **per-app opt-in**, not the app-shell mandate — most
+apps should use the adaptive default in §2 above. To opt in:
+
+```swift
+ContentView()
+    .preferredColorScheme(.dark)
+```
+
+Then use a hardcoded dark palette. Centralized dark color palette — use `Theme.xxx` everywhere
+instead of hardcoded colors:
 
 ```swift
 import SwiftUI
@@ -271,7 +315,7 @@ struct Theme {
 
 **Usage:** `Theme.primaryBackground`, `Theme.accent`, `Theme.secondaryText` — never `Color.gray` or `.secondary` for backgrounds.
 
-### 2.1. Theme is a floor, not a ceiling — extending for domain needs
+### 2.2. Theme is a floor, not a ceiling — extending for domain needs
 
 The five tokens above are the **mandatory floor**. Every macOS app must expose exactly those
 names with exactly those values. An app that changes `primaryBackground` to `0.12` "because it
@@ -456,7 +500,9 @@ struct WindowToolbarConfigurator: NSViewRepresentable {
         if titlebarView.subviews.contains(where: { $0.identifier == viewID }) { return }
 
         let content = TitlebarToolbarContent()    // your SwiftUI toolbar view
-            .preferredColorScheme(.dark)
+            // Only apps that opted into Forced-Dark Theme (§2.1) need this — the injected
+            // NSHostingView doesn't inherit environment, so it won't otherwise pick up the
+            // app's appearance. Adaptive-theme apps (§2, the default) should omit this line.
         let hostingView = NSHostingView(rootView: content)
         hostingView.translatesAutoresizingMaskIntoConstraints = false
         hostingView.identifier = viewID
@@ -562,7 +608,19 @@ zero/incorrect sizes — canvases render blank.
 
 ---
 
-### 5. Pane Layout with HSplitView
+### 5. Pane Layout — Split-Pane Decision Tree
+
+Split-pane choice is a decision tree, not a blanket rule — pick the branch that matches
+whether the divider is user-resizable:
+
+- **User-resizable panes** (draggable divider) → `HSplitView` (horizontal) or `VSplitView`
+  (vertical). This is the app-shell standard for the *main window* split when panes resize.
+  Reference: Penumbra (`HSplitView`), Conjoyn (`VSplitView`).
+- **Fixed-width sidebar / non-resizable layout** → `HStack(spacing: 0)` with an explicit
+  sidebar width and an optional `Divider()` for the visual seam. Reference: CropBatch. See
+  [01-window-layouts.md](01-window-layouts.md) for the fixed-layout code pattern.
+
+The example below is the resizable branch:
 
 ```swift
 var body: some View {
@@ -705,9 +763,11 @@ struct InfoStripView: View {
 When migrating an existing app to the App Shell Standard:
 
 - [ ] **Add `UIDesignRequiresCompatibility = true` to Info.plist** (nothing else works without this)
-- [ ] Replace `NavigationSplitView` with `HSplitView`
+- [ ] Replace `NavigationSplitView` with `HSplitView`/`VSplitView` (resizable panes) or
+      `HStack(spacing: 0)` (fixed sidebar) per the split-pane decision tree in §5
 - [ ] Add `.windowStyle(.hiddenTitleBar)` to the `WindowGroup` scene
-- [ ] Add `.preferredColorScheme(.dark)`
+- [ ] Adopt adaptive appearance by default (no `.preferredColorScheme()`); only add
+      `.preferredColorScheme(.dark)` if forced dark mode is an explicit product decision (§2.1)
 - [ ] Add `.toolbarRole(.editor)` to the main view
 - [ ] Apply `FCPToolbarButtonStyle` to all `.toolbar {}` buttons
 - [ ] Wrap toolbar button groups in `HStack` with `.buttonStyle(.borderless)` on the container

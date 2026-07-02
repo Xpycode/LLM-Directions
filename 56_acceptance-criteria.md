@@ -220,7 +220,7 @@ func testLoginWithInvalidPassword() {
 - Capture requirements as rough acceptance criteria
 - Refine into Given/When/Then format during spec writing
 
-### During /plan
+### During /make-plan
 - Each task should map to one or more acceptance criteria
 - Task is "done" when its criteria pass
 

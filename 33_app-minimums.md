@@ -205,10 +205,11 @@ do {
 **Pattern:**
 ```swift
 @MainActor
-class ViewModel: ObservableObject {
-    @Published var isProcessing = false
-    @Published var progress: Double = 0
-    @Published var statusMessage = ""
+@Observable
+class ViewModel {
+    var isProcessing = false
+    var progress: Double = 0
+    var statusMessage = ""
 
     func processFiles(_ files: [URL]) async {
         isProcessing = true
@@ -438,11 +439,21 @@ above. 6/30 apps had it wired; one (AvidMXFPeek) links Sparkle but never calls i
 
 **Why:** Users expect windows to reopen where they left them.
 
+Window frame/position restoration is automatic for standard `NSWindow`s (and SwiftUI `WindowGroup`
+scenes) — AppKit restores position and size for free as long as the window is restorable
+(`isRestorable = true`, the default) and has a stable identifier.
+
 ```swift
-// In your WindowGroup or NSWindow setup
-.handlesExternalEvents(matching: Set(arrayLiteral: "*"))
-// Or implement NSWindowRestoration
+// Give each WindowGroup a stable identifier so AppKit can restore its frame
+WindowGroup(id: "main") {
+    ContentView()
+}
 ```
+
+`.handlesExternalEvents(matching:)` does **not** do window restoration — it routes incoming URLs
+and `NSUserActivity` continuations to the correct scene instance. For app-specific state beyond
+frame/position (open documents, selection, scroll position), persist and restore that state
+yourself, or conform to `NSWindowRestoration`.
 
 ### macOS Dock Icon Behavior
 
@@ -469,9 +480,19 @@ NSApp.setActivationPolicy(.regular)
 ```swift
 import StoreKit
 
-// After positive moment
+// SwiftUI (iOS 16+ / macOS 13+): inject the environment action
+struct ContentView: View {
+    @Environment(\.requestReview) private var requestReview
+
+    func userCompletedPositiveAction() {
+        requestReview()
+    }
+}
+
+// UIKit (scene-based): AppStore.requestReview(in:) replaces the deprecated
+// SKStoreReviewController.requestReview(in:)
 if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-    SKStoreReviewController.requestReview(in: scene)
+    AppStore.requestReview(in: scene)
 }
 ```
 
@@ -525,7 +546,7 @@ Based on your codebase patterns:
 |-------|--------------|-----|
 | **UI** | SwiftUI + occasional AppKit | AppKit for Canvas, NSWorkspace |
 | **Concurrency** | async/await + actors | Not raw GCD |
-| **State** | @Published + ObservableObject | @EnvironmentObject for sharing |
+| **State** | `@Observable` | `@Environment` / `@State` for sharing (legacy: `@Published` + `ObservableObject`) |
 | **Persistence** | JSON + UserDefaults | No Core Data |
 | **ViewModels** | @MainActor | Thread safety by design |
 | **Services** | Actors | Thread safety by design |

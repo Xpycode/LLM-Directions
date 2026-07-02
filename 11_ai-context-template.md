@@ -34,9 +34,9 @@ LOAD: sections
 | Aspect | Value |
 |--------|-------|
 | **Type** | [macOS app / iOS app / CLI tool / Package] |
-| **Language** | Swift 5.9+ |
+| **Language** | Swift — per-app target, see `14_project-identity.md` (Swift 6.0 baseline) |
 | **UI Framework** | SwiftUI |
-| **Min Deployment** | macOS 14.0 / iOS 17.0 |
+| **Min Deployment** | per-app, see `14_project-identity.md` |
 | **Architecture** | MVVM with Actors |
 | **Persistence** | JSON files / UserDefaults |
 

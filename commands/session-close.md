@@ -133,7 +133,7 @@ The last thing before the user clears. **Why here:** switching models re-reads t
 `/clear` at an empty context is nearly free. So the ritual is **clear → switch → start** — and this
 reminder exists so the next session begins on the right tier instead of silently burning the wrong one.
 
-Read this session's recorded phase (written by `/spec`, `/plan`, or `/execute` at Step 0):
+Read this session's recorded phase (written by `/spec`, `/make-plan`, or `/execute` at Step 0):
 
 ```bash
 SID=$(ls -t "$HOME"/.claude/.current-model-* 2>/dev/null | head -1 | sed "s:.*/.current-model-::")

@@ -6,15 +6,17 @@ LOAD: full
 
 # Model Selection Guide
 
-Which Claude model to use for which task. Optimize for the right balance of speed, cost, and reasoning depth.
+Which Claude model tier to use for which task. Optimize for the right balance of speed, cost, and reasoning depth.
+
+**A note on durability:** model versions and benchmark numbers change often — this guide is written to survive those changes by describing *tiers* (Haiku / Sonnet / Opus) rather than pinning it to a specific model version. As of this writing the current families are the Claude 5 family (Fable 5, Sonnet 5, Haiku 4.5) and Opus 4.8, but always check `claude-code-guide` or the `claude-api` skill for the current model IDs rather than trusting a hardcoded string here.
 
 ---
 
 ## Quick Selector
 
 ```
-Simple / fast / read-only  →  Haiku
-Daily coding work          →  Sonnet
+Simple / fast / read-only   →  Haiku
+Daily coding work           →  Sonnet
 Hard problems / high-stakes →  Opus
 ```
 
@@ -22,19 +24,16 @@ Hard problems / high-stakes →  Opus
 
 ## Model Comparison
 
-| Dimension | Haiku 4.5 | Sonnet 4.5 | Opus 4.6 |
-|-----------|-----------|------------|----------|
-| **Cost (input/output per MTok)** | $1 / $5 | $3 / $15 | $5 / $25 |
-| **Relative cost** | 1x | 3x | 5x |
-| **Speed** | Fastest (~100 tok/s) | Fast | Moderate |
-| **SWE-bench** | 73.3% | 77.2% | 80.8% |
-| **Context window** | 200K | 200K (1M beta) | 200K (1M beta) |
-| **Max output** | 64K | 64K | 128K |
-| **Long-context recall (MRCR v2)** | — | 18.5% | 76% |
-| **Extended thinking** | Yes | Yes | Yes |
-| **Adaptive thinking** | No | No | Yes (exclusive) |
+| Dimension | Haiku | Sonnet | Opus |
+|-----------|-------|--------|------|
+| **Relative cost** | Lowest | Mid | Highest |
+| **Relative speed** | Fastest | Fast | Slower — trades speed for depth |
+| **Context window** | 200K | 1M | 1M |
+| **Reasoning depth** | Shallow — good for pattern-matching, not judgment calls | Strong, everyday-capable | Deepest — best for ambiguity and high-stakes judgment |
 
-**Key insight:** Opus is dramatically better at finding specific details in large contexts (76% vs 18.5% MRCR). For large codebase comprehension, the model upgrade pays for itself.
+**Key insight:** the gap that matters most isn't raw benchmark scores (which shift every release) — it's how well each tier handles *ambiguity* and *large context*. Opus is the tier to reach for when a task requires holding a lot of context in mind and reasoning carefully about trade-offs; Haiku is the tier for narrow, well-specified, high-volume work.
+
+**Thinking depth is adaptive on current models** — Claude decides when and how much to think per request. There's no separate "thinking" tier to pick, and no manual thinking-budget keyword ladder to invoke (see `01_quick-reference.md`).
 
 ---
 
@@ -51,7 +50,7 @@ Hard problems / high-stakes →  Opus
 | Quick syntax questions | "How do I write X in Swift?" |
 | Documentation lookups | Searching and summarizing existing docs. |
 
-**Watch out:** Quality degrades past ~150 lines of generated code. Don't use for complex multi-file changes.
+**Watch out:** quality can degrade on large or complex code generation. Don't use Haiku for complex multi-file changes — step up to Sonnet or Opus.
 
 ### Sonnet: daily workhorse
 
@@ -72,12 +71,12 @@ Hard problems / high-stakes →  Opus
 
 | Task | Why |
 |------|-----|
-| Architecture decisions | Deepest reasoning, weighs trade-offs, asks right questions. |
+| Architecture decisions | Deepest reasoning, weighs trade-offs, asks the right questions. |
 | Complex multi-file refactoring | Maintains consistency across large restructuring. Self-corrects. |
 | Subtle / hard-to-reproduce bugs | Superior root cause analysis for timing, state, race conditions. |
-| Security audits | Catches vulnerabilities shallower models miss. |
+| Security audits | Catches vulnerabilities shallower tiers miss. |
 | Performance optimization | Reasons about algorithmic complexity and systemic bottlenecks. |
-| Large codebase comprehension | 76% MRCR recall vs Sonnet's 18.5%. Dramatically better. |
+| Large codebase comprehension | Best at retaining and reasoning over large amounts of context. |
 | Planning and orchestration | Plans the work, delegates to Sonnet/Haiku sub-agents. |
 | Critical code review | Self-correction catches issues others overlook. |
 | Migration projects | Framework migrations, API upgrades spanning many files. |
@@ -139,15 +138,15 @@ Switch from Opus to Sonnet when:
 
 ## Cost Optimization
 
-| Strategy | Savings |
-|----------|---------|
-| **Use Haiku for exploration** | 5x cheaper than Opus for search tasks |
-| **Sonnet for implementation** | 40% cheaper than Opus, 77% SWE-bench is sufficient |
-| **Opus only for decisions** | Reserve the expensive model for high-value reasoning |
-| **Prompt caching** | Cache hits cost 0.1x base price — big savings for repeated context |
-| **Keep files small** | Smaller context = fewer tokens = lower cost (see `52_context-management.md`) |
+| Strategy | Why |
+|----------|-----|
+| **Use Haiku for exploration** | Cheapest tier — fine for search/read-only tasks where speed matters more than judgment. |
+| **Sonnet for implementation** | Meaningfully cheaper than Opus, and sufficient quality for most day-to-day work. |
+| **Opus only for decisions** | Reserve the priciest tier for high-value reasoning — architecture, hard bugs, security. |
+| **Prompt caching** | Cache hits cost a fraction of base price — big savings for repeated context. |
+| **Keep files small** | Smaller context = fewer tokens = lower cost (see `52_context-management.md`). |
 
-**Rule of thumb:** If the task is "find" or "write boilerplate," use the cheapest model. If the task is "decide" or "debug something subtle," use the best model.
+**Rule of thumb:** If the task is "find" or "write boilerplate," use the cheapest tier. If the task is "decide" or "debug something subtle," use the best tier.
 
 ---
 

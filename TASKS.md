@@ -9,10 +9,17 @@
 - [ ] [Task description]
 
 ## Current Sprint
-<!-- Active work. Populated by /plan or /execute. Keep focused (3-7 tasks). -->
+<!-- Active work. Populated by /make-plan or /execute. Keep focused (3-7 tasks). -->
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] [Task description]
+
+---
+
+## Ideas
+<!-- Undeveloped concepts, not yet scoped into a task. Optional phase tag, e.g. "(Phase 2)". -->
+
+- [ ] [Idea description] (Phase: [phase])
 
 ---
 
@@ -30,7 +37,7 @@ Archived task count is read from `tasks-archive.md` header.
 | Command | Action |
 |---------|--------|
 | `/interview` | Adds tasks to Backlog |
-| `/plan` | Moves Backlog → Current Sprint |
+| `/make-plan` | Moves Backlog → Current Sprint |
 | `/execute` | Checks off tasks as waves complete |
 | `/log` | Archives checked tasks, updates PROJECT_STATE.md progress bar |
 | `/status` | Reports progress from checkbox counts |

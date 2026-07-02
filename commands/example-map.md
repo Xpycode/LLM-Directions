@@ -83,5 +83,5 @@ Open questions: [N]
 Next:
 - Resolve open questions before proceeding
 - Run /spec to formalize into full specification
-- Or run /plan if spec already exists
+- Or run /make-plan if spec already exists
 ```
