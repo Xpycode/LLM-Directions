@@ -84,31 +84,21 @@ struct FirstRunWarningView: View {
 }
 ```
 
-## The Stop-race trap (streamed / cancellable runs)
+## The Stop-race trap (streamed / cancellable runs) — ⚠️ superseded by #154
 
-If the run is a chunked `AsyncStream` you consume in a held `Task`, **Stop = cancel that task**, which
-terminates the stream → its `onTermination` cancels the producer. The catch: the producer's *final*
-`.finished(summary)` event **races the cancellation and is usually dropped** — so on Stop you get **no
-summary**. Don't fabricate one and don't crash on `nil`. Model the terminal state as a small enum and
-fall back to an honest "stopped early" report built from what you actually counted:
+**Do NOT wire Stop as "cancel the consuming task".** This section originally recommended exactly
+that plus a `stoppedEarly(processed, total)` fallback for the dropped final summary — a same-day
+review found the wiring itself is the bug, not just the lost summary: the stream dies instantly, so
+the UI declares "Run stopped" **while the producer is still winding down** — the OS delete dialog
+can appear *after* the "stopped" report, the `runTask == nil` re-entry guard releases early (a
+second concurrent run can start), and whatever the wind-down actually committed is never reported.
 
-```swift
-enum RunResult: Equatable { case summary(RunSummary); case stoppedEarly(processed: Int, total: Int) }
-
-runTask = Task { [self] in
-    var summary: RunSummary?; var processed = 0
-    for await event in CompressionRun.start(work: work, minSavings: minSavings, store: store) {
-        switch event {
-        case .itemFinished:      processed += 1; runPhase = .compressing(done: processed, total: total)
-        case .chunkDeleted:      runPhase = .deleting
-        case .finished(let s):   summary = s          // ← arrives on natural end / decline / disk-fail…
-        }                                              //   …but NOT when the user hit Stop
-    }
-    runTask = nil; runPhase = nil
-    lastResult = summary.map(RunResult.summary) ?? .stoppedEarly(processed: processed, total: total)
-}
-func stopRun() { runTask?.cancel() }   // → stream onTermination → producer cancels at next chunk boundary
-```
+**The fix is the run-handle pattern — see `#154`:** `start()` returns `(events, stop())`; Stop
+cancels the *producer*, the consumer keeps folding events into a visible "Stopping…" phase until
+the genuine `.finished(summary)` arrives, and the in-flight state stays up (re-entry blocked,
+progress bar visible) through the wind-down. Keep `stoppedEarly` only as a *defensive* fallback for
+a stream that dies without its terminal event — and word it honestly (don't claim work was
+committed; you don't know).
 
 ## Report the result honestly — headline keyed to *how* it ended
 
@@ -141,13 +131,15 @@ case let .summary(s): switch s.stoppedReason {
   show the count.
 - **Present every dialog/sheet from the content body, never a toolbar item** (see #147) or the modal
   soft-locks the window.
-- **Cancelling a streamed run loses the final summary** (it races the `onTermination` cancel). Report an
-  honest `stoppedEarly(processed, total)` fallback; never fabricate numbers.
+- **Stop must cancel the producer, not the consumer** (#154). Consumer-cancel ends the UI while the
+  engine winds down (post-"stopped" dialogs, re-entry race, lost tally). Keep an honest
+  `stoppedEarly` fallback for a stream that dies without its terminal event; never fabricate numbers.
 - **Report all terminal states, including the ugly ones** — declined, disk-refusal, delete-failed, and
   any kept-duplicates / unverified stray copies the user must clean up by hand.
 
 Source: CompressPhotos — `01_Project/CompressPhotos/ContentView.swift` (ladder + body-level presentations),
-`Views/FirstRunWarningView.swift` (one-time gate), `AppModel.swift` (`startRun`/`stopRun`/`RunResult`
-Stop-race fallback), `Views/RunSummaryView.swift` (headline by stop reason). Pairs with **#147** (present
-from body, not toolbar), **#35** (`AsyncStream` bounded fan-out — the producer), **#36** (fast-preview /
-heavy-commit split); the footer progress+Stop UI is the existing "Progress: footer swap" quick-ref pattern.
+`Views/FirstRunWarningView.swift` (one-time gate), `AppModel.swift` (`startRun`/`stopRun` — now the #154
+run-handle design), `Views/RunSummaryView.swift` (headline by stop reason). Pairs with **#147** (present
+from body, not toolbar), **#35** (`AsyncStream` bounded fan-out — the producer), **#154** (Stop = cancel
+the producer; run-handle), **#36** (fast-preview / heavy-commit split); the footer progress+Stop UI is the
+existing "Progress: footer swap" quick-ref pattern.
