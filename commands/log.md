@@ -49,7 +49,11 @@ no coherent thread (several unrelated tasks) AND the arg gives no framing — e.
 - [Push state, unpushed commits, branch, what the other Mac pulls]
 ```
 
-4. Update `sessions/_index.md` with a row for this session.
+4. Update `sessions/_index.md` with a row for this session. Read only the table header + the
+   first data row (most recent session) to confirm the column format — never the whole file. Add
+   the new row directly below the header; cap the Outcome cell at ~300 chars (condense, don't
+   ask). If the live file already holds ~20 rows, move its oldest row into `sessions/_index-archive.md`
+   (create it with a one-line header if it doesn't exist) to keep the live file capped.
 
 ## Then — silent defaults, not questions
 

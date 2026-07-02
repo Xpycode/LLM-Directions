@@ -15,6 +15,7 @@ dashboard.py
 # Session logs (project-specific, not template)
 sessions/*.md
 !sessions/_index.md
+!sessions/_index-archive.md
 
 # Syncthing temp files
 .syncthing.*.tmp
