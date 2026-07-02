@@ -26,6 +26,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-02 (c)** — landed the dangling cookbook **#153** (destructive-action confirmation ladder,
+  from CompressPhotos) that a prior session left untracked with no index row (`1affd7c`). A
+  bidirectional index audit then caught **3 more silent gaps** — files present with no table row:
+  **#141/#145/#151** — backfilled them (`cf21478`). Index now reconciled: **154 files / 154 rows, no
+  gaps, no dead links.** Pushed; `main` in sync.
 - **2026-07-02 (b)** — committed #152 (`6689a62`), merged the iOS `optimize-directions-efficiency`
   branch (`c8924be` — brings `OPTIMIZATION-PLAN.md` + read-on-demand setup-seam/hook fixes), then
   **executed Wave 1** of that plan (`0081238`): 10 correctness fixes across ~39 files — broken
@@ -45,7 +50,6 @@
   with no matching index row.)
 - **2026-06-19** — chased down why `/status` had started costing 40–70k tokens (it was ~20k): the leaner `/status` I wrote 9 days ago was committed to the master repo but never *copied* into the live `~/.claude/commands/`, so the old version that reads the entire 37 KB session index + a full log was still running. Deployed the fix (and confirmed the 5×→20× plan upgrade has nothing to do with it — that's rate limits, not cost-per-message). Then made the "you're on the wrong model" warning impossible to miss — a bold white-on-red bar in the statusline — and, following the user's own insight, turned it into a **phase-aware gate**: `/execute` stops you if you're not on Sonnet, `/spec` and `/plan` nudge you to Opus, and `/session-close` now reminds you which model to switch to for the *next* session (switch right after `/clear`, when it's cheapest). Also synced 10 live commands that had fallen behind the master. Pushed `9a83888`.
 - **2026-06-17 (b)** — sat down on the M1 Max. `/arrive` flagged `behind 7` and the start-up banner said "byte-identical phantom, safe to `reset --hard`" — but a file-by-file hash check caught it under-counting: three cookbooks (**#118/#119/#120**) were genuine uncommitted local work a prior session never `/depart`-ed, and a blind `--hard` would have lost the index edits. Reconciled with **`reset --mixed`** instead (catches HEAD up but treats the working tree as sacred), then committed + pushed #118–120. Then **rolled the new Directions out** where it actually runs: refreshed the live `~/.claude/commands` copies (the #62-routing `/review` + `/minimums`, plus 4 commands that were missing globally). Surveyed all 44 projects that carry a Directions copy — every one is "behind" — but **decided NOT to mass-sync**: the live cookbook/command lookup reads from the *master repo*, so those per-project copies are vestigial snapshots nothing on the hot path reads. Synced + pushed only the 3 asked for (DiskVerdict, Conjoyn, App-Websites), docs-only so App-Websites' in-flight `apps.json` stayed untouched.
-- **2026-06-17 (a)** — sat down on the M4-Pro; `/arrive` caught a parked working tree (cookbook #117 + index, uncommitted from a prior session) and reconciled it cleanly. Then captured a new framework doc, **`62_final-stretch-triage.md`** — discipline for the last 10% of shipping (capture-don't-fix, three honest buckets, define "done for v1" in writing). Wired it into both routing tables (`00_base` + `CLAUDE-GLOBAL-TEMPLATE`) and **into the ship-phase commands**: `/review` now completes the full pass before fixing, triages flagged items into the three buckets, and prompts for a written done-line; `/minimums` buckets gaps so a cosmetic miss isn't treated as a blocker. Synced the live `~/.claude/commands` copies (diffed first — were unmodified). *Note: already-set-up projects need `/update-directions` before the new `docs/62_…` path resolves.*
 <!-- older entries → sessions/_index.md -->
 
 ## Progress
@@ -72,8 +76,8 @@
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
 - **All committed + pushed; `main` in sync, tree clean** (only `.claude/settings.local.json` shows
-  modified — per-Mac, intentionally never committed). This session: `6689a62` (#152) → `c8924be`
-  (merge optimize branch) → `0081238` (Wave 1).
+  modified — per-Mac, intentionally never committed). Latest: `1affd7c` (#153 + index) → `cf21478`
+  (backfill #141/#145/#151 index rows).
 - **Cold-start pickup:** open `OPTIMIZATION-PLAN.md` → execute **Wave 2** (backpressure targets:
   `PATTERNS-COOKBOOK.md` ≤ 45 KB, `ls commands | wc -l` ≈ 14).
 - **Live-vs-repo caveat:** Wave-1 fixes + the `/make-plan` rename are in the **repo**, NOT yet on this
