@@ -34,9 +34,10 @@ actions — offer, don't silently mutate the tree):
   discard before new work — stray uncommitted edits are the seed of cross-Mac duplicates.
 - **in sync, clean** → proceed normally.
 
-**At session end** (or before walking away / switching Macs): run `/session-close`, which now offers to
-commit **and push** in one confirmed step. A local commit that never reaches origin is as invisible to
-the other Mac as an uncommitted file. See `37_multi-mac-discipline.md`.
+**At session end** (or before walking away / switching Macs): run `/log`, which writes the session log,
+syncs state, and — in Mac-handoff mode — offers to commit **and push** in one confirmed step. A local
+commit that never reaches origin is as invisible to the other Mac as an uncommitted file. See
+`37_multi-mac-discipline.md`.
 
 After detection:
 - If Directions exists → show current status and ask what to work on

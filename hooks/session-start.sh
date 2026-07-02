@@ -117,13 +117,13 @@ What would you like to do?
 | /status     | Check current phase, focus, blockers, last session|
 | /log        | Create or update today's session log              |
 | /decide     | Record an architectural/design decision           |
-| /interview  | Run the full discovery interview                  |
+| /spec       | Create a feature spec (+ deep, examples modes)    |
 | /learned    | Add a term to your personal glossary              |
-| /reorg      | Reorganize folder structure (numbered folders)    |
+| /make-plan  | Create an implementation plan with task waves     |
 | /execute    | Wave-based parallel execution (fresh contexts)    |
-| /update-directions | Pull latest and sync to project             |
+| /check      | Review: code \| ship \| security                   |
 
-**More:** /phase, /context, /handoff, /blockers, /review, /minimums, /new-feature
+**More:** /setup, /cookbook, /worktree, /test-app, /directions (+ update)
 
 **Context tip:** Use /execute for implementation (spawns fresh subagents).
 Create RESUME.md if ending mid-task. Keep PROJECT_STATE.md under 80 lines.

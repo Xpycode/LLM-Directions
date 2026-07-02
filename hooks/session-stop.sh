@@ -11,7 +11,7 @@
 #   3. It NEVER blocks (no decision:block) — it's a reminder, not a gate.
 #
 # Surfaces via the `systemMessage` JSON field (the one Stop-hook channel the user sees).
-# Pairs with hooks/session-start.sh (start-of-session detection) and /session-close
+# Pairs with hooks/session-start.sh (start-of-session detection) and /log
 # (the confirmed commit+push action). See 37_multi-mac-discipline.md.
 
 input=$(cat)
@@ -47,7 +47,7 @@ if [ "${unpushed:-0}" -gt 0 ]; then
   [ -n "$parts" ] && parts="$parts + "
   parts="${parts}${unpushed} unpushed commit(s)"
 fi
-msg="⚠ $repo has $parts. Before switching Macs, run /session-close (or git commit + push) — the other Mac can't see uncommitted/unpushed work, which is how duplicate work happens."
+msg="⚠ $repo has $parts. Before switching Macs, run /log (or git commit + push) — the other Mac can't see uncommitted/unpushed work, which is how duplicate work happens."
 
 printf '{"systemMessage": %s, "suppressOutput": true}\n' "$(printf '%s' "$msg" | jq -Rs .)"
 exit 0
