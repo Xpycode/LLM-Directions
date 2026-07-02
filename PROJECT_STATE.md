@@ -14,10 +14,14 @@
   migrated to it end-to-end** — package hardened `Xpycode/AppCitizenshipKit` 0.1.0→**0.1.2**, Conjoyn
   consumes the tag and builds green; cookbook **#108** captures the migration + proving-ground pattern.
 - **Blockers:** none.
-- **Next:** *(framework, in flight)* execute **Wave 2** of `OPTIMIZATION-PLAN.md` — lean cookbook
-  router, command consolidation, template trim (biggest token wins); **then** deploy the finalized
-  template + commands to `~/.claude/` (that's when `/make-plan` goes live and the `/plan` shadow is
-  removed on-machine). *(product)* **roll `AppCitizenshipKit` to the first wave** of apps — DiskVerdict
+- **Next:** *(framework, in flight)* **Wave 2 is ¾ done** — 2.1 (cookbook router), 2.3 (doc dedup),
+  2.4 (growth-file caps) landed 2026-07-02 (d). **Remaining: 2.2 — consolidate 36 commands → ~14**
+  (`/log` absorbs session-close/depart/handoff/check-index/phase/compound; `/status` absorbs
+  context/arrive; `/spec` absorbs interview/example-map; new `/check` absorbs code-review/quality/
+  reflect/review/minimums; generate the `/directions` catalog from `commands/`). Do 2.2 as its own
+  focused run (Medium risk — rewrites the command system). **Then** deploy the finalized template +
+  commands to `~/.claude/` (that's when `/make-plan` goes live and the `/plan` shadow is removed
+  on-machine). *(product)* **roll `AppCitizenshipKit` to the first wave** of apps — DiskVerdict
   next (additive: it has FeedbackKit already, ACK adds Tip Jar + About), then the rest. Use the per-app
   rollout checklist in ACK's README + the `#108` pattern. Separate sweep: fix 19/30 missing/empty
   AppIcons (cookbook #76).
@@ -26,30 +30,21 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
-- **2026-07-02 (c)** — landed the dangling cookbook **#153** (destructive-action confirmation ladder,
-  from CompressPhotos) that a prior session left untracked with no index row (`1affd7c`). A
-  bidirectional index audit then caught **3 more silent gaps** — files present with no table row:
-  **#141/#145/#151** — backfilled them (`cf21478`). Index now reconciled: **154 files / 154 rows, no
-  gaps, no dead links.** Pushed; `main` in sync.
-- **2026-07-02 (b)** — committed #152 (`6689a62`), merged the iOS `optimize-directions-efficiency`
-  branch (`c8924be` — brings `OPTIMIZATION-PLAN.md` + read-on-demand setup-seam/hook fixes), then
-  **executed Wave 1** of that plan (`0081238`): 10 correctness fixes across ~39 files — broken
-  plan→execute pipeline, stale model/CLI facts, wrong Swift snippets, and 8 doc contradictions
-  (incl. `/plan`→`/make-plan`, split-pane decision tree, adaptive-theme default). `/update-directions`
-  found this Mac runs the **shell** hooks (not the plugin's Python) and the live `~/.claude/CLAUDE.md`
-  predates the template → **global migration deferred to post-Wave-2**. All pushed; `main` in sync.
-- **2026-07-02 (a)** — sat down on the M1 Max; `/arrive` flagged the alarming "14 behind *and* a dirty
-  tree," but it was the familiar Syncthing copy-vs-drift, not a real divergence: no competing local
-  commits, so all 14 fast-forward. Hashed every dirty file against origin — **26 of 27 were
-  byte-identical duplicates** the other Mac already committed (24 cookbooks #125/#128–#151 + #89 + most
-  of the index table), safe to drop. Only **one file was genuinely mine**: cookbook **#152**
-  (detecting when a root-only CLI like `fs_usage` fails to get privileges instead of showing a false
-  "live"), plus its one index row. Deleted the duplicates, pulled cleanly, re-added the #152 row onto
-  origin's newer index — a plain fast-forward, no cherry-pick, because #152's filename doesn't exist on
-  origin. Left #152 + its row uncommitted for `/depart`. (Also spotted the other Mac left a #151 file
-  with no matching index row.)
-- **2026-06-19** — chased down why `/status` had started costing 40–70k tokens (it was ~20k): the leaner `/status` I wrote 9 days ago was committed to the master repo but never *copied* into the live `~/.claude/commands/`, so the old version that reads the entire 37 KB session index + a full log was still running. Deployed the fix (and confirmed the 5×→20× plan upgrade has nothing to do with it — that's rate limits, not cost-per-message). Then made the "you're on the wrong model" warning impossible to miss — a bold white-on-red bar in the statusline — and, following the user's own insight, turned it into a **phase-aware gate**: `/execute` stops you if you're not on Sonnet, `/spec` and `/plan` nudge you to Opus, and `/session-close` now reminds you which model to switch to for the *next* session (switch right after `/clear`, when it's cheapest). Also synced 10 live commands that had fallen behind the master. Pushed `9a83888`.
-- **2026-06-17 (b)** — sat down on the M1 Max. `/arrive` flagged `behind 7` and the start-up banner said "byte-identical phantom, safe to `reset --hard`" — but a file-by-file hash check caught it under-counting: three cookbooks (**#118/#119/#120**) were genuine uncommitted local work a prior session never `/depart`-ed, and a blind `--hard` would have lost the index edits. Reconciled with **`reset --mixed`** instead (catches HEAD up but treats the working tree as sacred), then committed + pushed #118–120. Then **rolled the new Directions out** where it actually runs: refreshed the live `~/.claude/commands` copies (the #62-routing `/review` + `/minimums`, plus 4 commands that were missing globally). Surveyed all 44 projects that carry a Directions copy — every one is "behind" — but **decided NOT to mass-sync**: the live cookbook/command lookup reads from the *master repo*, so those per-project copies are vestigial snapshots nothing on the hot path reads. Synced + pushed only the 3 asked for (DiskVerdict, Conjoyn, App-Websites), docs-only so App-Websites' in-flight `apps.json` stayed untouched.
+- **2026-07-02 (d)** — Executed OPTIMIZATION-PLAN **Wave 2 (¾: 2.1+2.3+2.4)** via 3 parallel agents:
+  cookbook index 50K→41.6K + split app-shell into #156; deleted/merged 5 numbered docs (03/11/31/
+  41apple/42web) into one-home-per-fact + new 41_ui-vocabulary/47_project-ui-conventions; capped
+  sessions/_index 42K→9.7K & decisions 42K→20.6K into archives. Fixed all resulting dead links;
+  backfilled 2 prior-session orphans (#155 file, #117 variant). 2.2 (commands) deferred.
+- **2026-07-02 (c)** — Landed dangling cookbook #153 + backfilled missing index rows #141/#145/#151;
+  index now 154/154, no gaps. Pushed.
+- **2026-07-02 (b)** — Merged the efficiency branch and executed OPTIMIZATION-PLAN Wave 1 (10
+  correctness fixes across ~39 files, incl. `/plan`→`/make-plan`). Global config migration deferred
+  to post-Wave-2. Pushed.
+- **2026-07-02 (a)** — Reconciled a 14-behind dirty tree via per-file hashing: 26 files were
+  duplicates already on origin, only cookbook #152 was genuinely new. Fast-forwarded cleanly.
+- **2026-06-19** — Fixed `/status` token bloat (a leaner version existed but was never deployed
+  live). Made model-mismatch warnings loud and added phase-aware model gating (`/execute`, `/spec`,
+  `/plan`, `/session-close`). Pushed `9a83888`.
 <!-- older entries → sessions/_index.md -->
 
 ## Progress
@@ -75,17 +70,18 @@
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
-- **All committed + pushed; `main` in sync, tree clean** (only `.claude/settings.local.json` shows
-  modified — per-Mac, intentionally never committed). Latest: `1affd7c` (#153 + index) → `cf21478`
-  (backfill #141/#145/#151 index rows).
-- **Cold-start pickup:** open `OPTIMIZATION-PLAN.md` → execute **Wave 2** (backpressure targets:
-  `PATTERNS-COOKBOOK.md` ≤ 45 KB, `ls commands | wc -l` ≈ 14).
-- **Live-vs-repo caveat:** Wave-1 fixes + the `/make-plan` rename are in the **repo**, NOT yet on this
-  Mac's `~/.claude/` — `/plan` still hits the old custom command live until the post-Wave-2 redeploy
-  (intentional; the global-config migration was deferred to avoid deploying a template Wave 2 rewrites).
-- **Cookbook index reconciled (2026-07-02):** every `cookbook/NNN` file now has a table row —
-  added #153 (destructive-action ladder) + backfilled the missing rows for #141/#145/#151. Audited:
-  154 files / 154 rows, no gaps, no dead links.
+- **Wave 2 (¾) committed locally, NOT yet pushed** — 5 commits this session (orphan backfill +
+  2.1 + 2.3 + 2.4 + this state sync). `main` is ahead of origin; **push before leaving this Mac.**
+  Only `.claude/settings.local.json` stays uncommitted (per-Mac). Backpressure met:
+  `PATTERNS-COOKBOOK.md` = 41.6 KB (≤45 ✓); cookbook now **157 files** (added #155/#156).
+- **Cold-start pickup:** the one Wave 2 piece left is **2.2 — commands 36 → ~14** (see `## Next` and
+  `OPTIMIZATION-PLAN.md §2.2`). Target `ls commands | wc -l` ≈ 14. Run it as its own focused session.
+- **Live-vs-repo caveat:** all Wave-1 + Wave-2 doc changes + the `/make-plan` rename are in the
+  **repo**, NOT yet on this Mac's `~/.claude/` — `/plan` still hits the old custom command live until
+  the post-Wave-2 redeploy (deferred deliberately; don't deploy a template 2.2 still rewrites).
+- **Fixed this session:** origin had a **dead link** — #155's index row (in `8c89213`) shipped
+  without its file; backfilled. Also folded away 5 duplicate docs; `gen-directions-index.sh` now
+  reaches docs 27–39.
 - **Per-Mac wiring (does NOT travel via git):** both Macs are wired — M1 Max erased+restored
   2026-06-13 and `bash hooks/install.sh` was re-run there (symlinks verified); M4-Pro long since done.
   Reminder only if a Mac is restored again: after `git pull`, run `bash hooks/install.sh` once — it
@@ -98,4 +94,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-02 (b).*
+*Last updated: 2026-07-02 (d).*
