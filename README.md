@@ -39,30 +39,35 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 ## Quick Start
 
+**Read-on-demand model:** the universal docs in this repo are the single source of truth.
+They are **never copied into your projects** — copies drift and stop receiving updates.
+Claude reads them on demand from your local clone of this repo, routed by the Directions
+Index in your global `~/.claude/CLAUDE.md`.
+
+### Install once (per machine)
+
+```bash
+git clone https://github.com/Xpycode/LLM-Directions.git
+cd LLM-Directions
+./install-directions.sh
+```
+
+Then open `~/.claude/CLAUDE.md` and replace every `[LOCAL_DIRECTIONS_PATH]` placeholder
+with the path to your local clone (the install script prints it).
+
 ### For New Projects
 
-1. Copy this folder into your project as `/docs` (excluding `.git` and tool caches):
-   ```bash
-   # From a local checkout
-   mkdir -p docs && rsync -a \
-     --exclude='.git' --exclude='.serena' \
-     --exclude='.fastembed_cache' --exclude='.archive' \
-     /path/to/LLM-Directions/ ./docs/
+1. Open a Claude session in your project and run `/setup` — it scaffolds **only** the
+   project-specific files: `docs/PROJECT_STATE.md` (the "is Directions set up?" sentinel),
+   `docs/sessions/`, `docs/decisions.md`, `docs/glossary.md`. Nothing else is copied.
+2. Run `/interview` to create your first spec
+3. Run `/plan` to break into tasks, `/execute` to build
 
-   # Or, fetch fresh from GitHub without carrying the inner .git
-   git clone --depth 1 https://github.com/Xpycode/LLM-Directions.git /tmp/_directions \
-     && rsync -a --exclude='.git' /tmp/_directions/ ./docs/ \
-     && rm -rf /tmp/_directions
-   ```
-   Don't `git clone … docs` directly — that drops a live `.git` inside your repo.
-2. Add to your `CLAUDE.md`:
-   ```markdown
-   ## Context
-   Read docs/00_base.md at the start of every session.
-   Check docs/PROJECT_STATE.md for current focus.
-   ```
-3. Start a Claude session - run `/interview` to create your first spec
-4. Run `/plan` to break into tasks, `/execute` to build
+### For Existing Projects (older copied-docs layout)
+
+If a project still contains copied universal docs (`docs/00_base.md`, `docs/20_*.md`, …),
+run `/update-directions` — it removes the stale copies and switches the project to
+read-on-demand. Your project-specific files (state, sessions, decisions) are untouched.
 
 ### Core Workflow
 
@@ -77,29 +82,29 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 ## File Structure
 
 ```
-project/
+your-project/
 ├── CLAUDE.md                     ← Project-specific AI context
-├── PROJECT_STATE.md              ← Current funnel position
-├── IMPLEMENTATION_PLAN.md        ← Active task list (waves)
+├── IMPLEMENTATION_PLAN.md        ← Active task list (waves, delete when done)
 ├── AGENTS.md                     ← Subagent patterns & context
-│
 ├── specs/                        ← Feature specifications
 │   └── [feature].md
-├── sessions/                     ← Session logs
-├── decisions.md                  ← Why we chose X over Y
-└── ideas.md                      ← Backlog with phase tracking
+└── docs/                         ← Scaffolded by /setup — project files ONLY
+    ├── PROJECT_STATE.md          ← Current funnel position (the sentinel)
+    ├── sessions/                 ← Session logs
+    ├── decisions.md              ← Why we chose X over Y
+    └── glossary.md               ← Project-specific terms
 
-docs/ (Directions reference)
-├── 00_base.md                    ← Start here every session
+LLM-Directions/ (this repo — read on demand, never copied)
+├── 00_base.md                    ← System overview + document router
 ├── 01_quick-reference.md         ← Daily cheatsheet
 ├── 03_workflow-phases.md         ← The funnel process
 ├── 04_architecture-decisions.md  ← Interview → tech mapping
-├── PATTERNS-COOKBOOK.md          ← Reusable code patterns
+├── PATTERNS-COOKBOOK.md          ← Pattern index (patterns live in cookbook/)
 ├── 10-19: Setup docs
 ├── 20-29: Technical gotchas
 ├── 30-39: Quality & debugging
 ├── 40-49: Terminology reference
-└── 50-59: Advanced patterns
+└── 50-62: Advanced patterns
 ```
 
 ---
@@ -170,7 +175,7 @@ Reusable code patterns extracted from production apps. Copy-first beats building
 - App lifecycle (initialization order, scene phase handling)
 - MCP memory integration (Vestige patterns)
 
-See `PATTERNS-COOKBOOK.md` for full code snippets.
+`PATTERNS-COOKBOOK.md` is the index; the full code snippets live as individual files in `cookbook/`.
 
 ---
 
@@ -191,6 +196,9 @@ ln -sf /path/to/LLM-Directions ~/.claude/plugins/local/directions
 cp commands/* ~/.claude/commands/
 cp CLAUDE-GLOBAL-TEMPLATE.md ~/.claude/CLAUDE.md
 ```
+
+**Then replace every `[LOCAL_DIRECTIONS_PATH]` placeholder in `~/.claude/CLAUDE.md`** with
+the path to your local clone — a raw copy of the template is not functional without this.
 
 ### Option 2: Commands Only
 

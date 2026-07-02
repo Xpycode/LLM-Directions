@@ -12,10 +12,15 @@ Directions operates in two modes:
 
 | Mode | File Location | When |
 |------|---------------|------|
-| **Master repo** | Files at root (`./00_base.md`, `./PROJECT_STATE.md`) | When editing the Directions repo itself |
-| **Installed project** | Files in `docs/` (`docs/00_base.md`, `docs/PROJECT_STATE.md`) | After copying to a user project |
+| **Master repo** | Everything at root (`./00_base.md`, `./PROJECT_STATE.md`) | When editing the Directions repo itself |
+| **Installed project** | Only *project-specific* files in `docs/` (`docs/PROJECT_STATE.md`, `docs/sessions/`, `docs/decisions.md`, `docs/glossary.md`) | After `/setup` in a user project |
 
-**Detection rule:** Check for `docs/00_base.md` first. If it exists, use `docs/` paths. Otherwise, use root paths.
+**The universal docs (`00`–`62`) are never copied into projects.** They live only in the master
+repo and are read on demand via the Directions Index in the global `~/.claude/CLAUDE.md`.
+Copies drift — an already-set-up project never receives updates.
+
+**Detection rule (sentinel):** Check for `docs/PROJECT_STATE.md`. If it exists, this is an
+installed project — use `docs/` paths for project files. Otherwise, use root paths (master repo).
 
 All commands and hooks support both modes automatically.
 
@@ -187,7 +192,6 @@ Plans are disposable:
 ```
 /project-root
 ├── CLAUDE.md                     ← Project-specific AI context
-├── PROJECT_STATE.md              ← Current funnel position
 ├── IMPLEMENTATION_PLAN.md        ← Active task list (delete when done)
 ├── AGENTS.md                     ← Subagent patterns & context
 ├── RESUME.md                     ← Mid-task checkpoint (if exists)
@@ -195,12 +199,16 @@ Plans are disposable:
 ├── specs/                        ← Feature specifications
 │   └── [feature].md
 │
-├── sessions/                     ← Session logs
-│   ├── _index.md
-│   └── YYYY-MM-DD.md
-│
-├── decisions.md                  ← Why we chose X over Y
-└── ideas.md                      ← Backlog with phase tracking
+└── docs/                         ← Project-specific Directions files (scaffolded by /setup)
+    ├── PROJECT_STATE.md          ← Current funnel position (the sentinel)
+    ├── sessions/                 ← Session logs
+    │   ├── _index.md
+    │   └── YYYY-MM-DD.md
+    ├── decisions.md              ← Why we chose X over Y
+    └── glossary.md               ← Project-specific terms
+
+Universal docs (00–62), templates, and the cookbook stay in the Directions
+master repo and are read on demand — they are NOT copied here.
 ```
 
 ### Directions Reference Docs
