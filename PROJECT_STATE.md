@@ -79,8 +79,9 @@
 - **Live-vs-repo caveat:** Wave-1 fixes + the `/make-plan` rename are in the **repo**, NOT yet on this
   Mac's `~/.claude/` — `/plan` still hits the old custom command live until the post-Wave-2 redeploy
   (intentional; the global-config migration was deferred to avoid deploying a template Wave 2 rewrites).
-- **Still-open small gap:** origin has a `cookbook/151` file but no `#151` index row in
-  `PATTERNS-COOKBOOK.md` — add when convenient.
+- **Cookbook index reconciled (2026-07-02):** every `cookbook/NNN` file now has a table row —
+  added #153 (destructive-action ladder) + backfilled the missing rows for #141/#145/#151. Audited:
+  154 files / 154 rows, no gaps, no dead links.
 - **Per-Mac wiring (does NOT travel via git):** both Macs are wired — M1 Max erased+restored
   2026-06-13 and `bash hooks/install.sh` was re-run there (symlinks verified); M4-Pro long since done.
   Reminder only if a Mac is restored again: after `git pull`, run `bash hooks/install.sh` once — it
@@ -93,4 +94,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-02.*
+*Last updated: 2026-07-02 (b).*
