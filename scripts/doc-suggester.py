@@ -85,8 +85,16 @@ def find_project_root():
 
 
 def check_directions_exists(project_root: Path) -> bool:
-    """Check if this is a Directions project."""
-    return (project_root / "docs" / "00_base.md").exists()
+    """Check if this is a Directions project.
+
+    Sentinel is PROJECT_STATE.md (docs/ in installed projects, root in the
+    master repo). Universal docs are never copied into projects, so
+    docs/00_base.md must NOT be used as the sentinel.
+    """
+    return (
+        (project_root / "docs" / "PROJECT_STATE.md").exists()
+        or (project_root / "PROJECT_STATE.md").exists()
+    )
 
 
 def find_matching_doc(prompt: str) -> dict | None:
@@ -108,40 +116,45 @@ def find_matching_doc(prompt: str) -> dict | None:
 
 
 def main():
-    # Get the user's prompt from stdin or environment
-    # Claude Code passes the prompt content via stdin for UserPromptSubmit hooks
+    # UserPromptSubmit hooks receive a JSON payload on stdin; the user's
+    # prompt is its "prompt" field. (Reading raw stdin as the prompt matches
+    # against session_id/cwd noise instead.)
     prompt = ""
 
     if not sys.stdin.isatty():
-        prompt = sys.stdin.read()
+        try:
+            payload = json.load(sys.stdin)
+            prompt = payload.get("prompt", "")
+        except (json.JSONDecodeError, ValueError):
+            prompt = ""
 
-    # Also check environment variable as fallback
     if not prompt:
-        prompt = os.environ.get("CLAUDE_USER_PROMPT", "")
-
-    if not prompt:
-        # No prompt to analyze
-        print(json.dumps({}))
+        # No prompt to analyze — no output means no suggestion
         return
 
     project_root = Path(find_project_root())
 
     # Only suggest docs if this is a Directions project
     if not check_directions_exists(project_root):
-        print(json.dumps({}))
         return
 
     # Find matching documentation
     match = find_matching_doc(prompt)
 
     if match:
-        result = {
-            "message": f"📚 **Relevant doc:** `docs/{match['doc']}` covers {match['description']}."
-        }
-        print(json.dumps(result))
-    else:
-        # No match - return empty (no suggestion)
-        print(json.dumps({}))
+        # additionalContext is injected into the session; universal docs live
+        # in the Directions master repo (read on demand), not in project docs/.
+        print(json.dumps({
+            "hookSpecificOutput": {
+                "hookEventName": "UserPromptSubmit",
+                "additionalContext": (
+                    f"📚 Relevant Directions doc: `{match['doc']}` covers "
+                    f"{match['description']}. Read it from the Directions "
+                    f"master repo (see the Directions Index in ~/.claude/CLAUDE.md)."
+                ),
+            }
+        }))
+    # No match → print nothing (no suggestion)
 
 
 if __name__ == "__main__":

@@ -94,12 +94,30 @@ def get_latest_session(sessions_dir: Path) -> tuple[str | None, str | None]:
     return latest.name, summary
 
 
-def build_context_message(project_root: Path) -> dict:
-    """Build the context message for a Directions project."""
-    docs_dir = project_root / "docs"
+def find_state_file(project_root: Path) -> Path | None:
+    """Locate PROJECT_STATE.md — the 'is Directions set up?' sentinel.
 
+    Installed projects keep it in docs/ (scaffolded by /setup); the Directions
+    master repo keeps it at the root. Universal docs are never copied into
+    projects, so docs/00_base.md must NOT be used as the sentinel.
+    """
+    for candidate in (
+        project_root / "docs" / "PROJECT_STATE.md",
+        project_root / "PROJECT_STATE.md",
+    ):
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def build_context_message(base_dir: Path) -> str:
+    """Build the context message for a Directions project.
+
+    base_dir is the directory containing PROJECT_STATE.md and sessions/
+    (docs/ in installed projects, repo root in the master repo).
+    """
     # Read PROJECT_STATE.md
-    state_content = read_file_safely(docs_dir / "PROJECT_STATE.md")
+    state_content = read_file_safely(base_dir / "PROJECT_STATE.md")
 
     phase = None
     focus = None
@@ -111,7 +129,7 @@ def build_context_message(project_root: Path) -> dict:
         blockers = extract_blockers(state_content)
 
     # Get latest session
-    latest_session, session_summary = get_latest_session(docs_dir / "sessions")
+    latest_session, session_summary = get_latest_session(base_dir / "sessions")
 
     # Build message parts
     parts = ["This project uses **Directions** for documentation and workflow."]
@@ -133,29 +151,31 @@ def build_context_message(project_root: Path) -> dict:
     parts.append("")
     parts.append("Use `/status` for full details or `/log` to update the session log.")
 
-    return {
-        "message": "\n".join(parts)
-    }
+    return "\n".join(parts)
 
 
-def build_non_directions_message() -> dict:
+def build_non_directions_message() -> str:
     """Build message for non-Directions projects."""
-    return {
-        "message": "What would you like to do?\n\n| Command | What it does |\n|---------|------------|\n| `/setup` | Detect project state, set up or migrate Directions |\n| `/status` | Check current phase, focus, blockers, last session |\n| `/log` | Create or update today's session log |\n| `/decide` | Record an architectural/design decision |\n| `/interview` | Run the full discovery interview |\n| `/learned` | Add a term to your personal glossary |\n| `/reorg` | Reorganize folder structure (numbered folders) |\n| `/update-directions` | Pull latest Directions from GitHub |\n\nOr just tell me what you're working on."
-    }
+    return "What would you like to do?\n\n| Command | What it does |\n|---------|------------|\n| `/setup` | Detect project state, set up or migrate Directions |\n| `/status` | Check current phase, focus, blockers, last session |\n| `/log` | Create or update today's session log |\n| `/decide` | Record an architectural/design decision |\n| `/interview` | Run the full discovery interview |\n| `/learned` | Add a term to your personal glossary |\n| `/reorg` | Reorganize folder structure (numbered folders) |\n| `/update-directions` | Pull latest Directions from GitHub |\n\nOr just tell me what you're working on."
 
 
 def main():
     project_root = Path(find_project_root())
-    docs_base = project_root / "docs" / "00_base.md"
+    state_file = find_state_file(project_root)
 
-    if docs_base.exists():
-        result = build_context_message(project_root)
+    if state_file:
+        context = build_context_message(state_file.parent)
     else:
-        result = build_non_directions_message()
+        context = build_non_directions_message()
 
-    # Output JSON for Claude to consume
-    print(json.dumps(result))
+    # SessionStart hook output: additionalContext is injected into the session.
+    # (The old {"message": ...} key is not a recognized hook output and was ignored.)
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "SessionStart",
+            "additionalContext": context,
+        }
+    }))
 
 
 if __name__ == "__main__":
