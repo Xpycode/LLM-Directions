@@ -22,52 +22,10 @@ When your toolbar items already carry their own backgrounds (a custom path-well 
 
 ## The trap that wastes the most time: you can't inject the key the easy way
 
-With `GENERATE_INFOPLIST_FILE = YES` (the modern default — no physical Info.plist), the obvious move is a build setting:
-
-```yaml
-INFOPLIST_KEY_UIDesignRequiresCompatibility: YES   # ← SILENTLY DOES NOTHING
-```
-
-**This fails silently.** The `INFOPLIST_KEY_*` mechanism only injects an **allowlist** of Apple-recognized keys (CFBundleDisplayName, NSHumanReadableCopyright, LSApplicationCategoryType, …). `UIDesignRequiresCompatibility` is **not** on it, so the build drops it with no error. Always verify:
-
-```bash
-/usr/libexec/PlistBuddy -c "Print :UIDesignRequiresCompatibility" "$APP/Contents/Info.plist"
-# → "Does Not Exist"  ← the build setting was ignored
-```
-
-### Working fix (keeps GENERATE_INFOPLIST_FILE + all your INFOPLIST_KEY_* settings)
-
-Point `INFOPLIST_FILE` at a **minimal hand-managed base plist holding only the one key**, and keep `GENERATE_INFOPLIST_FILE: YES`. Xcode uses the base file as the seed and **merges the generated/allowlisted keys on top** — you get both.
-
-`project.yml` (xcodegen):
-```yaml
-settings:
-  base:
-    GENERATE_INFOPLIST_FILE: YES
-    INFOPLIST_FILE: MyApp/Info.plist          # ← minimal base, see below
-    INFOPLIST_KEY_CFBundleDisplayName: myapp  # ← still works, merged on top
-    INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.video"
-```
-
-`MyApp/Info.plist` (the *entire* file — let Xcode generate everything else):
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>UIDesignRequiresCompatibility</key>
-    <true/>
-</dict>
-</plist>
-```
-
-Regenerate, rebuild, **verify the merge** (both keys present proves it worked):
-```bash
-/usr/libexec/PlistBuddy -c "Print :UIDesignRequiresCompatibility" "$APP/Contents/Info.plist"  # → true
-/usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName"             "$APP/Contents/Info.plist"  # → myapp
-```
-
-**xcodegen note:** set `INFOPLIST_FILE` as a plain **build setting** (above) so xcodegen leaves your file alone. Do **not** use xcodegen's `info: { path:, properties: }` block here unless you also drop `GENERATE_INFOPLIST_FILE` and move *all* `INFOPLIST_KEY_*` values into `properties` — that block makes xcodegen **own and overwrite** the plist (see #47 gotcha #2), which fights the generate-and-merge approach.
+`INFOPLIST_KEY_UIDesignRequiresCompatibility: YES` under `GENERATE_INFOPLIST_FILE = YES`
+silently drops the key — same allowlist gotcha as
+[156-xcodegen-infoplist-allowlist.md](156-xcodegen-infoplist-allowlist.md), which also has the
+`PlistBuddy` verify command and the build-setting-merge fix (Method 3) used here.
 
 ## The migration itself (what to delete)
 
@@ -130,4 +88,4 @@ people up because the obvious moves silently fail:
 
 A CLI `screencapture` of your own app often fails (no Screen Recording perm for the shell). You can't see the bubbles yourself — drive a **user eyeball** instead, but make it a *correctness* check by reading the values out of the source first, and confirm the build/plist facts programmatically (PlistBuddy above). The visual "are the capsules gone?" is the only part that needs a human.
 
-Pairs with: #47 (xcodegen Info.plist `properties` vs file-overwrite), #00 (App Shell Standard / `FCPToolbarButtonStyle`), #71 (LSUIElement self-managed window), VAM (the repo's macOS-26-SDK titlebar-injection reference).
+Pairs with: #156 (Info.plist allowlist gotcha, canonical), #47 (xcodegen Info.plist `properties` vs file-overwrite), #00 (App Shell Standard / `FCPToolbarButtonStyle`), #71 (LSUIElement self-managed window), VAM (the repo's macOS-26-SDK titlebar-injection reference).

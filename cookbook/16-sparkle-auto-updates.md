@@ -14,37 +14,10 @@
 
 ### Gotcha: INFOPLIST_KEY_ Prefix Does NOT Work for Custom Keys
 
-When using `GENERATE_INFOPLIST_FILE = YES` with xcconfig, the `INFOPLIST_KEY_` prefix
-**only works for Apple-recognized keys** (e.g., `NSHumanReadableCopyright`, `CFBundleDisplayName`).
-
-Custom third-party keys like `SUFeedURL` and `SUPublicEDKey` are **silently ignored**.
-
-**Symptom:** Sparkle shows "You must specify the URL of the appcast as the SUFeedURL key
-in either the Info.plist" even though you defined `INFOPLIST_KEY_SUFeedURL` in xcconfig.
-
-**Fix:** Create a partial `Info.plist` with the custom keys and set `INFOPLIST_FILE` in xcconfig:
-
-```xml
-<!-- Config/Info.plist -->
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>SUFeedURL</key>
-    <string>https://example.com/appcast.xml</string>
-    <key>SUPublicEDKey</key>
-    <string>YOUR_PUBLIC_KEY_HERE</string>
-</dict>
-</plist>
-```
-
-```
-// Shared.xcconfig
-GENERATE_INFOPLIST_FILE = YES
-INFOPLIST_FILE = Config/Info.plist
-// Xcode merges both: generated Apple keys + your custom keys
-```
+`INFOPLIST_KEY_SUFeedURL` / `INFOPLIST_KEY_SUPublicEDKey` are silently dropped by the same
+allowlist mechanism documented in
+[156-xcodegen-infoplist-allowlist.md](156-xcodegen-infoplist-allowlist.md) — see that file for
+the root cause and the partial-plist merge fix (Sparkle's custom keys are its worked example).
 
 ### Gotcha: Empty Appcast
 
