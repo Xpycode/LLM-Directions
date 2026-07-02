@@ -170,3 +170,43 @@ fills with the injected `theme.primaryBackground` — proves colorScheme+preset 
 result strip these views render). **Folds into the routing fix it verifies:** route the light/dark axis
 through `@Environment(\.theme)` injected by a `ThemedRoot` that reads `@Environment(\.colorScheme)` — a
 `Theme.*` static that reads `NSApp.effectiveAppearance` is untracked and never repaints on a live OS toggle.
+
+---
+
+## Variant — standalone throwaway harness to eyeball a custom style (no test target; preview tool absent)
+
+Same `ImageRenderer` mechanism, different use-case: you just want to **see** a custom `ButtonStyle`/view
+and the project's dedicated preview-snapshot tool isn't on this machine (a multi-Mac gap — e.g.
+`~/XcodePreviews/` doesn't exist here). Skip XCTest entirely — write a one-file `swiftc` executable that
+inlines copies of the style + `Theme`, renders to PNG, and exits. No Xcode project, no window, no simulator.
+**Source:** VAM Wave 1D (2026-07-02), eyeballing the `FCPButtonStyle`/`FCPSegmented` custom styles that
+escape macOS 26's Tahoe pills.
+
+```swift
+@MainActor
+func render() {
+    NSAppearance.current = NSAppearance(named: .darkAqua)   // resolve dynamic NSColors dark (deprecated, still works)
+    let view = Showcase().environment(\.colorScheme, .dark)
+    let r = ImageRenderer(content: view); r.scale = 2       // scale 2 = crisp eyeball (scale 1 only for pixel asserts)
+    guard let img = r.nsImage,
+          let png = NSBitmapImageRep(data: img.tiffRepresentation!)?.representation(using: .png, properties: [:])
+    else { exit(1) }
+    try! png.write(to: URL(fileURLWithPath: CommandLine.arguments[1]))
+}
+MainActor.assumeIsolated { render() }                       // top-level code is NOT implicitly @MainActor
+```
+
+Compile & run: `swiftc harness.swift -o h && ./h out.png`.
+
+**The caveat decides what this proves** (same root as gotcha #2 above): only **pure-SwiftUI-drawn styles
+rasterize**. A custom `ButtonStyle`/`ToggleStyle` and an `HStack`-of-buttons segmented control render
+correctly; **AppKit-backed controls come back as the yellow circle-slash "unavailable" placeholder** —
+`Toggle(.checkbox)`, `Slider`, `Menu`, an interactive `TextField` (NSTextField), and any
+`NSViewRepresentable`. So the harness verifies exactly the controls whose chrome is *yours* (the risky
+custom drawing) and is blind to the stock ones — eyeball those in Xcode's live `#Preview` or the running app.
+
+Two compile gotchas hit while writing the harness:
+- **Top-level statements are not implicitly main-actor** → calling a `@MainActor func` from the top level
+  errors; wrap in `MainActor.assumeIsolated { … }` (top-level code does run on the main thread).
+- **Inside a `#Preview` you can't declare a nested `struct` then `return`** (result-builder rule) → use
+  `@Previewable @State` (macOS 15+) for interactive preview state instead of a wrapper `View`.
