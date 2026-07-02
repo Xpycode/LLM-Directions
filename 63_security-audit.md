@@ -1,6 +1,10 @@
-# /security-audit
+# Security Audit Checklist (OWASP / VibeSec)
 
-Run a comprehensive security audit on code before deployment. Based on [VibeSec](https://github.com/BehiSecc/VibeSec-Skill) patterns from 5+ years of bug bounty experience.
+<!-- TRIGGERS: security audit, OWASP, IDOR, injection, auth, secrets, penetration, vulnerability, before deploy, security review | PHASE: polish/shipping | LOAD: on-demand via `/check security` -->
+
+The comprehensive pre-deployment security checklist. Invoked by **`/check security`** (which is a thin
+pointer to this doc). Based on [VibeSec](https://github.com/BehiSecc/VibeSec-Skill) patterns from 5+
+years of bug bounty experience. For the always-on security *rules*, see `54_security-rules.md`.
 
 ---
 
