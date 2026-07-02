@@ -1,3 +1,9 @@
+<!--
+TRIGGERS: add a toggle, add a button, add a menu item, UI element placement, where should this go, add a control, add a setting, add a preference, new UI, wire up a control
+PHASE: implementation, UI review
+LOAD: full
+-->
+
 # UI Changes Protocol
 
 Rules for adding, modifying, or removing UI elements in existing apps.
@@ -130,12 +136,12 @@ When adding UI elements: find a similar existing control first, show me how it's
 
 ## UI Constraints Checklist
 
-Before implementing any UI element, verify against these project conventions (see `41_apple-ui.md` → Project UI Conventions for full details):
+Before implementing any UI element, verify against these project conventions (see `47_project-ui-conventions.md` for full details):
 
 | Constraint | Rule |
 |------------|------|
 | **No Tahoe sidebar** | Do not use `NavigationSplitView` or liquid glass sidebar. Use HStack + Divider panes. |
-| **No SwiftUI controls** | Do not use SwiftUI `Button`, `Toggle`, `Picker`, `Slider`, `Stepper`, `DatePicker`, `ColorPicker`, or `TextField`/`TextEditor`. Wrap AppKit equivalents via `NSViewRepresentable`. **Exception:** SwiftUI `Button` is allowed inside `.toolbar` with `AppKitToolbarButtonStyle`. See mapping table in `41_apple-ui.md`. |
+| **No SwiftUI controls** | Do not use SwiftUI `Button`, `Toggle`, `Picker`, `Slider`, `Stepper`, `DatePicker`, `ColorPicker`, or `TextField`/`TextEditor`. Wrap AppKit equivalents via `NSViewRepresentable`. **Exception:** SwiftUI `Button` is allowed inside `.toolbar` with `AppKitToolbarButtonStyle`. See mapping table in `47_project-ui-conventions.md`. |
 | **No HSplitView** | Use `HStack(spacing: 0)` + `Divider()` for split layouts. |
 
 If a proposed UI change would introduce any of these, flag it before implementing.
@@ -147,4 +153,5 @@ If a proposed UI change would introduce any of these, flag it before implementin
 - `/spec` — Creates feature specification with exploration phase
 - `/make-plan` — Implementation planning with task breakdown
 - `54_security-rules.md` — Similar "check first" pattern for security
-- `41_apple-ui.md` — Apple UI reference with project UI conventions
+- `47_project-ui-conventions.md` — Project UI conventions this checklist enforces
+- `41_ui-vocabulary.md` — UI terminology reference (Apple + Web)

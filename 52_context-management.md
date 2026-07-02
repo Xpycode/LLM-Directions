@@ -600,6 +600,50 @@ definitions always loaded). Disable via `/mcp` to reclaim context. CLI tools lik
 /resume oauth-migration
 ```
 
+### 10. Error Logging
+
+When something fails, log it immediately rather than trusting memory to carry it forward.
+
+**Why:** Prevents repeating the same mistake later in the session or in a future one.
+
+```markdown
+## Errors Encountered
+
+### [Date] - Build failed with SwiftUI preview error
+**Attempted:** Running preview with async init
+**Error:** "Preview crashed"
+**Solution:** Move async work out of init
+**Don't repeat:** Never put async calls in SwiftUI init
+```
+
+### 11. Milestone Updates, Not Action Counting
+
+Update `PROJECT_STATE.md` or the session log at each milestone — a completed task, a resolved
+blocker, a decision made — rather than on a fixed action-count timer. Counting actions ("every
+2 tool calls") produces noisy updates that don't line up with anything meaningful; milestones do.
+
+```
+Milestone: Found the authentication bug's root cause
+→ UPDATE session log with the finding
+
+Milestone: Fixed and verified
+→ UPDATE session log, close out the item
+```
+
+### 12. Planning Level by Task Size
+
+Not every task needs full planning rigor:
+
+| Task Type | Planning Level |
+|-----------|---------------|
+| Quick fix (< 30 min) | Just do it, commit |
+| Single feature (< 2 hours) | Light notes in session log |
+| Multi-session feature | Full planning discipline |
+| Architecture changes | Full planning + decisions.md |
+| New project | Full setup of all files |
+
+---
+
 ## The Hybrid Workflow
 
 ### For Discovery/Planning (Directions-style)

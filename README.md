@@ -97,7 +97,6 @@ your-project/
 LLM-Directions/ (this repo — read on demand, never copied)
 ├── 00_base.md                    ← System overview + document router
 ├── 01_quick-reference.md         ← Daily cheatsheet
-├── 03_workflow-phases.md         ← The funnel process
 ├── 04_architecture-decisions.md  ← Interview → tech mapping
 ├── PATTERNS-COOKBOOK.md          ← Pattern index (patterns live in cookbook/)
 ├── 10-19: Setup docs

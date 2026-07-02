@@ -195,4 +195,4 @@ If you're tempted to reach for `sqlite3` to "just quickly delete some test rows,
 
 ---
 
-*Related: `30_production-checklist.md` (pre-deploy data integrity), `31_debugging.md` (incident-response patterns), `54_security-rules.md` (auth tokens for Turso URLs in env, never in repo).*
+*Related: `30_production-checklist.md` (pre-deploy data integrity), `25_troubleshooting.md` (incident-response patterns), `54_security-rules.md` (auth tokens for Turso URLs in env, never in repo).*

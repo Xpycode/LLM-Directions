@@ -33,7 +33,7 @@ DOC_MAPPINGS = [
     },
     {
         "keywords": ["debug", "bug", "broken", "not working", "crash", "error", "issue", "problem"],
-        "doc": "31_debugging.md",
+        "doc": "25_troubleshooting.md",
         "description": "debugging strategies"
     },
     {
@@ -73,8 +73,8 @@ DOC_MAPPINGS = [
     },
     {
         "keywords": ["button", "menu", "toolbar", "sidebar", "navigation", "tab", "modal", "sheet"],
-        "doc": "41_apple-ui.md",
-        "description": "Apple UI patterns"
+        "doc": "41_ui-vocabulary.md",
+        "description": "UI vocabulary (Apple + web)"
     },
 ]
 

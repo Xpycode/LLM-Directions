@@ -49,7 +49,7 @@ Ask:
 2. "Any technical constraints?" (dependencies, performance, security)
 3. "Open questions we need to resolve?"
 
-**If the feature involves UI:** Check `41_apple-ui.md` → Project UI Conventions and flag any conflicts (e.g., NavigationSplitView, SwiftUI Button, HSplitView are not allowed).
+**If the feature involves UI:** Check `47_project-ui-conventions.md` and flag any conflicts (e.g., NavigationSplitView, SwiftUI Button, HSplitView are not allowed).
 
 ## Step 5: Create the Spec
 

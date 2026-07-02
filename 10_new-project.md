@@ -65,39 +65,8 @@ Create `CLAUDE.md` in project root with:
 - [ ] State management rules (@Observable patterns)
 - [ ] Known issues / gotchas section
 
-```markdown
-# [Project Name]
-
-## Quick Start
-xcodebuild -scheme ProjectName -configuration Debug build
-
-## Tech Stack
-- Swift / SwiftUI — per-app target, see `14_project-identity.md` (Swift 6.0 baseline)
-- Minimum: macOS — per-app, see `14_project-identity.md`
-- Architecture: MVVM with Actors
-- Persistence: JSON files
-
-## Rules
-### Threading
-- ViewModels: Always `@MainActor`
-- Services: Always `actor`
-
-### Error Handling
-- Never use `try?` to swallow errors
-- Log errors with context
-
-## Critical Rules (Learned Hard Way)
-- [Add as discovered]
-```
-
-### AI-CONTEXT.md (Recommended)
-
-- [ ] Quick facts table (type, language, frameworks)
-- [ ] Project purpose (one paragraph)
-- [ ] Files to read first (priority order)
-- [ ] Current priorities (NOW/NEXT/BLOCKED)
-- [ ] Reference code patterns
-- [ ] Session protocol
+Use the CLAUDE.md Template in `12_documentation-templates.md` as the starting point — don't
+copy a separate version here.
 
 ---
 
@@ -129,6 +98,8 @@ xcodebuild -scheme ProjectName -configuration Debug build
 - [ ] PRIVACY.md (if user-facing app)
 - [ ] THREAT_MODEL.md (if handling sensitive data)
 - [ ] SESSION-LOG.md (for tracking AI sessions)
+
+All templates above live in `12_documentation-templates.md` — copy from there, don't recreate.
 
 ---
 
@@ -364,7 +335,6 @@ Before shipping, verify baseline features are in place. See **33_app-minimums.md
 | `CLAUDE.md` | AI rules and patterns | Yes |
 | `README.md` | Project documentation | Yes |
 | `.gitignore` | Git ignore patterns | Yes |
-| `AI-CONTEXT.md` | Session context | Recommended |
 | `CHANGELOG.md` | Version history | Recommended |
 
 ### Architecture Patterns

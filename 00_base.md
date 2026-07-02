@@ -126,6 +126,188 @@ swift test        # Tests pass?
 
 ---
 
+## Phase Detail
+
+### Phase 1: Discovery (Define Funnel)
+
+**The Problem:** Projects fail when the AI doesn't understand what you want.
+
+**The Solution:** The Spec Interview (see `/interview`)
+
+```
+1. Write a one-line description of what you want
+2. Run /interview - answer questions until scope is clear
+3. Review generated spec and acceptance criteria
+4. Confirm understanding before proceeding
+```
+
+**Output:** `specs/[feature].md` with acceptance criteria, flags for relevant technical docs.
+
+**Gate to pass:** Spec reviewed, edge cases documented, no contradictions.
+
+### Phase 2: Planning (Plan Funnel)
+
+**The Problem:** Big features become abandoned features.
+
+**The Solution:** Atomic tasks with backpressure (see `/make-plan`)
+
+> "Never be more than 30 minutes from working code."
+
+Each task must: be completable in <30 minutes, have clear "done" criteria, have a validation
+command (test/lint/build), and not break what already works.
+
+**Output:** `IMPLEMENTATION_PLAN.md` with waves, grouped by dependencies, backpressure defined per task.
+
+**Gate to pass:** All tasks atomic, dependencies mapped, validation commands specified.
+
+### Phase 3: Implementation (Build Funnel)
+
+**The Problem:** Context degrades over long sessions.
+
+**The Solution:** Wave-based execution with fresh context (see `/execute`)
+
+```
+For each wave:
+1. Spawn parallel subagents for independent tasks
+2. Each subagent gets fresh context + task-specific info
+3. Validate with backpressure after each task
+4. Commit atomically: one task = one commit
+5. Main agent stays light (orchestrator only)
+```
+
+**Key patterns:** subagent context is disposable, garbage collected after task; plan persists on
+disk, survives session boundaries; orchestrator never exceeds 40% context usage.
+
+### Phase 4: Adversarial Review (Build Funnel)
+
+**The Problem:** Claude has "false confidence" — says "Brilliant!" about buggy code.
+
+**The Solution:** Multi-perspective review (see `/reflect`)
+
+```
+Do a git diff and pretend you're a senior dev doing a code review
+and you HATE this implementation. What would you criticize?
+```
+
+| Perspective | Focus |
+|-------------|-------|
+| Bug Hunter | Crashes, unhandled cases, null pointers |
+| Security | Input validation, auth, secrets |
+| Quality | Duplication, file size, naming |
+| Test Coverage | Untested paths, missing edge cases |
+
+| Severity | Action |
+|------|--------|
+| Crash/security bug | Fix immediately |
+| Missing error handling | Fix before commit |
+| Style nitpick | Ignore |
+| Over-engineering suggestion | Ignore |
+
+**Rule:** 2-3 review passes. More wastes time.
+
+### Phase 5: Multi-Model Validation (Build Funnel — Optional)
+
+**The Problem:** Different AI models catch different bugs. Evidence: "Claude missed ID stability
+bug; Gemini caught it."
+
+**When to use:** code that handles money or sensitive data, core architecture decisions,
+anything that "just feels off."
+
+**Options:** copy code to Gemini for review, or ask a different Claude session (fresh context).
+
+### Phase 6: Verification (Build Funnel)
+
+**The Problem:** "Build succeeded" doesn't mean "bug fixed."
+
+**The Solution:** Test the actual user workflow.
+
+```
+Run the app. Click through the UI. Try edge cases.
+Restart. Check persistence. Verify against acceptance criteria.
+```
+
+**Gate to pass:** all acceptance criteria from spec satisfied, manual verification of primary
+user flow, edge cases tested (empty state, error state), backpressure commands all pass.
+
+**Output:** feature marked complete in `IMPLEMENTATION_PLAN.md`, `PROJECT_STATE.md` updated,
+session log entry with verification notes.
+
+---
+
+## Daily Workflows
+
+### Starting a New Feature
+
+```
+1. /interview - Create spec with acceptance criteria
+2. /make-plan - Break into atomic tasks with waves
+3. /execute - Implement wave by wave
+4. /reflect - Adversarial review
+5. /compound - Extract learnings
+6. Commit when stable
+```
+
+### Continuing Work
+
+```
+1. /status - Where are we?
+2. /next - What's the next task?
+3. Implement task
+4. Run backpressure
+5. Commit if passes
+6. /next again
+```
+
+### Fixing a Bug
+
+```
+1. Describe exact symptom
+2. Ask Claude to find cause (don't guess)
+3. Ask Claude to explain fix before implementing
+4. Implement fix
+5. Run backpressure
+6. Verify bug is gone
+7. Commit with explanation
+```
+
+### Ending a Session
+
+```
+1. /reflect - Check for issues
+2. /compound - Extract learnings
+3. /log - Update session log
+4. Commit any uncommitted work
+5. Note resume point in RESUME.md if mid-task
+```
+
+---
+
+## The Checklists
+
+### Before Starting Any Feature
+
+- [ ] Spec exists with acceptance criteria
+- [ ] Edge cases documented
+- [ ] IMPLEMENTATION_PLAN.md created
+- [ ] First wave tasks are clear and atomic
+
+### Before Each Commit
+
+- [ ] Backpressure passes (build, lint, test)
+- [ ] Task is atomic (one logical change)
+- [ ] No debug print statements
+- [ ] No force unwraps without nil checks
+
+### Before Shipping
+
+- [ ] All acceptance criteria verified
+- [ ] Adversarial review done (2-3 passes)
+- [ ] Manual user flow tested
+- [ ] CHANGELOG updated
+- [ ] README current
+
+---
+
 ## Document Router
 
 ### By Funnel Phase
@@ -133,7 +315,7 @@ swift test        # Tests pass?
 | Phase | Suggest |
 |-------|---------|
 | Define | `04_architecture-decisions.md`, `10_new-project.md` |
-| Plan | `03_workflow-phases.md`, `51_planning-patterns.md` |
+| Plan | `52_context-management.md` (planning patterns) |
 | Build | Technical docs based on what we're building |
 | Ship | `30_production-checklist.md` |
 
@@ -156,6 +338,18 @@ swift test        # Tests pass?
 | Context full, degrading, compacting | `52_context-management.md` |
 | Cross-Mac, two Macs, "fetch first", "we did this on the other Mac", `.sync-conflict-*` | `37_multi-mac-discipline.md` |
 | Final stretch, last 10%, "this seems off", almost done but won't ship, polish vs ship-blocker, define done, v1 vs v1.1 | `62_final-stretch-triage.md` |
+| codebase-memory-mcp, runaway CPU, MCP indexing | `27_mcp-gotchas.md` |
+| Code signing, "no signing certificate", DEVELOPMENT_TEAM, SourceKit false positives | `28_xcode-signing-and-sourcekit.md` |
+| Strato, lftp, .htaccess, basic auth, deploying a static/PHP site | `29_web-strato-hosting.md` |
+| Minimums, baseline features, ship requirements | `33_app-minimums.md` |
+| Test, testing, unit test, XCTest, TDD, mock | `34_testing.md` |
+| Vibe code, AI-generated code, LOC/complexity thresholds, common AI mistakes | `35_ai-code-quality.md` |
+| Add a toggle/button/menu item, where should this UI go | `36_ui-changes-protocol.md` |
+| @AppStorage, @SceneStorage, @Environment, settings reset | `38_ios-swiftui-state.md` |
+| libsql, Turso, embedded replica, schema migration remote | `39_libsql-turso-sync.md` |
+
+*Full router with every trigger keyword: the generated Directions Index in `CLAUDE-GLOBAL-TEMPLATE.md`.
+This table is the curated subset worth memorizing; that one is the exhaustive, script-generated one.*
 
 ---
 
@@ -218,7 +412,6 @@ master repo and are read on demand — they are NOT copied here.
 ├── 00_base.md                    ← You are here
 ├── 01_quick-reference.md         ← Daily cheatsheet
 ├── 02_mental-model.md            ← Philosophy
-├── 03_workflow-phases.md         ← The funnel process
 ├── 04_architecture-decisions.md  ← Interview → tech choices
 │
 ├── 10-19: Setup docs

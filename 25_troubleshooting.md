@@ -1,12 +1,13 @@
 <!--
-TRIGGERS: stuck, broken, error, loop, freeze, not working, something broke, crash, troubleshoot
+TRIGGERS: stuck, broken, error, loop, freeze, not working, something broke, crash, troubleshoot, bug, debug, fix, mistake
 PHASE: any
 LOAD: when stuck
 -->
 
-# Troubleshooting Claude Code
+# Troubleshooting Claude Code & App Bugs
 
-*Systematic recovery guide — from quick fixes to nuclear options.*
+*Systematic recovery guide — from quick fixes to nuclear options. Covers both Claude Code CLI
+recovery (loops, freezes, context issues) and debugging the app you're building.*
 
 ---
 
@@ -120,6 +121,58 @@ Most problems come from unclear instructions, not tool failure.
 - Database operations without discussing backups → **refuse until backups discussed**
 - Changes to credential or configuration files → **extra caution**
 - Large numbers of files affected → **review each change**
+
+---
+
+## Debugging Application Bugs
+
+This section covers debugging *the app you're building* — distinct from the Claude Code CLI
+recovery covered elsewhere in this doc.
+
+### Debugging Workflow
+
+When something doesn't work:
+
+1. **Describe the symptom precisely**
+   - Bad: "It's broken"
+   - Good: "I tap the save button, nothing happens, no error appears"
+
+2. **Ask Claude to add logging**
+   ```
+   Add diagnostic logging to trace what happens when I tap save.
+   Log the state before and after each step.
+   ```
+
+3. **Run and share the logs**
+   ```
+   Here's what the console shows: [paste logs]
+   What's going wrong?
+   ```
+
+4. **Document the fix** — if it was tricky, ask Claude to add a comment explaining WHY.
+
+### The "It Used to Work" Trap
+
+**Danger:** Assuming a previous version was correct.
+
+Often, "it used to work" means "it used to appear to work but was never properly tested."
+
+Instead of reverting blindly:
+```
+Let's understand why it broke before reverting.
+What changed between the working and broken versions?
+```
+
+### When the Codebase Itself Needs a Fresh Start
+
+Sometimes the codebase is too tangled. Signs:
+
+- Every fix causes two new bugs
+- Claude keeps contradicting its previous suggestions
+- You've lost track of what's supposed to work
+- The architecture has grown "organically" into chaos
+
+**Solution:** Start a new project. Copy working patterns from old code. Don't copy the mess.
 
 ---
 

@@ -1,5 +1,5 @@
 <!--
-TRIGGERS: vibe code, AI code, generated code, codebase size, LOC, complexity, edge case, review threshold
+TRIGGERS: vibe code, AI code, generated code, codebase size, LOC, complexity, edge case, review threshold, common mistakes, skipping the spec, giant feature, TODO accumulation
 PHASE: implementation, shipping
 LOAD: full
 -->
@@ -287,6 +287,59 @@ Analyze this codebase for health:
 5. Complexity hotspots
 
 Provide specific recommendations.
+```
+
+---
+
+## Common AI-Assisted Development Mistakes
+
+### Mistake 1: Skipping the Spec Interview
+
+**Symptom:** Claude builds something, but it's not what you wanted.
+
+**Fix:** Always start with the interview. 10 minutes of questions saves hours of rework.
+
+### Mistake 2: One Giant Feature
+
+**Symptom:** Working for days, nothing works yet.
+
+**Fix:** 30-minute phases. If you can't test it, it's too big.
+
+### Mistake 3: Trusting Single AI Review
+
+**Symptom:** "Claude said it looks good" → bug in production.
+
+**Fix:** Adversarial review. Second model for critical code.
+
+### Mistake 4: No Verification Loop
+
+**Symptom:** "Build succeeded" but feature doesn't work.
+
+**Fix:** Tell Claude how to verify. Watch it actually test.
+
+### Mistake 5: Accumulating TODO Items
+
+**Symptom:** 200-item wishlist, 0% completion.
+
+**Fix:** NOW/NEXT/LATER. Maximum 5 items in NOW.
+
+### Mistake 6: Not Documenting the WHY
+
+**Symptom:** You fix a bug, then "improve" the code later, bug returns.
+
+**Fix:** When you find a tricky bug, ask Claude:
+```
+Add a comment explaining WHY this code is written this way.
+Include a reference to this conversation or a bug file.
+```
+
+Example:
+```swift
+// WARNING: DO NOT CHANGE
+// originalSize must use cgImage dimensions (PIXELS), not nsImage.size (POINTS)
+// On Retina displays, they differ by 2x
+// This caused crop bugs that took 3 sessions to diagnose
+// See: CropBatch-BUGFIX-retina-crop-position.md
 ```
 
 ---

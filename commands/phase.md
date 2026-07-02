@@ -52,9 +52,9 @@ Based on the new phase, suggest relevant documentation:
 
 | Phase | Suggested Docs |
 |-------|---------------|
-| discovery | 10_new-project.md, 11_ai-context-template.md |
+| discovery | 10_new-project.md, 12_documentation-templates.md |
 | planning | 04_architecture-decisions.md, 51_planning-patterns.md |
-| implementation | 20_swiftui-gotchas.md, 21_coordinate-systems.md, 31_debugging.md |
+| implementation | 20_swiftui-gotchas.md, 21_coordinate-systems.md, 25_troubleshooting.md |
 | polish | 30_production-checklist.md, 33_app-minimums.md, 40_typography.md |
 | shipping | 30_production-checklist.md, 33_app-minimums.md, 32_git-workflow.md |
 

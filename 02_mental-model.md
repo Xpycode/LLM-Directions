@@ -169,28 +169,10 @@ This list protects you from scope creep.
 
 You don't need to write code, but you need to recognize problems.
 
-### The Top 5 Bug Categories (What to Watch For)
+### The Top 5 Bug Categories & Red Flags in Code Review
 
-| Category | How to Spot It | What to Tell Claude |
-|----------|----------------|---------------------|
-| **Coordinate mismatch** | Positions are wrong, crops are off | "Are you mixing points and pixels? Document the coordinate system." |
-| **UI doesn't update** | Changes don't appear | "Is @Observable detecting the mutation? Are you mutating nested properties?" |
-| **Race condition** | Intermittent bugs, crashes | "Is this thread-safe? Should this be an actor?" |
-| **Silent failure** | Features don't work, no error | "Are you swallowing errors with try? Add proper error handling." |
-| **Persistence bug** | Data lost on restart | "Is the save actually happening? Add logging to verify." |
-
-### Red Flags in Code Review
-
-When Claude shows you code, watch for:
-
-| Red Flag | Why It's Bad |
-|----------|--------------|
-| `try?` everywhere | Errors are silently ignored |
-| `@unchecked Sendable` | Threading safety bypassed |
-| `force unwrap (!)` | Will crash on nil |
-| No error handling in async | Failures disappear |
-| 500+ line files | Too complex, hard to maintain |
-| Multiple TODO files | Confusion, no clear priority |
+See `01_quick-reference.md` → "Top 5 Bug Categories" and "Red Flags in Code" — canonical, not
+duplicated here.
 
 ### Questions to Ask Claude
 

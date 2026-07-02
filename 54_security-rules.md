@@ -1,6 +1,10 @@
-# Security Rules Reference
+<!--
+TRIGGERS: security, secrets, credentials, authentication, privacy, HIPAA, healthcare data, OWASP, XSS, CSRF, SSRF, injection
+PHASE: any
+LOAD: full
+-->
 
-**Triggers:** security, secrets, credentials, authentication, privacy, HIPAA, healthcare data, OWASP, XSS, CSRF, SSRF, injection
+# Security Rules Reference
 
 Mandatory security checks before any commit.
 

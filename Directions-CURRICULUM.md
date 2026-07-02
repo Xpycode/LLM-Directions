@@ -768,7 +768,6 @@ Per-bug: Add to CLAUDE.md if pattern
 - 22_macos-platform.md → macOS-specific patterns
 
 **Templates:**
-- 11_ai-context-template.md → AI context files
 - 12_documentation-templates.md → README, CHANGELOG, etc.
 - 30_production-checklist.md → Pre-release verification
 

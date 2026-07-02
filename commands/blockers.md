@@ -30,7 +30,7 @@ Based on the blocker type, suggest:
 
 | Blocker Type | Suggestion |
 |--------------|------------|
-| Technical/bug | "Try /decide to document the problem, or check 31_debugging.md" |
+| Technical/bug | "Try /decide to document the problem, or check 25_troubleshooting.md" |
 | Design decision | "Run /decide to work through the options" |
 | External dependency | "Document in decisions.md and move to another task" |
 | Knowledge gap | "Check relevant docs or ask for clarification" |

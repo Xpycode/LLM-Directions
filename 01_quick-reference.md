@@ -387,7 +387,6 @@ Let's start fresh. Here's what I need: [one sentence]
 | SwiftUI bugs | 20_swiftui-gotchas.md |
 | Coordinates | 21_coordinate-systems.md |
 | macOS specifics | 22_macos-platform.md |
-| AI context template | 11_ai-context-template.md |
 | Troubleshooting | 25_troubleshooting.md |
 | Add-on ecosystem | 26_ecosystem.md |
 | Context management (all aspects) | 52_context-management.md |

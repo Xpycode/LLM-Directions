@@ -8,7 +8,7 @@ LOAD: full
 
 *This is about the **main menu bar** (top of screen: App · File · Edit · View · Window · Help)
 — not the status-item "menu bar extra", not context menus. For menu **styling/types**
-(pull-down, pop-up, context) see [`41_apple-ui.md`](41_apple-ui.md).*
+(pull-down, pop-up, context) see [`41_ui-vocabulary.md`](41_ui-vocabulary.md).*
 
 ---
 

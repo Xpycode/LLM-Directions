@@ -14,7 +14,7 @@ one-size-fits-all default:
   sidebar width and an optional `Divider()` for the visual seam. Reference: CropBatch. See
   "Fixed-Width Sidebar: HStack + Divider" below.
 
-`NavigationSplitView` is **banned for the primary app window** (see `41_apple-ui.md`) — it
+`NavigationSplitView` is **banned for the primary app window** (see `47_project-ui-conventions.md`) — it
 creates opinionated, hard-to-customize navigation and couples the app to platform-version
 chrome. It is acceptable only in a **secondary utility window** (e.g. a Help window) where
 that stock navigation chrome is fine:

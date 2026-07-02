@@ -42,42 +42,8 @@ After detection:
 - If Directions exists → show current status and ask what to work on
 - If no Directions → offer to set it up, then show commands menu
 
-**Available commands:**
-
-| Command | What it does |
-|---------|--------------|
-| `/setup` | Re-run project detection, set up or migrate Directions |
-| `/status` | Check current phase, focus, blockers, last session |
-| `/arrive` | Sit-down handover check: what the other Mac did, am I behind, where I left off |
-| `/depart` | Leaving a Mac: sync log + state, commit (stamped with this Mac), push |
-| `/log` | Create or update today's session log |
-| `/decide` | Record an architectural/design decision |
-| `/interview` | Run the full discovery interview |
-| `/learned` | Add a term to your personal glossary |
-| `/reorg` | Reorganize folder structure (numbered folders) |
-| `/directions` | Show all available commands |
-| `/phase` | Change project phase |
-| `/context` | Show project context summary |
-| `/handoff` | Generate handoff document for future sessions |
-| `/blockers` | Log and track blockers |
-| `/review` | Interactive production checklist |
-| `/minimums` | Check baseline app features before shipping |
-| `/new-feature` | Scaffold docs for new feature |
-| `/execute` | Wave-based parallel execution with fresh contexts |
-| `/update-directions` | Pull latest Directions from GitHub |
-| `/code-review` | Quality checklist before commits |
-| `/security-audit` | Comprehensive security audit (OWASP patterns) |
-| `/tdd` | Test-driven development workflow |
-| `/quality` | AI code quality audit (LOC, complexity, edge cases) |
-| `/build-fix` | Xcode/Swift error resolution guide |
-| `/cookbook` | Manage reusable code patterns cookbook |
-| `/spec` | Create feature specification (mini-PRD) before implementation |
-| `/make-plan` | Create implementation plan with task waves |
-| `/checkpoint` | Create git tag checkpoints for safe rollback |
-| `/next` | Get next steps based on current state |
-| `/reflect` | Session reflection and lessons learned |
-| `/example-map` | Example mapping for acceptance criteria |
-| `/compound` | Extract reusable learnings from session |
+**Available commands:** run `/directions` for the full, current list — don't maintain a second
+copy of it here; command sets change and a hardcoded table drifts.
 
 ---
 
@@ -108,10 +74,8 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | Directions: AI-Assisted Development System | `00_base.md` |
 | cheatsheet, quick lookup, shortcuts, daily reference, prompts, checklist | `01_quick-reference.md` |
 | philosophy, mindset, how to think, validate code, spot bugs, red flags … | `02_mental-model.md` |
-| workflow, phases, process, how to build, spec interview, planning … | `03_workflow-phases.md` |
 | architecture, tech stack, what technology, how to build, interview answers, technical decision | `04_architecture-decisions.md` |
 | new project, starting project, project setup, init, create project | `10_new-project.md` |
-| AI-CONTEXT, context file, session context, project context template | `11_ai-context-template.md` |
 | README template, CHANGELOG template, SECURITY, PRIVACY, documentation | `12_documentation-templates.md` |
 | new project setup, folder structure, "where should I put", gitignore | `13_folder-structure.md` |
 | Project Identity & Signing Conventions | `14_project-identity.md` |
@@ -126,23 +90,21 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | code signing, signing certificate, "no signing certificate found", "Mac Development", DEVELOPMENT_TEAM, team ID … | `28_xcode-signing-and-sourcekit.md` |
 | strato, strato.hosting, lftp, mirror, chmod, .htaccess … | `29_web-strato-hosting.md` |
 | ship, release, production ready, pre-release, before shipping, app store | `30_production-checklist.md` |
-| bug, not working, broken, debug, error, fix … | `31_debugging.md` |
 | git, commit, branch, merge, main, version control … | `32_git-workflow.md` |
 | minimums, baseline features, must have, essential features, app features, ship requirements | `33_app-minimums.md` |
 | test, testing, unit test, XCTest, TDD, mock … | `34_testing.md` |
 | vibe code, AI code, generated code, codebase size, LOC, complexity … | `35_ai-code-quality.md` |
-| UI Changes Protocol | `36_ui-changes-protocol.md` |
+| add a toggle, add a button, add a menu item, UI element placement, where should this go, add a control … | `36_ui-changes-protocol.md` |
 | cross-mac, multi-mac, M1 Max, M4 Pro, multiple Macs, working from two Macs | `37_multi-mac-discipline.md` |
 | @AppStorage, AppStorage, @SceneStorage, @Environment, @FocusState, @FetchRequest … | `38_ios-swiftui-state.md` |
 | libsql, @libsql/client, turso, @tursodatabase/sync, db.push, db.sync … | `39_libsql-turso-sync.md` |
 | font, typography, tracking, kerning, leading, spacing … | `40_typography.md` |
-| UI element, component name, what is this called, Apple UI, SwiftUI component, UIKit | `41_apple-ui.md` |
-| web UI, HTML element, CSS, web component, website UI, frontend | `42_web-ui.md` |
+| UI element, component name, what is this called, Apple UI, SwiftUI component, UIKit … | `41_ui-vocabulary.md` |
 | data structure, array, dictionary, tree, graph, algorithm … | `43_data-structures.md` |
 | My Tech Glossary | `44_my-glossary.md` |
 | package, SPM, reusable, extract, shared code, zPackages … | `45_packages.md` |
 | main menu, menu bar, NSMenu, Commands, CommandMenu, CommandGroup … | `46_main-menu.md` |
-| planning, task tracking, persistent memory, context management, long task, multi-session | `51_planning-patterns.md` |
+| NavigationSplitView, HSplitView, AppKit controls, NSViewRepresentable, no SwiftUI controls, Tahoe sidebar … | `47_project-ui-conventions.md` |
 | context, token limit, context too big, CLAUDE.md bloated, large project | `52_context-management.md` |
 | LLM Failure Modes | `53_llm-failure-modes.md` |
 | security, secrets, credentials, authentication, privacy, HIPAA … | `54_security-rules.md` |
@@ -152,7 +114,7 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | example mapping, discovery, requirements, edge cases, rules, complex feature | `59_example-mapping.md` |
 | model, haiku, sonnet, opus, which model, slow … | `60_model-selection.md` |
 | notarization, notarytool, "Developer ID", Developer ID Application, staple, stapler … | `61_distribution-notarization.md` |
-| final stretch, last 10%, last 1%, "this seems off", almost done, can't ship, polish, ship-blocker, triage, v1 vs v1.1, define done, endgame drags … | `62_final-stretch-triage.md` |
+| final stretch, last 10%, last 1%, almost done, can't ship, endgame drags | `62_final-stretch-triage.md` |
 
 **Why read-on-demand:** Universal docs used to be copied into each project at `/setup`, so updates
 never reached already-set-up projects (N copies silently drift). This Index lets a running project —
@@ -227,12 +189,12 @@ mkdir -p docs/sessions
 #   docs/glossary.md        — project-specific terms only
 ```
 
-Then run the full discovery interview (read `00_base.md` / `03_workflow-phases.md` from the master
+Then run the full discovery interview (read `00_base.md` from the master
 on demand if you need the system overview).
 
 After the interview:
 
-**Create the project folder structure** based on project type (see `docs/13_folder-structure.md` for full reference):
+**Create the project folder structure** based on project type (see `[LOCAL_DIRECTIONS_PATH]/13_folder-structure.md` for full reference):
 
 Code always lives in `01_Project/` (the lone exception is framework web apps — code at repo root):
 
@@ -244,7 +206,7 @@ mkdir -p 01_Project 02_Design/Exports 03_Screenshots 04_Exports docs/sessions
 mkdir -p 01_Project/{public,lib} 02_Design/Exports 03_Screenshots 03_Scripts/migrations 04_Data docs/sessions
 ```
 
-Also create the `.gitignore` from `docs/13_folder-structure.md` and the Directions working files, then initialize git **at the project root** (never inside `01_Project/` — see `docs/32_git-workflow.md`):
+Also create the `.gitignore` from `[LOCAL_DIRECTIONS_PATH]/13_folder-structure.md` and the Directions working files, then initialize git **at the project root** (never inside `01_Project/` — see `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`):
 
 ```bash
 touch docs/PROJECT_STATE.md docs/decisions.md
@@ -306,7 +268,7 @@ After extraction, run a **gap interview**:
 ## General Preferences
 
 ### Git Discipline
-- **Solo developer — NO pull requests.** Don't suggest opening a PR, a PR-based flow, or "pushing for review." Branch → commit → merge to `main` **locally**. (See `docs/32_git-workflow.md`.)
+- **Solo developer — NO pull requests.** Don't suggest opening a PR, a PR-based flow, or "pushing for review." Branch → commit → merge to `main` **locally**. (See `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`.)
 - Never commit directly to main
 - Create feature branches: `feature/`, `fix/`, `experiment/`
 - Merge locally when tested: `git checkout main && git merge feature/x`
@@ -332,7 +294,7 @@ When adding UI elements (views, controls, toggles, buttons, menus):
 3. **Propose location** — State exact file/line for new element
 4. **Wait for confirmation** — Do not implement until approved
 
-See `docs/36_ui-changes-protocol.md` for full protocol and examples.
+See `[LOCAL_DIRECTIONS_PATH]/36_ui-changes-protocol.md` for full protocol and examples.
 
 ### Xcode Build Behavior
 Before building any app, ALWAYS do a clean build cycle:
@@ -400,14 +362,14 @@ Skills load on-demand only when invoked. CLAUDE.md loads every session.
 
 **The Three-Times Rule:** If you've typed the same prompt three times, create a skill.
 
-See `docs/23_claude-code-cli.md` for full skills documentation.
+See `[LOCAL_DIRECTIONS_PATH]/23_claude-code-cli.md` for full skills documentation.
 
 ### MCP Hygiene
 
 Never launch Claude Code from `$HOME` or umbrella project dirs (e.g. `~/Code/`, `~/Code/group/`)
 while `codebase-memory-mcp` is installed — its auto-index skills will walk the entire tree
 into a multi-GB SQLite DB and burn hundreds of % CPU. A PreToolUse guard at
-`~/.claude/hooks/codebase-memory-guard.sh` blocks this; see Directions docs `27_mcp-gotchas.md`
+`~/.claude/hooks/codebase-memory-guard.sh` blocks this; see `[LOCAL_DIRECTIONS_PATH]/27_mcp-gotchas.md`
 and `hooks/mcp-guards/` for the templated guard. Same caution applies to Serena's
 `--project-from-cwd`.
 
@@ -419,7 +381,7 @@ When something goes wrong:
 3. `git restore` — rollback to last commit (tracks everything)
 4. `/clear` — fresh session with better prompt
 
-Run `/doctor` first for configuration issues. See `docs/25_troubleshooting.md` for full guide.
+Run `/doctor` first for configuration issues. See `[LOCAL_DIRECTIONS_PATH]/25_troubleshooting.md` for full guide.
 
 ---
 
