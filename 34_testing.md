@@ -527,6 +527,14 @@ Include:
 2. Run tests (⌘U)
 3. View: Editor → Show Code Coverage
 
+## TDD in wave execution (RED → GREEN → REFACTOR)
+
+Write the failing test first (it MUST fail — a passing test before implementation is a wrong test),
+then the minimal code to pass, then refactor with tests green. It maps cleanly onto `/execute` waves:
+**Wave 1** writes the tests (`*Tests.swift`), **Wave 2** implements against them, **Wave 3** refactors
+while tests stay green. Reserve 100% targets for auth / billing / data-handling; test behavior, not
+private methods. (Skip the XCTest syntax tutorial — that's training data; see the coverage targets above.)
+
 ---
 
 ## Quick Reference

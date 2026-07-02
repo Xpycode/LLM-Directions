@@ -274,4 +274,15 @@ Something wrong?
 
 ---
 
+## Xcode / Swift build errors (minimal-diff resolution)
+
+When a build fails, **fix only the error — no refactoring, no cleanup.** Get it green, then move on.
+
+- **Collect all errors first** — `xcodebuild -scheme "X" -destination "platform=macOS" build 2>&1 | grep -E "error:|warning:"`. Don't stop at the first; one root cause often spawns many.
+- **Fix import/module errors first** — "Cannot find 'X' in scope" cascades into dozens of false errors; resolving the import clears them. Then type mismatches (`Int(text ?? "0") ?? 0`), then optionals (`?? default` / `guard let`).
+- **Common → fix:** "has no member 'Y'" → check optional/spelling · "Ambiguous use" / "expression type is ambiguous" → add explicit type, break into typed lines · "Escaping closure captures mutating 'self'" → `[weak self]` or restructure · "Modifying state during view update" → move mutation to `.onAppear`/an action · SwiftUI opaque-return "no return statements" → every `if` needs an `else` (see `20_swiftui-gotchas.md`).
+- **Use only for compilation errors.** Logic bugs, architecture, and perf are debugged/planned/profiled — not "build-fixed."
+
+---
+
 *Based on "Claude Code for the Rest of Us" by Harry Munro (2026) and practical experience.*
