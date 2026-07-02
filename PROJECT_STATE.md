@@ -18,12 +18,11 @@
   Live `commands/` 38→15 (13 Directions + independent `mcp-profile`/`preview`); and `~/.claude/CLAUDE.md`
   is now the full read-on-demand shape — grep-first cookbook router (was a 52-ref inline dump),
   generated 45-row Directions Index, PROJECT_STATE sentinel, new MCP-hygiene section (411 lines).
-  **Two `CLAUDE-GLOBAL-TEMPLATE.md` bugs found during the merge — fix the template before next redeploy
-  or they'll regress:** (1) template's Git Discipline still says "never commit to main / feature
-  branches" but the live/preferred policy is "small changes → commit straight to main"; (2) template's
-  Multi-Mac pre-flight dropped the `NO .git → git-bootstrap skill` case. The deployed file has both
-  correct (I merged live-wins). Backups: `~/.claude/commands.bak-*`, `~/.claude/CLAUDE.md.bak-*`. Then
-  optionally **Wave 3** (per-file trims). *(product)* **roll `AppCitizenshipKit` to the first
+  **`CLAUDE-GLOBAL-TEMPLATE.md` also patched (f)** so a future redeploy won't regress: Git Discipline
+  → "small changes → commit straight to main"; re-added the `NO .git → git-bootstrap skill` case
+  (generic — personal commit identity kept out of the public template). Backups: `~/.claude/commands.bak-*`,
+  `~/.claude/CLAUDE.md.bak-*`. Then optionally **Wave 3** (per-file trims). *(product)* **roll
+  `AppCitizenshipKit` to the first
   wave** of apps — DiskVerdict
   next (additive: it has FeedbackKit already, ACK adds Tip Jar + About), then the rest. Use the per-app
   rollout checklist in ACK's README + the `#108` pattern. Separate sweep: fix 19/30 missing/empty
@@ -93,11 +92,10 @@
   `~/.claude/CLAUDE.md` = 411 lines, full read-on-demand shape (grep-first cookbook router, generated
   45-row Directions Index via `gen-directions-index.sh`, PROJECT_STATE sentinel, MCP-hygiene section).
   Nothing on-machine is pending. Backups: `~/.claude/commands.bak-20260702-203924`,
-  `~/.claude/CLAUDE.md.bak-20260702-204226`. **Not yet done (repo hygiene, optional):** patch the two
-  stale spots in `CLAUDE-GLOBAL-TEMPLATE.md` (Git Discipline → "commit straight to main"; re-add the
-  `NO .git → git-bootstrap` case) so a future redeploy doesn't reintroduce them; note the template is
-  the *public* LLM-Directions repo so keep the personal bootstrap identity out of it. Then optionally
-  **Wave 3** (per-file trims, `OPTIMIZATION-PLAN §3`).
+  `~/.claude/CLAUDE.md.bak-20260702-204226`. **`CLAUDE-GLOBAL-TEMPLATE.md` also patched** (Git Discipline
+  → "commit straight to main"; re-added `NO .git → git-bootstrap` case, generic — no personal identity)
+  so the next redeploy won't reintroduce the two stale spots. Then optionally **Wave 3** (per-file
+  trims, `OPTIMIZATION-PLAN §3`).
 - **First-real-use watch:** the 13 commands + the new CLAUDE.md shape haven't been exercised live yet
   — `/check`, `/log`'s absorbed modes, and the grep-first cookbook lookup are the most-changed.
 - **Not yet verified by real use:** the 13 commands passed static checks (grep/counts/bash-n/py_compile)

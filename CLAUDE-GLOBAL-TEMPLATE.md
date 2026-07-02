@@ -15,9 +15,9 @@ from more than one Mac (see `37_multi-mac-discipline.md`, Rule 1). Fetch is read
 does **not** merge or change the working tree.
 
 ```bash
-git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git fetch --quiet 2>/dev/null
-git status -sb | head -1   # report ahead/behind to the user
-git status --porcelain | head -1   # is the working tree dirty? (leftover work)
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git fetch --quiet 2>/dev/null \
+  && { git status -sb | head -1; git status --porcelain | head -1; } \
+  || echo "NO .git — repo not initialized; bootstrap needed"
 ```
 
 Read **both** the ahead/behind counts and whether the tree is dirty, then act (these are *confirmed*
@@ -33,6 +33,11 @@ actions — offer, don't silently mutate the tree):
 - **in sync but tree dirty** → uncommitted leftovers from a prior session. Offer to commit + push or
   discard before new work — stray uncommitted edits are the seed of cross-Mac duplicates.
 - **in sync, clean** → proceed normally.
+- **NO `.git`** (a Syncthing-stripped / freshly-reset Mac has the source on disk but no repo — history
+  lives only on GitHub `origin`) → **invoke the `git-bootstrap` skill** before any edit/commit: safe
+  init → fetch → **mixed**-reset → verify (HTTPS via `gh`, no SSH). **Never `reset --hard` blind** — the
+  `--mixed`+`git status` check reveals on-disk drift *before* anything is overwritten; only escalate to
+  `--hard` once the tree is proven clean.
 
 **At session end** (or before walking away / switching Macs): run `/log`, which writes the session log,
 syncs state, and — in Mac-handoff mode — offers to commit **and push** in one confirmed step. A local
@@ -268,14 +273,12 @@ After extraction, run a **gap interview**:
 
 ## General Preferences
 
-### Git Discipline
-- **Solo developer — NO pull requests.** Don't suggest opening a PR, a PR-based flow, or "pushing for review." Branch → commit → merge to `main` **locally**. (See `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`.)
-- Never commit directly to main
-- Create feature branches: `feature/`, `fix/`, `experiment/`
-- Merge locally when tested: `git checkout main && git merge feature/x`
-- Commit messages: what + why
-- One repo per project, **`.git` at the project root** (not inside `01_Project/`)
-- Remind me about branching before implementation
+### Git Discipline (solo dev)
+- Small, low-risk changes (cleanup, docs, config, single-file fixes) → commit straight to `main`.
+- Branch (`feature/`, `fix/`, `experiment/`) only for risky or multi-step work where bailing out is plausible.
+- No PRs required — fast-forward merge or commit directly. PRs are team-review ceremony; skip them.
+- One repo per project, **`.git` at the project root** (not inside `01_Project/`).
+- Commit messages: what + why. (See `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`.)
 
 ### Communication Style
 - Be direct, skip unnecessary preamble
