@@ -86,10 +86,12 @@ These are bugs, not style. Each is a small edit.
 
 ## Wave 2 — Structural token wins (biggest savings)
 
-> **STATUS (2026-07-02 d):** ✅ 2.1 done (index 50K→41.6K, app-shell split → #156) · ✅ 2.3 done
-> (5 docs merged/deleted, new 41_ui-vocabulary + 47_project-ui-conventions, template trimmed, router
-> regenerated) · ✅ 2.4 done (sessions/_index & decisions capped + archived) · ⏳ **2.2 NOT started**
-> (commands 36→14 — deferred to its own focused run; Medium risk, rewrites the command system).
+> **STATUS — Wave 2 COMPLETE:** ✅ 2.1 (index 50K→41.6K, app-shell split → #156) · ✅ 2.3 (5 docs
+> merged/deleted, new 41_ui-vocabulary + 47_project-ui-conventions, template trimmed, router
+> regenerated) · ✅ 2.4 (sessions/_index & decisions capped + archived) — all 2026-07-02 (d) · ✅ **2.2
+> DONE (e): commands 36→13** (`/log`←7, new `/check`←5, `/status`←2, `/spec`←2, `/execute`←next,
+> `/directions`←update-directions + generated catalog; tdd/build-fix/checkpoint/reorg deleted;
+> ~50 cross-refs swept). **Remaining before this ships on-machine: the `~/.claude/` redeploy.**
 
 ### 2.1 Rebuild the cookbook index as a lean router
 `PATTERNS-COOKBOOK.md` is 264KB and loads wholesale on every cookbook auto-trigger (`CLAUDE-GLOBAL-TEMPLATE.md:84-95`).

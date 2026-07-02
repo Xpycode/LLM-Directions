@@ -14,14 +14,13 @@
   migrated to it end-to-end** — package hardened `Xpycode/AppCitizenshipKit` 0.1.0→**0.1.2**, Conjoyn
   consumes the tag and builds green; cookbook **#108** captures the migration + proving-ground pattern.
 - **Blockers:** none.
-- **Next:** *(framework, in flight)* **Wave 2 is ¾ done** — 2.1 (cookbook router), 2.3 (doc dedup),
-  2.4 (growth-file caps) landed 2026-07-02 (d). **Remaining: 2.2 — consolidate 36 commands → ~14**
-  (`/log` absorbs session-close/depart/handoff/check-index/phase/compound; `/status` absorbs
-  context/arrive; `/spec` absorbs interview/example-map; new `/check` absorbs code-review/quality/
-  reflect/review/minimums; generate the `/directions` catalog from `commands/`). Do 2.2 as its own
-  focused run (Medium risk — rewrites the command system). **Then** deploy the finalized template +
-  commands to `~/.claude/` (that's when `/make-plan` goes live and the `/plan` shadow is removed
-  on-machine). *(product)* **roll `AppCitizenshipKit` to the first wave** of apps — DiskVerdict
+- **Next:** *(framework)* **Wave 2 is fully DONE** (2.1–2.4 landed 2026-07-02 (d); **2.2 commands
+  36→13** landed (e)). **The gating next step is the `~/.claude/` redeploy** — copy the finalized
+  `commands/*` + regenerate the Index into the live global config. That's when the consolidated
+  commands (`/log`, `/check`, `/status` modes, etc.) and `/make-plan` go live on-machine, and the old
+  36-command set is retired. **Not yet done — do NOT skip it, or the live `/`-commands stay stale.**
+  Then optionally **Wave 3** (per-file trims). *(product)* **roll `AppCitizenshipKit` to the first
+  wave** of apps — DiskVerdict
   next (additive: it has FeedbackKit already, ACK adds Tip Jar + About), then the rest. Use the per-app
   rollout checklist in ACK's README + the `#108` pattern. Separate sweep: fix 19/30 missing/empty
   AppIcons (cookbook #76).
@@ -30,6 +29,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-02 (e)** — Executed OPTIMIZATION-PLAN **Wave 2.2: 36 commands → 13.** `/log` absorbs 7
+  end-of-session commands; new `/check` (code|ship|security) absorbs 5 + security-audit→63_ doc;
+  `/status`←context/arrive; `/spec`←interview/example-map; `/execute`←next (gate softened to nudge);
+  `/directions`←update-directions with a generated catalog; deleted tdd/build-fix/checkpoint/reorg.
+  Swept ~50 cross-refs across 22 files + hooks. 8 commits; Wave 2 now fully done. **Redeploy pending.**
 - **2026-07-02 (d)** — Executed OPTIMIZATION-PLAN **Wave 2 (¾: 2.1+2.3+2.4)** via 3 parallel agents:
   cookbook index 50K→41.6K + split app-shell into #156; deleted/merged 5 numbered docs (03/11/31/
   41apple/42web) into one-home-per-fact + new 41_ui-vocabulary/47_project-ui-conventions; capped
@@ -70,18 +74,20 @@
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
-- **Wave 2 (¾) committed locally, NOT yet pushed** — 5 commits this session (orphan backfill +
-  2.1 + 2.3 + 2.4 + this state sync). `main` is ahead of origin; **push before leaving this Mac.**
-  Only `.claude/settings.local.json` stays uncommitted (per-Mac). Backpressure met:
-  `PATTERNS-COOKBOOK.md` = 41.6 KB (≤45 ✓); cookbook now **157 files** (added #155/#156).
-- **Cold-start pickup:** the one Wave 2 piece left is **2.2 — commands 36 → ~14** (see `## Next` and
-  `OPTIMIZATION-PLAN.md §2.2`). Target `ls commands | wc -l` ≈ 14. Run it as its own focused session.
-- **Live-vs-repo caveat:** all Wave-1 + Wave-2 doc changes + the `/make-plan` rename are in the
-  **repo**, NOT yet on this Mac's `~/.claude/` — `/plan` still hits the old custom command live until
-  the post-Wave-2 redeploy (deferred deliberately; don't deploy a template 2.2 still rewrites).
-- **Fixed this session:** origin had a **dead link** — #155's index row (in `8c89213`) shipped
-  without its file; backfilled. Also folded away 5 duplicate docs; `gen-directions-index.sh` now
-  reaches docs 27–39.
+- **Wave 2 FULLY done** — 2.1–2.4 (5 commits, pushed earlier) + **2.2 commands 36→13** (8 commits
+  this session). Backpressure met: `ls commands | wc -l` = **13**; `PATTERNS-COOKBOOK.md` = 41.6 KB;
+  no live dead command refs. Only `.claude/settings.local.json` stays uncommitted (per-Mac).
+- **THE gating next step — the `~/.claude/` redeploy (still pending):** copy `commands/*` → live +
+  regenerate the Index (`/directions update` does exactly this, or `scripts/gen-directions-index.sh
+  --write ~/.claude/CLAUDE.md`). Until then the live `/`-commands are the OLD 36-command set — the
+  consolidation is staged in the repo only. **Don't skip this or the on-machine commands stay stale.**
+  Optional after: **Wave 3** (per-file trims, `OPTIMIZATION-PLAN §3`).
+- **Not yet verified by real use:** the 13 commands passed static checks (grep/counts/bash-n/py_compile)
+  but no live dry-run in a scratch project (plan's Wave 2 backpressure) — first real invocations
+  post-redeploy are the true test. `/check` and `/log`'s new modes are the most-changed; watch those.
+- **The 13 commands:** setup · status (+full/arrive) · log (end-of-session: close/depart/handoff/
+  phase/compound/blockers) · decide · learned · spec (+deep/examples) · make-plan · execute (+next) ·
+  check (code|ship|security) · cookbook · directions (+update) · worktree · test-app.
 - **Per-Mac wiring (does NOT travel via git):** both Macs are wired — M1 Max erased+restored
   2026-06-13 and `bash hooks/install.sh` was re-run there (symlinks verified); M4-Pro long since done.
   Reminder only if a Mac is restored again: after `git pull`, run `bash hooks/install.sh` once — it
@@ -89,9 +95,9 @@
   `settings.json` (idempotent).
 - **Carried-over TODO:** cookbook **#92** for the hook↔statusline handshake pattern (#91 is now the
   process-inspection session detector). *(The "tune `model-advisor.sh` keyword lists" TODO is
-  superseded — 2026-06-19 replaced keyword-guessing with phase-aware gating in `/spec`/`/plan`/`/execute`
-  + a `/session-close` next-model reminder; the keyword hook stays only as a weak backstop.)*
+  superseded — 2026-06-19 replaced keyword-guessing with phase-aware gating in `/spec`/`/make-plan`/`/execute`
+  + a `/log` next-model reminder; the keyword hook stays only as a weak backstop.)*
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-02 (d).*
+*Last updated: 2026-07-02 (e).*
