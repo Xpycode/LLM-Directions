@@ -1,6 +1,6 @@
 # Migrating an old-shape PROJECT_STATE to the lean digest
 
-Shared procedure invoked by `/status` and `/session-close` when they detect an old-shape
+Shared procedure invoked by `/status` and `/log` when they detect an old-shape
 `PROJECT_STATE.md`. **Opt-in. Nothing breaks if skipped** — the new `/status` reads the old shape
 fine, just heavier. Migrate a project the next time you're already working in it.
 

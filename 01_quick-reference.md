@@ -90,7 +90,7 @@ Is this thread-safe? Should any classes be actors?
 | `/cost` | Token usage |
 | `/doctor` | Diagnostics |
 | `/plan` | Enter plan mode |
-| `/context` | Token usage breakdown |
+| `/status full` | Token usage breakdown |
 | `/status` | Version, model, account info |
 | `/stats` | Usage patterns (Pro/Max) |
 | `/rewind` | Undo to previous checkpoint |
@@ -121,7 +121,7 @@ Is this thread-safe? Should any classes be actors?
 
 | Situation | Action |
 |-----------|--------|
-| Starting a session | Check `/context` for baseline |
+| Starting a session | Check `/status full` for baseline |
 | Context 50-70% (Yellow) | Start thinking about compacting |
 | Context 70-85% (Orange) | `/compact` with focus; don't read more files than needed |
 | Context 85-95% (Red) | Stop new work — `/compact` now |
@@ -177,7 +177,7 @@ Is this thread-safe? Should any classes be actors?
 | Features | ≤ 7 | 8-10 | > 10 |
 | Change size | < 200 LOC | 200-500 | > 500 |
 
-**Weekly check:** `/quality` — run codebase health audit
+**Weekly check:** `/check code` — run codebase health audit
 
 **AI-typical issues:**
 - Happy-path bias (error paths untested)
@@ -380,7 +380,7 @@ Let's start fresh. Here's what I need: [one sentence]
 |------|-------|
 | AI code quality | 35_ai-code-quality.md |
 | Testing | 34_testing.md |
-| TDD workflow | commands/tdd.md |
+| TDD workflow | 34_testing.md (TDD section) |
 | Step-by-step curriculum | Directions-CURRICULUM.md |
 | Claude Code CLI | 23_claude-code-cli.md |
 | Large project context | 52_context-management.md (Part 1) |

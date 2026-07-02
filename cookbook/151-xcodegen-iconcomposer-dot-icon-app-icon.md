@@ -64,7 +64,7 @@ ls "$APP/Contents/Resources"/*.icns "$APP/Contents/Resources/Assets.car"        
 ### Gotcha 3 — a missing app icon is a **warning**, not an error
 If the catalog/`.icon` is absent or misnamed, `actool` emits a **warning** and emplaces nothing — the
 build still **succeeds** and the test suite stays green. So a plain `BUILD SUCCEEDED` (or 164 passing
-tests) will **not** catch a missing app icon. Catch it with `/minimums` (cookbook 33) or by grepping
+tests) will **not** catch a missing app icon. Catch it with `/check ship` (cookbook 33) or by grepping
 the build for `Emplaced …AppIcon.icns`.
 
 ---

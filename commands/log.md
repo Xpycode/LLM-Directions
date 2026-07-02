@@ -105,7 +105,7 @@ Report "Archived N tasks. Progress: X%" only if something moved.
 If the work moved the project between phases (discovery → planning → implementation → polish →
 shipping), update the **Phase:** line in PROJECT_STATE and add `<!-- Phase changed: YYYY-MM-DD -->`.
 Re-check the Readiness table (Features/UI/Testing/Docs/Distribution). For a move to **polish/shipping**,
-require Features to be at least 🔶, and remind: "run `/minimums` before release." Skip this section
+require Features to be at least 🔶, and remind: "run `/check ship` before release." Skip this section
 entirely if the phase didn't change — don't prompt for it.
 
 ## 7 · Leaving a Mac  (Mac-handoff mode, or pre-clear when you want it committed)
@@ -120,7 +120,7 @@ MAC=$(cat ~/.claude/this-mac 2>/dev/null || scutil --get LocalHostName 2>/dev/nu
    and ask whether to include it (default: only the docs/session files).
 2. **Commit, stamped with this Mac** — a `Handoff-from:` trailer lives in git history (immutable,
    conflict-free); never write "pushed at HH:MM on MacN" into a tracked `.md` (that invites the
-   two-Macs-edit-the-same-line conflict). `/arrive` reads the trailer back.
+   two-Macs-edit-the-same-line conflict). `/status arrive` reads the trailer back.
    ```bash
    git commit -m "session: $(date +%F) + sync state
 
@@ -133,7 +133,7 @@ MAC=$(cat ~/.claude/this-mac 2>/dev/null || scutil --get LocalHostName 2>/dev/nu
    - **Feature branch + git rules forbid pushing `main`** → push the branch; don't auto-merge.
    - **Nothing to commit** → still push any unpushed local commits.
 4. **Confirm honestly.** On full success:
-   `✓ <Project> wrapped on <MAC> · log + state synced · committed · pushed — safe to switch; run /arrive on the other Mac after Syncthing settles.`
+   `✓ <Project> wrapped on <MAC> · log + state synced · committed · pushed — safe to switch; run /status arrive on the other Mac after Syncthing settles.`
    If something didn't happen (no remote, nothing to push), **say that** — never claim "pushed" if it wasn't.
 
 ## 8 · Next-session model reminder  (last thing before clear)

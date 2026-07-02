@@ -156,7 +156,7 @@ def build_context_message(base_dir: Path) -> str:
 
 def build_non_directions_message() -> str:
     """Build message for non-Directions projects."""
-    return "What would you like to do?\n\n| Command | What it does |\n|---------|------------|\n| `/setup` | Detect project state, set up or migrate Directions |\n| `/status` | Check current phase, focus, blockers, last session |\n| `/log` | Create or update today's session log |\n| `/decide` | Record an architectural/design decision |\n| `/interview` | Run the full discovery interview |\n| `/learned` | Add a term to your personal glossary |\n| `/reorg` | Reorganize folder structure (numbered folders) |\n| `/update-directions` | Pull latest Directions from GitHub |\n\nOr just tell me what you're working on."
+    return "What would you like to do?\n\n| Command | What it does |\n|---------|------------|\n| `/setup` | Detect project state, set up or migrate Directions |\n| `/status` | Check current phase, focus, blockers, last session |\n| `/log` | Create or update today's session log |\n| `/decide` | Record an architectural/design decision |\n| `/spec` | Create a feature spec (+ deep, examples modes) |\n| `/learned` | Add a term to your personal glossary |\n| `/make-plan` | Create an implementation plan with task waves |\n| `/execute` | Wave-based parallel execution |\n| `/check` | Review: code \\| ship \\| security |\n| `/directions` | List commands, or update (pull latest) |\n\nOr just tell me what you're working on."
 
 
 def main():

@@ -216,7 +216,7 @@ func testLoginWithInvalidPassword() {
 
 ## Integration with Directions
 
-### During /interview
+### During /spec deep
 - Capture requirements as rough acceptance criteria
 - Refine into Given/When/Then format during spec writing
 
@@ -228,7 +228,7 @@ func testLoginWithInvalidPassword() {
 - Run acceptance criteria as checklist after implementation
 - Mark criteria as verified in spec
 
-### During /reflect
+### During /check code
 - Check: Are all acceptance criteria verified?
 - Check: Did we discover criteria we missed?
 

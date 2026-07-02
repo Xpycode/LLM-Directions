@@ -362,7 +362,7 @@ mkdir -p docs/{frontend,backend,testing,deployment,security}
 
 - Verify Claude loads correct docs automatically
 - Verify Claude doesn't over-load docs
-- Use `/context` to check what's loaded
+- Use `/status full` to check what's loaded
 - Adjust trigger language if needed
 
 ## Router Template
@@ -501,7 +501,7 @@ Response quality starts dipping before auto-compact triggers at ~95%. Keep headr
 
 ### 6. Checking Context Usage
 
-**The `/context` command** shows token breakdown:
+**The `/status full` command** shows token breakdown:
 ```
 claude-sonnet-4-20250514 * 17k/200k tokens (8%)
 Breakdown:
@@ -647,7 +647,7 @@ Not every task needs full planning rigor:
 ## The Hybrid Workflow
 
 ### For Discovery/Planning (Directions-style)
-1. `/interview` — gather requirements
+1. `/spec deep` — gather requirements
 2. `/decide` — record decisions
 3. `/log` — track sessions
 4. `PROJECT_STATE.md` — maintain position
@@ -1004,7 +1004,7 @@ Ending Session?
 
 | Command | Purpose |
 |---------|---------|
-| `/context` | View currently loaded context |
+| `/status full` | View currently loaded context |
 | `/memory` | View all CLAUDE.md files discovered |
 | `/compact` | Compress current context |
 | `/clear` | Wipe context, start fresh |

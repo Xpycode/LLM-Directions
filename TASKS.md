@@ -3,7 +3,7 @@
 > **Persistent task tracker.** Lives in `docs/`. Progress syncs to PROJECT_STATE.md.
 
 ## Backlog
-<!-- Ideas and future work. Added by /interview, user input, or discovered during development. -->
+<!-- Ideas and future work. Added by /spec deep, user input, or discovered during development. -->
 <!-- Priority: top = highest, bottom = lowest -->
 
 - [ ] [Task description]
@@ -36,7 +36,7 @@ Archived task count is read from `tasks-archive.md` header.
 
 | Command | Action |
 |---------|--------|
-| `/interview` | Adds tasks to Backlog |
+| `/spec deep` | Adds tasks to Backlog |
 | `/make-plan` | Moves Backlog → Current Sprint |
 | `/execute` | Checks off tasks as waves complete |
 | `/log` | Archives checked tasks, updates PROJECT_STATE.md progress bar |

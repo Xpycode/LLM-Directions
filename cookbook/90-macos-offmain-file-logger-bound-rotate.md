@@ -2,7 +2,7 @@
 
 **Tags:** off-main file logger, LogFileWriter, DispatchQueue serial, FileHandle seekToEnd, log rotation, Sendable, applicationSupportDirectory sandbox, activateFileViewerSelecting
 
-**Problem.** You have an `@Observable @MainActor` logger feeding a live in-app console — newest-first array, great for a Debug Console view. But it's **in-memory only**: the moment the user quits, every log line is gone, so a bug report tells you nothing. And the array grows **unbounded** — a long session leaks RAM one log line at a time. This is a `/minimums` ship gap: *diagnostic logging to disk* is a baseline, not a nicety.
+**Problem.** You have an `@Observable @MainActor` logger feeding a live in-app console — newest-first array, great for a Debug Console view. But it's **in-memory only**: the moment the user quits, every log line is gone, so a bug report tells you nothing. And the array grows **unbounded** — a long session leaks RAM one log line at a time. This is a `/check ship` ship gap: *diagnostic logging to disk* is a baseline, not a nicety.
 
 The naive fix — `try String(contentsOf:) + "\n" + line` then `.write(to:)` inside the `@MainActor log()` — is wrong twice over: it does **file I/O on the main thread** (jank when you log from a hot path like export/waveform), and it **rewrites the whole file every call** (O(n²) as the log grows).
 
@@ -114,4 +114,4 @@ CommandGroup(after: .help) {
 - **Rotation keeps one generation** → disk bounded at ~2× `maxBytes`. Want history? Add `.log.2`/`.log.3` (ring), but each generation is more disk and more code — one is usually enough for bug reports.
 - **`clearLogs()` clears the in-memory feed only** by design (it's a UI affordance); the on-disk log is the durable record and isn't erased by it. Decide explicitly if you want a separate "clear on disk" path.
 
-**Source.** Penumbra `Utils/Logger.swift` + `App/PenumbraApp.swift` (Help-menu reveal), 2026-06-10. Distinct from **#16** (Sparkle auto-update) — this is the *diagnostic logging* `/minimums` baseline, the other is *auto-update*. Pairs with **#85** (phase-aware subprocess watchdog) and **#75** (permission-free system stats) as the macOS-ship infrastructure cluster.
+**Source.** Penumbra `Utils/Logger.swift` + `App/PenumbraApp.swift` (Help-menu reveal), 2026-06-10. Distinct from **#16** (Sparkle auto-update) — this is the *diagnostic logging* `/check ship` baseline, the other is *auto-update*. Pairs with **#85** (phase-aware subprocess watchdog) and **#75** (permission-free system stats) as the macOS-ship infrastructure cluster.

@@ -78,7 +78,7 @@ Decide by **blocking × size**, then obey one hard rule.
 
 **Matrix-check rule:** before changing anything **public** in a package, open the adoption matrix in `PACKAGE-CATALOG.md` and check every consumer — the app in front of you is not the only one. A fix fans out to all adopters, so it must read as a standalone package improvement, not "needed for App X." Verify you didn't break VAM while fixing Penumbra.
 
-Mechanics: add a test reproducing the bug → `swift test` in zPackages → confirm the app's repro is gone (instant via local path) → commit to the package → then continue/commit the app. Log package bugs in **zPackages**, never in an app's `/blockers` (other adopters would never see them).
+Mechanics: add a test reproducing the bug → `swift test` in zPackages → confirm the app's repro is gone (instant via local path) → commit to the package → then continue/commit the app. Log package bugs in **zPackages**, never in an app's `/log` (other adopters would never see them).
 
 ## Per-app signal
 

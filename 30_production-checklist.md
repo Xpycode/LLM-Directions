@@ -8,9 +8,7 @@ LOAD: full
 
 *Code quality checks based on 10 code reviews across 6 projects.*
 
-> **Two-part release flow:**
-> 1. First run `/minimums` → Feature baselines (updates, logging, UI polish)
-> 2. Then run `/review` → Code quality (this file)
+> **Release flow:** Run `/check ship` → covers feature baselines (updates, logging, UI polish) and code quality (this file)
 
 ---
 

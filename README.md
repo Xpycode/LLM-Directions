@@ -60,21 +60,21 @@ with the path to your local clone (the install script prints it).
 1. Open a Claude session in your project and run `/setup` — it scaffolds **only** the
    project-specific files: `docs/PROJECT_STATE.md` (the "is Directions set up?" sentinel),
    `docs/sessions/`, `docs/decisions.md`, `docs/glossary.md`. Nothing else is copied.
-2. Run `/interview` to create your first spec
+2. Run `/spec deep` to create your first spec
 3. Run `/make-plan` to break into tasks, `/execute` to build
 
 ### For Existing Projects (older copied-docs layout)
 
 If a project still contains copied universal docs (`docs/00_base.md`, `docs/20_*.md`, …),
-run `/update-directions` — it removes the stale copies and switches the project to
+run `/directions update` — it removes the stale copies and switches the project to
 read-on-demand. Your project-specific files (state, sessions, decisions) are untouched.
 
 ### Core Workflow
 
 ```
-/interview  →  /make-plan  →  /execute  →  /reflect  →  /compound
-    │            │           │            │            │
-  Spec       Tasks       Build        Review      Learn
+/spec  →  /make-plan  →  /execute  →  /check  →  /log
+   │           │            │           │          │
+ Spec        Tasks        Build      Review      Learn
 ```
 
 ---
@@ -112,14 +112,12 @@ LLM-Directions/ (this repo — read on demand, never copied)
 
 | Command | Phase | Purpose |
 |---------|-------|---------|
-| `/interview` | Define | Multi-phase discovery, creates spec |
+| `/spec` (`deep`, `examples`) | Define | Multi-phase discovery, example mapping, creates spec |
 | `/make-plan` | Plan | Creates IMPLEMENTATION_PLAN.md with waves |
-| `/execute` | Build | Wave-based execution with subagents |
-| `/next` | Build | Pick next task with full context |
-| `/reflect` | Review | Multi-perspective code review |
-| `/compound` | Learn | Extract reusable patterns |
-| `/status` | Any | Current state summary |
-| `/log` | Any | Update session log |
+| `/execute` (`next`) | Build | Wave-based execution with subagents; pick next task |
+| `/check` (`code`, `ship`, `security`) | Review | Code quality, production checklist, security audit |
+| `/log` | Learn | Update session log; also covers end-of-session close, handoff, blockers, phase changes |
+| `/status` (`full`, `arrive`) | Any | Current state summary; full dump; sit-down handover check |
 
 ### Other Commands
 
@@ -129,10 +127,9 @@ LLM-Directions/ (this repo — read on demand, never copied)
 | `/decide` | Record an architectural decision |
 | `/learned` | Add term to personal glossary |
 | `/cookbook` | Manage reusable code patterns |
-| `/phase` | Change project phase |
-| `/review` | Production checklist |
-| `/new-feature` | Scaffold docs for new feature |
-| `/directions` | Show all available commands |
+| `/directions` (`update`) | Show all available commands; pull latest Directions from GitHub |
+| `/worktree` | Parallel session isolation via git worktrees |
+| `/test-app` | AppProbe UI automation testing |
 
 ---
 

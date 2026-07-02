@@ -206,7 +206,7 @@ For each rule:
 
 ---
 
-## Integration with /interview
+## Integration with /spec deep
 
 Example mapping can enhance Phase 2 (Explore):
 

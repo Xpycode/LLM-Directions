@@ -160,7 +160,7 @@ release/v0.1.0-rc1
 ### Phase Transitions
 
 ```
-/interview complete
+/spec deep complete
     └── git tag phase/define-complete
 
 /make-plan complete
@@ -169,7 +169,7 @@ release/v0.1.0-rc1
 /execute wave 1 complete
     └── git tag wave/1-complete
 
-/review passes
+/check ship passes
     └── git tag release/v0.x.x-rc1
 ```
 

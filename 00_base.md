@@ -48,7 +48,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 | Funnel | Purpose | Key Command | Gate |
 |--------|---------|-------------|------|
-| **Define** | Understand scope | `/interview` | Spec reviewed, edge cases clear |
+| **Define** | Understand scope | `/spec deep` | Spec reviewed, edge cases clear |
 | **Plan** | Atomic tasks | `/make-plan` | Tasks <30min, backpressure defined |
 | **Build** | Implement | `/execute` | Tests pass, review done |
 
@@ -61,7 +61,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 ### Fresh Project (No Prior Sessions)
 
 1. **Read this file** (you're doing that now)
-2. **Run `/interview`** - Multi-phase discovery
+2. **Run `/spec deep`** - Multi-phase discovery
 3. **Create project folder structure** per `13_folder-structure.md` (code always lives in `01_Project/`):
    - macOS/iOS: `01_Project/`, `02_Design/`, `03_Screenshots/`, `04_Exports/`, `docs/sessions/`
    - Web (no-build/Strato): `01_Project/` (code + deploy stage), `02_Design/`, `03_Scripts/`, `04_Data/`, `docs/sessions/`
@@ -78,7 +78,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 1. **Read this file** (quick refresh)
 2. **Run `/status`** - current phase, focus, blockers
 3. **Check for RESUME.md** - any mid-task state?
-4. **Run `/next`** - what's the next task?
+4. **Run `/execute next`** - what's the next task?
 5. **Continue from where we left off**
 
 ---
@@ -87,12 +87,12 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 | Command | When | What |
 |---------|------|------|
-| `/interview` | New feature | Multi-phase discovery, creates spec |
+| `/spec deep` | New feature | Multi-phase discovery, creates spec |
 | `/make-plan` | After spec | Creates IMPLEMENTATION_PLAN.md |
 | `/execute` | Ready to build | Wave-based execution with subagents |
-| `/next` | During build | Pick next task with context |
-| `/reflect` | After work | Multi-perspective review |
-| `/compound` | End of session | Extract reusable learnings |
+| `/execute next` | During build | Pick next task with context |
+| `/check code` | After work | Multi-perspective review |
+| `/log` | End of session | Extract reusable learnings |
 | `/status` | Anytime | Current state summary |
 | `/log` | Significant progress | Update session log |
 
@@ -105,7 +105,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 | `PROJECT_STATE.md` | Current position, funnel, blockers | Every session |
 | `IMPLEMENTATION_PLAN.md` | Task list with waves | During /make-plan, /execute |
 | `AGENTS.md` | Subagent context, patterns | When patterns emerge |
-| `specs/[feature].md` | Feature specifications | During /interview |
+| `specs/[feature].md` | Feature specifications | During /spec deep |
 | `decisions.md` | Architecture choices | When decisions made |
 | `sessions/YYYY-MM-DD.md` | Session logs | After significant work |
 
@@ -132,11 +132,11 @@ swift test        # Tests pass?
 
 **The Problem:** Projects fail when the AI doesn't understand what you want.
 
-**The Solution:** The Spec Interview (see `/interview`)
+**The Solution:** The Spec Interview (see `/spec deep`)
 
 ```
 1. Write a one-line description of what you want
-2. Run /interview - answer questions until scope is clear
+2. Run /spec deep - answer questions until scope is clear
 3. Review generated spec and acceptance criteria
 4. Confirm understanding before proceeding
 ```
@@ -182,7 +182,7 @@ disk, survives session boundaries; orchestrator never exceeds 40% context usage.
 
 **The Problem:** Claude has "false confidence" — says "Brilliant!" about buggy code.
 
-**The Solution:** Multi-perspective review (see `/reflect`)
+**The Solution:** Multi-perspective review (see `/check code`)
 
 ```
 Do a git diff and pretend you're a senior dev doing a code review
@@ -239,11 +239,11 @@ session log entry with verification notes.
 ### Starting a New Feature
 
 ```
-1. /interview - Create spec with acceptance criteria
+1. /spec deep - Create spec with acceptance criteria
 2. /make-plan - Break into atomic tasks with waves
 3. /execute - Implement wave by wave
-4. /reflect - Adversarial review
-5. /compound - Extract learnings
+4. /check code - Adversarial review
+5. /log - Extract learnings
 6. Commit when stable
 ```
 
@@ -251,11 +251,11 @@ session log entry with verification notes.
 
 ```
 1. /status - Where are we?
-2. /next - What's the next task?
+2. /execute next - What's the next task?
 3. Implement task
 4. Run backpressure
 5. Commit if passes
-6. /next again
+6. /execute next again
 ```
 
 ### Fixing a Bug
@@ -273,8 +273,8 @@ session log entry with verification notes.
 ### Ending a Session
 
 ```
-1. /reflect - Check for issues
-2. /compound - Extract learnings
+1. /check code - Check for issues
+2. /log - Extract learnings
 3. /log - Update session log
 4. Commit any uncommitted work
 5. Note resume point in RESUME.md if mid-task
@@ -360,7 +360,7 @@ This table is the curated subset worth memorizing; that one is the exhaustive, s
 - **Run backpressure** before every commit
 - **Update PROJECT_STATE.md** after phase transitions
 - **Log decisions** to `decisions.md` when architectural choices are made
-- **Run `/compound`** at session end to extract learnings
+- **Run `/log`** at session end to extract learnings
 - **Create feature branches** - never work directly on main
 
 ### Key Prompting Patterns
@@ -432,14 +432,14 @@ master repo and are read on demand — they are NOT copied here.
 ## Quick Start for New Projects
 
 ```
-1. /interview        → Create spec with acceptance criteria
+1. /spec deep        → Create spec with acceptance criteria
 2. /make-plan            → Break into atomic tasks
 3. /execute         → Implement wave by wave
-4. /reflect         → Adversarial review
-5. /compound        → Extract learnings
+4. /check code      → Adversarial review
+5. /log             → Extract learnings
 6. Commit
 ```
 
 ---
 
-*This system evolves. Run /compound when you learn something the hard way.*
+*This system evolves. Run /log when you learn something the hard way.*

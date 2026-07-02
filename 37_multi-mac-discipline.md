@@ -133,7 +133,7 @@ oracle (hash-object) or a full `diff -` that reads both streams is the safe choi
     all match, or a per-file "compare before discarding" caution when any differs.
   - `hooks/session-stop.sh` (`Stop`) — debounced (~20 min) `systemMessage` nudge when work is
     uncommitted or unpushed. Never blocks.
-  - `/session-close` Step 6 — offers to commit **and push** in one confirmed step (an unpushed commit is
+  - `/log` Step 6 — offers to commit **and push** in one confirmed step (an unpushed commit is
     as invisible to the other Mac as an uncommitted file).
   - **The hook scripts travel via git; the wiring does not.** Run `bash hooks/install.sh` once per Mac
     after cloning/pulling — it symlinks the hooks + statusline into `~/.claude/` and registers them in

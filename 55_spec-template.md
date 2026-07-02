@@ -147,7 +147,7 @@ Explicitly excluded from this spec:
 ## Spec Workflow
 
 ```
-1. /interview         → Gather requirements
+1. /spec deep         → Gather requirements
 2. Create spec        → Use this template
 3. Review spec        → Check for gaps, contradictions
 4. Get approval       → User confirms understanding

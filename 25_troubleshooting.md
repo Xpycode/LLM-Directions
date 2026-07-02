@@ -29,7 +29,7 @@ It checks: installation, version, settings files (malformed JSON), MCP server er
 | 1 | `claude --version` | Is Claude Code installed and running? |
 | 2 | Visit `status.claude.com` | Is the Anthropic service up? |
 | 3 | `/doctor` | Configuration problems? |
-| 4 | `/context` | Context nearly full? |
+| 4 | `/status full` | Context nearly full? |
 | 5 | `/clear` | Does a fresh session fix it? |
 
 If step 5 fixes it, the problem was context — not a bug.

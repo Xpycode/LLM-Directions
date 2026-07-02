@@ -286,8 +286,8 @@ Search for these patterns to find common issues:
 ## Related
 
 - `54_security-rules.md` - Core security rules (Swift-focused)
-- `/code-review` - Includes security in review checklist
-- `/review` - Production checklist with security section
+- `/check code` - Includes security in review checklist
+- `/check ship` - Production checklist with security section
 
 ---
 

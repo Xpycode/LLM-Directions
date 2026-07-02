@@ -264,7 +264,7 @@ Key frontmatter fields: `name` (becomes `/my-skill`), `description` (drives auto
 
 Enterprise (managed settings) → `~/.claude/skills/<name>/SKILL.md` (personal, all projects) → `.claude/skills/<name>/SKILL.md` (project, team-shared) → plugin directories. Higher priority overrides lower; start personal, move to project when ready to share.
 
-**Discovery:** manual via `/skill-name` (some take arguments, e.g. `/review security`), or automatic when the conversation matches the skill's `description`. Run `/context` to check whether any skills were excluded from the description budget.
+**Discovery:** manual via `/skill-name` (some take arguments, e.g. `/check security`), or automatic when the conversation matches the skill's `description`. Run `/status full` to check whether any skills were excluded from the description budget.
 
 **Install:** copy a folder into a skills directory, or `/plugin marketplace add <source>` + `/plugin install <name>@<source>`.
 
