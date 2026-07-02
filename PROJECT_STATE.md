@@ -14,14 +14,16 @@
   migrated to it end-to-end** — package hardened `Xpycode/AppCitizenshipKit` 0.1.0→**0.1.2**, Conjoyn
   consumes the tag and builds green; cookbook **#108** captures the migration + proving-ground pattern.
 - **Blockers:** none.
-- **Next:** *(framework)* **Wave 2 fully DONE + redeployed.** The `~/.claude/` command swap **is now
-  live** (2026-07-02 (f)): live `commands/` went **38→15** (13 Directions + the 2 independent
-  `mcp-profile`/`preview`, correctly preserved), and the old CLAUDE.md 36-command menu was replaced
-  with the real 13. **Still open (user decision, deferred while away):** the `~/.claude/CLAUDE.md`
-  Index splice + full "read-on-demand" modernization (adopt `CLAUDE-GLOBAL-TEMPLATE.md` — it kills the
-  52-ref inline cookbook dump for a grep-first router + adds the Directions Index). Backups:
-  `~/.claude/commands.bak-*` and `~/.claude/CLAUDE.md.bak-*`. Then optionally **Wave 3** (per-file
-  trims). *(product)* **roll `AppCitizenshipKit` to the first
+- **Next:** *(framework)* **Wave 2 fully DONE + redeployed + CLAUDE.md modernized (2026-07-02 (f)).**
+  Live `commands/` 38→15 (13 Directions + independent `mcp-profile`/`preview`); and `~/.claude/CLAUDE.md`
+  is now the full read-on-demand shape — grep-first cookbook router (was a 52-ref inline dump),
+  generated 45-row Directions Index, PROJECT_STATE sentinel, new MCP-hygiene section (411 lines).
+  **Two `CLAUDE-GLOBAL-TEMPLATE.md` bugs found during the merge — fix the template before next redeploy
+  or they'll regress:** (1) template's Git Discipline still says "never commit to main / feature
+  branches" but the live/preferred policy is "small changes → commit straight to main"; (2) template's
+  Multi-Mac pre-flight dropped the `NO .git → git-bootstrap skill` case. The deployed file has both
+  correct (I merged live-wins). Backups: `~/.claude/commands.bak-*`, `~/.claude/CLAUDE.md.bak-*`. Then
+  optionally **Wave 3** (per-file trims). *(product)* **roll `AppCitizenshipKit` to the first
   wave** of apps — DiskVerdict
   next (additive: it has FeedbackKit already, ACK adds Tip Jar + About), then the rest. Use the per-app
   rollout checklist in ACK's README + the `#108` pattern. Separate sweep: fix 19/30 missing/empty
@@ -31,12 +33,14 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
-- **2026-07-02 (f)** — **Redeployed the consolidated commands into live `~/.claude/`.** Live
-  `commands/` 38→15: retired 25 obsolete Directions-owned files, installed the 13 (incl. new
-  `/check`, `/make-plan`), and left the 2 non-Directions commands (`mcp-profile`, `preview`)
-  untouched — provenance from `git log --diff-filter=D`, not a raw dir-diff, so they weren't
-  mis-deleted. Fixed the stale 36-command menu in `~/.claude/CLAUDE.md` → the real 13. Deferred (user
-  away): the CLAUDE.md Index splice / full template modernization. Backups taken for both.
+- **2026-07-02 (f)** — **Redeployed to live `~/.claude/` AND modernized the global CLAUDE.md.** Commands
+  38→15 (retired 25 obsolete Directions-owned files via `git log --diff-filter=D` provenance, installed
+  the 13 incl. new `/check`+`/make-plan`, left `mcp-profile`/`preview` untouched). Then adopted the
+  read-on-demand `CLAUDE-GLOBAL-TEMPLATE.md` as `~/.claude/CLAUDE.md` (411 lines): grep-first cookbook
+  router replacing the 52-ref inline dump, generated 45-row Directions Index, PROJECT_STATE sentinel,
+  new MCP-hygiene section. **Merged live-wins on two stale-template spots:** kept the "commit straight
+  to main" Git Discipline and the `NO .git → git-bootstrap` case (both dropped in the template). Both
+  live files backed up (`~/.claude/commands.bak-*`, `CLAUDE.md.bak-*`).
 - **2026-07-02 (e)** — Executed OPTIMIZATION-PLAN **Wave 2.2: 36 commands → 13.** `/log` absorbs 7
   end-of-session commands; new `/check` (code|ship|security) absorbs 5 + security-audit→63_ doc;
   `/status`←context/arrive; `/spec`←interview/example-map; `/execute`←next (gate softened to nudge);
@@ -85,14 +89,17 @@
 - **Wave 2 FULLY done** — 2.1–2.4 (5 commits, pushed earlier) + **2.2 commands 36→13** (8 commits
   this session). Backpressure met: `ls commands | wc -l` = **13**; `PATTERNS-COOKBOOK.md` = 41.6 KB;
   no live dead command refs. Only `.claude/settings.local.json` stays uncommitted (per-Mac).
-- **Redeploy DONE (2026-07-02 (f)) — commands are live.** Live `~/.claude/commands/` = 15 (the 13 +
-  `mcp-profile`/`preview`); old 36-command menu in `~/.claude/CLAUDE.md` replaced with the real 13.
-  **Still open (needs your call):** the CLAUDE.md **Index splice + full read-on-demand modernization**
-  — the live file has no `## Directions Index` heading/markers so `gen-directions-index.sh --write`
-  would error until one is added; the clean path is to adopt `CLAUDE-GLOBAL-TEMPLATE.md` (real path
-  substituted) after merge-preserving the personal sections (multi-Mac pre-flight, git identity,
-  Xcode prefs). Backups: `~/.claude/commands.bak-20260702-203924`, `~/.claude/CLAUDE.md.bak-*`.
-  Optional after: **Wave 3** (per-file trims, `OPTIMIZATION-PLAN §3`).
+- **Redeploy + CLAUDE.md modernization DONE (2026-07-02 (f)).** Live `~/.claude/commands/` = 15;
+  `~/.claude/CLAUDE.md` = 411 lines, full read-on-demand shape (grep-first cookbook router, generated
+  45-row Directions Index via `gen-directions-index.sh`, PROJECT_STATE sentinel, MCP-hygiene section).
+  Nothing on-machine is pending. Backups: `~/.claude/commands.bak-20260702-203924`,
+  `~/.claude/CLAUDE.md.bak-20260702-204226`. **Not yet done (repo hygiene, optional):** patch the two
+  stale spots in `CLAUDE-GLOBAL-TEMPLATE.md` (Git Discipline → "commit straight to main"; re-add the
+  `NO .git → git-bootstrap` case) so a future redeploy doesn't reintroduce them; note the template is
+  the *public* LLM-Directions repo so keep the personal bootstrap identity out of it. Then optionally
+  **Wave 3** (per-file trims, `OPTIMIZATION-PLAN §3`).
+- **First-real-use watch:** the 13 commands + the new CLAUDE.md shape haven't been exercised live yet
+  — `/check`, `/log`'s absorbed modes, and the grep-first cookbook lookup are the most-changed.
 - **Not yet verified by real use:** the 13 commands passed static checks (grep/counts/bash-n/py_compile)
   but no live dry-run in a scratch project (plan's Wave 2 backpressure) — first real invocations
   post-redeploy are the true test. `/check` and `/log`'s new modes are the most-changed; watch those.
