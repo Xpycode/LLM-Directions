@@ -34,3 +34,4 @@ sessions/*.md
 !.claude/settings.local.json
 
 .cowork/
+__pycache__/
