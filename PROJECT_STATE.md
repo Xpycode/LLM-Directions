@@ -32,6 +32,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-02 (g)** — Added **`redeploy.sh`** so the M4 Pro can deploy the new command set + CLAUDE.md
+  in one safe command. It prunes the 25 retired commands via git-deletion provenance (keeps the
+  independent `mcp-profile`/`preview`), overwrites CLAUDE.md from the template, and runs the hook
+  installer — all with backups. Fixes the gap where `install-directions.sh` copies-without-pruning
+  and won't overwrite an existing CLAUDE.md. Verified by dry-run on M1 Max; committed + pushed.
 - **2026-07-02 (f)** — **Redeployed to live `~/.claude/` AND modernized the global CLAUDE.md.** Commands
   38→15 (retired 25 obsolete Directions-owned files via `git log --diff-filter=D` provenance, installed
   the 13 incl. new `/check`+`/make-plan`, left `mcp-profile`/`preview` untouched). Then adopted the
@@ -85,6 +90,16 @@
 
 ## Resume
 <!-- If RESUME.md exists, note it here. Otherwise blank. -->
+- **▶ M4 PRO NEXT: deploy the new command set + CLAUDE.md.** This Mac (M1 Max) redeployed live on
+  2026-07-02 (f); the M4 Pro still runs the OLD 38-command set + old CLAUDE.md until it deploys. A new
+  **`redeploy.sh`** (repo root) makes ~/.claude match the repo in one command — installs the 13
+  canonical commands, **prunes the 25 retired ones via git-deletion provenance** (`--diff-filter=D`,
+  so it removes only files this repo once tracked, never the independent `mcp-profile`/`preview`),
+  overwrites `~/.claude/CLAUDE.md` from `CLAUDE-GLOBAL-TEMPLATE.md`, and runs `hooks/install.sh`
+  (idempotent). Everything backed up (`commands.bak-*`, `CLAUDE.md.bak-*`). On the M4 Pro:
+  `git pull --ff-only && bash redeploy.sh --dry-run && bash redeploy.sh`, then restart Claude Code.
+  (Plain `install-directions.sh` is NOT enough — it copies without pruning and won't overwrite an
+  existing CLAUDE.md, so it'd pile the 13 new commands on top of the 25 stale ones.)
 - **Wave 2 FULLY done** — 2.1–2.4 (5 commits, pushed earlier) + **2.2 commands 36→13** (8 commits
   this session). Backpressure met: `ls commands | wc -l` = **13**; `PATTERNS-COOKBOOK.md` = 41.6 KB;
   no live dead command refs. Only `.claude/settings.local.json` stays uncommitted (per-Mac).
@@ -116,4 +131,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-02 (f).*
+*Last updated: 2026-07-02 (g).*
