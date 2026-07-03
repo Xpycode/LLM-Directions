@@ -220,6 +220,9 @@ Replaces macOS default round/capsule toolbar buttons with flat, 4px-corner-radiu
 ```swift
 struct FCPToolbarButtonStyle: ButtonStyle {
     @Binding var isOn: Bool
+    // Custom ButtonStyles do NOT render .disabled() automatically — without this,
+    // disabled buttons (e.g. undo/redo with empty history) still look active.
+    @Environment(\.isEnabled) private var isEnabled
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -246,6 +249,7 @@ struct FCPToolbarButtonStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
             .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isOn)
+            .opacity(isEnabled ? 1.0 : 0.35)
     }
 }
 ```
