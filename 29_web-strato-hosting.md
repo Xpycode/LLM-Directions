@@ -47,6 +47,31 @@ curl -I https://<subdomain>.<your-domain>
 # Got "Domain reserved" or similar Strato page → not bound yet
 ```
 
+### Case-sensitive duplicate folder from the panel's own subdomain-creation step
+
+When you create a subdomain in the Strato panel, it auto-creates an empty docroot folder for it —
+and that name's casing doesn't necessarily match what your deploy script later mirrors to. Linux
+filesystems are case-sensitive, so `/Magpie/` (panel-created) and `/MAGPIE/` (deploy script's
+hardcoded target) are two **different, coexisting directories** — the panel binds the subdomain to
+whichever one it created, silently ignoring the populated sibling.
+
+Symptom: `deploy.sh`/`lftp mirror` reports success, a directory listing via SFTP shows all the right
+files present, and the panel's subdomain-binding field even *looks* correct at a glance — yet the
+live site still 404s on every path, including files you can see are there. Confirmed via Magpie
+(2026-07-04): `/Magpie/` sat empty since panel subdomain creation while `/MAGPIE/` held the fully
+deployed site; only one app in the whole portfolio, so it's not a recurring naming choice, just a
+one-off casing slip.
+
+Check for the duplicate directly (safe, read-only):
+
+```bash
+lftp "sftp://${SFTP_USER}@${SFTP_HOST}" -e "cls -la /; bye"   # look for near-identical names, different case
+```
+
+Fix: repoint the subdomain to the folder your deploy script actually populates (or vice versa —
+change the script's target to match the panel), then delete the stray empty one so it can't
+re-collide on a future rename.
+
 ### Strato chroots SFTP users — `pwd` lies
 
 Inside SFTP, `pwd` returns `/`, hiding the actual filesystem path. Apache directives like `AuthUserFile` require the **absolute** path, and Strato won't tell you what that is from the SFTP shell.
