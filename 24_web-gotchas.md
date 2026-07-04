@@ -239,6 +239,33 @@ Is this a backend issue or do I need a proxy?
 }
 ```
 
+### requestAnimationFrame Stops When the Window Is Hidden
+
+**Symptom:** A long-running loop (video capture, export, countdown) works while you watch it,
+but hangs forever if the window is minimized or another app covers it.
+
+**What it means:** Every engine (Chrome, WKWebView, WebView2, WebKitGTK) throttles or fully
+suspends `requestAnimationFrame` for hidden/occluded windows. If the loop's *completion check*
+lives inside the rAF callback, nothing ever finishes. Desktop webviews (Tauri/Electron) are the
+worst case — users routinely minimize during a long export.
+
+**Fix:** Drive time-based work off `setInterval`/`setTimeout` + `performance.now()`; timers are
+throttled (≈1 Hz) but keep firing. Reserve rAF for purely visual updates that may pause.
+(Found: TestPatternGenerator 2026-07-03 — in-browser video export hung when minimized.)
+
+### Resizing a Canvas Kills a Live Capture/Recording
+
+**Symptom:** Corrupted or mixed-resolution frames in a `MediaRecorder` +
+`canvas.captureStream()` recording; sometimes a frozen track.
+
+**What it means:** Setting `canvas.width`/`height` **resets the bitmap** (HTML spec) under the
+live capture stream. Any control that can trigger a resize or repaint mid-recording races the
+recorder.
+
+**Fix:** Disable *every* control that can touch the canvas (size, pattern, params, overlays)
+for the duration of the capture, and wrap the whole export in `try/finally` so the UI always
+unlocks. (Found: TestPatternGenerator 2026-07-03.)
+
 ---
 
 ## Quick Diagnostic Questions

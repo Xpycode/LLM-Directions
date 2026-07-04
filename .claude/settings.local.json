@@ -161,7 +161,9 @@
       "Bash(env)",
       "WebFetch(domain:thariqs.github.io)",
       "Bash(scutil --get LocalHostName)",
-      "Bash(hostname -s)"
+      "Bash(hostname -s)",
+      "Bash(bash ~/.claude/hooks/session-guard.sh)",
+      "Bash(bash /Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/hooks/session-guard.sh)"
     ]
   },
   "enableAllProjectMcpServers": true,
