@@ -214,6 +214,25 @@ git show v1.0     # Show tag details
 
 ---
 
+## Gitignore Gotchas
+
+### ⚠️ The case-insensitive ignore-pattern trap (macOS/Windows)
+
+On case-insensitive filesystems (macOS APFS, Windows NTFS) git sets `core.ignorecase=true`, and
+**every `.gitignore` pattern matches case-insensitively**. A temp-file pattern like `*PLAN*.md`
+silently swallows a real doc named `m1-m2-plan.md` — the file just never shows up in `git status`,
+and `git add -A` skips it without a word. (Bitten 2026-07-08 in ZoomToSDI: a permanent runbook
+vanished from a commit.)
+
+- **Detect:** a file you expected to stage is missing → `git check-ignore -v <path>` names the
+  exact `.gitignore` line responsible.
+- **Fix:** rename the file out of the pattern's reach, or negate it (`!docs/thing.md`) below the
+  broad pattern. Prefer renaming — negations rot.
+- **Prevent:** keep catch-all patterns (`*PLAN*.md`, `*CHECKLIST*.md`, `[Bb]in/`) narrow, and
+  remember uppercase in a pattern buys no case protection on Mac/Windows.
+
+---
+
 ## The "Oh Shit" Commands
 
 ### Undo Last Commit (Keep Changes)
