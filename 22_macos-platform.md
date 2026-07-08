@@ -407,6 +407,14 @@ xcrun stapler staple MyApp.dmg
 | `mdls` | Spotlight metadata | `mdls file` |
 | `qlmanage` | Quick Look preview | `qlmanage -p file` |
 
+**Unified-log gotchas (cost a whole debugging round on ColorX, 2026-07-08):** empty results
+usually mean a broken *query*, not missing logs. (1) In zsh, `log` is a **shell builtin** (login
+watcher) that shadows `/usr/bin/log` — scripted/pipelined calls fail with "too many arguments",
+and `2>/dev/null` turns that into a fake empty result. Always call **`/usr/bin/log`** by full
+path in scripts. (2) `Logger.info`/`.debug` messages are **filtered out by default** — pass
+`--info` (or `--debug`) to *both* `log show` and `log stream`, or you'll see only default/error
+levels and conclude your instrumentation never ran.
+
 ---
 
 ## Quick Reference
