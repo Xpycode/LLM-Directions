@@ -323,9 +323,14 @@ Numbers keep folders sorted logically in Finder and terminals.
 .Trashes
 
 # === Xcode ===
-*.xcodeproj/project.xcworkspace/
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
+# NOTE: the /project.xcworkspace/ and /xcuserdata/ patterns below have a mid-pattern slash, which
+# git anchors to the directory holding this .gitignore. Since the universal rule puts the
+# .xcodeproj under 01_Project/ (not the repo root where this file lives), un-prefixed patterns
+# NEVER match — confirmed via `git check-ignore` 2026-07-10 (Transcoder/Winch bootstrap). The **/
+# prefix makes them match at any depth.
+**/*.xcodeproj/project.xcworkspace/
+**/*.xcodeproj/xcuserdata/
+**/*.xcworkspace/xcuserdata/
 xcuserdata/
 DerivedData/
 build/

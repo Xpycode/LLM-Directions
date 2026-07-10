@@ -49,7 +49,7 @@ Compare the goal against existing code:
 
 **Key question:** "Don't assume not implemented" - check before creating new.
 
-**If the feature involves UI:** Check `36_ui-changes-protocol.md` → UI Constraints Checklist. Ensure no planned tasks use forbidden elements (NavigationSplitView, SwiftUI Button, HSplitView). Use HStack+Divider panes and NSButton wrappers instead.
+**If the feature involves UI:** Check `36_ui-changes-protocol.md` → UI Constraints Checklist. Ensure no planned tasks use forbidden elements (`NavigationSplitView` for the primary window; raw SwiftUI `Button`/`Picker`/`Slider`/etc.). Use AppKit wrappers (`47_project-ui-conventions.md`) for controls. For panes, follow the split-pane decision tree in `cookbook/00-app-shell.md` §5: `HSplitView`/`VSplitView` for user-resizable panes (the house standard for the main window split), `HStack(spacing: 0)` + `Divider()` only for fixed-width/non-resizable sidebars — `HSplitView` is not forbidden, it's the default for resizable layouts.
 
 ### Step 3: Create Task List
 

@@ -131,9 +131,16 @@ ContentView()
 Then use a hardcoded dark palette. Centralized dark color palette — use `Theme.xxx` everywhere
 instead of hardcoded colors:
 
+> **Swift 6 (`SWIFT_VERSION: "6.0"`) note:** both `ThemeManager` and `Theme` below need
+> `@MainActor` — without it, `Theme.accent` (a nonisolated static computed property reaching into
+> `ThemeManager.shared`, an isolated singleton) fails to compile under full concurrency checking.
+> This snippet predates strict concurrency; the `@MainActor` lines are required, not optional,
+> on any project with `SWIFT_VERSION: "6.0"`. Confirmed 2026-07-10 (Transcoder/Winch bootstrap).
+
 ```swift
 import SwiftUI
 
+@MainActor
 @Observable
 class ThemeManager {
     static let shared = ThemeManager()
@@ -165,6 +172,7 @@ class ThemeManager {
     }
 }
 
+@MainActor
 struct Theme {
     static var primaryBackground: Color { Color(white: 0.10) }   // Graphite — outer chrome
     static var secondaryBackground: Color { Color(white: 0.15) } // Charcoal — main content

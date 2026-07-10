@@ -140,9 +140,9 @@ Before implementing any UI element, verify against these project conventions (se
 
 | Constraint | Rule |
 |------------|------|
-| **No Tahoe sidebar** | Do not use `NavigationSplitView` or liquid glass sidebar. Use HStack + Divider panes. |
+| **No Tahoe sidebar** | Do not use `NavigationSplitView` or liquid glass sidebar for the primary window (secondary utility windows are fine). |
 | **No SwiftUI controls** | Do not use SwiftUI `Button`, `Toggle`, `Picker`, `Slider`, `Stepper`, `DatePicker`, `ColorPicker`, or `TextField`/`TextEditor`. Wrap AppKit equivalents via `NSViewRepresentable`. **Exception:** SwiftUI `Button` is allowed inside `.toolbar` with `AppKitToolbarButtonStyle`. See mapping table in `47_project-ui-conventions.md`. |
-| **No HSplitView** | Use `HStack(spacing: 0)` + `Divider()` for split layouts. |
+| **Split-pane choice** | `HSplitView`/`VSplitView` for user-resizable panes (house standard for the main window split — **not** forbidden); `HStack(spacing: 0)` + `Divider()` only for fixed-width/non-resizable sidebars. See decision tree in `cookbook/00-app-shell.md` §5. |
 
 If a proposed UI change would introduce any of these, flag it before implementing.
 

@@ -85,6 +85,14 @@ Do **not** use SwiftUI interactive controls (`Button`, `Toggle`, `Picker`, `Step
 
 **Why:** SwiftUI controls on macOS use `.bordered` / Catalyst-like styling (rounded capsules, padded toggles) that look like an iPad port. AppKit controls give the classic pro-Mac look — rectangular buttons with subtle ~4pt corner radius, compact toggles, native popup menus.
 
+> **Swift 6 (`SWIFT_VERSION: "6.0"`) note:** mark every wrapper's `Coordinator` class `@MainActor`.
+> Their `@objc` action methods are nonisolated by default even though AppKit always calls them on
+> the main thread, and under full concurrency checking they'll warn (sometimes error) the moment
+> the method touches a MainActor-isolated AppKit property (`sender.state`, `.selectedSegment`,
+> `.indexOfSelectedItem`, `.doubleValue`, …) or a property on the wrapper struct itself. The
+> snippets below have `@MainActor` on each `Coordinator` for this reason — confirmed 2026-07-10
+> (Transcoder/Winch bootstrap), clean rebuild showed zero warnings after adding it.
+
 ### Mapping Table
 
 | SwiftUI Control | AppKit Replacement | Notes |
@@ -125,6 +133,7 @@ struct AppKitButton: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator(action: action) }
 
+    @MainActor
     class Coordinator: NSObject {
         let action: () -> Void
         init(action: @escaping () -> Void) { self.action = action }
@@ -157,6 +166,7 @@ struct AppKitCheckbox: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator(isOn: $isOn) }
 
+    @MainActor
     class Coordinator: NSObject {
         let isOn: Binding<Bool>
         init(isOn: Binding<Bool>) { self.isOn = isOn }
@@ -194,6 +204,7 @@ struct AppKitPopup<T: Hashable>: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
 
+    @MainActor
     class Coordinator: NSObject {
         let parent: AppKitPopup
         init(parent: AppKitPopup) { self.parent = parent }
@@ -235,6 +246,7 @@ struct AppKitSegmented<T: Hashable>: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
 
+    @MainActor
     class Coordinator: NSObject {
         let parent: AppKitSegmented
         init(parent: AppKitSegmented) { self.parent = parent }
@@ -245,6 +257,51 @@ struct AppKitSegmented<T: Hashable>: NSViewRepresentable {
     }
 }
 ```
+
+### Slider Wrapper
+
+```swift
+// ❌ AVOID
+Slider(value: $volume, in: 0...100)
+
+// ✅ PREFERRED
+struct AppKitSlider: NSViewRepresentable {
+    @Binding var value: Double
+    var minValue: Double = 0
+    var maxValue: Double = 1
+
+    func makeNSView(context: Context) -> NSSlider {
+        NSSlider(
+            value: value,
+            minValue: minValue,
+            maxValue: maxValue,
+            target: context.coordinator,
+            action: #selector(Coordinator.changed)
+        )
+    }
+
+    func updateNSView(_ nsView: NSSlider, context: Context) {
+        nsView.minValue = minValue
+        nsView.maxValue = maxValue
+        // Only write back when it actually differs — avoids fighting the user mid-drag.
+        if nsView.doubleValue != value {
+            nsView.doubleValue = value
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(value: $value) }
+
+    @MainActor
+    class Coordinator: NSObject {
+        let value: Binding<Double>
+        init(value: Binding<Double>) { self.value = value }
+        @objc func changed(_ sender: NSSlider) { value.wrappedValue = sender.doubleValue }
+    }
+}
+```
+
+*Added 2026-07-10 (Transcoder/Winch bootstrap) — the mapping table named `Slider`/`NSSlider` but
+had no reference implementation; this one is build-verified and warning-free under Swift 6.*
 
 > **Tip:** Keep all AppKit wrappers in a shared `AppKit/` folder (e.g., `Views/AppKit/`). Each project should build this wrapper set once and reuse across all views.
 
