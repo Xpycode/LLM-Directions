@@ -31,6 +31,9 @@ sessions/*.md
 .claude/skills/
 .agents/
 
+# Machine-local hook evidence log (delivery-gate/verify hooks) — not shared state
+.claude/logs/
+
 # But keep Claude settings as reference
 !.claude/settings.local.json
 
