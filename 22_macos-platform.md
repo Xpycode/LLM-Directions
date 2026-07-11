@@ -1,5 +1,5 @@
 <!--
-TRIGGERS: macOS, sandbox, entitlements, bookmark, Keychain, notarization, menu bar app, accessibility
+TRIGGERS: macOS, sandbox, entitlements, bookmark, Keychain, notarization, menu bar app, accessibility, ScreenCaptureKit, screen recording, SCShareableContent, SCContentSharingPicker
 PHASE: implementation
 LOAD: sections
 -->
@@ -347,6 +347,40 @@ func getWindowsForApp(pid: pid_t) -> [[String: Any]]? {
         ]
     }
 }
+```
+
+---
+
+## Screen Recording Permission (ScreenCaptureKit)
+
+### The periodic "bypass system private window picker" dialog
+
+**Symptom:** macOS shows "*[App] is requesting to bypass the system private window picker and
+directly access your screen and audio*" — with Allow / Open System Settings buttons — even
+though Screen Recording permission was already granted and the app worked fine before.
+
+**Cause:** macOS Sequoia+ re-prompts roughly **monthly** (previously weekly, tightened then
+relaxed by Apple) for any app that calls `SCShareableContent`/`excludingDesktopWindows(...)`
+directly instead of going through Apple's own `SCContentSharingPicker` UI. This is expected
+system behavior, not app-specific and not a regression — confirmed identical dialog text
+reported for Snagit, Dropshare, and Zight/CloudApp, none of which are related codebases.
+
+**Not a bug to "fix" reactively.** The only way to eliminate it is to adopt
+`SCContentSharingPicker`, which replaces your own capture-region/window-picker UI with Apple's
+system picker — a real UX tradeoff, not a permission-plumbing fix. Worth doing only if the
+app's design is fine ceding selection UI to the system picker (e.g. simple screen-share tools);
+**not** worth it for apps whose custom selection overlay is the product's differentiator (e.g.
+a screenshot tool with its own drag-to-select region — see QuickScreenShot's decisions.md
+2026-07-11 for the actual tradeoff writeup).
+
+**Verifying Login Items / SMAppService registration independently of app self-report:**
+`SMAppService.mainApp.status` can be trusted, but for a paranoia check (or in a test/verify
+script) cross-reference the OS's own Background Task Management registry instead of taking the
+API's word for it:
+
+```bash
+sfltool dumpbtm | grep -i -A 10 "<AppName>"
+# Look for: Disposition: [enabled, allowed, notified]
 ```
 
 ---
