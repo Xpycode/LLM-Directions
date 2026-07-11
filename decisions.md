@@ -23,6 +23,42 @@ This file tracks the WHY behind technical and design decisions.
 > Full ADRs older than the one below live in [`decisions-archive.md`](decisions-archive.md) — a
 > one-paragraph summary of each still lives in the Condensed Log further down this file.
 
+### 2026-07-11 - Reject `claude-octopus` wholesale; adopt only its blind-spot-injection idea, Claude-only
+
+**Context:** Considered whether `claude-octopus` (nyldn) — a multi-provider AI-orchestration plugin
+(52 commands, 55 skills, 58 hooks, 32 personas, v9.52.0; 348 md + 429 shell) — could strengthen the
+Directions framework, whose whole thrust is a *lean, curated, solo, Claude-Code-only* toolset (we'd
+just pruned commands 38→15 to fight bloat). Its headline feature is a "council/consensus" that runs
+multiple vendor CLIs (Codex/Gemini/Qwen) adversarially and gates on agreement.
+
+**Options Considered:**
+1. **Install it wholesale** — instant multi-model review. Cons: the value is inseparable from *paid*
+   external CLIs we don't run; adds per-Mac wiring (the exact cross-Mac tax `37_` warns about); a
+   ~2,900-line `orchestrate.sh` + ~2,500-line `council.sh` maintenance surface riddled with
+   bug-number patches; re-inflates the command/hook count we just cut. Its own `debate.sh` concedes
+   *"convergent agreement between models may indicate shared blind spots, not correctness."*
+2. **Borrow personas / freeze-guard hooks** — decent but overlap our existing `fable5` agents +
+   integrity guardrails; marginal.
+3. **Extract only the `config/blind-spots/` idea, reimplemented Claude-only** — a keyword→prompt
+   library that injects the perspectives an LLM structurally forgets. Provider-free, ~40 lines.
+
+**Decision:** Option 3. Skip the whole orchestration/vendor layer; reimplement just the blind-spot
+injection as **cookbook #159**, with a seed library sourced from *our own* numbered gotcha docs
+(20_/21_/22_/38_/61_/32_/29_/36_ + prior cookbook entries) rather than octopus's B2B-SaaS entries,
+plus a ~15-line jq matcher.
+
+**Rationale:** It captures the actual mechanism of value behind "council" (surface what one model
+reliably misses) with zero external dependencies, zero API cost, negligible context, and one owned
+file — while *inverting* octopus's premise: encode our own hard-won blind spots instead of renting a
+stranger's. Multi-Claude "consensus" would share Claude's blind spots anyway, so the vendor diversity
+(the only thing we can't reproduce) is also the part with the worst cost/maintenance profile.
+
+**Consequences:** #159 is a manual pattern first (skim/paste before `/check`/spec/hand-off); a
+`UserPromptSubmit` hook to auto-inject is deliberately deferred until the manual form proves it fires
+more usefully than it nags. The seed grows by one row whenever Claude is caught skipping the same
+category twice. We do **not** take on octopus as a dependency; re-evaluate only if we ever routinely
+run multiple vendor CLIs locally.
+
 ### 2026-06-13 - Cross-project status view: disposable `dashboard.html`, not a committed `project.json` generator
 
 **Context:** A "current state of all my work" view had been parked through two sessions with two competing designs. **2026-03-24** designed a bottom-up *committed generator*: every project emits `docs/site/index.html` + a `project.json` data contract, a master aggregator at `__DIRECTIONS/site/` scans all the `project.json` files, with auto-triggers wired into `/setup` and `/log`. **2026-06-06** (after reading Thariq Shihipar's "Unreasonable Effectiveness of HTML") proposed the opposite: a top-down, on-demand, *disposable* `dashboard.html` — one agent/script reads every project's `PROJECT_STATE.md` + git and emits a single static page; gitignored, no per-project files, no triggers. The standing instruction was "build one, not both." This session resolved it and built the proof-of-concept.

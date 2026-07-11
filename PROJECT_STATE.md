@@ -32,6 +32,12 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-11** — Evaluated **claude-octopus** (a multi-vendor AI-orchestration plugin) as a possible
+  addition and **rejected it wholesale** — paid external CLIs we don't run, per-Mac wiring, a
+  2,500-line consensus engine. Kept its one good idea: a keyword→prompt **"blind-spot" library** that
+  injects the perspectives an LLM structurally forgets. Reimplemented lean as **cookbook #159**,
+  seeded from our OWN gotcha docs + a ~15-line jq matcher (tested across 6 cases; caught+fixed a jq
+  scoping bug). Also gitignored `.claude/logs/`. Committed + pushed (in sync with origin).
 - **2026-07-02 (h)** — **M4 Pro caught up + deployed.** Its git had drifted (1 old duplicate commit +
   a whole uncommitted copy of work already on origin); proved the entire working tree byte-identical to
   origin except the per-Mac settings file, reset onto origin, then ran `redeploy.sh`: live commands
@@ -67,9 +73,6 @@
   to post-Wave-2. Pushed.
 - **2026-07-02 (a)** — Reconciled a 14-behind dirty tree via per-file hashing: 26 files were
   duplicates already on origin, only cookbook #152 was genuinely new. Fast-forwarded cleanly.
-- **2026-06-19** — Fixed `/status` token bloat (a leaner version existed but was never deployed
-  live). Made model-mismatch warnings loud and added phase-aware model gating (`/execute`, `/spec`,
-  `/plan`, `/session-close`). Pushed `9a83888`.
 <!-- older entries → sessions/_index.md -->
 
 ## Progress
@@ -133,4 +136,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-02 (h).*
+*Last updated: 2026-07-11.*
