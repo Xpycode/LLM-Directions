@@ -309,6 +309,63 @@ MainContent()
 
 ---
 
+### Conditional Inside a LazyVStack Breaks scrollTo
+
+**Problem:** `ScrollViewReader.scrollTo` silently no-ops for EVERY row — correct id, correct
+anchor, no error, nothing moves. (Aloft s75–s77: cost three debugging sessions because two
+plausible decoys — an anchor change and an `AnyHashable`-boxed id — sat in the same commit.)
+
+```swift
+// BROKEN: if/else INSIDE the lazy container — _ConditionalContent wraps the rows
+// and breaks scrollTo's row-anchor resolution
+LazyVStack {
+    if sectioned {
+        sectionedRows
+    } else {
+        ForEach(items) { row($0) }
+    }
+}
+
+// WORKS: hoist the branch — one LazyVStack per arm, shared modifiers on a Group
+Group {
+    if sectioned {
+        LazyVStack { sectionedRows }
+    } else {
+        LazyVStack { ForEach(items) { row($0) } }
+    }
+}
+```
+
+**Rule:** Never branch view content inside a `LazyVStack` whose rows are `scrollTo` targets.
+To machine-verify a scrollTo without eyeballs: watch whether the stack's measured height (a
+GeometryReader preference) churns after the call — a real scroll realizes rows and moves the
+estimate; silence = no-op.
+
+---
+
+### Scroll-Varying Measurements Stored in @State Live-Lock Layout
+
+**Problem:** App pins the main thread at 100% ("Not Responding") during scrolling; `sample`
+shows `LazySubviewPlacements.placeSubviews` hot with app symbols nearly absent.
+
+```swift
+// BROKEN: a LazyVStack's measured height SHIFTS as rows realize/de-realize while
+// scrolling; each change → @State write → body invalidation → re-placement → new
+// measurement… flushed synchronously inside ONE run-loop observer callback
+.onPreferenceChange(HeightKey.self) { measuredHeight = $0 }   // @State
+
+// WORKS: record into a reference type — mutation doesn't invalidate the view;
+// read imperatively where needed
+.onPreferenceChange(HeightKey.self) { [holder] in holder.height = $0 }
+```
+
+**Rule:** A measurement that varies with scroll position (lazy-container heights,
+realized-row preferences) must never re-enter the view graph via `@State` — sink it into a
+plain reference holder (or a notification) and read it imperatively. Unit tests and
+summon/typing CPU traces will NOT catch this class; only live scrolling closes the cycle.
+
+---
+
 ## Threading Issues
 
 ### Publishing from Background Threads

@@ -597,3 +597,19 @@ appprobe run plans/myapp.yaml --slow --overlay --verbose  # Run test plan
 **Supported actions:** click, type, menu navigation, keyboard shortcuts, drag-and-drop, scroll, window management, element state verification, screenshots.
 
 **Flags:** `--slow` (visible actions), `--overlay` (floating progress HUD), `--tag` (run subset)
+
+## App-Hosted Tests Share the App's Real State (Keychain!)
+
+A test target with `TEST_HOST` set to the real app runs **as** that app: same bundle id, same
+UserDefaults, same **Keychain service**, same Application Support. Any test that "cleans up"
+shared state cleans up the PRODUCTION state on the dev machine.
+
+**Real casualty (Aloft s77):** `KeychainStoreTests` called `deleteAll()` in setUp/tearDown
+against the store's default service (= the app's bundle id). Every full test run silently
+deleted the developer's own live license from the login keychain — the app fell back to Free
+and the cause was invisible for days (the suite was green the whole time).
+
+**Rule:** integration tests that touch real system stores (Keychain, defaults, files) must run
+on an injected, test-only namespace — e.g. `KeychainStore(service: "com.example.MyApp.tests")`,
+a `UserDefaults(suiteName:)`, a temp directory — never the shared singleton. The test keeps its
+integration value (real SecItem calls); it just becomes incapable of reaching production items.
