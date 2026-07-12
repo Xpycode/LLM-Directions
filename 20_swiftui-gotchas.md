@@ -480,6 +480,36 @@ private final class ClickThroughView: NSView {
 **Diagnostic:** if AXPress fires actions but real clicks don't, hunt for a hosted AppKit view lying
 over the content; test a second, simpler window (it discriminates instantly).
 
+### Popover Anchored via an `.offset` Proxy Opens at the Window's Top-Left
+
+**Problem:** A `.popover` presented from an invisible proxy view (the standard trick for anchoring
+a popover somewhere the presenting view can't live — e.g. outside an animated subtree) ignores
+where the proxy is drawn and presents from the container's top-leading corner.
+
+**Cause:** `.offset` is a `GeometryEffect` — a **render-time transform**. It moves the pixels and
+the hit-test region, but the view's **layout frame** never moves, and NSPopover anchoring reads
+the layout frame. A `GeometryReader` child sits at top-leading by default, so that's where the
+popover appears. (PlayPlayPlay, 2026-07-12: caught in a user visual pass; the popover host proxy
+was `.offset(x: rect.minX, y: rect.minY)`.)
+
+```swift
+// PROBLEMATIC: drawn over the target, but its LAYOUT frame is still at (0,0)
+Color.clear.frame(width: rect.width, height: rect.height)
+    .offset(x: rect.minX, y: rect.minY)
+    .popover(...)            // presents from the top-left corner
+
+// FIX: place by LAYOUT (.position), and attach .popover INSIDE it so the
+// attachment anchor rect stays in the proxy's own (small) coordinate space
+Color.clear.frame(width: rect.width, height: rect.height)
+    .popover(...)            // anchor space = the small proxy — correct
+    .position(x: rect.midX, y: rect.midY)
+```
+
+**Rule:** anchors, popovers, and anything that reads a view's *frame* need **layout** placement
+(`.position`, `.padding`, alignment) — `.offset` is only for visuals. Modifier order matters:
+`.popover` before `.position`, or the anchor space becomes the full-size positioning wrapper and
+you're back at the corner.
+
 ---
 
 ## Quick Diagnostic Commands
@@ -525,6 +555,7 @@ If values are wrong → Logic bug, trace the data flow.
 | Background publish | Purple warning | .receive(on: .main) |
 | Cursor imbalance | Cursor stuck | defer { NSCursor.pop() } |
 | SF Symbols rename | Blank icon on older macOS | Use the legacy name (`pointer.arrow.*` → `cursorarrow.*`); check CoreGlyphs name_availability.plist |
+| Popover proxy via .offset | Popover opens at window top-left | `.offset` is render-only; place the proxy with `.position` (layout), `.popover` attached inside |
 
 ---
 
