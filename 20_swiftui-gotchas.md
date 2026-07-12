@@ -451,6 +451,35 @@ func startOperation() {
 
 **Rule:** Only use `.windowStyle(.hiddenTitleBar)` if you've tested all layout scenarios.
 
+### Full-Window NSViewRepresentable Overlay Makes the Whole App Mouse-Dead
+
+**Problem:** Every SwiftUI control stops responding to the mouse — while drawing, keyboard,
+menu bar, drag-drop, and accessibility (AXPress) all keep working. Maddening to diagnose because
+everything *except* real clicks behaves normally, so it masquerades as a hit-testing or popover bug.
+
+**Cause:** A helper `NSViewRepresentable` (the classic "reach the NSWindow" probe) attached with
+`.overlay(...)`. You think it's zero-size (`NSView(frame: .zero)`), but SwiftUI sizes an overlay
+representable to the **full overlay area** — and AppKit routes mouse events to the topmost NSView.
+SwiftUI controls aren't NSViews; they never see the click. (PlayPlayPlay, 2026-07-12: two days of
+popover-bug hunting; the tell was a plain *welcome window* being equally dead.)
+
+```swift
+// PROBLEMATIC: plain NSView in .overlay swallows every click in the window
+struct WindowAccessor: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView { NSView(frame: .zero) } // NOT zero-size in .overlay!
+}
+
+// FIX: click-transparent by construction — the mouse must never see the probe
+private final class ClickThroughView: NSView {
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+}
+```
+
+**Rule:** Any full-window helper representable must override `hitTest → nil`. Don't rely on
+`.background` placement instead — a z-order change silently re-breaks it.
+**Diagnostic:** if AXPress fires actions but real clicks don't, hunt for a hosted AppKit view lying
+over the content; test a second, simpler window (it discriminates instantly).
+
 ---
 
 ## Quick Diagnostic Commands
