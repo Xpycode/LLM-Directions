@@ -464,6 +464,32 @@ at most, `return false`.
 
 ---
 
+## State Restoration & Relaunch (windows reappearing / zombie windows)
+
+Hard-won facts (PlayPlayPlay, 2026-07-12 — SwiftUI `WindowGroup(for:)` viewer):
+
+- **`ApplePersistenceIgnoreState YES` (per-app defaults) suppresses *restoring* only — saving
+  continues.** State silently accumulates behind the mask; the first launch after deleting the key
+  replays every stale window once. Never treat the flag as "restoration is off" — it's "restoration
+  is hidden".
+- **`NSWindow.isRestorable = false` acts at *save* time, not launch time.** It keeps the window out
+  of the *next* state snapshot; already-saved state still restores once, until the first clean quit
+  rewrites it. Expect exactly one "legacy drain" launch after shipping the flag.
+- **SwiftUI value-based windows (`WindowGroup(for: Value.self)`) can restore with a late or missing
+  value** → zombie empty windows. If the value implies *file access* (a URL), reliable restore also
+  drags in security-scoped bookmarks + offline-volume grace — often the right v1 call is opting those
+  windows out (`isRestorable = false` in the window-configure hook) and letting a welcome/front-door
+  window + Open Recent cover relaunch.
+- **Testing restoration headlessly:** `killall` bypasses the state-save path — only a graceful quit
+  exercises it. `osascript -e 'tell application "X" to quit'` goes through (quit needs no Automation
+  grant; window *queries* via AppleScript are TCC-blocked). Count/identify windows without any TCC
+  via `CGWindowListCopyWindowInfo` — owner name + bounds are free; window *titles* need Screen
+  Recording. Window frames by size (welcome vs player default) is usually enough.
+- Window **frame** memory (`NSWindow Frame <autosave-name>` in the app's defaults) is independent of
+  state restoration and survives `isRestorable = false`.
+
+---
+
 ## Quick Reference
 
 | Task | Pattern |
