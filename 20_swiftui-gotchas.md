@@ -560,3 +560,65 @@ If values are wrong → Logic bug, trace the data flow.
 ---
 
 *Add issues to this document as you encounter them.*
+
+## macOS 26 (Tahoe): List `.onMove` silently dead when rows are 100% control
+
+**Symptom:** drag-to-reorder in a `List { ForEach(...) { Toggle(...) } .onMove {...} }`
+stops committing — no error, the model array just never changes. Code that user-verified
+fine on pre-Tahoe macOS breaks with zero diffs.
+
+**Cause:** `.onMove` on macOS adds a per-row drag recognizer that only starts on *inert*
+row area. A row whose entire content is an interactive control (a full-row `Toggle` —
+checkbox + label are ONE control; same class of issue as FB7367473's tap-gesture
+conflict) leaves nothing to grab; under Tahoe's rebuilt List the control wins the
+mouse-down outright.
+
+**Fix:** separate the control from an inert, draggable region:
+
+```swift
+HStack(spacing: 8) {
+    Toggle("", isOn: binding).labelsHidden()   // checkbox only
+    Label(title, systemImage: symbol)          // inert → initiates the row drag
+    Spacer(minLength: 0)
+}
+.contentShape(Rectangle())
+```
+
+Trade-off: clicking the row text now drags instead of toggling. Diagnosis shortcut for
+"reorder not sticking": check the *persisted* order first — if it's still the migration
+default, the write path (drag) never fired; don't chase the display path.
+(Found in QuickStatsPanel, 2026-07-12; reorder had been silently broken since the Tahoe update.)
+
+## @Observable can't see through non-observable objects (dead Edit ▸ Undo)
+
+**Symptom:** a menu item or view bound to state like `undoManager.canUndo` never
+updates — Edit ▸ Undo (and ⌘Z) stays greyed out forever even though undo
+registrations happen. No error; the value is *correct* when read, the UI just
+never re-reads it.
+
+**Cause:** `@Observable` only tracks its **own stored properties**. A computed
+property that reaches into a plain Foundation object (`UndoManager`,
+`NotificationCenter`-backed state, any non-`@Observable` reference type held in a
+`let`) produces no observation events — SwiftUI captures the value once at launch
+and is never invalidated.
+
+**Fix:** mirror the foreign object's state into stored properties on the
+`@Observable` class, refreshed on every mutation path:
+
+```swift
+@Observable final class SelectionUndoManager {
+    private let undoManager = UndoManager()   // invisible to observation
+    private(set) var canUndo = false          // stored mirror — observable
+    private(set) var canRedo = false
+
+    private func refreshMirrors() {           // call after EVERY register/undo/redo/clear
+        canUndo = undoManager.canUndo
+        canRedo = undoManager.canRedo
+    }
+}
+```
+
+Diagnosis shortcut: if a SwiftUI-bound value is "right when you print it but the UI
+never changes", ask *what observable stored property changed* — if the answer is
+none, you've found it. (Penumbra ⌘Z fix, 2026-07-12; broken since the class was
+introduced, caught only by a live smoke because unit tests read the value directly.)
