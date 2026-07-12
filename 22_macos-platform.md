@@ -449,6 +449,19 @@ path in scripts. (2) `Logger.info`/`.debug` messages are **filtered out by defau
 `--info` (or `--debug`) to *both* `log show` and `log stream`, or you'll see only default/error
 levels and conclude your instrumentation never ran.
 
+**`applicationShouldTerminateAfterLastWindowClosed` is a polled policy query, not a close event
+(cost two sessions on QuickScreenShot, 2026-07-12):** AppKit calls it from a repeating
+"check for terminate" timer whenever window state changes — many times per second while an app
+sits windowless. Side effects there are a trap; *creating a window-backed object* (an
+`NSStatusItem` is one) re-arms the very check that called you → infinite feedback loop: main
+thread pegged (~68% CPU), hotkeys dead, and the status item destroyed/re-created too fast for
+Control Center to ever composite it — which perfectly mimics an "icon doesn't render in
+accessory mode" OS bug. Diagnosis rules that fell out: (1) before theorizing about rendering,
+check the process is *idle* — `ps -o state,%cpu`, then `sample <pid> 3` for the hot stack;
+(2) `CGWindowList` window counts are NOT an icon-visibility proxy (churning items really have
+windows, momentarily). Keep the callback cheap and idempotent: guarded `setActivationPolicy`
+at most, `return false`.
+
 ---
 
 ## Quick Reference
