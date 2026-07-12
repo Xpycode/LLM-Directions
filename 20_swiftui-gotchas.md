@@ -495,6 +495,23 @@ If values are wrong → Logic bug, trace the data flow.
 
 ---
 
+## SF Symbols renames — new-style names don't back-deploy
+
+**Symptom:** `Image(systemName:)` renders blank on older macOS even though the name is right there in the SF Symbols app.
+
+**Cause:** Apple renames symbols across SF Symbols releases (SF 7 / macOS 26 renamed the whole cursor family: `cursorarrow.click` → `pointer.arrow.click`, etc.). The SF Symbols app shows **only the new names**, but a new name exists only in the OS it shipped with — it is NOT aliased backward. Legacy names keep working forever (they alias forward to the current design).
+
+**Fix:** when the deployment target predates the current OS, use the **legacy** name in code. Verify locally — the system catalog maps every name (including legacy) to its minimum OS:
+
+```bash
+# /System/Library/CoreServices/CoreGlyphs.bundle/Contents/Resources/name_availability.plist
+# symbols dict: name → year token; year_to_release: token → {macOS: version}
+```
+
+(Caught 2026-07-12 in Aloft: `pointer.arrow.motionlines.click` = macOS 26-only; the identical glyph is `cursorarrow.motionlines.click` = macOS 11+.)
+
+---
+
 ## Summary Table
 
 | Issue | Symptom | Fix |
@@ -507,6 +524,7 @@ If values are wrong → Logic bug, trace the data flow.
 | Conditional view | Layout shifts | Use .overlay() + opacity, not if/ZStack |
 | Background publish | Purple warning | .receive(on: .main) |
 | Cursor imbalance | Cursor stuck | defer { NSCursor.pop() } |
+| SF Symbols rename | Blank icon on older macOS | Use the legacy name (`pointer.arrow.*` → `cursorarrow.*`); check CoreGlyphs name_availability.plist |
 
 ---
 
