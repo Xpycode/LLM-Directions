@@ -622,3 +622,39 @@ Diagnosis shortcut: if a SwiftUI-bound value is "right when you print it but the
 never changes", ask *what observable stored property changed* — if the answer is
 none, you've found it. (Penumbra ⌘Z fix, 2026-07-12; broken since the class was
 introduced, caught only by a live smoke because unit tests read the value directly.)
+
+## PreferenceKey from a GeometryReader background never updates (macOS)
+
+**Symptom:** the classic size-measuring pattern —
+`.background(GeometryReader { Color.clear.preference(key:, value: geo.size.height) })`
+plus `.onPreferenceChange` — delivers **only the initial `defaultValue` (0)** and
+then goes silent. Anything driven by it (window auto-resize, layout math) acts on 0
+once and never corrects.
+
+**Cause:** preference updates set during a *layout-time* GeometryReader background
+are not reliably propagated by NSHostingView on macOS. The value genuinely changes;
+the `onPreferenceChange` callback is just never re-invoked.
+
+**Fix:** skip the preference channel entirely — use state-driven callbacks inside
+the same GeometryReader:
+
+```swift
+.background(
+    GeometryReader { geo in
+        Color.clear
+            .onAppear { heightChanged(geo.size.height) }
+            .onChange(of: geo.size.height) { heightChanged($0) }
+    }
+)
+.frame(minWidth: 480, maxWidth: .infinity, minHeight: 75)  // AFTER the background
+```
+
+Two placement traps in the same pattern: (1) put the measuring `.background`
+**before** `.frame` — after it you measure the flexible wrapper, which inflates to
+the window's proposal, so the loop reads back its own output and reports "nothing
+to fix"; (2) if the measured stack contains a both-ways-flexible child (e.g.
+`.aspectRatio(16/9, contentMode: .fit)` tiles), that child silently absorbs any
+squeeze and the measured height never changes — give it a rigid width-derived
+`.frame(height:)` so the container is the only flexible element per axis.
+(VideoWallpaper window auto-resize, 2026-07-12; NSLog instrumentation showed a
+single `measured=0.0` and the main window collapsed to a bare 32pt title bar.)
