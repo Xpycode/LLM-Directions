@@ -7,6 +7,8 @@
 #
 #   1. Commands  — installs the canonical set AND prunes retired ones, while
 #                  preserving independent (non-Directions) commands.
+#   1b. Skills   — installs Directions-authored skills COPY-ONLY (never prunes;
+#                  ~/.claude/skills also holds hundreds of third-party skills we don't own).
 #   2. CLAUDE.md — overwrites ~/.claude/CLAUDE.md with the modernized template.
 #   3. Hooks     — delegates to hooks/install.sh (per-Mac symlinks + settings.json).
 #
@@ -92,6 +94,34 @@ fi
 say "  ($pruned retired removed, $kept independent kept)"
 say
 
+# --- 1b. Skills: install Directions-authored skills (COPY-ONLY, never prune) ------
+# Unlike commands (a closed canonical set we prune), ~/.claude/skills/ holds hundreds
+# of third-party skills (npx skills, plugins) we do NOT own. So this is strictly
+# additive: install/refresh only the skills that live in this repo, touch nothing else.
+SKILLS_SRC="$REPO/skills"
+SKILLS_DIR="$CLAUDE_DIR/skills"
+if [ -d "$SKILLS_SRC" ]; then
+  say "Skills (Directions-authored, copy-only):"
+  do_it "mkdir -p '$SKILLS_DIR'"
+  for src in "$SKILLS_SRC"/*/; do
+    [ -d "$src" ] || continue
+    name=$(basename "$src")
+    dest="$SKILLS_DIR/$name"
+    if [ -d "$dest" ]; then
+      if diff -qr "$src" "$dest" >/dev/null 2>&1; then
+        say "  ✓ up to date: $name"
+        continue
+      fi
+      do_it "cp -R '$dest' '$dest.bak-$STAMP'"
+      say "  • backed up existing → $name.bak-$STAMP"
+    fi
+    do_it "rm -rf '$dest'"
+    do_it "cp -R '$src' '$dest'"
+    say "  → installed skill: $name"
+  done
+  say
+fi
+
 # --- 2. CLAUDE.md: overwrite with the modernized template ------------------------
 if [ "$SKIP_CLAUDE_MD" = 1 ]; then
   say "CLAUDE.md: skipped (--skip-claude-md)"
@@ -127,6 +157,7 @@ say
 # --- 4. Verify -------------------------------------------------------------------
 say "Verification:"
 say "  commands live:      $(ls -1 "$COMMANDS_DIR"/*.md 2>/dev/null | wc -l | tr -d ' ') (expect 13 + independents)"
+say "  git-bootstrap skill: $([ -f "$SKILLS_DIR/git-bootstrap/SKILL.md" ] && echo present || echo MISSING)"
 say "  CLAUDE.md lines:    $(wc -l < "$CLAUDE_MD" 2>/dev/null | tr -d ' ')"
 say
 say "Done. Restart Claude Code (or start a new session) for changes to take effect."
