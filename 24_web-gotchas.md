@@ -310,3 +310,28 @@ Open browser DevTools (F12) and:
 ---
 
 *Web development has many moving parts. When something breaks, check the browser console first.*
+
+## CSS custom properties: `var()` resolves where DECLARED, not where used
+
+A custom property whose value contains `var()` (or `color-mix(… var(--x) …)`) substitutes those
+inner `var()`s **on the element where the property is declared** — not on the element that finally
+uses it. So `:root { --plate: color-mix(in srgb, var(--card) 75%, var(--line)) }` bakes in
+`:root`'s card/line forever; a descendant override like `.sheet { --card: … }` changes nothing.
+**Fix:** put the `color-mix()` directly in the `background:` declaration at the usage site — there
+the `var()`s resolve against the element's inherited values, so scoped token overrides work.
+(Found 2026-07-13 deriving the App-Websites screenshot-plate color per theme variant.)
+
+**Related cascade rule that pays rent:** a token set on a *closer ancestor* (`.sheet { --accent }`,
+`.site-header { --accent }`) always beats the same token on `:root` — regardless of which
+stylesheet loads last. That's the whole App-Websites variant mechanism: one byte-identical shared
+stylesheet, per-site/per-surface token overrides by inheritance distance, zero `!important`.
+
+## Two design generations sharing a stylesheet: class-name collisions leak OLD properties
+
+When a redesign reuses a class name (`.featured`, `.shot`), the new rules only override properties
+they *mention* — anything the legacy block set and the new block doesn't (a `max-width`, a
+`border-radius`, a `background`) silently survives and corrupts the new layout. Found twice on one
+page (App-Websites portal, 2026-07-13): a legacy `max-width: 1080px` capped the new carousel, and
+a vestigial `class="shot"` dressed datasheet screenshots in the old marketing card chrome.
+**Rule:** when porting a page onto new CSS, grep the OLD stylesheet for every class the new markup
+keeps — either delete the dead legacy block or rename the new component.
