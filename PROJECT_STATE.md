@@ -32,6 +32,12 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-13** — **Authored the `git-bootstrap` skill** — it was referenced by 5 docs but never
+  actually created (a "phantom"). Then discovered the M1 Max had a *better* un-versioned copy that had
+  never been committed, so it never spread; merged the two into one public-safe version and deployed it
+  **byte-identical to both Macs**. Also taught `redeploy.sh` to install skills (copy-only, never prunes
+  — the repo's skills sit beside hundreds of third-party ones). Reconciled a 2-behind dirty tree along
+  the way (2 files were duplicates, 1 a real signing gotcha) and pushed cleanly.
 - **2026-07-11** — Evaluated **claude-octopus** (a multi-vendor AI-orchestration plugin) as a possible
   addition and **rejected it wholesale** — paid external CLIs we don't run, per-Mac wiring, a
   2,500-line consensus engine. Kept its one good idea: a keyword→prompt **"blind-spot" library** that
@@ -136,4 +142,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-11.*
+*Last updated: 2026-07-13.*
