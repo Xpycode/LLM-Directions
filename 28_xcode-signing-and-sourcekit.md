@@ -90,6 +90,66 @@ MousePlus, sessions `2026-04-29-d` and `2026-05-02-a`. Pattern recurred when boo
 
 ---
 
+## Pattern 1b: No "Apple Development" cert at all (only Developer ID Application) → ad-hoc signing
+
+### Symptom
+
+Same error as Pattern 1 (`No "Mac Development" signing certificate matching team ID "…" with a
+private key was found`), but `security find-identity -v -p codesigning` shows **zero** "Apple
+Development" identities — only a `"Developer ID Application: …"` one (or nothing at all). This is
+a different situation from Pattern 1: that Mac has *never done local Xcode debug-signing*, only
+distribution signing (or none) — there's no per-machine identity to point `Debug.local.xcconfig`
+at, so Pattern 1's fix doesn't apply.
+
+### The fix: ad-hoc signing for local Debug builds
+
+For a local **Debug** build (not archive/notarize — that's a separate, later concern), macOS
+doesn't require a real certificate at all. Ad-hoc signing (`CODE_SIGN_IDENTITY = -`) satisfies
+Gatekeeper for local runs with no certificate lookup:
+
+```yaml
+# project.yml (xcodegen) — or the equivalent Debug build settings in a checked-in .xcodeproj
+settings:
+  base:
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: FDMSRXXN73   # team ID still resolves fine, it's not certificate-bound
+```
+
+**Unlike Pattern 1's named identity, `-` is not machine-specific** — it isn't a certificate SHA-1,
+so it's safe to commit directly (in `project.yml`, or the tracked `Debug.xcconfig`) rather than
+routing through a gitignored `*.local.xcconfig`. Every Mac, with or without a real dev cert,
+builds identically.
+
+```
+note: Disabling hardened runtime with ad-hoc codesigning. (in target 'X' from project 'X')
+** BUILD SUCCEEDED **
+```
+
+That "Disabling hardened runtime" note is expected and harmless for local Debug builds.
+
+### Verifying
+
+```bash
+security find-identity -v -p codesigning   # confirms what's actually available before choosing a fix
+xcodebuild -showBuildSettings -scheme YourScheme -configuration Debug \
+  | grep -E 'CODE_SIGN_IDENTITY|DEVELOPMENT_TEAM'
+```
+
+### Don't confuse this with Release/archive signing
+
+Ad-hoc is a **Debug-only** local-run convenience. Archiving, notarizing, or distributing still
+needs the real certificate (`Developer ID Application: …`, found the same way via
+`security find-identity`) — that's Pattern 1's territory (or `61_distribution-notarization.md`
+for the full ship-time flow). Don't widen ad-hoc signing to the Release config.
+
+### Source
+
+Contour, session 2026-07-12 (Xcode project bootstrap on a Mac with only a Developer ID
+Application cert, no Apple Development cert — first time this variant was hit).
+
+---
+
 ## Pattern 2: SourceKit false positives — *the index is lying*
 
 ### Symptom
@@ -175,7 +235,8 @@ In all of those cases, **build first, judge second.** If `xcodebuild` is green, 
 
 | Situation | First move |
 |---|---|
-| `No "Mac Development" signing certificate found` on a new Mac | Create `Debug.local.xcconfig` (see Pattern 1 recipe). |
+| `No "Mac Development" signing certificate found` on a new Mac, and `security find-identity` shows an "Apple Development" identity | Create `Debug.local.xcconfig` (see Pattern 1 recipe). |
+| Same error, but `security find-identity` shows **no** "Apple Development" identity (only Developer ID Application, or nothing) | Ad-hoc sign for Debug: `CODE_SIGN_IDENTITY: "-"` (see Pattern 1b) — not machine-specific, safe to commit. |
 | Multiple Macs, identity drift | Confirm `#include?` line is in the tracked xcconfig; bootstrap each Mac with its own local file. |
 | `Cannot find type X` after multi-file change | Run `xcodebuild build` — if green, wait 30s, ignore. |
 | Red squigglies after `.xcodeproj` regen | Expected. `killall SourceKitService` to nudge, or just wait. |
