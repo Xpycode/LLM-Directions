@@ -1,121 +1,109 @@
 ---
 name: git-bootstrap
-description: Reconcile a project that has source on disk but NO .git repo onto its canonical GitHub origin, WITHOUT overwriting local work. Invoke when a project directory has files but `git status` says "not a git repository" — a freshly-set-up or erased-and-restored Mac where Syncthing carried the working tree but .git is excluded from sync. Safe init → fetch → --mixed reset → verify (HTTPS via gh, never blind --hard). Do this BEFORE any edit or commit.
+description: Reconcile a project that has source on disk but NO .git repo onto its canonical GitHub origin, WITHOUT losing local work. Invoke when a project directory has files but `git status` says "not a git repository" — a fresh or erased-and-restored Mac where Syncthing carried the working tree but .git is excluded from sync, or when history clearly exists on GitHub but the local repo is gone. Safe init → fetch → --mixed reset → verify (HTTPS via gh, never blind --hard). Also covers the local-only case where NO origin exists (re-founding, not bootstrap). Do this BEFORE any edit or commit.
 ---
 
 # git-bootstrap
 
-**When:** a project has **source on disk but no `.git`** — `git status` → *"not a git repository."*
-Canonical history lives **only on GitHub `origin`**. This is the fresh/reset-Mac case
-(Syncthing carries the working tree; `.git` is globally excluded from sync).
+## The situation
+The projects folder is **one Syncthing folder**: Syncthing replicates the working tree but
+**`.git` is excluded** (via `.stignore`). So on a fresh or reset Mac every project has its
+**source on disk but no repo** — and canonical history lives **only on GitHub `origin`**.
+Reconcile to origin **first**; editing or committing before you do forks history (the
+duplicate-commit incident). This is the same for every project in the folder, not just one.
 
-**The trap this skill prevents:** treating the on-disk files as authoritative and either
-(a) editing/committing on top of them, or (b) blindly `git init` + commit — which forks a
-**new root history disconnected from origin**. Reconcile to origin **first**, revealing any
-drift *before* anything is overwritten.
-
-**Precondition:** run only when there is genuinely no repo. If `git rev-parse --is-inside-work-tree`
-succeeds, you have a repo — this is Rule 1a (behind-with-local-changes), **not** bootstrap; use the
-per-file hash reconciliation instead (`37_multi-mac-discipline.md` Rule 1a).
-
----
-
-## Procedure
-
-### 0. Confirm the situation
-
+## Precondition — is it actually a bootstrap?
 ```bash
-git rev-parse --is-inside-work-tree 2>/dev/null && echo "HAS REPO — stop, use Rule 1a" || echo "no repo — bootstrap"
+git rev-parse --is-inside-work-tree 2>/dev/null \
+  && { git fetch && git status -sb | head -1; echo "already a repo — use the Multi-Mac pre-flight (Rule 1a), NOT this skill"; } \
+  || echo "no repo — bootstrap"
+```
+If it prints `already a repo`, this is the behind-with-local-changes case (`37_multi-mac-discipline.md`
+Rule 1a) — per-file hash reconciliation, not bootstrap. Only continue on `no repo`.
+
+## Find the canonical origin URL FIRST
+The URL is not guessable — the remote name is **not guaranteed** to equal the folder name (a repo
+may have been renamed since the folder was created). Source of truth, in order:
+```bash
+grep -riE 'repo|github\.com|origin' docs/PROJECT_STATE.md PROJECT_STATE.md CLAUDE.md 2>/dev/null | head
+gh repo list --limit 200 | grep -i '<project-name>'   # fallback: your GitHub repos (gh auth's account)
+```
+If you cannot determine the URL with confidence, **stop and ask** — the wrong origin is worse than none.
+
+## If NO origin exists (repo was local-only) — re-founding, not bootstrap
+`gh repo list` has no match and/or the project's session logs say "local-only, no remote": there is
+**nothing to fetch** and the procedure below does not apply. The only history is a `.git` on some
+Mac's disk (a local-only project has permanently lost its history this way before).
+1. **Find which Mac did the work** — session logs, Claude transcripts in `~/.claude/projects/<project>/`,
+   DerivedData. If that Mac's `.git` survives, push from **there**:
+   `gh repo create <owner>/<REPO> --private --source . --push`, then bootstrap the other Mac normally.
+   **Never `git init` a fresh history on the non-authoring Mac** — a new root history can never merge
+   with the real one.
+2. **If `.git` is gone everywhere** (confirm with the user first): re-found — `git init -b main`,
+   snapshot-commit the tree (state the history loss in the commit message — it's the only archaeology
+   future readers get), then `gh repo create <owner>/<REPO> --private --source . --push`.
+3. Afterwards add a **`Repo/git:` line to the project's CLAUDE.md** so the next bootstrap can confirm
+   the URL, and check `.gitignore` patterns before the snapshot commit (an over-broad `*PLAN*.md` has
+   eaten an `IMPLEMENTATION_PLAN.md` before).
+
+## Auth — GitHub over HTTPS via gh (these Macs have no SSH key)
+```bash
+gh auth status            # confirm logged in; if not: gh auth login  (HTTPS, browser)
+gh auth setup-git         # make git use the gh credential helper for github.com — never git@github.com: URLs
 ```
 
-Only proceed if it prints `no repo`.
-
-### 1. Find the canonical origin URL
-
-The URL is **not** guessable — get it from the project itself:
-
-```bash
-grep -riE 'github\.com|origin|repo' docs/PROJECT_STATE.md PROJECT_STATE.md CLAUDE.md 2>/dev/null | head
-gh repo list --limit 200 | grep -i '<project-name>'   # fallback: list your GitHub repos
-```
-
-If you cannot determine the URL with confidence, **stop and ask** — the wrong origin is worse
-than no origin.
-
-### 2. Auth: GitHub over HTTPS via gh (these Macs have no SSH key)
-
-```bash
-gh auth status           # confirm logged in; if not: gh auth login  (HTTPS, browser)
-gh auth setup-git        # makes git use the gh credential helper for github.com
-```
-
-### 3. Init, wire origin, fetch (nothing destructive yet)
-
+## Procedure (in the project root)
 ```bash
 git init -b main
-git remote add origin <canonical-URL-from-step-1>
+git remote add origin <canonical-URL-from-above>
 git fetch origin
+
+# Mixed reset: point HEAD+index at origin, LEAVE the working tree untouched.
+# This is the safety move — it reveals how on-disk differs WITHOUT overwriting anything.
+git reset --mixed origin/main
+git branch --set-upstream-to=origin/main main
+
+git status --short --untracked-files=no    # ← THE CHECK
 ```
 
-### 4. THE reconcile — `--mixed`, never `--hard`
-
+## Identity — verify, don't hardcode
+A fresh `git init` inherits identity from `~/.gitconfig`, which is often empty on a restored Mac.
+Confirm it's populated; if empty, set it (globally, or repo-local) to match your usual identity —
+do **not** copy a literal email into this shared/public skill:
 ```bash
-git reset --mixed origin/main            # HEAD + index → origin; WORKING TREE LEFT UNTOUCHED
-git status --short --untracked-files=no   # ← THE CHECK
+git config user.name; git config user.email      # both must be non-empty before you commit
+# if empty: git config --global user.name "…" ; git config --global user.email "…"
 ```
 
-`--mixed` is the whole point: it advances HEAD and the index to origin while leaving every
-on-disk byte alone, so the next command shows you **exactly** how the disk differs from origin.
-A `--hard` here would silently destroy any Mac-local work before you ever saw it.
+## Read THE CHECK — this is the whole point
+- **0 tracked changes** → on-disk == canonical history. **Done — adopt as-is.**
+  Do **not** `git reset --hard`: nothing to gain, only risk of clobbering.
+- **Tracked files modified/deleted** → Syncthing carried work this Mac has but origin lacks (or the
+  local copy is *stale* and origin is newer). **STOP.** `git diff origin/main -- <file>` each path and
+  reconcile by hand — re-apply genuinely-unique edits *onto* origin's current version. **Never
+  blind-`--hard`** in either direction; it silently destroys whatever is only on this Mac.
+- Using `--mixed` (not `--hard`) is precisely what lets you *see the truth before* deciding.
 
-### 5. Read the check
+> ⚠️ Older project docs saying `remote add && fetch && reset --hard origin/main` skip the verify step.
+> Prefer this mixed-reset+check discipline; only escalate to `--hard` after the check proves a clean
+> tree and you've decided origin should win.
 
-- **0 tracked changes** → on-disk == origin. **Done — adopt as-is.**
-  Do **not** `reset --hard`: nothing to gain, only risk. The repo is now correctly attached to origin.
+## Expected-clean untracked noise (ignore, not drift)
+Local tool/build dirs that are fine to leave untracked / gitignored — not evidence of drift:
+`DerivedData/`, `build/`, `.build/`, `.claude/` (esp. `settings.local.json`), `.serena/`,
+`.fastembed_cache/`, `.DS_Store`, `*.sync-conflict-*` (Syncthing copies — inspect then delete, never
+commit). The check above uses `--untracked-files=no` deliberately so this noise doesn't mask the
+signal. If `.claude/settings.local.json` shows as untracked, gitignoring it (then commit+push) is the
+right cleanup — it's per-machine state, never canonical.
 
-- **Any tracked diff** → Syncthing carried Mac-local work origin lacks, *or* the local copy is
-  **stale** and origin is newer. **STOP.** For each path:
-  ```bash
-  git diff origin/main -- <file>
-  ```
-  Reconcile by hand — re-apply your genuinely-unique edits *onto* origin's current version.
-  **Never blind-`--hard` in either direction.** (Real counter-case: bootstrapping the Directions
-  master itself once found the local copy *stale* vs origin — the check caught it, so the doc edit
-  was re-applied onto origin's version instead of clobbering it.)
-
-### 6. Verify commit identity is set (before you commit anything)
-
-A fresh `git init` inherits identity from `~/.gitconfig`. Confirm it's populated — do **not**
-hardcode a name/email in this skill (it's shared/versioned); read from the machine:
-
-```bash
-git config user.name; git config user.email      # both must be non-empty
-# if empty, the user sets them once per Mac: git config --global user.name / user.email
-```
+## After reconcile
+- **Xcode projects:** `.xcodeproj` is gitignored + generated → `cd 01_Project && xcodegen generate`
+  before building.
+- **Any commit you make → push immediately** (`git push origin main`) so origin stays canonical for the
+  other Macs. Solo dev, no PRs: small/config/docs → straight to `main`.
+- **Per-Mac secrets don't sync** — Keychain items, notarization profiles, and Sparkle signing keys are
+  machine-local. Recreate them per-Mac from your secure secrets store; they will not arrive via git.
 
 ---
-
-## Expected-clean untracked noise
-
-After bootstrap, `git status` (with untracked shown) may list files that are **fine** and should
-stay untracked / gitignored — not evidence of drift:
-
-- `DerivedData/`, `build/`, `.build/` — Xcode/SwiftPM build output
-- `*.sync-conflict-*` — Syncthing conflict copies (inspect, then delete; never commit)
-- `.DS_Store`, `~/.claude/settings.local.json` — per-Mac, never travels
-- tool scratch dirs the project's `.gitignore` already covers
-
-The check in step 4 uses `--untracked-files=no` deliberately so this noise doesn't mask the
-signal (tracked drift). Handle untracked items separately, after the tracked reconcile is clean.
-
----
-
-## Why this exists (one line each)
-
-- **Blind `git init` + commit** forks a disconnected root history — the single worst outcome.
-- **Blind `reset --hard`** destroys Syncthing-carried local work before you can see it.
-- **`--mixed` + `git status`** is the "verify byte-identity before overwriting" discipline from
-  Rule 1a, applied to a from-scratch repo.
-
-Full context, per-Mac constants, and the source incidents: `37_multi-mac-discipline.md` Rule 1b.
-Deployed to `~/.claude/skills/` by `redeploy.sh`; travels between Macs via the Directions git repo.
+Full context, the source incidents, and per-Mac constants: `37_multi-mac-discipline.md` Rule 1b.
+Deployed to `~/.claude/skills/` by `redeploy.sh` (copy-only); travels between Macs via this git repo.
