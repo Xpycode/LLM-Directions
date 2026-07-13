@@ -32,6 +32,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-13 (M1 Max)** — Sat down at the **M1 Max** and ran the predicted catch-up. The repo was
+  5 behind origin **and** had a dirty tree, but per-file hashing proved all 7 changed files
+  byte-identical to origin — Syncthing had carried the M4-Pro's already-committed work over as
+  uncommitted edits. Discarded the duplicates and fast-forwarded cleanly (no `reset --hard`, nothing
+  unique lost). Both Macs now in sync.
 - **2026-07-13** — **Authored the `git-bootstrap` skill** — it was referenced by 5 docs but never
   actually created (a "phantom"). Then discovered the M1 Max had a *better* un-versioned copy that had
   never been committed, so it never spread; merged the two into one public-safe version and deployed it
