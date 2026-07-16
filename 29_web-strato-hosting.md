@@ -244,6 +244,22 @@ When to apply: any file whose source-of-truth lives on the server (manifests wri
 
 ---
 
+## Python on Strato (CGI hosting)
+
+For sites running Python via CGI (`AddHandler cgi-script .cgi`). Source: PDF2Calendar `2026-07-16`
+(closing a pdfminer.six RCE on the live server).
+
+| Gotcha | What to know |
+|---|---|
+| `deploy.sh`/SFTP never upgrades server packages | Dependencies are a **separate step over SSH**: `python3 -m pip install --user --upgrade <pkg>`. Uploading `requirements.txt` changes nothing at runtime. |
+| SFTP user ≠ SSH user | Shell access is a per-user panel setting; a jailed SFTP deploy user can't run pip. Create a dedicated SSH-enabled user (SSH users can't be jailed — "Standard-Homedir" only, which is what pip needs anyway). Different user = different password; don't conflate. |
+| **glibc is ancient (2.17)** — new wheels silently don't fit | pip accepts at most `manylinux_2_17` wheels; packages shipping only newer-manylinux wheels fall back to sdist and **fail** (no compiler on shared hosting). Find your real ceiling with `pip install --only-binary=:all: --dry-run <pkg>`; constrain with `--only-binary=<pkg>` so the resolver picks the newest wheel that fits instead of dying on the sdist. |
+| Where `pip --user` lands | `$HOME/.local/lib/pythonX.Y/site-packages` — with `$HOME` = the docroot (`htdocs`). Put that path on `sys.path` in your `.cgi` wrapper; then upgrades take effect on the **next request**, no restart or redeploy. |
+| One pip failure aborts the whole install | Resolution is all-or-nothing: one package without a usable wheel (e.g. Pillow) blocks the pure-Python ones you actually need. Split the install or `--only-binary` the offender. |
+| Verify on the live site, not in the shell | After upgrading, exercise the real code path (e.g. `curl -F 'file=@example.pdf' …/api/upload`) — CGI spawns fresh processes, so the next request is the truth. |
+
+---
+
 ## The cross-cutting rule
 
 > **If editing files via SFTP doesn't change the live response, the configuration is in the control panel — not in your repo.**
