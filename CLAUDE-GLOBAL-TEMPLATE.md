@@ -106,6 +106,7 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | libsql, @libsql/client, turso, @tursodatabase/sync, db.push, db.sync … | `39_libsql-turso-sync.md` |
 | font, typography, tracking, kerning, leading, spacing … | `40_typography.md` |
 | UI element, component name, what is this called, Apple UI, SwiftUI component, UIKit … | `41_ui-vocabulary.md` |
+| design system, design tokens, palette, accent color, color ramp, looks generic … | `42_design-system.md` |
 | data structure, array, dictionary, tree, graph, algorithm … | `43_data-structures.md` |
 | My Tech Glossary | `44_my-glossary.md` |
 | package, SPM, reusable, extract, shared code, zPackages … | `45_packages.md` |
@@ -121,6 +122,7 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | model, haiku, sonnet, opus, which model, slow … | `60_model-selection.md` |
 | notarization, notarytool, "Developer ID", Developer ID Application, staple, stapler … | `61_distribution-notarization.md` |
 | final stretch, last 10%, last 1%, almost done, can't ship, endgame drags | `62_final-stretch-triage.md` |
+| Security Audit Checklist (OWASP / VibeSec) | `63_security-audit.md` |
 
 **Why read-on-demand:** Universal docs used to be copied into each project at `/setup`, so updates
 never reached already-set-up projects (N copies silently drift). This Index lets a running project —

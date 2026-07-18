@@ -15,11 +15,16 @@
 - **Blockers:** none.
 - **Next:** *(product)* roll ACK to **DiskVerdict** (additive — has FeedbackKit, gains Tip Jar +
   About), then the rest of the wave (per-app checklist: ACK README + #108); separate sweep — fix
-  19/30 missing/empty AppIcons (#76). *(framework)* optional Wave 3 per-file trims
-  (`OPTIMIZATION-PLAN §3`); carried-over TODO: cookbook #92 (hook↔statusline handshake pattern).
+  19/30 missing/empty AppIcons (#76). *(design)* per-app `DESIGN.md` briefs + accents (orange stays
+  Penumbra's; Conjoyn needs its own); appearance wave 1 = DiskVerdict/Conjoyn/TimeCodeEditor/Magpie,
+  rest gradually. *(framework)* optional Wave 3 per-file trims (`OPTIMIZATION-PLAN §3`);
+  carried-over TODO: cookbook #92 (hook↔statusline handshake pattern).
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-18** — Adopted the **house design system**: Claude-Desktop's screenshot critique distilled
+  into `42_design-system.md` (tokens + banned LLM-tells + per-app briefs), new `/check design` mode,
+  shell-check updated + versioned into repo; appearance standard now **dark default + user light**.
 - **2026-07-16→18** — Drive-by gotchas from app work: ScrollView centers narrower content, macOS 26
   popover-after-NSOpenPanel crash, Strato Python-on-CGI, cookbook #163 (SwiftTerm env) + #164.
 - **2026-07-13** — M1 Max caught up: 5-behind + dirty tree proved pure Syncthing duplicates of
@@ -28,8 +33,6 @@
   Max's richer live copy), deployed identically to both Macs; `redeploy.sh` now installs skills.
 - **2026-07-11** — Evaluated **claude-octopus**, rejected wholesale; its one good idea became
   cookbook **#159** (keyword→prompt "blind-spot" library seeded from our own gotcha docs).
-- **2026-07-02** — Optimization Waves 1+2 done and deployed to both Macs: commands 38→15,
-  read-on-demand `~/.claude/CLAUDE.md`, docs merged/archived, `redeploy.sh` written.
 
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · **Build 🔶** — iterating on improvements.

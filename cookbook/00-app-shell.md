@@ -77,17 +77,19 @@ struct MyApp: App {
 **Key decisions:**
 - `UIDesignRequiresCompatibility = true` in Info.plist — **prerequisite** for all other styling
 - `.windowStyle(.hiddenTitleBar)` — removes the standard title bar chrome
-- **Adaptive appearance by default** — no `.preferredColorScheme()` modifier, so the app follows the system light/dark setting. See §2 below. Forced dark mode is an explicit **per-app opt-in**, not the mandate — see §2.1.
+- **Appearance: dark default, user-switchable** (2026-07-18, `42_design-system.md` §0) — every app ships both appearances; first launch is dark, with an in-app Light/Dark/Match-System picker via `NSApplication.shared.appearance` (#113). See §2 below. Forced dark with *no* light at all is a narrowing **per-app opt-in** — see §2.1.
 - No `.navigationTitle()` — title bar is hidden, so titles go in custom info strips or toolbars
 
 ---
 
-### 2. Theme — Adaptive by Default
+### 2. Theme — Both Appearances, Dark Default
 
-Adaptive appearance is the default for all macOS apps: the app follows the system light/dark
-setting rather than forcing one. Two approaches, in order of preference:
+Every app supports both appearances: dark on first launch, user-switchable via the
+`NSApplication.shared.appearance` picker (`42_design-system.md` §0). Two color-source approaches:
 
-**A. Semantic system colors** — simplest, correct out of the box:
+**A. Semantic system colors** — simplest, adapts correctly, but has zero temperature. **Banned for
+chrome in house design-system apps** (`42_design-system.md` §0) — acceptable only for quick
+utilities/prototypes:
 ```swift
 Color(nsColor: .windowBackgroundColor)   // adapts automatically
 Color(nsColor: .controlBackgroundColor)
@@ -95,9 +97,9 @@ Color.primary                            // adapts automatically
 Color.secondary
 ```
 
-**B. Asset-catalog color sets** — when you need custom brand colors that still adapt:
-define a color set in `Assets.xcassets` with "Any, Dark" appearance variants, then reference
-by name:
+**B. Asset-catalog color sets** — **the house path** (`42_design-system.md`): hand-picked per-app
+ramps that still adapt. Define a color set in `Assets.xcassets` with "Any, Dark" appearance
+variants, then reference by name:
 ```swift
 Color("AccentColor")   // resolves Any vs Dark automatically via the asset catalog
 ```

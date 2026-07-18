@@ -10,8 +10,9 @@
 > Every macOS app MUST use the **App Shell Standard** below. This means:
 > - `HSplitView` for panes (NOT `NavigationSplitView` — no Tahoe frosted sidebars)
 > - `FCPToolbarButtonStyle` for toolbar buttons (NOT default round/capsule buttons)
-> - `.windowStyle(.hiddenTitleBar)` + `.preferredColorScheme(.dark)` + `.toolbarRole(.editor)`
-> - Custom dark `Theme` struct for consistent colors
+> - `.windowStyle(.hiddenTitleBar)` + `.toolbarRole(.editor)`; appearance = **dark default,
+>   user-switchable light** via `NSApplication.shared.appearance` picker (#113, `42_design-system.md` §0)
+> - Appearance-aware `Theme` struct (hand-picked dark + light ramps — tokens in `42_design-system.md`)
 >
 > **Existing apps not using this pattern should be migrated.** When starting work on
 > any macOS app, check whether it follows the App Shell Standard. If it doesn't,

@@ -1,13 +1,14 @@
 # Check — one review command
 
 Audit the work and report. **`/check` replaces `/code-review`, `/quality`, `/reflect`, `/review`,
-and `/minimums`.** It has three modes:
+and `/minimums`.** It has four modes:
 
 | `/check <mode>` | Absorbs | Use when |
 |---|---|---|
 | **`code`** (default) | code-review + quality + reflect | before a commit/merge, after AI-generated code or a refactor |
 | **`ship`** | review + minimums | before a release — production readiness + baseline features |
 | **`security`** | security-audit | before deploy, after auth/input/upload changes |
+| **`design`** | *(new 2026-07-18)* | after building/editing UI — LLM-tell + design-token audit |
 
 ## Golden rule — audit and present, don't interrogate
 
@@ -79,6 +80,25 @@ injection / secrets / auth / uploads). That doc is the home; this mode loads and
 reports findings in the same three-bucket table as `ship` (a real vuln is always bucket 1). For the
 always-on security *rules*, see `54_security-rules.md`.
 
+## Mode: `design`
+
+Audit UI against **`42_design-system.md`** (house design system) + the app's own per-app brief
+(`DESIGN.md` at the app repo root, §1 of 42_), if present.
+
+1. **Load** `42_design-system.md`; read the app's `DESIGN.md` brief. No brief → that's the first
+   finding (the brief is the anti-sameness contract; offer to scaffold it, don't invent its content).
+2. **Banned-pattern sweep** (42_ §8) — grep candidates, then **verify in context** (a match is only
+   a violation once context confirms): centered big-SF-Symbol empty states, >1 accent-colored
+   element per screen, one global radius, top-center segmented nav, system semantic colors for
+   chrome, default-weight SF headings, proportional digits in metrics, "Import X to start" heroes.
+3. **Token conformance** — inline hex outside `Theme`, off-scale spacing/radii, Theme not
+   appearance-aware (must have hand-picked dark + light ramps — 42_ §0).
+4. **Shell** — structure (HSplitView, titlebar injection…) is the `shell-check` skill's job; run it
+   if the app hasn't been audited recently, don't duplicate its checks here.
+5. **Self-critique** — list every place the UI reads as generic/AI-built (file:line), then propose
+   the **3 highest-leverage changes** toward the app's brief. Report in the same bucketed table as
+   `code`; end with the one question: which of the 3 to apply.
+
 ---
 
 ## What `/check` does NOT do
@@ -88,4 +108,5 @@ always-on security *rules*, see `54_security-rules.md`.
 - **Extract learnings** — that's `/log` §4 (the old `/reflect`→`/compound` handoff now lives there).
 
 Source: `35_ai-code-quality.md`, `30_production-checklist.md`, `33_app-minimums.md`,
-`62_final-stretch-triage.md`, `63_security-audit.md`; `feature-dev:code-reviewer` agent for deep passes.
+`62_final-stretch-triage.md`, `63_security-audit.md`, `42_design-system.md`;
+`feature-dev:code-reviewer` agent for deep passes.

@@ -23,6 +23,43 @@ This file tracks the WHY behind technical and design decisions.
 > Full ADRs older than the one below live in [`decisions-archive.md`](decisions-archive.md) — a
 > one-paragraph summary of each still lives in the Condensed Log further down this file.
 
+### 2026-07-18 - House design system (`42_`) + appearance standard: dark default, user-selectable light
+
+**Context:** A Claude-Desktop screenshot critique of DiskVerdict/Conjoyn/Penumbra/CropBatch/Magpie
+diagnosed the "LLM-generated look": system semantic colors (no temperature), accent sprayed on
+everything, one global corner radius, centered big-SF-Symbol empty states, default-weight SF
+headings — and, collectively, five apps sharing one visual center. It proposed a per-app DESIGN.md
+token system (light-first). Meanwhile the repo's own appearance story had drifted three ways:
+cookbook §0 blurb + the shell-check skill still mandated forced dark, while `00-app-shell.md` §2
+had already moved to adaptive-by-default. User direction: dark stays standard, light must be available.
+
+**Options Considered:**
+1. **Drop DESIGN.md into each app repo as-is** — recreates copy-vs-drift (5 drifting foundations);
+   keeps its light-first default, contradicting the house aesthetic.
+2. **Adopt as master doc, keep forced-dark** — resolves drift but rejects the wanted light mode.
+3. **Split shared-vs-per-app + dark-default/user-switchable** — foundation in master
+   `42_design-system.md` (read on demand); app repos carry only the filled §1 brief + Theme;
+   appearance = dark first launch + Light/Dark/Match-System picker via
+   `NSApplication.shared.appearance` (#113); critique pass folded into `/check design`.
+
+**Decision:** Option 3.
+
+**Rationale:** The banned-patterns list is the real value — negative constraints beat aspirational
+prose for steering a model off its statistical center. Per-app briefs (unique accent + distinctive
+element, human-picked) attack the sameness. Master-homed foundation is this framework's own
+copy-vs-drift lesson applied to design. Dark-default + picker honors both the existing aesthetic
+and the new direction, using the mechanism #113 already proved. The semantic-colors ban is adopted
+*with its cost stated* (Theme must carry adaptation + Increase Contrast) so a future session
+doesn't "fix" it back.
+
+**Consequences:** shell-check checks #2/#7 now audit for the picker + an appearance-aware Theme
+(hardcoded forced dark = pass-with-note; keeping forced dark stays a legitimate per-app opt-in,
+`00-app-shell.md` §2.1 — e.g. Penumbra). The skill is now versioned in repo `skills/` (was
+live-only on the M4-Pro — the git-bootstrap lesson). `/check` gains a `design` mode; cookbook §0 +
+`00-app-shell.md` §2 aligned; Directions Index regenerated. Appearance wave 1: DiskVerdict,
+Conjoyn, TimeCodeEditor, Magpie; rest gradually. ACK shared screens must consume the host app's
+Theme tokens. Per-app accents pending (orange stays Penumbra's; Conjoyn needs its own).
+
 ### 2026-07-11 - Reject `claude-octopus` wholesale; adopt only its blind-spot-injection idea, Claude-only
 
 **Context:** Considered whether `claude-octopus` (nyldn) — a multi-provider AI-orchestration plugin
