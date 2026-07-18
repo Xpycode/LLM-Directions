@@ -136,6 +136,15 @@ possible distribution (`ditto -c -k --keepParent App.app App.zip` → attach to 
 release). Use a DMG only when you want the drag-to-Applications UX; it's the only
 reason the DMG-signing/notarization dance above is needed.
 
+**Extract app zips with `ditto -x -k`, never `unzip`.** Info-ZIP's `unzip` can
+materialize the symlink farm inside framework bundles (`Sparkle.framework/Versions/
+Current` → `Versions/B`) as real files, which invalidates the bundle's
+`_CodeSignature` seal — Gatekeeper then shows the misleading **"App is damaged and
+can't be opened"** dialog on a perfectly good, notarized app. "Damaged" almost never
+means corrupt data; it means *signature validation failed*. Diagnose with
+`codesign --verify --deep --strict App.app` (it names the exact broken
+subcomponent) before believing the dialog. (Bit TimeCodeEditor 2026-07-18.)
+
 ## See also
 
 - `scripts/package-dmg.sh` — the scripted version of the chain above.
