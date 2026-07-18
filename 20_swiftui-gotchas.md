@@ -658,3 +658,39 @@ squeeze and the measured height never changes — give it a rigid width-derived
 `.frame(height:)` so the container is the only flexible element per axis.
 (VideoWallpaper window auto-resize, 2026-07-12; NSLog instrumentation showed a
 single `measured=0.0` and the main window collapsed to a bare 32pt title bar.)
+
+---
+
+## macOS 26+: popover presented right after NSOpenPanel dismissal crashes the app
+
+**Problem:** Hard crash (`EXC_BREAKPOINT` via `+[NSApplication _crashOnException:]`)
+when a `.popover` presents immediately after `NSOpenPanel.runModal()` returns. On
+macOS 26+ open/save panels are **ViewBridge-hosted for ALL apps** (the panel content
+is an out-of-process `NSRemoteView`), not just sandboxed ones. `runModal()` returning
+does **not** mean the panel is gone — its XPC teardown completes asynchronously over
+the next runloop turns. Flip a `@Published`/`@State` presentation flag synchronously
+in that window and SwiftUI presents the popover on the very next layout pass; the
+popover's window ordering posts a notification the dying panel's **stale
+`NSRemoteView` observer** (`containingWindowWillOrderOnScreen:`) still receives — it
+throws, AppKit's crash-on-exceptions traps.
+
+```swift
+// BROKEN: presentation flag flipped in the same runloop turn as panel dismissal
+guard panel.runModal() == .OK, let url = panel.url else { return }
+showConfirmPopover = true   // races the panel's ViewBridge teardown → crash
+
+// WORKS: defer past the async XPC teardown (@MainActor class → Task inherits actor)
+guard panel.runModal() == .OK, let url = panel.url else { return }
+Task {
+    try? await Task.sleep(for: .milliseconds(400))
+    showConfirmPopover = true
+}
+```
+
+**Rule:** Never present a popover/sheet from the same runloop turn in which an
+open/save panel was dismissed. A bare `DispatchQueue.main.async` is NOT enough —
+the teardown spans XPC round-trips; use a short (~400 ms, humanly imperceptible)
+deferral. Migrating to `panel.begin(completionHandler:)` does not fix it — the
+completion fires in the same race window. Leave a why-comment on the delay or a
+future cleanup will remove it. (Conjoyn 1.0.3 output-folder crash, 2026-07-18,
+macOS 27.0 beta; fix `ConversionViewModel.swift:293`, commit `dcf44b8`.)
