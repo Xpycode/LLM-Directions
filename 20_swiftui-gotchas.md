@@ -694,3 +694,28 @@ deferral. Migrating to `panel.begin(completionHandler:)` does not fix it — the
 completion fires in the same race window. Leave a why-comment on the delay or a
 future cleanup will remove it. (Conjoyn 1.0.3 output-folder crash, 2026-07-18,
 macOS 27.0 beta; fix `ConversionViewModel.swift:293`, commit `dcf44b8`.)
+
+## ScrollView silently centers content narrower than itself (floating sidebar)
+
+**Symptom:** A sidebar/inspector built as `ScrollView { VStack(alignment: .leading) { … } }` looks
+misaligned — the whole content column floats toward the horizontal center of the pane instead of
+pinning left. Reads as "cramped/amateurish" without an obvious cause (PhotoIngest source pane,
+2026-07-18).
+
+**Cause:** `ScrollView` only scrolls; it doesn't lay out. Content gets its *ideal* width and is
+**centered on the cross axis** when narrower than the scroll view. The `VStack`'s
+`alignment: .leading` aligns children *within* the stack — it does nothing about where the stack
+itself sits.
+
+**Fix:** Make the content claim the full width, then alignment applies:
+
+```swift
+ScrollView {
+    VStack(alignment: .leading, spacing: 18) { … }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)  // ← the fix
+}
+```
+
+Same trap vertically with horizontal `ScrollView`s. Cheap tell: resize the pane — if the gap grows
+on *both* sides of the content, it's this.
