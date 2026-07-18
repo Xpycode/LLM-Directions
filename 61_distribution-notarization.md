@@ -127,6 +127,14 @@ For the next version this is just `scripts/package-dmg.sh 1.0.1` + one
   `isPrerelease` (no `isLatest`).
 - **DMGs / .app / .p8 / .p12 stay out of git** — see `.gitignore`; ship via GitHub
   Releases, not the repo.
+- **Sparkle `generate_appcast` MERGES into an existing `appcast.xml`** — it never
+  rebuilds from the folder. Re-releasing under the *same* marketing version (same
+  staged filename, e.g. a re-notarize before the first deploy) leaves the old item
+  in the feed: two items on ONE enclosure URL with different length/edSignature —
+  the stale one can never validate. **Delete `appcast.xml` before regenerating** on
+  any same-version re-release. Sanity check: old and new appcast can even be the
+  same byte count — compare by SHA-256, not size. (Bit TimeCodeEditor 2026-07-18;
+  Conjoyn/Penumbra share the same `make-appcast.sh`.)
 
 ## Alternative: zip instead of DMG
 
