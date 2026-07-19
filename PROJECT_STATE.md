@@ -17,11 +17,15 @@
   About), then the rest of the wave (per-app checklist: ACK README + #108); separate sweep — fix
   19/30 missing/empty AppIcons (#76). *(design)* per-app `DESIGN.md` briefs + accents (orange stays
   Penumbra's; Conjoyn needs its own); appearance wave 1 = DiskVerdict/Conjoyn/TimeCodeEditor/Magpie,
-  rest gradually. *(framework)* optional Wave 3 per-file trims (`OPTIMIZATION-PLAN §3`);
+  rest gradually — **awaiting: human picks a Sanzo Wada combination for Magpie** (2026-07-19), then
+  derive ramps + `DESIGN.md`. *(framework)* optional Wave 3 per-file trims (`OPTIMIZATION-PLAN §3`);
   carried-over TODO: cookbook #92 (hook↔statusline handshake pattern).
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-19** — Explored **Sanzo Wada's colour dictionary** as a palette source; it fits the
+  per-app brief (not house tokens). Trial app = Magpie, whose greys turn out to have no temperature
+  at all. Nothing locked — waiting on the human to pick a combination.
 - **2026-07-18** — Adopted the **house design system**: Claude-Desktop's screenshot critique distilled
   into `42_design-system.md` (tokens + banned LLM-tells + per-app briefs), new `/check design` mode,
   shell-check updated + versioned into repo; appearance standard now **dark default + user light**.
@@ -31,8 +35,6 @@
   origin — discarded and fast-forwarded, nothing lost; both Macs in sync.
 - **2026-07-13** — Authored the previously-phantom **`git-bootstrap` skill** (merged with the M1
   Max's richer live copy), deployed identically to both Macs; `redeploy.sh` now installs skills.
-- **2026-07-11** — Evaluated **claude-octopus**, rejected wholesale; its one good idea became
-  cookbook **#159** (keyword→prompt "blind-spot" library seeded from our own gotcha docs).
 
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · **Build 🔶** — iterating on improvements.
@@ -54,4 +56,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-18.*
+*Last updated: 2026-07-19.*
