@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-07-02 (#156).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
+**Last updated: 2026-07-25 (#168).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
 
 ---
 
@@ -194,3 +194,7 @@ Each pattern lives in `cookbook/`. Read the relevant file when a pattern is need
 | 162 | [162-lsuielement-dock-app-nonstealing-launch.md](cookbook/162-lsuielement-dock-app-nonstealing-launch.md) | Dock app that doesn't grab focus on launch: mark it LSUIElement (born .accessory) so LaunchServices won't auto-front it, flip to .regular WITHOUT NSApp.activate(), surface via orderFrontRegardless. |
 | 163 | [163-swiftterm-environment-is-execve-envp.md](cookbook/163-swiftterm-environment-is-execve-envp.md) | SwiftTerm `startProcess(environment:)` is execve's envp, not a dict: duplicate key → FIRST wins, so an appended HOME override is silently ignored (it already sets HOME). Filter, don't append. |
 | 164 | [164-verifying-a-running-macos-app-from-outside.md](cookbook/164-verifying-a-running-macos-app-from-outside.md) | Checks on a running macOS app that lie: Xcode 16 puts code in `<App>.debug.dylib`, not the `MacOS/<App>` stub; SIP blocks reading process env; `ps\|grep` hits other apps' shells. Use behaviour probes. |
+| 165 | [165-benchmark-kernel-must-be-irreducible.md](cookbook/165-benchmark-kernel-must-be-irreducible.md) | `blackHole`/`withExtendedLifetime` protects the *result*, not the work: a loop with a closed form is rewritten to Gauss's formula and times at **0 ns** with the barrier correctly applied. Use a serial dependency chain. |
+| 166 | [166-apple-silicon-benchmark-qos-not-sync.md](cookbook/166-apple-silicon-benchmark-qos-not-sync.md) | Inherited QoS gave 1–25.6% timing variance vs 0.5–2.4% at `.userInitiated` (P/E-core migration mid-run). `DispatchQueue.sync` can't fix it — it runs on the caller's thread at the caller's QoS; use `async` + semaphore. |
+| 167 | [167-benchmark-score-min-gate-floor-convergence.md](cookbook/167-benchmark-score-min-gate-floor-convergence.md) | Timing noise is one-sided, so score by the **minimum** — and for ratio scoring, min-vs-min avoids dividing a quiet median by a noisy one. Gate on 2nd-vs-fastest convergence, not dispersion, which rejects good runs. |
+| 168 | [168-accelerate-new-lapack-from-swift.md](cookbook/168-accelerate-new-lapack-from-swift.md) | Clear the macOS 13.3 `cblas_*` deprecation with `OTHER_SWIFT_FLAGS: -Xcc -DACCELERATE_NEW_LAPACK=1` (must reach the clang importer). Never add `ACCELERATE_LAPACK_ILP64` — it silently invalidates `Int32` dimensions. |
