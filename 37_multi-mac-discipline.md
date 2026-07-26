@@ -116,9 +116,26 @@ git merge --ff-only origin/main    # fast-forwards; checks out the untracked-in-
 ```
 
 Leave the stash as the undo net. To confirm afterwards that it holds nothing new, compare each entry to
-what landed — `git rev-parse "stash@{0}^3:<path>"` for the **untracked** ones (they live on the stash's
-third parent, *not* `stash@{0}:<path>`, which silently fails and can pollute a naive shell comparison)
-versus `git rev-parse "HEAD:<path>"`. Equal hashes = the stash is redundant and safe to drop.
+what landed. Two traps make the naive loop lie:
+
+1. **Untracked entries aren't at `stash@{0}:<path>`.** A stash is a merge commit; the untracked files
+   live on its *third parent*, `stash@{0}^3:<path>`.
+2. **`git rev-parse` echoes the unresolved argument to stdout when it fails.** So the obvious
+   `a || b` fallback captures *the error text plus the real hash*, and every untracked file reports
+   DIFFERS even when the hashes match. Same failure family as the `diff -q` SIGPIPE inversion above:
+   the tool's non-silent failure poisons the comparison, not the data. Use **`-q --verify`**, which
+   stays quiet and returns nothing on failure.
+
+```bash
+for f in $(git stash show --include-untracked --name-only stash@{0}); do
+  s=$(git rev-parse -q --verify "stash@{0}:$f" || git rev-parse -q --verify "stash@{0}^3:$f")
+  h=$(git rev-parse -q --verify "HEAD:$f")
+  [ -n "$s" ] && [ "$s" = "$h" ] && echo "IDENTICAL $f" || echo "DIFFERS $f"
+done
+```
+
+All IDENTICAL = the stash is redundant and safe to `git stash drop` (and the dropped commit still sits
+in the reflog for the usual ~2 weeks if you want it back).
 
 **Verify byte-identity first — and use the right oracle.** Confirm each dirty path is identical to origin
 before discarding, so you never drop genuinely-unique local work. Two trustworthy tests:
