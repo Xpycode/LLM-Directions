@@ -106,6 +106,20 @@ untracked-but-already-on-origin files (they exist in the target commit, so reset
 become tracked & clean) — no separate `git restore`/`rm`/`clean` step. `git clean -nd` afterward should
 come back empty.
 
+If a risk-guard hook blocks `reset --hard` (Claude Code's fable5 `pre-tool-guard` does, by design — the
+verb is irreversible and the guard can't see that you've *proved* the discard lossless), take the route
+that destroys nothing and lands identically:
+
+```bash
+git stash push --include-untracked -m "phantom: Syncthing-carried, identical to origin"
+git merge --ff-only origin/main    # fast-forwards; checks out the untracked-in-target files
+```
+
+Leave the stash as the undo net. To confirm afterwards that it holds nothing new, compare each entry to
+what landed — `git rev-parse "stash@{0}^3:<path>"` for the **untracked** ones (they live on the stash's
+third parent, *not* `stash@{0}:<path>`, which silently fails and can pollute a naive shell comparison)
+versus `git rev-parse "HEAD:<path>"`. Equal hashes = the stash is redundant and safe to drop.
+
 **Verify byte-identity first — and use the right oracle.** Confirm each dirty path is identical to origin
 before discarding, so you never drop genuinely-unique local work. Two trustworthy tests:
 
@@ -120,6 +134,49 @@ difference, killing the upstream `git show` with SIGPIPE; under `set -o pipefail
 non-zero and can **invert** the verdict (flagging identical files as different, or vice-versa). A content
 oracle (hash-object) or a full `diff -` that reads both streams is the safe choice. (Burned by this
 2026-06-13 — three checks disagreed; the hash/`git diff --quiet` pair was right.)
+
+**Variant: the untracked-file collision — a `… 2` copy is NOT reliably the throwaway.**
+
+Everything above is the *tracked*-file face of dual-carry. Untracked files show a different one, because
+Syncthing resolves the two cases differently:
+
+- **Tracked file** — Syncthing overwrites it in place. Git reports a plain `modified`. No duplicate.
+- **Untracked file** — an incoming file colliding with a local copy of the same name cannot be silently
+  overwritten, so Syncthing parks one of them beside the other with a ` 2` suffix.
+
+The trap is what the suffix means. **` 2` marks the file that arrived and lost the name race — not the
+redundant one.** When the local copy is the *stale* one (this Mac never got the update, or got it as an
+untracked file git couldn't reconcile), the newcomer — the **canonical** version — is what gets suffixed.
+Deleting "the duplicate" on sight throws away the current work and reinstates the old.
+
+Worse, one single upstream change can surface **two different ways at once**: a content diff on the
+tracked artifact *and* a phantom duplicate beside its untracked sibling. Reading either symptom alone
+tells you the wrong story.
+
+**Resolve by content, never by name.** Anchor on something that provably shipped — a tracked artifact, or
+the commit that built the release — and ask which copy matches it:
+
+```bash
+# Which loose folder matches the tracked zip that actually shipped?
+unzip -l "Icon set.zip"                       # working-tree (Syncthing-updated) — sizes + mtimes
+git show HEAD:"Icon set.zip" > /tmp/head.zip  # the previous, committed version
+unzip -l /tmp/head.zip
+# then md5 each candidate folder's files against both extractions
+```
+
+Identity by *name* is a guess; identity by *content* is a verdict. In the case that produced this rule the
+verdict inverted the intuition: `… 2` was the final artwork, the un-suffixed folder was a discarded
+earlier concept.
+
+**Before deleting the loser, prove it's recoverable.** `rm -rf` on an *untracked* folder is unrecoverable —
+git cannot restore what it never held. Make it reversible first by confirming every file is byte-identical
+to something already in history (`md5 -q` against the extracted `HEAD` blob), which turns the delete into
+a `git show HEAD:<path>` away from undo. Then delete.
+
+**Prevention:** track the loose files, not just the archive. A zip is one opaque blob to git — every
+re-export reads as `Bin 5000 -> 4717 bytes` and nothing more, which is precisely why the drift was
+unreadable. Tracking the unpacked files *alongside* the zip gives git something diffable, and — because
+tracked files sync in place — removes the untracked-name collision that creates `… 2` copies at all.
 
 **Two structural defenses:**
 
@@ -160,6 +217,11 @@ this (stale-`.git`) Mac, so 9 modified + 12 untracked files all showed as local 
 byte-identical to origin — the textbook phantom. `git reset --hard origin/main` reconciled it in one move
 (the 12 untracked files were in the target commit, so they checked out clean; `git clean -nd` empty
 after). This is what hardened the hook into a computed verdict and added the `diff -q` SIGPIPE caveat.
+The untracked-collision variant came from MediaIngest 2026-07-24/26: the other Mac replaced the app-icon
+concept and re-exported its handoff bundle; the tracked zip synced in place (`modified`) while the loose
+folder landed as `design_handoff_mediaingest_icon 2`. Content beat naming — the `… 2` copy was byte-identical
+to the updated zip and to the palette compiled into the shipped icon generator, so the *un-suffixed* folder
+was the stale one. Cost a full session to diagnose from symptoms alone.
 
 ### Rule 1b: The fresh/reset Mac — no `.git` at all (the bootstrap case)
 
@@ -431,6 +493,8 @@ If `git rev-list` shows `0 N`, pull before doing anything. If it shows `N M`, st
 | `git push` rejected with "fetch first" | Rule 1 (divergent commits) | `git fetch && git rev-list --left-right --count HEAD...origin/main` to size the gap |
 | Duplicate-looking commits in `git log --left-right HEAD...origin/main` | Rule 1 | reset + redo only the unique parts (don't merge) |
 | `behind N` **and** dirty tree, but dirty files diff clean vs `origin` | Rule 1a (dual-carry) | confirm byte-identity via `git hash-object` vs `git rev-parse origin/main:<file>` (not `diff -q` in a pipe), then `git reset --hard origin/main` (one move; handles tracked + untracked-in-target); close the window with commit-on-end |
+| A `<name> 2` / `… 2` copy appeared beside an untracked file | Rule 1a (dual-carry, untracked variant) | **don't assume `… 2` is the throwaway** — it marks the file that *arrived*. Identify by content against a tracked artifact (`unzip -l` the working-tree vs `HEAD` archive; `md5 -q` each candidate), then prove the loser is byte-identical to something in history before `rm -rf` |
+| `reset --hard` blocked by a risk-guard hook | Rule 1a | same end state, nothing destroyed: `git stash push -u -m "phantom"` → `git merge --ff-only origin/main`; the stash stays as the undo net |
 | `mount -t <YourFS>` returns "not recognized" | Rule 2 (machine-specific state) | `pluginkit -m -v` / `systemextensionsctl list` to verify registration on *this* Mac |
 | Fixture / scratch dir referenced in journal isn't on disk | Rule 2 | check the journal's "Host machine" line; you may be on the wrong Mac |
 | `.sync-conflict-*` file in `.claude/` or similar accumulating dir | Rule 3 | union-merge with python; backup; add to `.stignore` |
