@@ -77,6 +77,33 @@ DIRTY
     else
       echo "✓ '$branch' in sync with $upstream, working tree clean."
     fi
+
+    # --- Merged-branch blind spot (Rule 1c) ----------------------------------
+    # EVERYTHING above compares HEAD to ITS OWN upstream. A branch that was merged
+    # into the default branch and then abandoned is genuinely in sync with a frozen
+    # upstream — so the checks above print ✓ while the default branch runs far ahead.
+    # Syncthing then carries the default branch's FILES onto this stale checkout and
+    # already-shipped work reads as uncommitted changes. Penumbra 2026-07-27: green
+    # pre-flight, origin/main 32 ahead, six duplicate commits pushed. Ask the question
+    # git status structurally never asks. Read-only.
+    defbr=$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main)
+    if [ "$upstream" != "$defbr" ] && git rev-parse -q --verify "$defbr" >/dev/null 2>&1; then
+      dbehind=$(git rev-list --count "HEAD..$defbr" 2>/dev/null | awk '{print $1+0}')
+      if git merge-base --is-ancestor HEAD "$defbr" 2>/dev/null; then
+        echo
+        echo "🔴 '$branch' is ALREADY MERGED into $defbr, which is now $dbehind commit(s) ahead."
+        echo "    Every commit here is already shipped. The line above is about this branch's own"
+        echo "    (frozen) upstream — it is not a statement about your work."
+        echo "    Do NOT commit the working tree: Syncthing carries $defbr's files onto this stale"
+        echo "    checkout, so finished work reads as uncommitted changes (Rule 1c)."
+        echo "    Rebranch instead:  git switch -c <new> $defbr && git cherry-pick <the real commits>"
+      elif [ "${dbehind:-0}" -gt 0 ]; then
+        echo "ℹ️  $defbr is $dbehind commit(s) ahead of '$branch' — stale base."
+        echo "    Rebase/merge it in before trusting a test run: a clean cherry-pick onto a moved"
+        echo "    base is not the same as a correct one (Rule 1c)."
+      fi
+    fi
+    # -------------------------------------------------------------------------
     echo
   fi
 fi

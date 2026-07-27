@@ -278,6 +278,75 @@ Source: Conjoyn 2026-06-13 (fresh Mac, no `.git`; mixed-reset proved 0 tracked d
 origin** (missing Rule 5 + `/worktree`) — the check caught it, so the doc edit was re-applied onto
 origin's version instead of clobbering it.
 
+### Rule 1c: The merged-branch blind spot — when the pre-flight's green is *wrong*
+
+Rule 1a's tell is "you're `behind` **and** dirty." This variant is worse, because **the pre-flight
+reports fully green** and there is no tell at all.
+
+#### Symptom
+
+You are on a feature branch that was merged into `main` weeks ago and then abandoned. `main` has since
+moved far ahead. The session-start check prints:
+
+```
+✓ 'fix/whatever' in sync with origin/fix/whatever, working tree clean.
+```
+
+Both halves are **true**. The branch really is in sync with `origin/<branch>` — that upstream is equally
+frozen. The tree really is clean *by that branch's reckoning*. `git status -sb` compares HEAD to **its own
+upstream** and nothing else; "has the default branch moved past me?" is a question it structurally never
+asks. So the guard that exists to catch cross-Mac drift waves through the worst case of it.
+
+Then Syncthing supplies the payload: it carries `main`'s **files** onto a checkout whose `.git` still
+points at the stale branch. Every file `main` has and the branch lacks shows as `M` or `??` —
+indistinguishable from real uncommitted work. A session that trusts the green pre-flight, sees "dirty
+tree," and helpfully commits it will **re-commit and push work that shipped weeks ago**.
+
+#### The fix — ask the second question, always
+
+```bash
+D=$(git symbolic-ref -q --short refs/remotes/origin/HEAD || echo origin/main)
+git rev-list --count HEAD..$D                    # has the default branch moved past me?
+git merge-base --is-ancestor HEAD $D && echo "ALREADY MERGED — this branch is finished"
+```
+
+`--is-ancestor` is the decisive one: true means every commit on this branch is already in `main`, so
+**nothing here is new** no matter what `git status` shows. Confirm with the content check before acting:
+
+```bash
+git diff $D HEAD -- '*.swift'    # empty ⇒ literally nothing unique on this branch
+```
+
+**Recovery:** do **not** commit the working tree, and do not merge the branch. Rebranch from the default
+branch and cherry-pick only what is genuinely new:
+
+```bash
+git switch -c <fresh-branch> origin/main
+git cherry-pick <the one or two real commits>
+```
+
+Then verify the replay actually *works* on the new base — a clean cherry-pick onto a base that moved is
+not the same as a correct one. Run the suite and compare the count against the last known-good number.
+
+#### The discipline
+
+- **Never let "in sync, tree clean" authorize a commit on a non-default branch.** It is a statement about
+  a frozen upstream, not about your work.
+- **A dirty tree on a stale branch is evidence of Rule 1a, not of unsaved work** — until proven otherwise
+  by diff, not by inspection.
+- **Prefer deleting merged branches immediately.** `git branch -d` refuses unless every commit is
+  reachable elsewhere, so it doubles as the check — and a branch that no longer exists cannot be
+  accidentally resumed on the other Mac.
+- Distrust in-repo "NOT committed yet" notes; verify with `git cat-file -t <sha>`. Such a note is true
+  when written and stale hours later, and it compounds this trap by lending the phantom work credibility.
+
+Source: Penumbra 2026-07-27 — `fix/code-review-2026-07`, merged 2026-07-18, `origin/main` 32 ahead; the
+pre-flight printed green and six commits of already-shipped work were re-committed and pushed. Fifth
+occurrence of the family (2026-06-10 / 06-14 / 07-02 / 07-12 / 07-27), first where the guard actively
+said go. Reconciled 2026-07-28 by the rebranch+cherry-pick recipe above; replay verified by a clean-build
+suite run matching the pre-reconcile count exactly (503/1/0). The global pre-flight in `~/.claude/CLAUDE.md`
+now emits the `vs origin/main: behind N · already-merged=YES|no` line.
+
 ---
 
 ## Rule 2: Verify machine-specific state on the actual machine before acting on it
