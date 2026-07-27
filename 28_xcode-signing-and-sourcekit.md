@@ -212,6 +212,8 @@ After re-opening, leave Xcode for 30–120 seconds before judging — the indexe
 
 MenuBarPLUS `2026-05-09`, Spaces `2026-05-09-build-4-5`, MyOwnTerminal `2026-04-21`, GPSvideo `2026-05-12-night`, LEARNING-Helper `2026-05-02`, YTdl `2026-05-10`. Same pattern, six different sessions, six different rediscoveries — until now.
 
+**Seventh:** QuickStatsPanel `2026-07-27` — adding 3 files to an XcodeGen project produced ~40 phantom errors across *untouched* files (`Cannot find type 'Band'`, `'ThemePreset'`, `'AppSettings'` — all long-standing types), because the new files weren't in the `.xcodeproj` yet. Cleared entirely by `xcodegen generate` + build. **Tell for this variant:** the errors cluster in files you did *not* edit, and name types that have existed for months. If a diagnostic wave follows a file *addition* under XcodeGen, regenerate before reading a single one.
+
 ---
 
 ## The cross-cutting rule
