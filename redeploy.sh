@@ -42,6 +42,10 @@ done
 
 # Resolve repo root from this script's location — works on any Mac, any clone path.
 REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# How the repo path is written INTO the deployed CLAUDE.md. Tilde-shortened when the repo
+# lives under $HOME, so the installed file reads the way the docs do (and stays legible on a
+# Mac with a different short user name); falls back to the absolute path otherwise.
+REPO_DISPLAY="${REPO/#$HOME/~}"
 CLAUDE_DIR="$HOME/.claude"
 COMMANDS_DIR="$CLAUDE_DIR/commands"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
@@ -129,7 +133,13 @@ if [ -d "$SKILLS_SRC" ]; then
   say
 fi
 
-# --- 2. CLAUDE.md: overwrite with the modernized template ------------------------
+# --- 2. CLAUDE.md: RENDER the template for this Mac, then install ----------------
+# This repo is public, so CLAUDE-GLOBAL-TEMPLATE.md stores the master path as the
+# [LOCAL_DIRECTIONS_PATH] placeholder. Installing it verbatim (what this step used to do)
+# rewrote every working path in the live file to a string that resolves nowhere — silently
+# disabling the whole read-on-demand Directions Index this file exists to drive. So:
+# substitute the placeholder first, and compare the RENDERED text — never the raw template —
+# or every run reports a spurious diff and churns a fresh backup.
 if [ "$SKIP_CLAUDE_MD" = 1 ]; then
   say "CLAUDE.md: skipped (--skip-claude-md)"
 else
@@ -137,18 +147,40 @@ else
   if [ ! -f "$TEMPLATE" ]; then
     say "  ✗ template missing: $TEMPLATE"; exit 1
   fi
-  if [ -f "$CLAUDE_MD" ]; then
-    if cmp -s "$TEMPLATE" "$CLAUDE_MD"; then
-      say "  ✓ already matches template — nothing to do"
+  # An empty REPO_DISPLAY would substitute cleanly and produce plausible-looking but broken
+  # absolute paths (/20_swiftui-gotchas.md) that the placeholder check below cannot see.
+  if [ -z "$REPO_DISPLAY" ]; then
+    say "  ✗ REPO_DISPLAY is empty — refusing to render CLAUDE.md."; exit 1
+  fi
+  rendered=$(mktemp)
+  sed "s|\[LOCAL_DIRECTIONS_PATH\]|$REPO_DISPLAY|g" "$TEMPLATE" > "$rendered"
+  # Never install a half-rendered file: if substitution failed for any reason (empty
+  # REPO_DISPLAY, a path containing the sed delimiter), the placeholder survives and would be
+  # baked into the live file — the exact breakage this step exists to prevent. Fail loudly.
+  if grep -q '\[LOCAL_DIRECTIONS_PATH\]' "$rendered"; then
+    rm -f "$rendered"
+    say "  ✗ unresolved [LOCAL_DIRECTIONS_PATH] after rendering — refusing to install."; exit 1
+  fi
+  if [ -f "$CLAUDE_MD" ] && cmp -s "$rendered" "$CLAUDE_MD"; then
+    say "  ✓ already matches template (rendered for this Mac) — nothing to do"
+  elif [ "$DRY_RUN" = 1 ]; then
+    if [ -f "$CLAUDE_MD" ]; then
+      say "  [dry-run] would back up → CLAUDE.md.bak-$STAMP, then install the rendered template"
+      say "  [dry-run] differing lines: $(diff "$CLAUDE_MD" "$rendered" | grep -c '^[<>]')"
     else
-      do_it "cp '$CLAUDE_MD' '$CLAUDE_MD.bak-$STAMP'"
-      do_it "cp '$TEMPLATE' '$CLAUDE_MD'"
-      say "  → updated ~/.claude/CLAUDE.md (backup: CLAUDE.md.bak-$STAMP)"
+      say "  [dry-run] would create ~/.claude/CLAUDE.md from the rendered template"
     fi
   else
-    do_it "cp '$TEMPLATE' '$CLAUDE_MD'"
-    say "  → created ~/.claude/CLAUDE.md from template"
+    if [ -f "$CLAUDE_MD" ]; then
+      cp "$CLAUDE_MD" "$CLAUDE_MD.bak-$STAMP"
+      cp "$rendered" "$CLAUDE_MD"
+      say "  → updated ~/.claude/CLAUDE.md (rendered; backup: CLAUDE.md.bak-$STAMP)"
+    else
+      cp "$rendered" "$CLAUDE_MD"
+      say "  → created ~/.claude/CLAUDE.md from the rendered template"
+    fi
   fi
+  rm -f "$rendered"
 fi
 say
 
@@ -176,9 +208,13 @@ else
     exit 1
   fi
   # Which template leaves actually differ from the live file? (reported, and drives the no-op case)
+  # NOT paths(scalars): paths(f) keeps a leaf only when f is TRUTHY, and `scalars` emits the value
+  # itself — so every `false` leaf is silently invisible. In this template every `false` is a
+  # "turn this OFF" instruction (the output-style plugins), i.e. exactly the keys that must be
+  # seen. Test the leaf's TYPE instead — that is a boolean, so false/null leaves survive.
   changed=$(jq -s -r '
     .[0] as $live | .[1] as $t |
-    [ $t | paths(scalars) as $p
+    [ $t | paths(type != "object" and type != "array") as $p
       | select(($live | getpath($p)) != ($t | getpath($p)))
       | ($p | join(".")) ] | join(", ")
   ' "$SETTINGS" "$SETTINGS_TEMPLATE")

@@ -204,23 +204,34 @@ After the interview:
 
 **Create the project folder structure** based on project type (see `[LOCAL_DIRECTIONS_PATH]/13_folder-structure.md` for full reference):
 
-Code always lives in `01_Project/` (the lone exception is framework web apps — code at repo root):
+**`01_Project/` is an Xcode-project convention, not a universal one.** Pick by project type:
+
+**Xcode projects (macOS/iOS) → code in `01_Project/`.** The wrapper earns its place here: it keeps
+the `.xcodeproj`/`.xcworkspace` bundle and its build products isolated from design assets and exports.
 
 ```bash
-# For macOS/iOS projects:
 mkdir -p 01_Project 02_Design/Exports 03_Screenshots 04_Exports docs/sessions
-
-# For no-build / Strato web projects (01_Project is the code home AND lftp deploy stage):
-mkdir -p 01_Project/{public,lib} 02_Design/Exports 03_Screenshots 03_Scripts/migrations 04_Data docs/sessions
 ```
 
-Also create the `.gitignore` from `[LOCAL_DIRECTIONS_PATH]/13_folder-structure.md` and the Directions working files, then initialize git **at the project root** (never inside `01_Project/` — see `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`):
+**Web projects → code at the repo root, no `01_Project/` wrapper.** For a site, the wrapper adds a
+directory level between you and `index.html` for no benefit, and it fights the lftp deploy stage.
+Every web project here is already flat — match the closest sibling rather than inventing a shape:
+
+```bash
+# No-build / static site (repo root IS the deploy stage) — PhoneticAlphabet, Colors:
+mkdir -p css js data 02_Design/Exports 03_Screenshots docs/sessions
+
+# Site with a scraper / data pipeline — KinoBerlin, TheaterB:
+mkdir -p frontend config data scrapers 03_Scripts/migrations docs/sessions
+```
+
+Also create the `.gitignore` from `[LOCAL_DIRECTIONS_PATH]/13_folder-structure.md` and the Directions working files, then initialize git **at the project root** (never inside a code subfolder — see `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`):
 
 ```bash
 touch docs/PROJECT_STATE.md docs/decisions.md
 echo "# Session Index" > docs/sessions/_index.md
 
-git init                 # at the project root — wraps 01_Project, docs/, everything
+git init                 # at the project root — wraps the code folder, docs/, everything
 git add -A
 git commit -m "Initial commit: Directions structure + .gitignore"
 ```
@@ -279,7 +290,7 @@ After extraction, run a **gap interview**:
 - Small, low-risk changes (cleanup, docs, config, single-file fixes) → commit straight to `main`.
 - Branch (`feature/`, `fix/`, `experiment/`) only for risky or multi-step work where bailing out is plausible.
 - No PRs required — fast-forward merge or commit directly. PRs are team-review ceremony; skip them.
-- One repo per project, **`.git` at the project root** (not inside `01_Project/`).
+- One repo per project, **`.git` at the project root** (never inside `01_Project/` or `frontend/`).
 - Commit messages: what + why. (See `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`.)
 
 ### Communication Style
@@ -393,11 +404,11 @@ Run `/doctor` first for configuration issues. See `[LOCAL_DIRECTIONS_PATH]/25_tr
 
 ## Directions Location
 
-Customize these paths for your setup:
+- **GitHub:** https://github.com/Xpycode/LLM-Directions (`origin`, public)
+- **Local master:** `[LOCAL_DIRECTIONS_PATH]`
 
-- **GitHub:** https://github.com/Xpycode/LLM-Directions
-- **Local master:** /path/to/your/LLM-Directions
+Note the directory is named `__DIRECTIONS`, not `LLM-Directions` — searching for the repo by its
+GitHub name will not find it on disk.
 
----
-
-*Copy to ~/.claude/CLAUDE.md and customize paths.*
+`git fetch` this repo before relying on it; it is edited from more than one Mac
+(see `37_multi-mac-discipline.md`).
