@@ -240,6 +240,58 @@ folder landed as `design_handoff_mediaingest_icon 2`. Content beat naming — th
 to the updated zip and to the palette compiled into the shipped icon generator, so the *un-suffixed* folder
 was the stale one. Cost a full session to diagnose from symptoms alone.
 
+#### Verify all THREE categories, not just the modified ones
+
+The examples above verify *modified* files. A stale-`.git` phantom actually shows up in three shapes
+at once, and skipping either of the other two is how real local work gets discarded by mistake:
+
+| `git status` shape | Compare it to | Confirms |
+|---|---|---|
+| ` M` modified | `git hash-object <f>` **vs** `git rev-parse @{u}:<f>` | identical bytes → phantom |
+| ` D` deleted | does `origin/main:<f>` still exist? | absent on origin → origin deleted it too, phantom |
+| `??` untracked | `origin/main:<f>` exists **and** hashes equal | already on origin → phantom |
+
+Untracked is the counter-intuitive one: files show as untracked *because local HEAD predates the
+commit that added them*. `README.md` or `LICENSE` sitting in `??` in a mature repo is a strong tell
+that history is behind — **not** that they're new work.
+
+```bash
+# Modified + untracked in one pass. Any DIFFERS / NOT-ON-ORIGIN = real local work; stop and read it.
+while IFS= read -r f; do
+  if b=$(git rev-parse -q --verify "origin/main:$f" 2>/dev/null); then
+    [ "$(git hash-object "$f")" = "$b" ] && echo "SAME     $f" || echo "DIFFERS  $f"
+  else
+    echo "NOT-ON-ORIGIN  $f"          # genuinely new here — never discard blind
+  fi
+done < <(git ls-files --modified --others --exclude-standard)
+
+# Deletions are the inverse question, and need their own pass (no file left to hash).
+while IFS= read -r f; do
+  git cat-file -e "origin/main:$f" 2>/dev/null && echo "STILL-ON-ORIGIN  $f"
+done < <(git ls-files --deleted)
+```
+
+Use `rev-parse -q --verify` here for the same reason the stash-check above does: plain `rev-parse`
+echoes its unresolved argument to stdout on failure and poisons the comparison.
+
+#### "Just commit it" is not a safe fallback — the push will be rejected
+
+The instinct when git reports local changes is to commit and push them. In the phantom case that is
+strictly worse than doing nothing:
+
+1. The commit records a tree **identical to content already published** — it adds nothing.
+2. The branch was `behind N`; a new local commit makes it **diverged** (ahead 1, behind N).
+3. `git push` then fails **non-fast-forward** — git refusing to orphan the other Mac's commits.
+
+Loud rather than silent, which is lucky, but it leaves a junk commit to unwind. **Verify first,
+fast-forward second; never commit your way out of "behind."** If the duplicate commit already exists,
+`git reset --hard origin/main` still resolves it — the content is identical, so nothing is lost, and
+the table above is what proves that.
+
+*Seen 2026-07-27, QuickStatsPanel:* behind 10 with **251** apparent local changes — 18 modified,
+177 deleted, 56 untracked — and after the three-way check **every one** was already on origin (the
+177 deletions were a docs prune the other Mac had committed). Fast-forward resolved it in one move.
+
 ### Rule 1b: The fresh/reset Mac — no `.git` at all (the bootstrap case)
 
 Rule 1a assumes a repo exists. A freshly-set-up or erased-and-restored Mac has the stronger version:
@@ -470,6 +522,42 @@ Add to root `.stignore` so Syncthing stops trying to sync these files at all:
 
 Each Mac then keeps its own copy locally; commit periodically to git via the existing `chore: add Claude Code permission allowlist entries` pattern. After enough commits both Macs converge naturally.
 
+### Rule 3a: One file, two halves — `~/.claude/settings.json` is *partly* per-Mac
+
+Rule 3 says "let it diverge." That's right for `settings.local.json`, whose whole content is a
+per-Mac allowlist. It is **wrong** for the *global* `~/.claude/settings.json`, because that file
+mixes two categories:
+
+| Half | Example keys | Should diverge? |
+|---|---|---|
+| Per-Mac state | `permissions.allow`, `model` (the `/model` picker rewrites it live), `hooks`/`statusLine` (owned by `hooks/install.sh`) | **Yes** — Rule 3 applies |
+| House preferences | `enabledPlugins`, `effortLevel`, `alwaysThinkingEnabled`, `theme` | **No** — these must be identical, and nothing was enforcing that |
+
+Treating the whole file as Rule 3 material is what let this bite on **2026-07-28**: two output-style
+plugins (`explanatory-output-style` + `learning-output-style`) were enabled together. Their injected
+system prompt adds a teaching block to every reply and says outright *"you may exceed typical length
+constraints"* — silently overriding the length budgets written into the command specs (`/status`
+says "≤8 lines"). The commands had been trimmed **twice** and the trimming kept "not working," because
+the fix was being applied a layer below the thing undoing it.
+
+The tell: **you fix response style in the command/doc layer and it reverts every session.** A plugin
+or output style is above your specs in the prompt; no amount of editing `commands/*.md` beats it.
+Check `enabledPlugins` first:
+
+```bash
+jq -r '.enabledPlugins // {} | to_entries[] | select(.value) | .key' ~/.claude/settings.json
+```
+
+**The fix:** `CLAUDE-SETTINGS-TEMPLATE.json` in the master repo carries *only* the house-preference
+half, and `redeploy.sh` step 2b `jq`-merges it in (recursive merge — template leaves win, every
+unmentioned key survives). The per-Mac half is deliberately excluded, so this does not fight
+`hooks/install.sh` and cannot clobber an allowlist. Key-by-key rationale →
+`CLAUDE-SETTINGS-TEMPLATE.md`.
+
+Note the asymmetry with `CLAUDE.md`: that one is a whole-file overwrite from
+`CLAUDE-GLOBAL-TEMPLATE.md` because *all* of it is canonical. `settings.json` can only ever be
+merged.
+
 ---
 
 ## Rule 4: Pivot when blocked by physical-machine access
@@ -584,6 +672,8 @@ If `git rev-list` shows `0 N`, pull before doing anything. If it shows `N M`, st
 | `mount -t <YourFS>` returns "not recognized" | Rule 2 (machine-specific state) | `pluginkit -m -v` / `systemextensionsctl list` to verify registration on *this* Mac |
 | Fixture / scratch dir referenced in journal isn't on disk | Rule 2 | check the journal's "Host machine" line; you may be on the wrong Mac |
 | `.sync-conflict-*` file in `.claude/` or similar accumulating dir | Rule 3 | union-merge with python; backup; add to `.stignore` |
+| You trimmed a command's output budget (again) and replies are still long | Rule 3a (global settings drift) | an output-style plugin sits *above* your specs — `jq -r '.enabledPlugins\|to_entries[]\|select(.value)\|.key' ~/.claude/settings.json`; fix, then `redeploy.sh` so it reaches both Macs |
+| A preference you set weeks ago is wrong on the other Mac | Rule 3a | `~/.claude/settings.json` is outside git *and* outside Syncthing — carry it via `CLAUDE-SETTINGS-TEMPLATE.json` + `redeploy.sh` |
 | `_index.md` reports drift between two Macs | Rule 1 + 3 | pre-flight `git fetch` first, then `sync-session-index.sh` after pull |
 | Commit landed on a branch you didn't expect, no other Mac involved | Rule 5 (same-folder collision) | check for a 2nd `claude` session in this folder; split it into a `/worktree` |
 | Two Claude sessions open in the same project folder | Rule 5 | one git driver, or isolate the 2nd with `git worktree add` |

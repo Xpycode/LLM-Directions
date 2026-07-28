@@ -23,6 +23,10 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-28** — Found the reason replies kept getting long despite two rounds of trimming: two
+  **output-style plugins** were enabled at once, and their prompt overrides the length budgets in the
+  command specs. Turned off; the global settings file now travels between Macs via
+  `CLAUDE-SETTINGS-TEMPLATE.json` + `redeploy.sh` (Rule 3a) so the fix can't drift back.
 - **2026-07-19** — Explored **Sanzo Wada's colour dictionary** as a palette source; it fits the
   per-app brief (not house tokens). Trial app = Magpie, whose greys turn out to have no temperature
   at all. Nothing locked — waiting on the human to pick a combination.
@@ -43,6 +47,7 @@
 ## Detail (read only if needed)
 - **Why** → `decisions.md` · **history** → `sessions/_index.md` · **backlog** → `TASKS.md` (+ archive)
 - **Global config mirror** → `CLAUDE-GLOBAL-TEMPLATE.md` (live `~/.claude/CLAUDE.md` is not in this repo)
+  + `CLAUDE-SETTINGS-TEMPLATE.json` / `.md` (house-preference half of `~/.claude/settings.json`)
 
 ## Infrastructure
 - 261 global skills at `~/.claude/skills/` (update: `npx skills update`)
@@ -56,4 +61,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-19.*
+*Last updated: 2026-07-28.*

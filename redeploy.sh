@@ -10,6 +10,9 @@
 #   1b. Skills   — installs Directions-authored skills COPY-ONLY (never prunes;
 #                  ~/.claude/skills also holds hundreds of third-party skills we don't own).
 #   2. CLAUDE.md — overwrites ~/.claude/CLAUDE.md with the modernized template.
+#   2b. Settings — merges the preference keys from CLAUDE-SETTINGS-TEMPLATE.json into
+#                  ~/.claude/settings.json (plugin set, effort, appearance). Merge-only,
+#                  never a wholesale overwrite. See CLAUDE-SETTINGS-TEMPLATE.md.
 #   3. Hooks     — delegates to hooks/install.sh (per-Mac symlinks + settings.json).
 #
 # Everything is backed up before it is touched. Idempotent — safe to re-run.
@@ -27,10 +30,12 @@ set -euo pipefail
 
 DRY_RUN=0
 SKIP_CLAUDE_MD=0
+SKIP_SETTINGS=0
 for arg in "$@"; do
   case "$arg" in
     --dry-run)        DRY_RUN=1 ;;
     --skip-claude-md) SKIP_CLAUDE_MD=1 ;;
+    --skip-settings)  SKIP_SETTINGS=1 ;;
     *) echo "Unknown flag: $arg" >&2; exit 2 ;;
   esac
 done
@@ -41,6 +46,8 @@ CLAUDE_DIR="$HOME/.claude"
 COMMANDS_DIR="$CLAUDE_DIR/commands"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
 TEMPLATE="$REPO/CLAUDE-GLOBAL-TEMPLATE.md"
+SETTINGS="$CLAUDE_DIR/settings.json"
+SETTINGS_TEMPLATE="$REPO/CLAUDE-SETTINGS-TEMPLATE.json"
 STAMP=$(date +%Y%m%d-%H%M%S)
 
 say()   { printf '%s\n' "$*"; }
@@ -145,6 +152,57 @@ else
 fi
 say
 
+# --- 2b. settings.json: merge the canonical preference keys ----------------------
+# MERGE, never overwrite. ~/.claude/settings.json also holds per-Mac state this repo
+# must not touch: the permissions.allow list (grows as you approve tools), the hooks
+# and statusLine entries (owned by hooks/install.sh), and the live `model` key (the
+# /model picker rewrites it mid-session). jq's `*` is a recursive merge — template
+# leaves win, every key the template does not mention survives untouched.
+# Rationale + the key-by-key boundary → CLAUDE-SETTINGS-TEMPLATE.md
+if [ "$SKIP_SETTINGS" = 1 ]; then
+  say "settings.json: skipped (--skip-settings)"
+elif [ ! -f "$SETTINGS_TEMPLATE" ]; then
+  say "settings.json: ✗ template missing: $SETTINGS_TEMPLATE"; exit 1
+elif ! command -v jq >/dev/null 2>&1; then
+  say "settings.json: ⚠ jq not found — skipping merge (brew install jq, then re-run)"
+else
+  say "settings.json (preference keys merged from template):"
+  if [ ! -f "$SETTINGS" ]; then
+    do_it "printf '{}\n' > '$SETTINGS'"
+    say "  • no settings.json — created an empty one"
+  fi
+  if [ ! -s "$SETTINGS" ] || ! jq -e . "$SETTINGS" >/dev/null 2>&1; then
+    say "  ✗ $SETTINGS is not valid JSON — refusing to merge. Fix or restore it first."
+    exit 1
+  fi
+  # Which template leaves actually differ from the live file? (reported, and drives the no-op case)
+  changed=$(jq -s -r '
+    .[0] as $live | .[1] as $t |
+    [ $t | paths(scalars) as $p
+      | select(($live | getpath($p)) != ($t | getpath($p)))
+      | ($p | join(".")) ] | join(", ")
+  ' "$SETTINGS" "$SETTINGS_TEMPLATE")
+  if [ -z "$changed" ]; then
+    say "  ✓ already matches template — nothing to do"
+  elif [ "$DRY_RUN" = 1 ]; then
+    say "  [dry-run] would update: $changed"
+  else
+    cp "$SETTINGS" "$SETTINGS.bak-$STAMP"
+    tmp=$(mktemp)
+    jq -s '.[0] * .[1]' "$SETTINGS" "$SETTINGS_TEMPLATE" > "$tmp"
+    if jq -e . "$tmp" >/dev/null 2>&1; then
+      mv "$tmp" "$SETTINGS"
+      say "  → updated: $changed"
+      say "  (backup: settings.json.bak-$STAMP)"
+    else
+      rm -f "$tmp"
+      say "  ✗ merge produced invalid JSON — left settings.json untouched."
+      exit 1
+    fi
+  fi
+fi
+say
+
 # --- 3. Hooks: per-Mac wiring (idempotent) ---------------------------------------
 say "Hooks (via hooks/install.sh):"
 if [ "$DRY_RUN" = 1 ]; then
@@ -159,5 +217,10 @@ say "Verification:"
 say "  commands live:      $(ls -1 "$COMMANDS_DIR"/*.md 2>/dev/null | wc -l | tr -d ' ') (expect 13 + independents)"
 say "  git-bootstrap skill: $([ -f "$SKILLS_DIR/git-bootstrap/SKILL.md" ] && echo present || echo MISSING)"
 say "  CLAUDE.md lines:    $(wc -l < "$CLAUDE_MD" 2>/dev/null | tr -d ' ')"
+if command -v jq >/dev/null 2>&1 && [ -f "$SETTINGS" ]; then
+  say "  output-style plugins: $(jq -r '[.enabledPlugins // {} | to_entries[]
+        | select(.key | test("output-style")) | select(.value)] | length' "$SETTINGS") enabled (expect 0 — they override command length budgets)"
+  say "  effortLevel:        $(jq -r '.effortLevel // "(unset)"' "$SETTINGS")"
+fi
 say
 say "Done. Restart Claude Code (or start a new session) for changes to take effect."
