@@ -429,6 +429,63 @@ xcrun stapler staple MyApp.dmg
 
 ---
 
+## Disk Free Space on APFS — your number won't match Finder
+
+**Symptom:** your app reports free disk space; a user compares it to Finder and says you're wrong by
+tens of GB. Both are "correct" — they're different questions, and APFS **purgeable space** is the gap.
+
+Measured on one M4 Pro (994.66 GB volume), all APIs on the same volume at the same moment:
+
+| API | Value | Who else shows this |
+|---|---|---|
+| `statfs().f_bavail × f_bsize` | 600.62 GB | `df`, **Disk Utility** |
+| `URLResourceKey.volumeAvailableCapacityKey` | 600.62 GB | (same number) |
+| `FileManager.attributesOfFileSystem(.systemFreeSize)` | 600.62 GB | (same number) |
+| **`.volumeAvailableCapacityForImportantUsageKey`** | **617.24 GB** | **Finder** — sidebar, Get Info, About This Mac |
+| `.volumeAvailableCapacityForOpportunisticUsageKey` | 596.46 GB | nothing — see below |
+| `CSDiskSpaceGetRecoveryEstimate()` (purgeable) | 16.62 GB | the delta itself |
+
+`600.62 + 16.62 = 617.24` — the gap **is** the purgeable estimate (iCloud-evictable files, caches,
+snapshots, large fonts). Finder was cross-checked with `osascript -e 'tell app "Finder" to get free
+space of startup disk'` and matched to within 82 KB.
+
+**Decide which question you're answering, then say so:**
+
+- **"Match Finder"** (what most users expect from a consumer-facing readout) → use
+  `.volumeAvailableCapacityForImportantUsageKey`, or `statfs` + `CSDiskSpaceGetRecoveryEstimate()`.
+- **"Match Disk Utility / `df`"** (what's free *right now* without eviction) → plain `statfs`.
+
+iStat Menus ships this as a **user setting** ("hide purgeable space") rather than picking for you —
+a reasonable move when both answers are defensible.
+
+**Gotchas:**
+
+- **Never display `…ForOpportunisticUsage`.** It is *smaller* than plain available (596 < 600) because
+  it reserves headroom. It answers "may I speculatively download this?", not "how full is the disk?"
+- **`…ForImportantUsageKey` is a required-reason API** — needs declaring in `PrivacyInfo.xcprivacy`
+  if you ship one. `statfs` carries no such requirement. Relevant for App Store; not for
+  direct/notarized distribution today.
+- **`CSDiskSpaceGetRecoveryEstimate(_ url: NSURL) -> UInt64`** (`import CoreServices`) is **undocumented
+  SPI**. It compiles and runs with no extra linking, but weigh it like any private API. Cache it —
+  it's not cheap; exelban/stats caches for 30 s.
+- **On APFS, `/` and `/System/Volumes/Data` report identical *free* space** — the container is shared.
+  But `df` shows wildly different **Used** per mountpoint (e.g. 12 Gi for the sealed read-only System
+  volume vs 340 Gi for Data). So derive used as **`total − free`**; never read a per-volume "used" and
+  assume it means the machine.
+
+```swift
+let url = URL(fileURLWithPath: "/")
+let v = try url.resourceValues(forKeys: [
+    .volumeTotalCapacityKey,
+    .volumeAvailableCapacityForImportantUsageKey,   // the Finder number
+])
+let total = Int64(v.volumeTotalCapacity ?? 0)
+let free  = v.volumeAvailableCapacityForImportantUsage ?? 0
+let used  = total - free                            // NOT a per-volume "used" reading
+```
+
+---
+
 ## Debugging Tools
 
 | Tool | Purpose | Command |
