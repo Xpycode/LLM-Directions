@@ -182,6 +182,76 @@ Color.clear
 
 ## Layout Issues
 
+### HSplitView + `.fixedSize(vertical: true)` — an ideal-height bomb that blames the wrong view
+
+**Problem:** Selecting one detail pane makes the **sidebar go blank** — and the toolbar above the
+detail pane disappears with it. The pane's own content renders perfectly. Every instinct says the
+sidebar `List` failed, and every fix aimed at the sidebar does nothing.
+
+The sidebar is fine. `HSplitView` queries its children for an **ideal height** with an *unspecified
+width* proposal. `.fixedSize(horizontal: false, vertical: true)` answers that query by wrapping its
+text at a degenerate width and reporting the resulting height — hundreds to thousands of points per
+`Text`. SwiftUI does **not** clip or scroll the result: it sizes the *entire split view* to that
+number and **centres** it in the window. Everything at the **top** of the layout — the sidebar rows,
+the toolbar — is drawn thousands of points above the visible frame, while the middle band still
+renders normally.
+
+Measured case (Penumbra, 2026-07-28): nine such `Text`s in one Settings pane → split group
+**8909pt tall at y = -3885** inside a **478pt** window. Sibling panes measured 478pt.
+
+```swift
+// BROKEN: pane's ideal height escapes into the HSplitView
+HSplitView {
+    List(categories, selection: $selected) { ... }     // ← goes blank
+        .frame(minWidth: 180)
+    VStack(spacing: 0) {
+        toolbarRow                                      // ← disappears too
+        Form {
+            Text(longBlurb)
+                .fixedSize(horizontal: false, vertical: true)   // ×9
+        }
+    }
+}
+
+// WORKS: ScrollView accepts the *proposed* height instead of
+// forwarding its content's ideal, so the number never escapes.
+ScrollView {
+    Form {
+        Text(longBlurb)
+            .fixedSize(horizontal: false, vertical: true)       // keep — it's correct
+    }
+}
+```
+
+**Rule:** in an `HSplitView` (and the App Shell Standard mandates `HSplitView` — see
+`cookbook/00-app-shell.md`), wrap any detail pane whose content can grow in a `ScrollView`. Do it at
+the container so *every* pane is covered, not just the one that broke.
+
+**Diagnose from the accessibility tree, never the screenshot.** *Missing* and *drawn off-window* look
+identical to the eye and are one call apart in AX:
+
+```bash
+# All rows still listed while the screenshot shows none ⇒ it's a layout overflow,
+# not a view that failed to build. Kills the whole wrong-hypothesis class instantly.
+osascript -e 'tell application "System Events" to tell process "App" \
+  to get entire contents of window 1'
+
+# Then locate the overflow — compare this across panes; the broken one is the outlier.
+osascript -e 'tell application "System Events" to tell process "App" \
+  to get {position, size} of splitter group 1 of group 1 of window 1'
+```
+
+Two AppleScript traps while doing this: `click at {x, y}` does **not** reliably hit SwiftUI `List`
+rows (it returns the element description and does nothing) — use
+`tell outline 1 of scroll area 1 of ... to set selected of row N to true`; and read `size`/`position`
+into a variable before subscripting (`set s to size of x` → `item 2 of s`) or coercion fails.
+
+**Don't misdiagnose it as width.** `horizontal: false` leaves the width flexible *by design*, so
+"the text is too wide and is starving the sidebar's `minWidth`" is the natural reading and it is
+wrong — `.frame(maxWidth:)` on the pane changes nothing. The axis in the bug is the axis you fixed.
+
+---
+
 ### Text Wrapping at Narrow Widths
 
 **Problem:** Labels break into stacked individual characters.
@@ -549,6 +619,7 @@ If values are wrong → Logic bug, trace the data flow.
 | Nested mutation | UI doesn't update | Reassign parent property |
 | @State + class | Buttons stuck | Mark the class `@Observable` |
 | Split-pane choice | Wrong resize affordance | HSplitView/VSplitView if resizable, HStack + Divider if fixed |
+| HSplitView + `.fixedSize(vertical:)` | **Sidebar goes blank** when one pane is selected | The pane's ideal height blows up the split view and centres it off-window — wrap the detail pane in a `ScrollView`. Check AX (`entire contents of window`) before believing the sidebar failed |
 | PreferenceKey conditional | Sizing breaks | Always use max(value, nextValue()) |
 | .clipped() | Overlay escapes | Use .clipShape(Rectangle()) |
 | Conditional view | Layout shifts | Use .overlay() + opacity, not if/ZStack |
