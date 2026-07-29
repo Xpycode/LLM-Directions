@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-07-25 (#168).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
+**Last updated: 2026-07-29 (#173).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
 
 ---
 
@@ -202,3 +202,4 @@ Each pattern lives in `cookbook/`. Read the relevant file when a pattern is need
 | 170 | [170-auditing-a-published-surface.md](cookbook/170-auditing-a-published-surface.md) | Enumerate repos from the `gh` API, not the filesystem (only 9/28 public repos had clones); match secrets by value, not pattern (a Sparkle public key looks identical to its private seed); never `git grep $(git rev-list --all)`. |
 | 171 | [171-mirrored-bar-activity-graph-canvas.md](cookbook/171-mirrored-bar-activity-graph-canvas.md) | Two-series history graph in a `Canvas` (iStat style). Normalize each series to its **own** peak and print that peak — it's the axis, not decoration. Mirroring separates series by position, so greyscale survives. Fixed width, derived bar count. |
 | 172 | [172-fcp-library-media-usage.md](cookbook/172-fcp-library-media-usage.md) | `.fcpevent` is SQLite + NSKeyedArchiver bplists. The event DB is a **stub** — real timelines live in nested per-project DBs (115, not 5). Cross-validate against FCP's own registry before culling. |
+| 173 | [173-crash-tolerant-agent-fanout.md](cookbook/173-crash-tolerant-agent-fanout.md) | Parallel-agent bursts die to 529s and lose everything held in context. File contract (findings hit disk **before** returning) + supervisor sweep (diff expected vs. landed, relaunch only gaps, ≤2 retries → UNRESOLVED) + self-contained briefs in batches of ≤5. |

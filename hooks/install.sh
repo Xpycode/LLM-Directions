@@ -42,6 +42,7 @@ LINKS=(
   "hooks/session-stop.sh:$HOOKS_DIR/session-stop.sh"
   "hooks/session-guard.sh:$HOOKS_DIR/session-guard.sh"
   "hooks/model-advisor.sh:$HOOKS_DIR/model-advisor.sh"
+  "hooks/git-add-guard.sh:$HOOKS_DIR/git-add-guard.sh"
   "claude-statusline/statusline.sh:$CLAUDE_DIR/statusline.sh"
 )
 
@@ -81,10 +82,11 @@ if [ "$DRY_RUN" = 0 ] && [ -f "$SETTINGS" ]; then
   cp "$SETTINGS" "$SETTINGS.bak.$(date +%Y%m%d%H%M%S)"
 fi
 
-# ensure_hook EVENT COMMAND — append a command-hook to EVENT if not already present
-# anywhere in that event's groups. Preserves existing groups/hooks.
+# ensure_hook EVENT COMMAND [MATCHER] — append a command-hook to EVENT if not already
+# present anywhere in that event's groups. Preserves existing groups/hooks. A MATCHER
+# (e.g. "Bash" for PreToolUse) scopes the group to that tool; omitted = all.
 ensure_hook() {
-  local event="$1" cmd="$2"
+  local event="$1" cmd="$2" matcher="${3:-}"
   local present
   present=$(jq -r --arg ev "$event" --arg cmd "$cmd" \
     '[(.hooks[$ev] // [])[].hooks[]?.command] | index($cmd) != null' "$SETTINGS")
@@ -93,22 +95,27 @@ ensure_hook() {
     return
   fi
   if [ "$DRY_RUN" = 1 ]; then
-    say "  [dry-run] would register $event → $(basename "$cmd")"
+    say "  [dry-run] would register $event → $(basename "$cmd")${matcher:+ (matcher: $matcher)}"
     return
   fi
   local tmp
   tmp=$(mktemp)
-  jq --arg ev "$event" --arg cmd "$cmd" '
+  jq --arg ev "$event" --arg cmd "$cmd" --arg m "$matcher" '
     .hooks //= {} |
     .hooks[$ev] //= [] |
-    .hooks[$ev] += [ { "hooks": [ { "type": "command", "command": $cmd } ] } ]
+    .hooks[$ev] += [
+      if $m == "" then { "hooks": [ { "type": "command", "command": $cmd } ] }
+      else { "matcher": $m, "hooks": [ { "type": "command", "command": $cmd } ] }
+      end
+    ]
   ' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
-  say "  → registered $event → $(basename "$cmd")"
+  say "  → registered $event → $(basename "$cmd")${matcher:+ (matcher: $matcher)}"
 }
 
 ensure_hook "SessionStart"     "~/.claude/hooks/session-start.sh"
 ensure_hook "Stop"             "~/.claude/hooks/session-stop.sh"
 ensure_hook "UserPromptSubmit" "~/.claude/hooks/model-advisor.sh"
+ensure_hook "PreToolUse"       "~/.claude/hooks/git-add-guard.sh" "Bash"
 
 # statusLine: point at the Directions statusline only if none is set.
 if [ "$(jq -r '.statusLine.command // ""' "$SETTINGS")" = "" ]; then

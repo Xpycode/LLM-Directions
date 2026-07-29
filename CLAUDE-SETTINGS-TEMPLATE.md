@@ -20,7 +20,7 @@ recorded the plugin set, so the fix would have been Mac-local and would have dri
 | `effortLevel`, `alwaysThinkingEnabled` | ✅ | How hard every turn works. Should be identical on both Macs. |
 | `autoCompactEnabled`, `tui`, `theme` | ✅ | Stable appearance/behaviour preferences. |
 | `model` | ❌ | The `/model` picker **rewrites this key live** — it changed mid-session during the very session this file was written. Carrying it would let a redeploy flip the other Mac's model. |
-| `permissions.allow` | ❌ | Grows organically per Mac as you approve tools. A template would either clobber real approvals or need union-merge semantics; out of scope. |
+| `permissions.allow` | 🔶 union-merge only | Grows organically per Mac as you approve tools, so the recursive merge above must never see it (jq `*` replaces arrays wholesale). Instead, **house rules** live in `CLAUDE-SETTINGS-PERMISSIONS.json` (a bare JSON array; `[HOME]` renders to the Mac's `$HOME`) and `redeploy.sh` step 2c **appends only the missing ones** — nothing is ever removed or reordered. Curated to read-only commands + the fixture-copy path the auto-mode classifier kept blocking mid-task (2026-07-29 usage report). |
 | `hooks`, `statusLine` | ❌ | Owned by `hooks/install.sh`, which registers them idempotently and preserves non-Directions entries. Two writers on one key is how you get a fight. |
 
 ## Merge semantics

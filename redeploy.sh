@@ -13,6 +13,9 @@
 #   2b. Settings — merges the preference keys from CLAUDE-SETTINGS-TEMPLATE.json into
 #                  ~/.claude/settings.json (plugin set, effort, appearance). Merge-only,
 #                  never a wholesale overwrite. See CLAUDE-SETTINGS-TEMPLATE.md.
+#   2c. Permissions — union-merges the house allowlist (CLAUDE-SETTINGS-PERMISSIONS.json)
+#                  into permissions.allow. Add-only: never removes or reorders the
+#                  per-Mac approvals that accumulate in the live file.
 #   3. Hooks     — delegates to hooks/install.sh (per-Mac symlinks + settings.json).
 #
 # Everything is backed up before it is touched. Idempotent — safe to re-run.
@@ -185,10 +188,11 @@ fi
 say
 
 # --- 2b. settings.json: merge the canonical preference keys ----------------------
-# MERGE, never overwrite. ~/.claude/settings.json also holds per-Mac state this repo
-# must not touch: the permissions.allow list (grows as you approve tools), the hooks
-# and statusLine entries (owned by hooks/install.sh), and the live `model` key (the
-# /model picker rewrites it mid-session). jq's `*` is a recursive merge — template
+# MERGE, never overwrite. ~/.claude/settings.json also holds per-Mac state this step
+# must not touch: the permissions.allow list (grows as you approve tools — step 2c
+# union-merges the HOUSE rules into it, this recursive merge must never see it), the
+# hooks and statusLine entries (owned by hooks/install.sh), and the live `model` key
+# (the /model picker rewrites it mid-session). jq's `*` is a recursive merge — template
 # leaves win, every key the template does not mention survives untouched.
 # Rationale + the key-by-key boundary → CLAUDE-SETTINGS-TEMPLATE.md
 if [ "$SKIP_SETTINGS" = 1 ]; then
@@ -236,6 +240,60 @@ else
       exit 1
     fi
   fi
+fi
+say
+
+# --- 2c. settings.json: union-merge the house permission allowlist ----------------
+# permissions.allow is per-Mac state (it grows as tools are approved), so the 2b
+# recursive merge must never carry it — jq's `*` REPLACES arrays wholesale and would
+# clobber every approval this Mac has accumulated. House rules therefore live in
+# their own file (CLAUDE-SETTINGS-PERMISSIONS.json, a bare JSON array) and are
+# UNION-merged: only rules missing from the live list are appended, nothing is ever
+# removed or reordered. [HOME] in a rule is rendered to this Mac's $HOME first, so
+# the public repo carries no private absolute paths.
+PERMS_TEMPLATE="$REPO/CLAUDE-SETTINGS-PERMISSIONS.json"
+if [ "$SKIP_SETTINGS" = 1 ]; then
+  say "permissions.allow: skipped (--skip-settings)"
+elif [ ! -f "$PERMS_TEMPLATE" ]; then
+  say "permissions.allow: ✗ template missing: $PERMS_TEMPLATE"; exit 1
+elif ! command -v jq >/dev/null 2>&1; then
+  say "permissions.allow: ⚠ jq not found — skipping union-merge"
+else
+  say "permissions.allow (house rules, union-merge — add-only):"
+  rendered_perms=$(mktemp)
+  sed "s|\[HOME\]|$HOME|g" "$PERMS_TEMPLATE" > "$rendered_perms"
+  if ! jq -e 'type == "array"' "$rendered_perms" >/dev/null 2>&1; then
+    rm -f "$rendered_perms"
+    say "  ✗ $PERMS_TEMPLATE is not a JSON array — refusing to merge."; exit 1
+  fi
+  if [ ! -f "$SETTINGS" ]; then
+    do_it "printf '{}\n' > '$SETTINGS'"
+    say "  • no settings.json — created an empty one"
+  fi
+  missing=$(jq -s -r '(.[1] - ((.[0].permissions.allow) // [])) | join(", ")' \
+    "$SETTINGS" "$rendered_perms")
+  if [ -z "$missing" ]; then
+    say "  ✓ all house rules already present — nothing to do"
+  elif [ "$DRY_RUN" = 1 ]; then
+    say "  [dry-run] would add: $missing"
+  else
+    cp "$SETTINGS" "$SETTINGS.bak-$STAMP-perms"
+    tmp=$(mktemp)
+    # Append only the missing rules, preserving the live list's existing order.
+    jq -s '
+      ((.[0].permissions.allow) // []) as $live |
+      .[0].permissions.allow = ($live + (.[1] - $live)) | .[0]
+    ' "$SETTINGS" "$rendered_perms" > "$tmp"
+    if jq -e . "$tmp" >/dev/null 2>&1; then
+      mv "$tmp" "$SETTINGS"
+      say "  → added: $missing"
+      say "  (backup: settings.json.bak-$STAMP-perms)"
+    else
+      rm -f "$tmp"
+      say "  ✗ merge produced invalid JSON — left settings.json untouched."; exit 1
+    fi
+  fi
+  rm -f "$rendered_perms"
 fi
 say
 

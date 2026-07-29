@@ -446,6 +446,8 @@ When you record machine-specific work in a doc (spike journals, fixture captures
 
 That block is what saves the next session 15 minutes of "wait, where did we do this?" investigation. The `(NOT in this repo)` annotation is the explicit signal that the state isn't synced.
 
+Per-doc `## Environment` blocks record where one piece of *work* happened. The standing registry of what each *machine* can do — signing identities, AppProbe/tooling presence, OS + Xcode versions, known permission-classifier blocks and their workarounds — is **`MACHINES.md`** in this repo's root, keyed by the `~/.claude/this-mac` label. Consult it before machine-dependent work instead of re-running the pre-flight probes from scratch, and append to it in the same session whenever a new machine fact is discovered the hard way (2026-07-29 usage report: the missing "Mac Development" cert and absent AppProbe were each rediscovered mid-session, from scratch).
+
 Sources:
 - SFTPmount 2026-05-16 (started Step 3 on M1 Max; pre-flight revealed no FSKitExp residue; log archaeology showed zero `fskitd` events for the spike date; confirmed work was on M4 Pro per journal header — pivoted to 26.5 re-validation).
 - MousePlus 2026-05-01-a (post-Mac-restart resume; PROJECT_STATE flagged `#19` open but the inspector follow-ups were already in code; HID++ snapshot fixture `~/Desktop/hid-046d-b034-1x2-2026-04-29.json` referenced in session-e was missing on this machine — likely on M1 Max only).
