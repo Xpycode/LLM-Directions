@@ -1,6 +1,11 @@
-# Global Claude Instructions (Template)
+# Global Claude Instructions
 
-**Copy this to `~/.claude/CLAUDE.md` and customize paths.**
+<!-- SOURCE: CLAUDE-GLOBAL-TEMPLATE.md in the Directions master repo, installed to
+     ~/.claude/CLAUDE.md by redeploy.sh (which renders [LOCAL_DIRECTIONS_PATH]).
+     Edit the TEMPLATE and redeploy — hand-editing the live file is how the template
+     and live copy drifted 200+ lines apart by 2026-07-29. -->
+
+**These instructions apply to all sessions.**
 
 ---
 
@@ -10,21 +15,35 @@ At the start of every session, **automatically run Project Detection (below)** t
 
 ### Multi-Mac pre-flight (run FIRST, before any work)
 
-If the project is a git repo, **`git fetch` before touching anything** — this codebase is edited
-from more than one Mac (see `37_multi-mac-discipline.md`, Rule 1). Fetch is read-only and safe; it
-does **not** merge or change the working tree.
+This codebase is edited from more than one Mac (see `37_multi-mac-discipline.md`, Rule 1).
+`~/ProgrammingProjects` is **one Syncthing folder** and **`.git` is excluded from sync**, so a
+fresh/reset Mac has the source on disk but **no repo** — history lives only on GitHub `origin`.
 
 ```bash
-git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git fetch --quiet 2>/dev/null \
-  && { git status -sb | head -1; git status --porcelain | head -1; } \
-  || echo "NO .git — repo not initialized; bootstrap needed"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git fetch --quiet 2>/dev/null
+  git status -sb | head -1; git status --porcelain | head -1
+  # …and the question `git status` structurally cannot answer: has the DEFAULT branch moved past me?
+  B=$(git branch --show-current); D=$(git symbolic-ref -q --short refs/remotes/origin/HEAD || echo origin/main)
+  if [ -n "$B" ] && [ "origin/$B" != "$D" ] && git rev-parse -q --verify "$D" >/dev/null; then
+    echo "vs $D: behind $(git rev-list --count HEAD..$D) · already-merged=$(git merge-base --is-ancestor HEAD $D && echo YES || echo no)"
+  fi
+else
+  echo "NO .git — Syncthing-stripped; bootstrap needed"
+fi
 ```
 
-Read **both** the ahead/behind counts and whether the tree is dirty, then act (these are *confirmed*
-actions — offer, don't silently mutate the tree):
+*(Keep this an `if/else`, not the old `&&`/`||` one-liner. A `{ …; }` block exits with the status of
+its **last** command, so appending a conditional makes the block return non-zero whenever that
+conditional is false — firing the "NO `.git`" branch inside a perfectly healthy repo. Verified
+2026-07-28.)*
+
+Read **three** things — the ahead/behind counts, whether the tree is dirty, **and the `vs origin/main`
+line** — then act (these are *confirmed* actions — offer, don't silently mutate the tree):
 
 - **behind > 0, tree clean** → safe fast-forward. Offer to `git pull` *before* editing — it's lossless,
-  and another Mac may have already done the work you're about to start.
+  and another Mac may have already done the work you're about to start (the copy-vs-drift duplicate-
+  commit incident, 2026-06-08).
 - **behind > 0, tree dirty** → the local edits may be the *same* work origin already shipped, carried
   over by Syncthing but never committed here (the recurring duplicate pattern). Compare local changes
   against origin before discarding; once confirmed redundant, drop them and fast-forward.
@@ -32,12 +51,30 @@ actions — offer, don't silently mutate the tree):
 - **ahead only** → unpushed commits the other Mac can't see; remind the user to push before switching.
 - **in sync but tree dirty** → uncommitted leftovers from a prior session. Offer to commit + push or
   discard before new work — stray uncommitted edits are the seed of cross-Mac duplicates.
+- **`already-merged=YES`** → ⚠️ **the branch is finished; `git status`'s green is a lie.** Every commit
+  here is already in `origin/main`, which has since moved on. The branch is genuinely in sync with
+  *its own* upstream, so the ahead/behind line above reads clean — it is answering a question you
+  did not ask. Combined with Syncthing (which carries `main`'s **files** onto a checkout whose `.git`
+  still points here), every file `main` has and this branch lacks appears as `M`/`??`, indistinguishable
+  from real work. **Do not commit the working tree.** Rebranch from `origin/main` and cherry-pick only
+  what is genuinely new: `git diff origin/main HEAD -- '*.swift'` empty ⇒ *nothing* here is new.
+  Penumbra hit this five times (2026-06-10 / 06-14 / 07-02 / 07-12 / 07-27); the fifth pushed six
+  commits of already-shipped work before anyone noticed.
+- **`behind N` on the `vs origin/main` line, `already-merged=no`** → real branch work, but stale base.
+  Rebase or merge `origin/main` in before trusting a test run — a clean cherry-pick onto a moved base
+  is not the same as a correct one. Re-run the suite and compare the count to the last known-good.
 - **in sync, clean** → proceed normally.
-- **NO `.git`** (a Syncthing-stripped / freshly-reset Mac has the source on disk but no repo — history
-  lives only on GitHub `origin`) → **invoke the `git-bootstrap` skill** before any edit/commit: safe
-  init → fetch → **mixed**-reset → verify (HTTPS via `gh`, no SSH). **Never `reset --hard` blind** — the
-  `--mixed`+`git status` check reveals on-disk drift *before* anything is overwritten; only escalate to
-  `--hard` once the tree is proven clean.
+- **NO `.git`** (Syncthing stripped it) → **invoke the `git-bootstrap` skill** before any edit/commit.
+  It does the safe init → fetch → **mixed**-reset → verify (HTTPS-via-`gh`, no SSH; identity
+  `Luces Umbrarum <87826179+Xpycode@users.noreply.github.com>`). **Never `reset --hard` blind** —
+  the skill's `--mixed`+`git status` check reveals on-disk drift *before* anything is overwritten;
+  only escalate to `--hard` once the tree is proven clean.
+
+**Machine profile:** before machine-dependent work (builds that need signing, UI automation,
+fixture capture), read this Mac's section in `[LOCAL_DIRECTIONS_PATH]/MACHINES.md` (keyed by
+`~/.claude/this-mac`) — it records signing identities, tooling presence, and known permission
+blocks with workarounds, so they aren't rediscovered mid-build. Discovered a new machine fact the
+hard way? Append it there in the same session.
 
 **At session end** (or before walking away / switching Macs): run `/log`, which writes the session log,
 syncs state, and — in Mac-handoff mode — offers to commit **and push** in one confirmed step. A local
@@ -49,7 +86,8 @@ After detection:
 - If no Directions → offer to set it up, then show commands menu
 
 **Available commands:** run `/directions` for the full, current list — don't maintain a second
-copy of it here; command sets change and a hardcoded table drifts.
+copy of it here; command sets change and a hardcoded table drifts (four hand-maintained catalogs
+already drifted — that's why the list is generated on demand).
 
 ---
 
@@ -65,6 +103,13 @@ never read the whole index. It's 155 patterns, one one-line summary each. Two-st
 
 Read **only** the one matching `cookbook/NNN-*.md`. Do **not** load `PATTERNS-COOKBOOK.md` wholesale
 — that's the anti-pattern this router exists to prevent.
+
+**App Shell Standard (enforced):** All macOS apps use HSplitView (not NavigationSplitView),
+FCPToolbarButtonStyle (not round buttons), `.windowStyle(.hiddenTitleBar)`, `.preferredColorScheme(.dark)`,
+`.toolbarRole(.editor)`, and the `Theme` struct. Apps not following this should be migrated —
+grep `cookbook/00-app-shell.md` (MANDATORY for all apps) and `47_project-ui-conventions.md`.
+
+**Also search Vestige** for semantic matches — patterns are stored there too.
 
 ---
 
@@ -135,120 +180,19 @@ which only reliably reads global + local `CLAUDE.md` — pull the *current* mast
 
 Check the project state and act accordingly:
 
-### Step 1: Check for Directions
-
 ```
 Does docs/PROJECT_STATE.md exist?
 ```
 
 (Sentinel is `PROJECT_STATE.md`, not `00_base.md` — the universal docs are no longer copied into
-projects; see the Directions Index above and Step 3.)
+projects; see the Directions Index above.)
 
 **YES → Directions is set up.** Follow "Existing Projects with Directions" below.
 
-**NO → Continue to Step 2.**
-
----
-
-### Step 2: Check for Existing Docs
-
-```
-Is there a /docs folder OR scattered .md files in the project?
-```
-
-**YES → Existing documentation found.**
-
-Offer two options:
-> "Found existing documentation. How should I proceed?
-> 1. **Migrate** (recommended) - Back up to /old-docs, set up Directions in /docs, extract useful info
-> 2. **Skip** - Don't set up Directions, just work with what's here"
-
-If they choose Migrate:
-- Create git commit: "Pre-Directions backup"
-- Move existing /docs (or scattered .md files except README.md) to `/old-docs`
-- Set up Directions in `/docs`
-- Read `/old-docs` to extract: project purpose, decisions, architecture hints
-- Populate PROJECT_STATE.md and decisions.md from what was found
-- Run gap interview for missing info
-
-**NO → Continue to Step 3.**
-
----
-
-### Step 3: New Project
-
-No docs, no MDs, minimal files.
-
-> "This looks like a new project. What are you building? (One sentence is fine - I'll ask follow-up questions.)"
-
-Then:
-> "Want me to set up the Directions documentation system?"
-
-If yes, set up Directions by scaffolding **only the project-specific files** — **do NOT copy the
-universal docs** (they are read on demand from the master via the Directions Index above; copying
-them is what causes the copy-vs-drift flaw):
-
-```bash
-mkdir -p docs/sessions
-# Create these from the master's templates (base path = [LOCAL_DIRECTIONS_PATH]):
-#   docs/PROJECT_STATE.md   — use the master PROJECT_STATE.md as the structural template (sentinel)
-#   docs/sessions/_index.md
-#   docs/decisions.md
-#   docs/glossary.md        — project-specific terms only
-```
-
-Then run the full discovery interview (read `00_base.md` from the master
-on demand if you need the system overview).
-
-After the interview:
-
-**Create the project folder structure** based on project type (see `[LOCAL_DIRECTIONS_PATH]/13_folder-structure.md` for full reference):
-
-**`01_Project/` is an Xcode-project convention, not a universal one.** Pick by project type:
-
-**Xcode projects (macOS/iOS) → code in `01_Project/`.** The wrapper earns its place here: it keeps
-the `.xcodeproj`/`.xcworkspace` bundle and its build products isolated from design assets and exports.
-
-```bash
-mkdir -p 01_Project 02_Design/Exports 03_Screenshots 04_Exports docs/sessions
-```
-
-**Web projects → code at the repo root, no `01_Project/` wrapper.** For a site, the wrapper adds a
-directory level between you and `index.html` for no benefit, and it fights the lftp deploy stage.
-Every web project here is already flat — match the closest sibling rather than inventing a shape:
-
-```bash
-# No-build / static site (repo root IS the deploy stage) — PhoneticAlphabet, Colors:
-mkdir -p css js data 02_Design/Exports 03_Screenshots docs/sessions
-
-# Site with a scraper / data pipeline — KinoBerlin, TheaterB:
-mkdir -p frontend config data scrapers 03_Scripts/migrations docs/sessions
-```
-
-Also create the `.gitignore` from `[LOCAL_DIRECTIONS_PATH]/13_folder-structure.md` and the Directions working files, then initialize git **at the project root** (never inside a code subfolder — see `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`):
-
-```bash
-touch docs/PROJECT_STATE.md docs/decisions.md
-echo "# Session Index" > docs/sessions/_index.md
-
-git init                 # at the project root — wraps the code folder, docs/, everything
-git add -A
-git commit -m "Initial commit: Directions structure + .gitignore"
-```
-
-Then create a `CLAUDE.md` in the project root with:
-- Project name and description
-- Tech stack decided
-- Key architecture decisions
-- Pointer to `docs/PROJECT_STATE.md` and the Directions Index in `~/.claude/CLAUDE.md`
-
-Then show the **Setup Complete** message:
-> "✓ **Setup complete!** Your project is ready.
->
-> **Quick start:**
-> - `/status` - See current focus
-> - `/log` - Start your first session log
-> - Or just tell me what you want to build!"
+**NO → Directions is not set up.** Offer to set it up. If the user accepts, run **`/setup`** — the
+full detection flow (existing-docs migration, new-project scaffolding, folder structure, and the
+migration extraction table) lives in `~/.claude/commands/setup.md` and loads on demand, so it does
+not sit in context in every project.
 
 ---
 
@@ -261,26 +205,6 @@ If `docs/PROJECT_STATE.md` exists:
 3. Ask: "Continue with [current focus], or work on something else?"
 
 Only read additional files (session logs, decisions.md) if specifically needed for the task.
-
----
-
-## Migration: Reading Existing Docs
-
-When migrating from existing docs, look for:
-
-| Look For | Extract To |
-|----------|------------|
-| Project description, goals | PROJECT_STATE.md |
-| Technical decisions, "we chose X" | decisions.md |
-| Architecture notes, patterns | CLAUDE.md tech stack section |
-| TODOs, plans, phases | PROJECT_STATE.md current focus |
-| Bug notes, issues found | Session log or debugging notes |
-| API docs, specs | Keep in /old-docs for reference |
-
-After extraction, run a **gap interview**:
-> "I've read your existing docs. Here's what I found: [summary].
-> I still need to understand: [list gaps].
-> Can we fill these in?"
 
 ---
 

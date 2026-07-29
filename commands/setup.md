@@ -1,13 +1,51 @@
 # Project Setup
 
-Run the project detection flow:
+Run the project detection flow (this file is the full flow — the global CLAUDE.md's "Project
+Detection" section deliberately carries only the sentinel check and points here):
 
-1. Check if `docs/PROJECT_STATE.md` exists (Directions already set up)
-2. Check if `/docs` folder exists without Directions structure
-3. Check for scattered `.md` files
-4. Determine if this is a new empty project
+1. Check if `docs/PROJECT_STATE.md` exists (Directions already set up) → report status, done.
+2. Check if `/docs` folder exists without Directions structure, or scattered `.md` files → **Existing docs** (below)
+3. Otherwise → **New project** (below)
 
-Based on what you find, offer the appropriate options as described in the global CLAUDE.md under "Project Detection".
+## Existing docs: migrate or skip
+
+Offer two options:
+> "Found existing documentation. How should I proceed?
+> 1. **Migrate** (recommended) - Back up to /old-docs, set up Directions in /docs, extract useful info
+> 2. **Skip** - Don't set up Directions, just work with what's here"
+
+If they choose Migrate:
+- Create git commit: "Pre-Directions backup"
+- Move existing /docs (or scattered .md files except README.md) to `/old-docs`
+- Set up Directions in `/docs` (scaffold list below)
+- Read `/old-docs` and extract into the new files:
+
+| Look For | Extract To |
+|----------|------------|
+| Project description, goals | PROJECT_STATE.md |
+| Technical decisions, "we chose X" | decisions.md |
+| Architecture notes, patterns | CLAUDE.md tech stack section |
+| TODOs, plans, phases | PROJECT_STATE.md current focus |
+| Bug notes, issues found | Session log or debugging notes |
+| API docs, specs | Keep in /old-docs for reference |
+
+- After extraction, run a **gap interview**:
+> "I've read your existing docs. Here's what I found: [summary].
+> I still need to understand: [list gaps].
+> Can we fill these in?"
+
+## New project
+
+> "This looks like a new project. What are you building? (One sentence is fine - I'll ask follow-up questions.)"
+
+Then offer to set up Directions; if yes, scaffold (below), run the discovery interview (read
+`00_base.md` from the master on demand for the system overview), and finish with:
+> "✓ **Setup complete!** Your project is ready.
+>
+> **Quick start:**
+> - `/status` - See current focus
+> - `/log` - Start your first session log
+> - Or just tell me what you want to build!"
 
 ## Read-on-demand, do NOT copy the universal docs
 

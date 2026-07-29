@@ -23,6 +23,12 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-07-29** — Usage-report follow-ups: per-Mac capability registry (`MACHINES.md` — this M1 Max
+  has **no dev cert and no AppProbe**), house permission allowlist union-merged by `redeploy.sh` 2c
+  (fixture copies + read-only commands stop hitting the classifier), PreToolUse guard blocking
+  `git add -A`/`.` sweeps, cookbook #173 (crash-tolerant agent fan-out). En route, found and healed
+  **200+ lines of template↔live CLAUDE.md drift** (live had newer pre-flight, template had newer
+  index); migration flow now actually lives in `/setup` as the slim CLAUDE.md long claimed.
 - **2026-07-28** — Found the reason replies kept getting long despite two rounds of trimming: two
   **output-style plugins** were enabled at once, and their prompt overrides the length budgets in the
   command specs. Turned off; the global settings file now travels between Macs via
@@ -35,10 +41,6 @@
   shell-check updated + versioned into repo; appearance standard now **dark default + user light**.
 - **2026-07-16→18** — Drive-by gotchas from app work: ScrollView centers narrower content, macOS 26
   popover-after-NSOpenPanel crash, Strato Python-on-CGI, cookbook #163 (SwiftTerm env) + #164.
-- **2026-07-13** — M1 Max caught up: 5-behind + dirty tree proved pure Syncthing duplicates of
-  origin — discarded and fast-forwarded, nothing lost; both Macs in sync.
-- **2026-07-13** — Authored the previously-phantom **`git-bootstrap` skill** (merged with the M1
-  Max's richer live copy), deployed identically to both Macs; `redeploy.sh` now installs skills.
 
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · **Build 🔶** — iterating on improvements.
@@ -61,4 +63,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-28.*
+*Last updated: 2026-07-29.*
