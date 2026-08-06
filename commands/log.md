@@ -23,7 +23,7 @@ The argument is the **wrap-up mode**, not a goal. Detect it; don't ask which mod
 | Arg contains… | Mode | The log MUST… |
 |---|---|---|
 | "clear", "next session", "for next time" | **pre-clear** | end with a **Resume block**: uncommitted work, exact next pickup point, any half-done edit. The next session starts cold. (Replaces the old `/handoff` doc — no separate handoff file.) |
-| "switch Macs", "handoff", "other Mac", "depart" | **Mac-handoff** | run **§7 Leaving a Mac** — commit + push, stamped with this Mac; verify tree clean / pushed before declaring done. |
+| "switch Macs", "handoff", "other Mac", "depart" | **Mac-handoff** | run **§8 Leaving a Mac** — commit + push, stamped with this Mac; verify tree clean / pushed before declaring done. |
 | (none, "log it", "just log") | **plain** | a normal log; no resume/sync ceremony, no commit. |
 
 Default to **plain** — don't ask. Detect path mode once: `docs/sessions/` exists → `docs/` paths;
@@ -108,7 +108,35 @@ Re-check the Readiness table (Features/UI/Testing/Docs/Distribution). For a move
 require Features to be at least 🔶, and remind: "run `/check ship` before release." Skip this section
 entirely if the phase didn't change — don't prompt for it.
 
-## 7 · Leaving a Mac  (Mac-handoff mode, or pre-clear when you want it committed)
+## 7 · Retire stray test builds  (app projects only — skip if none were launched)
+
+If this session **built and launched** a local copy of the project's app (Xcode `DerivedData`, a
+`.build` product, a staged bundle), **quit it now** — a test build left running keeps answering the
+installed app's global hotkeys and sharing its data store, but is signed with a *different* identity,
+so macOS treats it as a different app and its TCC grants (Accessibility, Screen Recording, Automation)
+silently do not apply. The result looks like the shipped app misbehaving, not like a stale process.
+
+```bash
+# Match the EXECUTABLE path (ps comm), never the command line.
+ps -Ao pid,comm | grep -E "(DerivedData|\.build)/.*\.app/Contents/MacOS/"
+```
+
+⚠️ **Do not use `ps -Ao pid,command` here.** It matches any process whose *command line* merely
+mentions those paths — including the grep itself and the shell wrapper running it — so it reports a
+stray build on a clean machine. That false positive fired the first time this step ran (2026-08-06);
+`comm` is the executable path, so wrappers can't match it. And since this check normally passes,
+**prove it can fail** before trusting a clean result — pipe a fake DerivedData path through the same
+grep and confirm it fires ([[negative-checks-pass-vacuously]]).
+
+Kill any match, then relaunch the installed one (`open -a /Applications/AppName.app`) if the user
+uses it daily. Report "Quit N test build(s); installed app relaunched" — or say nothing if there
+were none. Matches from **other** projects: name them, don't kill them silently.
+
+*Why this step exists:* an Aloft Debug build outlived its session by nine days, kept the
+Command+Shift+V hotkey, and broke auto-paste system-wide while reporting every paste as successful
+(2026-08-06). Nothing in git or the working tree can show you this — only `ps` can.
+
+## 8 · Leaving a Mac  (Mac-handoff mode, or pre-clear when you want it committed)
 
 Only in Mac-handoff mode (or when the user asks to commit). Plain mode does **not** commit.
 
@@ -136,7 +164,7 @@ MAC=$(cat ~/.claude/this-mac 2>/dev/null || scutil --get LocalHostName 2>/dev/nu
    `✓ <Project> wrapped on <MAC> · log + state synced · committed · pushed — safe to switch; run /status arrive on the other Mac after Syncthing settles.`
    If something didn't happen (no remote, nothing to push), **say that** — never claim "pushed" if it wasn't.
 
-## 8 · Next-session model reminder  (last thing before clear)
+## 9 · Next-session model reminder  (last thing before clear)
 
 Switching models re-reads the whole context (a cache miss); doing it right after `/clear` at an empty
 context is nearly free, mid-session at full context is the expensive moment. So the ritual is
