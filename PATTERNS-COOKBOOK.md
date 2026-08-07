@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-07-29 (#173).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
+**Last updated: 2026-08-07 (#177).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
 
 ---
 
@@ -206,3 +206,4 @@ Each pattern lives in `cookbook/`. Read the relevant file when a pattern is need
 | 174 | [174-unattended-job-window-teardown.md](cookbook/174-unattended-job-window-teardown.md) | launchd won't start a job whose last instance still runs — so an error window awaiting dismissal suppresses **every** future tick, silently. Teardown on every terminal state + absolute watchdog. |
 | 175 | [175-suppression-expiry-is-one-sided.md](cookbook/175-suppression-expiry-is-one-sided.md) | A dated mute self-heals when the thing stays broken, never when it recovers early — the working subject just stays unmonitored. Key suppression on the observation; date is the backstop. |
 | 176 | [176-portable-checksum-manifest.md](cookbook/176-portable-checksum-manifest.md) | Verify-on-copy is a claim about the past. Emit a `shasum -c` sidecar with **tree-relative** paths, digests re-read after any rewriting phase, listing only what you actually verified. |
+| 177 | [177-progress-callback-coalescing.md](cookbook/177-progress-callback-coalescing.md) | Per-chunk progress floods a MainActor consumer; `.bufferingNewest` would drop the terminal event. Coalesce before yielding, 10 Hz per item, phase change always emits, retry sends an explicit reset. |
