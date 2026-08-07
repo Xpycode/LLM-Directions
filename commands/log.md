@@ -60,10 +60,21 @@ and `sessions/_index.md`. Update only what the session evidence supports:
 - **Blockers** — if one surfaced or cleared, update the one-liner. For a real blocker worth detail,
   use: `**What:** … · **Tried:** … · **Unblock:** …` (mark `✅ RESOLVED` + `**Resolution:**` when cleared).
 - **Recent** — prepend a **one-line, plain-language** entry (no SHAs, no jargon). Keep ~5; drop the oldest.
+- **Now → completed work is transient.** `## Now` is **present tense only**. When a wave or phase
+  closes, **replace** its bullet with the next one — never prepend and leave the old one behind. A
+  `**Wave X — DONE**` bullet belongs in `Recent` as one line and in `decisions.md` in full; if it is
+  still sitting in `Now` next session, it is rot. This is the section that actually grows: `Recent`
+  has a cap and holds, everything uncapped climbs. Measured in one project — 86 → 241 lines over 46
+  days, roughly 90% of it retired-wave bullets, across *two* migrations that each landed above target
+  and were each undone within weeks.
 
 Report "Synced PROJECT_STATE." — don't ask "should I sync?". *Old-shape check:* if this file has a
-`## Active Decisions` section, or lacks both `## Now` and `## Recent`, or exceeds ~70 lines, offer
-once to migrate it via `<directions-master>/MIGRATE-PROJECT-STATE.md`.
+`## Active Decisions` section, or lacks both `## Now` and `## Recent`, or its `## Now` exceeds ~30
+lines, or `## Recent` holds more than 5 entries, offer once to migrate it via
+`<directions-master>/MIGRATE-PROJECT-STATE.md`. **Count only those two sections** — `Infrastructure`,
+`Backlog`, `Risks` and `Detail` are legitimately long and are not rot, so raw file length is the
+wrong signal: it fires on a correctly-migrated file, and a check that fires on correct output gets
+ignored (which is how the 46-day regrowth above went unnoticed).
 
 ## 3 · Sync the session index
 

@@ -8,7 +8,20 @@ fine, just heavier. Migrate a project the next time you're already working in it
 A project's `PROJECT_STATE.md` is old-shape if **any** of:
 - it has a `## Active Decisions` section, **or**
 - it has **no** `## Now` and no `## Recent` section, **or**
-- it exceeds ~70 lines.
+- its `## Now` exceeds ~30 lines, **or**
+- its `## Recent` holds more than 5 entries.
+
+**Measure those two sections, not the file.** `Infrastructure`, `Backlog`, `Risks` and `Detail` are
+legitimately long and hold content that exists nowhere else — a healthy digest can run past 100 lines.
+The old raw-line-count trigger (~70) fired on correctly-migrated files, so it was ignored.
+
+## ⚠️ This is recurring, not one-time
+Expect to run this again. A project that needed it twice has a **`Now` that is not being pruned at
+close-out**, which is the actual defect — `/log` step 2's "completed work is transient" rule is the
+fix, and this migration only clears the backlog it left. Measured in one project: 86 lines after the
+first migration, 241 lines 46 days later, ~90% of the growth retired-wave bullets that were prepended
+to `Now` and never removed. If you are migrating a second time, re-read `/log` step 2 before assuming
+the file is just verbose.
 
 ## Target shape (the lean digest)
 `Identity` · `Now` (phase / focus-one-sentence / blockers / next) · `Recent` (≤5 changes, one
@@ -43,7 +56,9 @@ an **in-place transform**, not a replace.
 - [ ] `Focus` / `Blockers` / next-action preserved inside `## Now`.
 - [ ] No project-specific content silently dropped (read the full diff).
 - [ ] You transformed the project's **own** file — you did not paste the master's.
-- [ ] Line count dropped and `decisions.md` grew (or there were genuinely no orphans).
+- [ ] `## Now` is ≤ ~30 lines and holds **no** completed-wave/phase bullets; `## Recent` is ≤ 5
+      entries. (Not "the file got shorter" — a digest with a long `Infrastructure` section is fine.)
+- [ ] `decisions.md` grew, or there were genuinely no orphans.
 
 Then commit `chore(directions): slim PROJECT_STATE to lean digest`, merge to `main` locally
 (solo dev — no PR).
