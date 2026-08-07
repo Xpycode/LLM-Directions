@@ -7,13 +7,21 @@ fine, just heavier. Migrate a project the next time you're already working in it
 ## Detect "old shape"
 A project's `PROJECT_STATE.md` is old-shape if **any** of:
 - it has a `## Active Decisions` section, **or**
-- it has **no** `## Now` and no `## Recent` section, **or**
+- it is missing **either** a `## Now` **or** a `## Recent` section (not just both — a file with a
+  `Recent` but no `Now` is not the lean shape, and a `Now`-only budget can never catch it), **or**
 - its `## Now` exceeds ~30 lines, **or**
-- its `## Recent` holds more than 5 entries.
+- the whole file exceeds **~250 lines** — a loose backstop for bloat *outside* `Now`/`Recent`, which
+  the `Now` budget cannot see. Set far above any healthy digest so it cannot fire on correct output:
+  the largest clearly-healthy file in the 87-file audit was 147 lines with a 23-line `Now`.
 
-**Measure those two sections, not the file.** `Infrastructure`, `Backlog`, `Risks` and `Detail` are
-legitimately long and hold content that exists nowhere else — a healthy digest can run past 100 lines.
-The old raw-line-count trigger (~70) fired on correctly-migrated files, so it was ignored.
+**Measure `Now`, not the file.** `Infrastructure`, `Backlog`, `Risks` and `Detail` are legitimately
+long and hold content that exists nowhere else — a healthy digest can run past 100 lines. The old
+raw-line-count trigger (~70) fired on correctly-migrated files, so it was ignored. Audited across 87
+real `PROJECT_STATE.md` files: 11 healthy digests were being nagged permanently by it.
+
+**A bloated `## Recent` is NOT a reason to migrate.** If `Recent` holds more than ~5 entries, prune it
+in `/log` step 2 and stop there — the same audit found 7 files of 41–66 lines whose only fault was
+6–12 `Recent` entries, and restructuring those would be a remedy that does not match the disease.
 
 ## ⚠️ This is recurring, not one-time
 Expect to run this again. A project that needed it twice has a **`Now` that is not being pruned at

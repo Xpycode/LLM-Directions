@@ -68,13 +68,24 @@ and `sessions/_index.md`. Update only what the session evidence supports:
   days, roughly 90% of it retired-wave bullets, across *two* migrations that each landed above target
   and were each undone within weeks.
 
-Report "Synced PROJECT_STATE." — don't ask "should I sync?". *Old-shape check:* if this file has a
-`## Active Decisions` section, or lacks both `## Now` and `## Recent`, or its `## Now` exceeds ~30
-lines, or `## Recent` holds more than 5 entries, offer once to migrate it via
-`<directions-master>/MIGRATE-PROJECT-STATE.md`. **Count only those two sections** — `Infrastructure`,
-`Backlog`, `Risks` and `Detail` are legitimately long and are not rot, so raw file length is the
-wrong signal: it fires on a correctly-migrated file, and a check that fires on correct output gets
-ignored (which is how the 46-day regrowth above went unnoticed).
+Report "Synced PROJECT_STATE." — don't ask "should I sync?".
+
+*Old-shape check:* if this file has a `## Active Decisions` section, or is **missing either `## Now`
+or `## Recent`**, or its **`## Now` exceeds ~30 lines**, or the whole file exceeds **~250 lines**
+(a loose backstop for bloat outside those sections), offer once to migrate it via
+`<directions-master>/MIGRATE-PROJECT-STATE.md`.
+
+**Measure `Now`, not the file.** `Infrastructure`, `Backlog`, `Risks` and `Detail` are legitimately
+long and are not rot, so raw file length is the wrong signal: it fires on a correctly-migrated file,
+and a check that fires on correct output gets ignored — which is how the 46-day regrowth above went
+unnoticed. (Audited across 87 real `PROJECT_STATE.md` files: 11 healthy digests, `Now` ≤ 26 and
+`Recent` ≤ 5, were being nagged permanently by the old ~70-line trigger.)
+
+**An over-long `Recent` is a prune, not a migration.** If `Recent` holds more than ~5 entries, just
+drop the oldest here in step 2 — that is this step's own job, and it is what went un-run. Do **not**
+escalate it to a migration offer: the same audit found 7 files of 41–66 lines whose only fault was
+6–12 `Recent` entries, and proposing a full restructure for those is a remedy that does not match the
+disease. Only structural rot — retired waves piling up in `Now` — warrants the migration.
 
 ## 3 · Sync the session index
 

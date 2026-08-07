@@ -32,15 +32,17 @@ up"). No hashes / path-soup / codenames unless the user used them first. Empty f
 (`Blockers: none`), don't pad.
 
 **Old-shape check (offer, don't force):** if `PROJECT_STATE.md` has a `## Active Decisions` section,
-or lacks both `## Now` and `## Recent`, or its `## Now` exceeds ~30 lines, or `## Recent` holds more
-than 5 entries, add one line: *"`Now` has grown to N lines (retired waves are probably still in it) —
-migrate to the lean digest?"* If yes → `<directions-master>/MIGRATE-PROJECT-STATE.md`. Never migrate
-without asking — `/status` is read-only by default.
+or is **missing either `## Now` or `## Recent`**, or its **`## Now` exceeds ~30 lines**, or the whole
+file exceeds **~250 lines** (a loose backstop for bloat outside those sections), add one line:
+*"`Now` has grown to N lines (retired waves are probably still in it) — migrate to the lean digest?"*
+If yes → `<directions-master>/MIGRATE-PROJECT-STATE.md`. Never migrate without asking — `/status` is
+read-only by default.
 
-**Measure `Now` and `Recent`, not the whole file.** `Infrastructure`, `Backlog`, `Risks` and `Detail`
-are legitimately long and are not rot; a correctly-migrated digest can exceed 100 lines and still be
+**Measure `Now`, not the whole file.** `Infrastructure`, `Backlog`, `Risks` and `Detail` are
+legitimately long and are not rot; a correctly-migrated digest can exceed 100 lines and still be
 healthy. Raw file length fires on correct output, so it gets ignored — see `/log` step 2 for the
-regrowth this replaced.
+regrowth this replaced. A `Recent` over ~5 entries is a **prune** (`/log` step 2 owns it), never a
+reason to offer a migration.
 
 **Phase reminder:** if phase is **polish** or **shipping**, add: *"Run `/check ship` before release."*
 
