@@ -613,3 +613,37 @@ and the cause was invisible for days (the suite was green the whole time).
 on an injected, test-only namespace — e.g. `KeychainStore(service: "com.example.MyApp.tests")`,
 a `UserDefaults(suiteName:)`, a temp directory — never the shared singleton. The test keeps its
 integration value (real SecItem calls); it just becomes incapable of reaching production items.
+
+## A Test That Bypasses the Suspect Layer Proves the Wrong Thing
+
+An integration test is only integrating the layers it actually goes through. When it reaches
+**past** a layer to construct its input directly, that layer is untested — and the test's
+confidence makes the hole invisible, because the feature demonstrably works.
+
+**Real casualty (MediaIngest, D27):** a "re-ingest repairs a forgotten geotag" feature had a
+full end-to-end integration test — real files, real subprocess, real bytes on disk, asserting
+the repaired file gained GPS. It passed for three weeks. The test called:
+
+```swift
+let plan = try await engine.buildPlan(cardDirectory: cardDir, profile: profile).items
+let events = engine.run(plan: plan, profile: profile, track: track)   // ← the whole plan
+```
+
+The app never does that. It runs `model.selectedItems` — the user's tick boxes. And every
+selection gate keyed on "does this unit have a file that will be *created*", which is false for
+every unit on a card that was already fully imported. So nothing was tickable, the Start button
+stayed disabled, and the one case the feature existed for was the one case that could not be
+run. The engine could repair; the user could not ask it to.
+
+**Why it's hard to see:** nothing is wrong with the test. It tests what it claims. The gap is
+that "does the feature work?" quietly became "does the engine work?", and no one re-read the
+call to notice the substitution.
+
+**Rules:**
+- For any user-facing capability, one test must enter through the **same door the user does** —
+  the view model / controller / CLI parser, not the service beneath it. Assert *reachability*
+  (can this state even be requested?), not just correctness once requested.
+- When a test constructs input a layer would normally produce, say so in a comment and name what
+  is therefore **not** covered. That comment is where the next person finds the hole.
+- Suspect this specifically when a bug report sounds like "the feature does nothing" while the
+  feature's own test is green. The test is probably starting downstream of the break.
