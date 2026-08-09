@@ -1,9 +1,11 @@
 # Stop a streamed run by cancelling the PRODUCER, not the consumer (run-handle pattern)
 
-**Tags:** AsyncStream, run handle, cancel producer, makeStream, Task.detached, .stopping phase, onTermination, #153, terminal event
+**Tags:** AsyncStream, AsyncThrowingStream, run handle, cancel producer, stop flag, makeStream, Task.detached, .stopping phase, onTermination, checkCancellation, bounded fan-out prime, #153, terminal event
 
 **Source:** `1-macOS/CompressPhotos/` — `Services/CompressionRun.swift` (`Run` handle) +
-`AppModel.swift` (`startRun`/`stopRun`) + `Views/RunProgressBar.swift` ("Stopping…" state) (2026-07-02)
+`AppModel.swift` (`startRun`/`stopRun`) + `Views/RunProgressBar.swift` ("Stopping…" state) (2026-07-02).
+Stop-flag variant + prime guard: `1-macOS/MediaIngest/` — `Services/RunStopSignal.swift` +
+`IngestEngine.run(…, stopSignal:)` (2026-08-09)
 
 A long-running engine streams progress over an `AsyncStream` and a held `Task` consumes it into
 `@Observable` UI state. The obvious Stop wiring — cancel the consuming task — is a trap: the stream
@@ -115,6 +117,65 @@ func stopRun() {
 - **Report the wind-down.** The final summary now includes what happened *after* Stop (e.g.
   originals the closing chunk still deleted) plus the "not processed — run stopped first" count —
   surface both.
+
+## Variant: a separate stop flag, when producer-cancel already means *abort*
+
+The run handle works because `task.cancel()` on the producer is a signal the producer chooses how to
+interpret. That breaks the moment `Task.isCancelled` already means something stronger *inside* it.
+
+MediaIngest's verified copier calls `try Task.checkCancellation()` before every 1 MB chunk —
+deliberately, so a cancelled copy throws **before** it can publish a half-written file. Cancelling
+the producer there makes in-flight files *fail* rather than finish, and the report names them as
+failures instead of as work that completed during the wind-down. `Task.isCancelled` was also already
+spoken for by the involuntary case (`onTermination → task.cancel()`). One flag, two incompatible
+meanings.
+
+When the producer's own cancellation is load-bearing, give the voluntary stop its own channel:
+
+```swift
+/// One-way, idempotent, polled. NSLock rather than an actor so the copy fan-out's
+/// child tasks can read it synchronously from inside a chunk loop.
+final class RunStopSignal: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stopped = false
+    func requestStop() { lock.lock(); defer { lock.unlock() }; stopped = true }
+    var isStopRequested: Bool { lock.lock(); defer { lock.unlock() }; return stopped }
+}
+
+// Default it to nil and every existing call site — and every existing test — compiles untouched.
+func run(plan: [Item], stopSignal: RunStopSignal? = nil) -> AsyncThrowingStream<Event, Error> { … }
+```
+
+`Task.isCancelled` keeps its old job (involuntary: nobody is listening), the flag carries the new one
+(voluntary: the user pressed Stop). Two different questions that only looked like one.
+
+**Choosing between the two:** if the producer treats cancellation as "wind down gracefully", use the
+run handle above — it's less machinery. If anything inside the producer treats cancellation as
+"abort now" (a `checkCancellation()` guarding a publish step, a transaction that must not commit),
+you need the separate flag.
+
+## Guard the PRIME of a bounded fan-out, not just the refill
+
+Both designs put the stop check where the fan-out **refills** — after each completed item, decide
+whether to submit the next. That checkpoint structurally cannot cover *"stopped before anything
+started"*: it only runs after something completes.
+
+A bounded fan-out (#35) primes `maxConcurrent` tasks up front. Unguarded, a stop latched during a
+slow preflight still copies a whole batch before the first refill decision is reached. Found by a
+boundary test, not by reading the code:
+
+```swift
+await withTaskGroup(of: Result.self) { group in
+    var next = 0
+    let alreadyStopped = (stopSignal?.isStopRequested ?? false) || Task.isCancelled
+    let primeCount = alreadyStopped ? 0 : min(max(1, maxConcurrent), work.count)
+    while next < primeCount { … group.addTask { … } }        // ← the guard belongs HERE too
+    while let r = await group.next() { … if next < work.count && !stopped { group.addTask { … } } }
+}
+```
+
+Write the "stop before the first item" test explicitly. It is the case a mid-run test cannot reach,
+and the one a user hits by pressing Stop the instant they realise they picked the wrong card.
 
 ## When the simpler designs are fine
 
