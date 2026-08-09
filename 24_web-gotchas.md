@@ -335,3 +335,52 @@ page (App-Websites portal, 2026-07-13): a legacy `max-width: 1080px` capped the 
 a vestigial `class="shot"` dressed datasheet screenshots in the old marketing card chrome.
 **Rule:** when porting a page onto new CSS, grep the OLD stylesheet for every class the new markup
 keeps — either delete the dead legacy block or rename the new component.
+
+## `aspect-ratio` on a FLEX child loses to the default `stretch` — and it reads as an image bug
+
+A child of a flex row is stretched to the line's height by default (`align-items` initial value is
+`normal`, behaving as `stretch`). That stretch wins over `aspect-ratio`, so the box silently renders
+at whatever height the *sibling content* dictates. Declaring `aspect-[2/3]` (or `aspect-ratio: 2/3`)
+does not protect you.
+
+**Flex-specific — grid does not do this.** Measured side by side (WebKit/Safari 2026-08-09), with an
+`aspect-ratio: 2/3; width: 64px` box next to a 300px-tall sibling:
+
+| Container | `align-self` | Result | Ratio held? |
+|---|---|---|---|
+| `display:flex` | default | **64×300** | ✗ 0.213 |
+| `display:flex` | `start` | 64×96 | ✓ 0.667 |
+| `display:grid` (same row track) | default | 64×96 | ✓ 0.667 |
+| `display:grid` (same row track) | `start` | 64×96 | ✓ 0.667 |
+
+So "flex and grid both default to stretch, therefore both break aspect-ratio" is the intuitive
+guess and it is **wrong** — verify per container type rather than reasoning from the shared default.
+Only measured in WebKit here; re-measure before relying on the grid row cross-browser.
+
+The reason this burns time is the **symptom points at the wrong layer**. Put `object-fit: cover` on
+an image inside that box — the normal, correct pairing — and cover does exactly its job: fill the
+box, crop the overflow. You see a cropped photo and start investigating the image, the CDN, the
+source dimensions, `object-position`. Nothing there is wrong. The box is.
+
+It also hides on desktop and appears on mobile, which invites a "responsive" theory: the taller the
+text column beside it, the more the frame is stretched, and text is tallest when it wraps on a
+narrow viewport. Same bug at every width — just proportional to the neighbour's height.
+
+**Diagnose by measuring the box, never by looking at the image:**
+```js
+const r = frame.getBoundingClientRect();
+r.width / r.height                       // vs. the ratio you declared
+Math.abs(r.height - (row.height - padY)) // ~0 ⇒ it's being stretched, that's the tell
+getComputedStyle(frame.parentElement).alignItems  // 'normal' == stretch
+```
+
+**Fix:** `align-self: start` on the child (Tailwind `self-start`), or `align-items: flex-start` on
+the container if every child should keep its own height. Keep `object-fit: cover` — once the box is
+the right shape, cover is what you wanted. Reach for `contain` only if letterboxing is acceptable.
+
+**Rule:** any element that declares an `aspect-ratio` *and* is a flex child needs an explicit
+cross-axis alignment. The ratio is a wish; the parent's alignment is the law.
+
+(Found 2026-08-09 on KinoBerlin's featured-film banner, reported from a phone: the poster frame
+measured 64×200 — ratio 0.319 — against the declared 0.667, because the wrapped title/tagline/credit
+made the row 200px tall. One `self-start` restored 64×96 mobile / 112×168 desktop.)
