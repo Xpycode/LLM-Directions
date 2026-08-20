@@ -43,3 +43,45 @@ RESUME.md
 
 .cowork/
 __pycache__/
+
+# ── Secrets ──────────────────────────────────────────────────────────────
+# This repo is PUBLIC. Nothing below has ever been committed; these patterns
+# exist so a stray credential can't be added by accident. Adding a pattern
+# does NOT untrack an already-committed file, and does NOT remove it from
+# history — if something leaks, rotate the credential first
+# (54_security-rules.md § "If You Find a Security Issue"), then rewrite history.
+
+# Environment / config
+.env
+.env.*
+!.env.example
+!.env.template
+.netrc
+.npmrc
+
+# Keys & certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+
+# Apple signing & notarization (61_distribution-notarization.md)
+*.cer
+*.certSigningRequest
+*.mobileprovision
+*.provisionprofile
+AuthKey_*.p8
+*.keychain
+*.keychain-db
+
+# Credential dumps
+secrets.*
+*secrets.json
+*credentials.json
+service-account*.json
