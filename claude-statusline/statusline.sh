@@ -15,8 +15,14 @@ SHOW_LAST_MSG=0
 C_RESET='\033[0m'
 C_GRAY='\033[38;5;245m'  # explicit gray for default text
 C_BAR_EMPTY='\033[38;5;238m'
-C_GOLD='\033[38;5;178m'   # warning: >=70% of budget
-C_RED='\033[38;5;203m'    # critical: >=95% of budget
+# Context-gauge zone colors. These mirror the canonical zone table in
+# 52_context-management.md § "The 70% Rule" — that table is the single source of
+# truth; change it there first, then follow here. The Green zone (0-50%) uses
+# C_ACCENT so the gauge still honors the COLOR theme; escalation bands are fixed.
+C_GOLD='\033[38;5;178m'      # Yellow   50-70%: start thinking about compacting
+C_ORANGE='\033[38;5;208m'    # Orange   70-85%: don't read more files; prepare to compact
+C_RED='\033[38;5;203m'       # Red      85-95%: stop new work, compact now
+C_CRIT='\033[1;38;5;196m'    # Critical   95%+: /clear immediately (write a handoff first)
 
 # Per-model name colors (by capability tier)
 C_MODEL_FABLE='\033[38;5;203m'   # red    — Fable (most capable)
@@ -186,9 +192,12 @@ if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
     pct=$((context_length * 100 / CLEAR_BUDGET))
     [[ $pct -gt 100 ]] && pct=100
 
-    # Readout color escalates as you approach the clear point
-    if   [[ $pct -ge 95 ]]; then C_GAUGE="$C_RED"
-    elif [[ $pct -ge 70 ]]; then C_GAUGE="$C_GOLD"
+    # Readout color escalates through the 52_context-management.md zones:
+    # Green 0-50 / Yellow 50-70 / Orange 70-85 / Red 85-95 / Critical 95+.
+    if   [[ $pct -ge 95 ]]; then C_GAUGE="$C_CRIT"
+    elif [[ $pct -ge 85 ]]; then C_GAUGE="$C_RED"
+    elif [[ $pct -ge 70 ]]; then C_GAUGE="$C_ORANGE"
+    elif [[ $pct -ge 50 ]]; then C_GAUGE="$C_GOLD"
     else                         C_GAUGE="$C_ACCENT"
     fi
 

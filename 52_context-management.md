@@ -499,6 +499,8 @@ Community-derived guideline: treat ~70% context usage as your practical ceiling.
 
 Response quality starts dipping before auto-compact triggers at ~95%. Keep headroom for complex tasks.
 
+**Implemented by:** the status-line context gauge (`claude-statusline/statusline.sh`, `C_GAUGE` selection) colors itself from these exact five bands. If you change a threshold here, follow it there.
+
 ### 6. Checking Context Usage
 
 **The `/status full` command** shows token breakdown:

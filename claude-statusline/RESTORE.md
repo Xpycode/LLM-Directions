@@ -6,7 +6,10 @@ A custom Claude Code status line that shows, on one row:
 Opus 4.8 (1M context) | 📁ClaudeSessions | ███████░░░░░ 111k / 200k (55%) | ⏱ 5h 12.0M (16%) · 7d 29.5M (6%)
 ```
 
-- **Context gauge** — tokens in context vs a manual `CLEAR_BUDGET` (default 200k, your `/clear` point). Blue → gold at 70% → red at 95%.
+- **Context gauge** — tokens in context vs a manual `CLEAR_BUDGET` (default 200k, your `/clear` point).
+  Colors mirror the canonical zone table in `52_context-management.md` § "The 70% Rule":
+  theme accent 0-50% → yellow 50% → orange 70% → red 85% → bold critical 95%. The table is the
+  single source of truth — change thresholds there first, then follow in `statusline.sh`.
 - **5h** — tokens used in the current 5h window (% of `CAP_5H`). No reset countdown: ccusage only knows clock-aligned blocks, not Anthropic's true rolling reset — check `/usage` for the real reset time.
 - **7d** — rolling 7-day tokens (% of `CAP_WEEK`).
 
