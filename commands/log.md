@@ -176,6 +176,26 @@ MAC=$(cat ~/.claude/this-mac 2>/dev/null || scutil --get LocalHostName 2>/dev/nu
 
    Handoff-from: $MAC"
    ```
+   ⚠️ **Keep every trailer in ONE final paragraph — no blank line between them.** Git parses only
+   the *last* paragraph as trailers, so a `Co-Authored-By:` (or any second trailer) separated by a
+   blank line silently demotes `Handoff-from:` to ordinary body text. It still *looks* right in
+   `git log`, but `%(trailers:key=Handoff-from,valueonly)` — what `/status arrive` actually reads —
+   returns empty, and the other Mac falls back to author/date with no Mac name. Correct shape:
+   ```
+   session: 2026-08-20 + sync state
+
+   <body…>
+
+   Handoff-from: M4-Pro
+   Co-Authored-By: …
+   ```
+   Verify before moving on — a stamp that doesn't parse is worse than none, because it reads as
+   present:
+   ```bash
+   git log -1 --format='%(trailers:key=Handoff-from,valueonly)'   # must print the Mac, not empty
+   ```
+   *(Recorded 2026-08-20, after `ed7eaec` shipped with exactly this defect — unfixable without
+   force-pushing already-pushed history, so it stands as the example.)*
 3. **Push** — an *unpushed* commit is as invisible to the other Mac as an uncommitted file.
    - **No remote** → say so: the commit stays on this Mac; offer to add a remote.
    - **Rejected ("fetch first")** → origin moved (other Mac pushed). **STOP, don't force.** Reconcile
