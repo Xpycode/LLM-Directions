@@ -194,6 +194,28 @@ Execute custom scripts on Claude Code events, configured in `.claude/settings.js
 
 Hooks receive JSON via stdin with event details; `CLAUDE_PROJECT_DIR` is available as an environment variable.
 
+### Gotcha: a `PreToolUse` guard matches the command *string*, not the intent
+
+A guard that blocks dangerous Bash by pattern-matching the command will also fire when the
+dangerous text is merely **quoted inside** an otherwise-safe command — most often when you're
+*writing documentation about* the thing it blocks.
+
+Seen 2026-08-20: two `Bash` calls were blocked as "git history rewrite" because a `python3`
+heredoc writing a Markdown file happened to contain the words `filter-branch` and `filter-repo`
+in its prose. Nothing would have been rewritten; the guard was reading the document body.
+
+The tell is a block on a command whose *verb* is harmless (`python3`, `cat`, `grep`) while the
+named risk sits in a quoted string. Two responses, in order:
+
+1. **Don't reword the prose to dodge the guard** — that trains you to evade it. Use a
+   non-Bash path (the `Edit`/`Write` tool) so the text never becomes a command argument.
+2. **Narrow the pattern** if it recurs: anchor on an actual invocation (`git` followed by the
+   subcommand at the start of a command or after `;`/`&&`/`|`) rather than the bare tool name
+   anywhere in the string.
+
+The same shape applies to any keyword guard — `rm -rf`, `DROP TABLE`, `curl | sh` — whenever
+you write about them rather than run them.
+
 ---
 
 ## Output Modes

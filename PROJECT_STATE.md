@@ -23,6 +23,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-08-20** — Credential audit: **none committed** (only deliberate bad-examples). Fixed the
+  status-line context gauge, which escalated at 70%/95% while the canonical zone table defines five
+  bands at 50/70/85/95 — it stayed blue through the whole "start compacting" zone. Gave this
+  **public** repo the secret patterns its `.gitignore` never had; security rules gained the missing
+  "secret already committed" step.
 - **2026-07-29** — Usage-report follow-ups: per-Mac capability registry (`MACHINES.md` — this M1 Max
   has **no dev cert and no AppProbe**), house permission allowlist union-merged by `redeploy.sh` 2c
   (fixture copies + read-only commands stop hitting the classifier), PreToolUse guard blocking
@@ -39,8 +44,6 @@
 - **2026-07-18** — Adopted the **house design system**: Claude-Desktop's screenshot critique distilled
   into `42_design-system.md` (tokens + banned LLM-tells + per-app briefs), new `/check design` mode,
   shell-check updated + versioned into repo; appearance standard now **dark default + user light**.
-- **2026-07-16→18** — Drive-by gotchas from app work: ScrollView centers narrower content, macOS 26
-  popover-after-NSOpenPanel crash, Strato Python-on-CGI, cookbook #163 (SwiftTerm env) + #164.
 
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · **Build 🔶** — iterating on improvements.
@@ -63,4 +66,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-07-29.*
+*Last updated: 2026-08-20.*
