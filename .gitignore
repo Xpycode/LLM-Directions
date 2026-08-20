@@ -48,8 +48,8 @@ __pycache__/
 # This repo is PUBLIC. Nothing below has ever been committed; these patterns
 # exist so a stray credential can't be added by accident. Adding a pattern
 # does NOT untrack an already-committed file, and does NOT remove it from
-# history — if something leaks, rotate the credential first
-# (54_security-rules.md § "If You Find a Security Issue"), then rewrite history.
+# history — if something leaks, rotate the credential first, then purge:
+# 54_security-rules.md § "Purging a committed secret".
 
 # Environment / config
 .env

@@ -176,8 +176,36 @@ Scan for these patterns:
 1. **Stop** - Don't commit
 2. **Fix** - Address the vulnerability
 3. **Rotate** - If secrets were exposed, rotate them immediately
-4. **Audit** - Check for similar issues elsewhere
-5. **Document** - Log what happened and how it was fixed
+4. **Purge** - If the secret was already committed, remove it from history (below)
+5. **Audit** - Check for similar issues elsewhere
+6. **Document** - Log what happened and how it was fixed
+
+### Purging a committed secret
+
+**Rotate first, always.** A credential is burned the moment it reaches a remote —
+rewriting history does not un-leak it. Public pushes get scraped, and any clone,
+fork, or cached view made before the rewrite still holds the value. Treat the
+purge as tidying, never as remediation: if you only do one step, rotate.
+
+Order matters:
+
+1. **Rotate the credential** at its source (Keychain entry, API console, CA).
+2. **Add the pattern to `.gitignore`** so it can't come back.
+3. **Rewrite history.** If the secret is in the last commit and nothing has been
+   pushed, `git commit --amend` is enough. Otherwise use `git-filter-repo`
+   (`brew install git-filter-repo` — not installed by default here); BFG
+   (`brew install bfg`) is the alternative. Git's own `filter-branch` is
+   deprecated upstream — don't reach for it.
+4. **Force-push**, then have every other machine **re-clone**. A rewritten `main`
+   won't fast-forward, and pulling on the other Mac reintroduces the old objects
+   (see `37_multi-mac-discipline.md`).
+5. **Ask GitHub Support to purge cached views** if the repo is public. Rewritten
+   commits can stay reachable by SHA until they're garbage-collected, and forks
+   keep their own copies regardless.
+
+> **This is a gated operation.** Force-push and history rewriting are destructive
+> and blocked by the risk-guard hook. Run them yourself after deciding the rewrite
+> is worth it, rather than delegating them.
 
 ---
 
