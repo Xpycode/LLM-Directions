@@ -86,10 +86,15 @@ Then:
 
 ```bash
 curl https://<your-subdomain>/_path-probe.php
-# → /mnt/web408/e0/41/53958841/htdocs/INGEST  (or similar)
+# → /mnt/webNNN/xx/yy/NNNNNNNN/htdocs/INGEST  (or similar)
 ```
 
-Use that path verbatim in `AuthUserFile /mnt/web408/.../htdocs/INGEST/.htpasswd`. **Delete the probe file after use** — it leaks server topology.
+Use that path verbatim in `AuthUserFile /mnt/webNNN/.../htdocs/INGEST/.htpasswd`. **Delete the probe file after use** — it leaks server topology.
+
+> **Writing this up anywhere?** The account number, `/mnt/webNNN/xx/yy/` path, and SFTP username are
+> account identifiers — mask them. This repo is **public**; paired with a password from a project
+> tree they are most of a login.
+
 
 Source: LEARNING `2026-05-01`.
 

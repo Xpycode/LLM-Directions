@@ -40,7 +40,7 @@ lftp -d -e "cls -la; quit" sftp://USER@HOST                  # ssh now gets -l U
 
 ```bash
 ( umask 077; cat > ~/.netrc <<'EOF'
-machine 53958841.ssh.w1.strato.hosting
+machine NNNNNNNN.ssh.w1.strato.hosting
   login  stuXXXXXXXXX
   password p@ss?with$pecials^
 EOF
