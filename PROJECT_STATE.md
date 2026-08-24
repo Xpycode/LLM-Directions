@@ -23,6 +23,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-08-25** — Two patterns out of a consumer project's deploy design: excluding a
+  server-canonical directory from the mirror also excludes the `.htaccess` guarding it (auth
+  silently bypassable on a site that works), and netrc's host-keying is *why* a sibling project's
+  password ended up inline — Keychain keys by service and holds the username too. Also masked the
+  Strato account number this repo had been publishing in two examples.
 - **2026-08-20** — Credential audit: **none committed** (only deliberate bad-examples). Fixed the
   status-line context gauge, which escalated at 70%/95% while the canonical zone table defines five
   bands at 50/70/85/95 — it stayed blue through the whole "start compacting" zone. Gave this
@@ -66,4 +71,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-08-20.*
+*Last updated: 2026-08-25.*

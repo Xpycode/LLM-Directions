@@ -2,7 +2,7 @@
 
 **Tags:** macOS Keychain, security add-generic-password, find-generic-password, ~/.netrc, lftp, sftp, deploy credentials, secrets out of git, multiple accounts same host, acct blob, Strato
 
-**Extracted from:** PRIVAT (2026-08-24), after LUCESUMBRARUM's password ended up inline for exactly this reason
+**Extracted from:** a 2026-08 deploy setup, after a sibling project on the same host hit exactly this wall
 
 ## The problem
 
@@ -18,11 +18,11 @@ One `machine` block, one `login`. Shared hosting hands out **several SFTP users 
 one per site, or a jailed deploy user beside an SSH-enabled one. The moment a second project needs
 the same host under a different account, netrc has nowhere to put it.
 
-What happens next is predictable, and it happened here: the second project gave up and inlined the
-password in `ship.sh` and in its `CLAUDE.md`. Its own audit note records the reasoning — *"netrc
-cannot hold it: netrc keys by host, and this host already has a different account registered"* —
-which is an accurate diagnosis and the wrong conclusion. The password then sat in plaintext for
-months, was flagged by an audit, survived the audit, and was eventually read into an LLM transcript.
+What happens next is predictable: the second project gives up and inlines the password in its
+deploy script. The reasoning is usually written down and usually correct — *netrc cannot hold it,
+because this host already has a different account registered* — and the conclusion is wrong. An
+inlined password then tends to outlive the decision by months, survive an audit that flags it, and
+turn up somewhere it should never have been.
 
 ## The fix
 
