@@ -1,7 +1,7 @@
 # Swift/SwiftUI Patterns Cookbook
 
 **Extracted from working production code across 15+ projects.**
-**Last updated: 2026-08-07 (#177).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
+**Last updated: 2026-08-24 (#180).** Change history lives in git — this file is a *router*: grep a keyword or scan the filenames, then read only the matching `cookbook/NNN-*.md`. Never load the whole index.
 
 ---
 
@@ -208,3 +208,5 @@ Each pattern lives in `cookbook/`. Read the relevant file when a pattern is need
 | 176 | [176-portable-checksum-manifest.md](cookbook/176-portable-checksum-manifest.md) | Verify-on-copy is a claim about the past. Emit a `shasum -c` sidecar with **tree-relative** paths, digests re-read after any rewriting phase, listing only what you actually verified. |
 | 177 | [177-progress-callback-coalescing.md](cookbook/177-progress-callback-coalescing.md) | Per-chunk progress floods a MainActor consumer; `.bufferingNewest` would drop the terminal event. Coalesce before yielding, 10 Hz per item, phase change always emits, retry sends an explicit reset. |
 | 178 | [178-calibrate-tolerance-against-production-source.md](cookbook/178-calibrate-tolerance-against-production-source.md) | A tolerance calibrated with one reader while production uses another is unvalidated — and fixtures built from the calibration source make the residual 0 by construction, so tests pass vacuously. |
+| 179 | [179-exclude-contents-ship-the-guard.md](cookbook/179-exclude-contents-ship-the-guard.md) | Excluding a server-canonical dir from `mirror` (#169) also excludes the `.htaccess` denying it — so session auth is bypassable by direct URL, on a site that works. Exclude the contents, ship the guard. |
+| 180 | [180-keychain-holds-both-credential-halves.md](cookbook/180-keychain-holds-both-credential-halves.md) | `~/.netrc` keys by host, so it can't hold two SFTP accounts on one hostname — which is how passwords end up inline. Keychain keys by service and carries the username too; rotate before migrating. |

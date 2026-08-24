@@ -97,3 +97,6 @@ adding it to the `find`. That's the maintenance cost of catching the class inste
 
 - The deploy root question is upstream of this: see the multisite lftp/netrc deploy pattern for how
   the upload root is chosen and why `.git`/docs must sit outside it.
+- **#179** — the security-shaped exception to *how* you write the exclusion: if the excluded
+  directory contains the `.htaccess` that denies access to it, excluding the container silently
+  ships an unprotected site. Exclude the contents, not the container.

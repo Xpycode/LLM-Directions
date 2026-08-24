@@ -137,3 +137,12 @@ git diff --cached --name-only | grep -x '.env' && echo "⚠️ .env staged" || e
 - **Special chars in the password** break naive shell writes — single-quote everything; verify by **length**, never by printing.
 
 Pairs with **#88** (is it a ban or a real auth failure?), **#46/#49** (the PHP download-counter / feedback backends being deployed — the server-managed files you must exclude), **#29** (Strato hosting specifics).
+
+---
+
+> **Limitation — see #180.** `~/.netrc` keys by **host**, so it holds exactly one account per
+> hostname. Shared hosting routinely issues several SFTP users on one host (one per site, or a
+> jailed deploy user beside an SSH-enabled one); the second one has nowhere to live here, and in
+> practice that is how passwords end up inlined in deploy scripts. For that case use a macOS
+> Keychain entry per service, which also carries the username. The "user in the URL" insight above
+> still applies either way.
