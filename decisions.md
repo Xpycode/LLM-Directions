@@ -23,6 +23,35 @@ This file tracks the WHY behind technical and design decisions.
 > Full ADRs older than the one below live in [`decisions-archive.md`](decisions-archive.md) — a
 > one-paragraph summary of each still lives in the Condensed Log further down this file.
 
+### 2026-08-30 - Codex uses a thin adapter over the live Claude Directions commands
+
+**Context:** Directions already has a mature Claude Code command library under `commands/`, and the
+same session/state discipline is wanted while evaluating Codex. Translating every command into a
+second Codex-owned copy would make fixes to `/log`, `/status`, and related workflows drift between
+tools. Codex also reserves some slash commands, including `/status`.
+
+**Options Considered:**
+1. **Copy and translate every command for Codex** — direct per-command invocation, but two large
+   instruction sets to reconcile after every Directions change.
+2. **Use a thin Codex skill that routes to the live command files** — one small compatibility layer;
+   Codex reads the selected shared command before acting.
+3. **Rely on ad-hoc prompts in Codex** — no setup cost, but session logging and state updates lose
+   the deterministic Directions contract.
+
+**Decision:** Option 2. Version `codex/skills/directions/` in this repository and link it into the
+local Codex skills directory. Invoke it explicitly as `$directions /status`, `$directions /log`, and
+so on; natural-language requests may select it implicitly.
+
+**Rationale:** The existing command files remain the only procedural source of truth, so both tools
+receive future fixes immediately. The adapter contains only tool-specific routing, permission, and
+fallback rules. Explicit `$directions` invocation also avoids collisions with Codex's built-in slash
+commands while making the selected workflow visible.
+
+**Consequences:** Claude Code remains unchanged. Codex must be able to read this repository path,
+and genuinely Claude-only hooks or state files need evidence-based fallbacks rather than invented
+equivalence. Cross-Mac restore must install or link the Codex skill separately; that deployment step
+is not yet folded into `redeploy.sh`. Real-project use should drive any further adapter rules.
+
 ### 2026-07-18 - House design system (`42_`) + appearance standard: dark default, user-selectable light
 
 **Context:** A Claude-Desktop screenshot critique of DiskVerdict/Conjoyn/Penumbra/CropBatch/Magpie

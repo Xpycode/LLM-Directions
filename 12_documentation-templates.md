@@ -489,9 +489,53 @@ Must reassign the parent property to trigger updates.
 
 ---
 
+## AGENTS.md Template
+
+```markdown
+# [Project Name] — Codex Instructions
+
+## Project Context
+
+- **Purpose:** [One sentence]
+- **Stack:** [Languages and frameworks]
+- **Build:** `[build command]`
+- **Test:** `[test command]`
+- **Lint:** `[lint command]`
+
+## Instruction Ownership
+
+- `AGENTS.md` is the Codex entry point; `CLAUDE.md` is the Claude Code entry point.
+- Keep stable project facts aligned, while keeping tool-specific behavior in its own entry point.
+- Keep changing state in `docs/PROJECT_STATE.md` and active work in `IMPLEMENTATION_PLAN.md`.
+- Directions workflow procedures live in the master `commands/*.md`; do not copy or translate them.
+
+## Project Rules
+
+- [Architecture and threading rule]
+- [Error-handling rule]
+- [Security or data-integrity rule]
+- [Repository-specific constraint]
+
+## Validation
+
+Run in this order where applicable:
+
+```bash
+[build command]
+[lint command]
+[test command]
+```
+
+## Known Gotchas
+
+- [Only verified project-specific gotchas]
+```
+
+---
+
 ## Usage Tips
 
-1. **Start with README and CLAUDE.md** — Every project needs these
+1. **Start with README plus the tool entry points you use** — `CLAUDE.md` for Claude Code and `AGENTS.md` for Codex
 2. **Add CHANGELOG early** — Track changes from the start
 3. **Add SECURITY.md if public** — Encourages responsible disclosure
 4. **Add PRIVACY.md for user-facing apps** — Builds trust

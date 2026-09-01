@@ -902,11 +902,11 @@ The Directions system is designed for context engineering:
 
 | File | Provides Context For |
 |------|---------------------|
-| `CLAUDE.md` | Project-wide patterns and preferences |
+| `CLAUDE.md` | Claude Code project instructions |
 | `PROJECT_STATE.md` | Current focus, phase, blockers |
 | `specs/[feature].md` | Feature requirements and acceptance criteria |
 | `decisions.md` | Why things are the way they are |
-| `AGENTS.md` | Subagent patterns and constraints |
+| `AGENTS.md` | Codex project instructions and constraints |
 
 ### Loading Order
 

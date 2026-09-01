@@ -104,7 +104,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 |------|---------|---------|
 | `PROJECT_STATE.md` | Current position, funnel, blockers | Every session |
 | `IMPLEMENTATION_PLAN.md` | Task list with waves | During /make-plan, /execute |
-| `AGENTS.md` | Subagent context, patterns | When patterns emerge |
+| `AGENTS.md` | Codex project instructions | When Codex-specific operating rules change |
 | `specs/[feature].md` | Feature specifications | During /spec deep |
 | `decisions.md` | Architecture choices | When decisions made |
 | `sessions/YYYY-MM-DD.md` | Session logs | After significant work |
@@ -385,9 +385,9 @@ Plans are disposable:
 
 ```
 /project-root
-├── CLAUDE.md                     ← Project-specific AI context
+├── CLAUDE.md                     ← Claude Code project instructions
 ├── IMPLEMENTATION_PLAN.md        ← Active task list (delete when done)
-├── AGENTS.md                     ← Subagent patterns & context
+├── AGENTS.md                     ← Codex project instructions
 ├── RESUME.md                     ← Mid-task checkpoint (if exists)
 │
 ├── specs/                        ← Feature specifications

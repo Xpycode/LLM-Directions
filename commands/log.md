@@ -110,7 +110,7 @@ Route learnings to their **one home**; skip silently if nothing emerged (don't a
 | Reusable UI/window/export/lifecycle **pattern** ("finally got X working", "copied from [project]") | offer `/cookbook add` |
 | A **term** the user learned | `44_my-glossary.md` (or `/learned`) |
 | A real **architectural decision** | `decisions.md` — full entry (context/alternatives/rationale/consequences). Don't verbatim-copy the one-line session bullet; an ADR needs standalone context. |
-| A **gotcha** | the relevant `2x_*.md` or `AGENTS.md` |
+| A **gotcha** | the relevant shared guidance doc; use `AGENTS.md` only for Codex-specific operating constraints |
 | A **workflow improvement** to Directions itself | this master repo |
 
 Report "Extracted: …" only if you routed something.

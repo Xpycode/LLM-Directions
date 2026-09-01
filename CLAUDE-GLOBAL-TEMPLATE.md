@@ -7,6 +7,11 @@
 
 **These instructions apply to all sessions.**
 
+`CLAUDE.md` is the Claude Code entry point; `AGENTS.md` is the Codex entry point. Keep stable
+project facts aligned between them, but keep tool-specific behavior separate. Shared workflow
+procedures live only in the Directions `commands/*.md` files; do not create a translated Codex
+command library.
+
 ---
 
 ## Session Start: Auto-Detect and Resume

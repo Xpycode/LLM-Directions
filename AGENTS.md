@@ -1,61 +1,50 @@
-# Agents Configuration
+# Codex Instructions for Directions
 
-> **Loaded by subagents every iteration.** Keep this tight - every token counts.
-> This file captures operational learnings, not project requirements (those go in specs/).
+## Repository
 
-## Project Context
-<!-- Minimal context for subagents. 5-10 lines max. -->
-- **Stack:** [Swift/SwiftUI | TypeScript/React | etc.]
-- **Build:** `[build command]`
-- **Test:** `[test command]`
-- **Lint:** `[lint command]`
+- Directions is a documentation-first development framework for Swift/SwiftUI, macOS, iOS, and web projects.
+- The repository contains shared guidance, workflow commands, templates, a pattern cookbook, and thin tool adapters. It is not itself a Swift package or application.
+- Most changes are Markdown or shell-script changes. Determine validation from the files touched; do not default to `swift build`, `swiftlint`, or `swift test` in this repository.
 
-## Backpressure Commands
-<!-- Run these to validate work. Order matters. -->
+## Instruction Ownership
+
+- `AGENTS.md` is the Codex entry point. `CLAUDE.md` or `CLAUDE-GLOBAL-TEMPLATE.md` is the Claude Code entry point.
+- Keep stable project facts such as stack, commands, and safety constraints aligned between tool entry points when both exist.
+- Keep tool-specific behavior in its own entry point. Do not require line-for-line parity.
+- Changing state belongs in `PROJECT_STATE.md`, `IMPLEMENTATION_PLAN.md`, specs, decisions, and session logs—not in an agent entry point.
+
+## Directions Workflow
+
+- `commands/*.md` is the single procedural source of truth for Directions commands.
+- In Codex, use the `directions` skill and study the matching command file completely before acting.
+- The thin adapter lives at `codex/skills/directions/SKILL.md`. Do not create translated or duplicated Codex command files.
+- Interpret Claude-specific UI, hooks, and state as Codex equivalents only when a reliable equivalent exists; disclose any fallback.
+
+## Working Rules
+
+- Study relevant files and check existing behavior before proposing or implementing something; don't assume it is missing.
+- Preserve user changes in a dirty worktree. Keep edits scoped and inspect overlapping diffs before modifying a file.
+- Use `rg` or `rg --files` for discovery.
+- Use `apply_patch` for hand edits. Do not use destructive Git commands.
+- Keep universal guidance in this master repository and read it on demand; do not copy it into consumer projects.
+- This is a solo-developer workflow: use small direct commits or local branches when requested; do not introduce pull-request ceremony.
+
+## Validation
+
+Run checks appropriate to the change, in this order where applicable:
+
 ```bash
-# 1. Type check / compile
-swift build
-
-# 2. Lint
-swiftlint
-
-# 3. Unit tests
-swift test
-
-# 4. Integration tests (if applicable)
-# [command]
+rg -n '<relevant-pattern>' <touched-files>
+bash -n <touched-script>
+git diff --check
+git status --short
 ```
 
-## Code Patterns
-<!-- Project-specific patterns subagents should follow -->
-
-### Do
-- Use `async/await` for all network calls
-- Services are `actor` types, not `class`
-- Error handling with `Result` type, not `try?`
-
-### Don't
-- No force unwraps without nil checks
-- No `@unchecked Sendable` without justification
-- No files over 500 lines
-
-## Naming Conventions
-- ViewModels: `[Feature]ViewModel`
-- Services: `[Domain]Service`
-- Views: `[Feature]View`
+Do not claim a build or test passed unless this repository actually provides and ran that command.
 
 ## Known Gotchas
-<!-- Things that have bitten us before -->
-- Image coordinates use bottom-left origin on macOS
-- `@Published` updates must happen on main thread
-- [Add as discovered]
 
-## LLM-Specific Notes
-<!-- Steering language that works -->
-- Say "Study the file" not "Read the file" - triggers deeper comprehension
-- Say "Don't assume not implemented" - prevents duplicate work
-- Say "Using parallel subagents" for fan-out
-- Say "Only 1 subagent for build/tests" to serialize validation
-
----
-*Updated when patterns emerge. Subagents inherit this context each iteration.*
+- `CLAUDE-GLOBAL-TEMPLATE.md` is rendered and deployed to a machine-local Claude configuration; edit the template, not the deployed copy.
+- The Codex adapter intentionally reads the live Claude command library so both tools share one workflow source.
+- Universal docs are read on demand. Copies in consumer projects drift and must not be reintroduced.
+- Several files may already be modified by Syncthing or another session; unrelated changes belong to the user.

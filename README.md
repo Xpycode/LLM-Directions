@@ -57,9 +57,11 @@ with the path to your local clone (the install script prints it).
 
 ### For New Projects
 
-1. Open a Claude session in your project and run `/setup` — it scaffolds **only** the
-   project-specific files: `docs/PROJECT_STATE.md` (the "is Directions set up?" sentinel),
-   `docs/sessions/`, `docs/decisions.md`, `docs/glossary.md`. Nothing else is copied.
+1. Open your coding tool in the project and run `/setup` in Claude Code or
+   `$directions /setup` in Codex. It creates or preserves the appropriate `CLAUDE.md` and/or
+   `AGENTS.md` entry point plus the project-specific Directions files: `docs/PROJECT_STATE.md`
+   (the setup sentinel), `docs/sessions/`, `docs/decisions.md`, and `docs/glossary.md`.
+   Universal guidance and command files are never copied.
 2. Run `/spec deep` to create your first spec
 3. Run `/make-plan` to break into tasks, `/execute` to build
 
@@ -83,9 +85,9 @@ read-on-demand. Your project-specific files (state, sessions, decisions) are unt
 
 ```
 your-project/
-├── CLAUDE.md                     ← Project-specific AI context
+├── CLAUDE.md                     ← Claude Code project instructions
 ├── IMPLEMENTATION_PLAN.md        ← Active task list (waves, delete when done)
-├── AGENTS.md                     ← Subagent patterns & context
+├── AGENTS.md                     ← Codex project instructions
 ├── specs/                        ← Feature specifications
 │   └── [feature].md
 └── docs/                         ← Scaffolded by /setup — project files ONLY
@@ -152,7 +154,8 @@ Tasks grouped by dependencies:
 
 ### Compounding
 After each session, extract learnings:
-- Patterns → `AGENTS.md`
+- Reusable patterns → cookbook or the relevant shared guidance doc
+- Codex-specific operating constraints → `AGENTS.md`
 - Terms → `44_my-glossary.md`
 - Decisions → `decisions.md`
 

@@ -165,5 +165,5 @@ Already in `01_quick-reference.md` as "Multi-Model Validation" technique.
 ## Related
 
 - `52_context-management.md` — Canonical context guide (architecture, runtime, information design)
-- `AGENTS.md` — Sub-agent patterns
+- `AGENTS.md` — Codex project instructions
 - `01_quick-reference.md` — Multi-model validation technique

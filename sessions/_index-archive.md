@@ -1,6 +1,6 @@
 # Session History — Archive
 
-Older rows moved out of [`_index.md`](_index.md) (2026-07-02, 2026-08-20) to cap that file's size. This file
+Older rows moved out of [`_index.md`](_index.md) (2026-07-02, 2026-08-20, 2026-08-30) to cap that file's size. This file
 is append-only history — not read by any command in the normal flow. Same table format as the
 live index; outcome cells here were **not** re-condensed (kept verbatim from before the split).
 
@@ -8,6 +8,9 @@ live index; outcome cells here were **not** re-condensed (kept verbatim from bef
 
 | Date | Focus | Outcome | Log |
 |------|-------|---------|-----|
+| 2026-06-13 (b) | Resolve cross-project status view + multi-Mac sync architecture + build `/arrive`+`/depart` | Chose a disposable gitignored dashboard.py/.html (top-down PROJECT_STATE scan) over a committed project.json generator for cross-project status. Clarified Syncthing vs GitHub sync roles (private GitHub for code). Built /arrive+/depart, machine identity via git commit trailer `Handoff-from:`, not a tracked file. | [log](2026-06-13-b.md) |
+| 2026-06-13 | Reconcile a behind-10 + dirty tree (erased-Mac Syncthing phantom) + harden hook/doctrine | Diagnosed behind-10 dirty tree as a Rule-1a "erased-Mac" phantom (other Mac restored, Syncthing carried current files onto stale .git) — proved byte-identical, `reset --hard origin/main` reconciled losslessly. Hardened session-start.sh to compute a confirmed verdict via hash-object; documented the SIGPIPE gotcha in `37_multi-mac-discipline.md`. | [log](2026-06-13.md) |
+| 2026-06-11 | Same-folder Claude session collision guard + `/worktree` | Diagnosed that two Claude sessions sharing one folder share one git checkout — a checkout in either moves the branch for both. Built `hooks/session-guard.sh` (process-inspection collision detector, worktree-aware), wired into session-start + /status, and a new `/worktree` command. Added Rule 5 to multi-mac doc. Pushed `da7fb6d`+`1670755`. | [log](2026-06-11.md) |
 | 2026-06-10 | Statusline cleanup + build the model-switch reminder system | Removed the broken weekly-usage statusline readout. Color-coded model names by tier. Built the model-switch enforcement: `hooks/model-advisor.sh` keyword-matches prompts and nudges via statusline handshake + systemMessage. Reconciled a 5th cross-Mac duplicate commit. Pushed `93c3632`. | [log](sessions/2026-06-10.md) |
 | 2026-06-08 | Ship the copy-vs-drift fix + reconcile cross-Mac divergence | Shipped the copy-vs-drift fix: added a Directions Index to global CLAUDE.md, made /setup scaffold only project-specific files, moved the sentinel `00_base.md`→`PROJECT_STATE.md`. Reconciled a duplicate cookbook #80/#81 from another Mac. Same-day follow-up: another Mac had shipped the identical fix in parallel — reset --hard dropped the dupes, pushed `0897333`+`499b314`. | [log](sessions/2026-06-08.md) |
 | 2026-06-07 | Main-menu house-style + Directions copy-vs-drift fix (spilled from zPackages) | Drafted `46_main-menu.md` house-style doc. Diagnosed the copy-vs-drift flaw that 2026-06-08 fixed. | [log](sessions/2026-06-07.md) |

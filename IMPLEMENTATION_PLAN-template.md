@@ -50,7 +50,7 @@
 ---
 
 ## Operational Learnings
-<!-- Add as you discover them. These inform AGENTS.md. -->
+<!-- Add as you discover them. Route shared learnings to canonical docs; Codex-specific constraints may inform AGENTS.md. -->
 - [Pattern discovered during implementation]
 - [Gotcha to remember for next time]
 

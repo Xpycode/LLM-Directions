@@ -24,7 +24,7 @@ If they choose Migrate:
 |----------|------------|
 | Project description, goals | PROJECT_STATE.md |
 | Technical decisions, "we chose X" | decisions.md |
-| Architecture notes, patterns | CLAUDE.md tech stack section |
+| Architecture notes, stable project rules | Keep aligned in CLAUDE.md and AGENTS.md |
 | TODOs, plans, phases | PROJECT_STATE.md current focus |
 | Bug notes, issues found | Session log or debugging notes |
 | API docs, specs | Keep in /old-docs for reference |
@@ -55,10 +55,17 @@ Index"** in the global `~/.claude/CLAUDE.md`. **Do not copy them into the projec
 an already-set-up project never receives new house-style — which is exactly the flaw this avoids.
 
 `/setup` scaffolds **only project-specific files** (read the matching master template on demand):
+- `CLAUDE.md` — Claude Code project instructions, when Claude Code is in use; preserve an existing file
+- `AGENTS.md` — Codex project instructions, when Codex is in use; preserve an existing file
 - `docs/PROJECT_STATE.md` — the source-of-truth position digest (also the "is Directions set up?" sentinel); use the master's `PROJECT_STATE.md` as the structural template
 - `docs/sessions/_index.md` — session history index
 - `docs/decisions.md` — this project's decision log
 - `docs/glossary.md` — *project-specific* terms only (the personal glossary lives globally)
+
+Use the entry-point templates in `12_documentation-templates.md`. Keep stable project facts aligned
+between them, but keep tool-specific behavior separate. The live `commands/*.md` library remains the
+single workflow source: Claude invokes it directly and Codex reaches it through the thin Directions
+skill adapter. Do not copy or translate the command files into the project.
 
 **Important:** For new projects, after scaffolding those files and running the interview, **always create the project folder structure** (read `13_folder-structure.md` from the master on demand). The actual code always lives in `01_Project/` (the one exception is framework web apps — code at repo root):
 - macOS/iOS: `01_Project/`, `02_Design/Exports/`, `03_Screenshots/`, `04_Exports/`

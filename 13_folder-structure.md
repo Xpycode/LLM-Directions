@@ -61,15 +61,17 @@ MyApp/                              ← Project root (GitHub repo)
 │   └── MyApp 1.0/                  ← Unzipped app for testing
 │
 ├── docs/                           ← Directions documentation
-│   ├── 00_base.md
 │   ├── PROJECT_STATE.md
-│   └── sessions/
+│   ├── sessions/
+│   ├── decisions.md
+│   └── glossary.md
 │
 ├── old-docs/                       ← Migrated docs (if any)
 │
 ├── .git/                          ← Repo lives HERE, at the app root — NOT inside 01_Project/
 ├── .gitignore
 ├── CLAUDE.md                       ← Project-specific Claude context
+├── AGENTS.md                       ← Project-specific Codex context
 ├── README.md
 ├── LICENSE
 └── CHANGELOG.md                    ← Optional
@@ -142,13 +144,15 @@ MySite/                             ← Project root (GitHub repo, .git/ HERE)
 ├── 03_Screenshots/                 ← Marketing / docs screenshots
 │
 ├── docs/                           ← Directions documentation
-│   ├── 00_base.md
 │   ├── PROJECT_STATE.md
-│   └── sessions/
+│   ├── sessions/
+│   ├── decisions.md
+│   └── glossary.md
 │
 ├── .git/                           ← Repo at the project root, wrapping everything
 ├── .gitignore
 ├── CLAUDE.md
+├── AGENTS.md
 ├── README.md
 ├── package.json                    ← If using Node tooling (tsx, etc.)
 ├── tsconfig.json                   ← If scripts are TypeScript
@@ -207,15 +211,17 @@ MyWebApp/                           ← Project root (GitHub repo)
 ├── 03_Screenshots/                 ← Marketing screenshots
 │
 ├── docs/                           ← Directions documentation
-│   ├── 00_base.md
 │   ├── PROJECT_STATE.md
-│   └── sessions/
+│   ├── sessions/
+│   ├── decisions.md
+│   └── glossary.md
 │
 ├── .vercel/                        ← Vercel link state (gitignored)
 ├── .env.local                      ← TURSO_URL, OAuth secrets, etc. (gitignored)
 ├── .env.example                    ← Committed template with placeholders
 ├── .gitignore
 ├── CLAUDE.md
+├── AGENTS.md
 ├── README.md
 ├── package.json
 ├── tsconfig.json

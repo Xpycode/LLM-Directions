@@ -37,7 +37,8 @@ ProjectName/                 # ← project root (git repo lives HERE, at this le
 │   └── ProjectNameTests/    # Unit tests
 ├── 02_Design/  03_Screenshots/  04_Exports/
 ├── docs/                    # Directions
-├── CLAUDE.md                # AI rules (required)
+├── CLAUDE.md                # Claude Code instructions (when used)
+├── AGENTS.md                # Codex instructions (when used)
 ├── README.md                # Project overview
 ├── .gitignore               # Git ignore patterns
 └── .git/                    # ← repo root, NOT inside 01_Project/
@@ -52,7 +53,7 @@ ProjectName/                 # ← project root (git repo lives HERE, at this le
 
 ## Phase 2: AI Context Files
 
-### CLAUDE.md (Required)
+### CLAUDE.md (Required for Claude Code)
 
 Create `CLAUDE.md` in project root with:
 
@@ -67,6 +68,14 @@ Create `CLAUDE.md` in project root with:
 
 Use the CLAUDE.md Template in `12_documentation-templates.md` as the starting point — don't
 copy a separate version here.
+
+### AGENTS.md (Required for Codex)
+
+Create `AGENTS.md` in the project root from the template in `12_documentation-templates.md`.
+Keep stable project facts (purpose, stack, build/test/lint commands, and safety constraints)
+aligned with `CLAUDE.md`, while keeping Codex-specific workflow and sandbox behavior here.
+Do not copy the Directions command library; Codex reaches the live `commands/*.md` files through
+the thin `directions` skill adapter.
 
 ---
 
@@ -240,12 +249,14 @@ If persisting file access:
 - [ ] Set up remote (GitHub/GitLab)
 - [ ] Create develop branch (if using git-flow)
 
-### Claude Code Integration
+### AI Tool Integration
 
 - [ ] Test `claude` command in project directory
 - [ ] Verify CLAUDE.md is being read
 - [ ] Set up any custom slash commands (`.claude/commands/`)
 - [ ] Configure permissions if needed (`.claude/settings.json`)
+- [ ] Open Codex in the project directory and verify `AGENTS.md` is being applied
+- [ ] Verify the Codex `directions` skill can route to the live Directions command files
 
 ### Workflow Process
 
@@ -332,7 +343,8 @@ Before shipping, verify baseline features are in place. See **33_app-minimums.md
 
 | File | Purpose | Required |
 |------|---------|----------|
-| `CLAUDE.md` | AI rules and patterns | Yes |
+| `CLAUDE.md` | Claude Code project instructions | When using Claude Code |
+| `AGENTS.md` | Codex project instructions | When using Codex |
 | `README.md` | Project documentation | Yes |
 | `.gitignore` | Git ignore patterns | Yes |
 | `CHANGELOG.md` | Version history | Recommended |
@@ -363,7 +375,7 @@ Before shipping, verify baseline features are in place. See **33_app-minimums.md
 ## First Day Workflow
 
 1. **Create project** with this checklist open
-2. **Set up CLAUDE.md** first (AI needs context)
+2. **Set up CLAUDE.md and/or AGENTS.md** for the coding tools you use
 3. **Create directory structure**
 4. **Make initial commit** ("Initial project structure")
 5. **Start spec interview** for first feature

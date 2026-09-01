@@ -12,7 +12,6 @@
 <!-- Active work. Populated by /make-plan or /execute. Keep focused (3-7 tasks). -->
 <!-- When done: /log moves to tasks-archive.md -->
 
-- [ ] [Task description]
 
 ---
 

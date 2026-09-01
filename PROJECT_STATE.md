@@ -23,6 +23,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-01** — Made `AGENTS.md` the first-class Codex project entry point, added a reusable
+  template and dual-tool setup guidance, and kept the live Directions commands as the shared source.
+- **2026-08-30** — Added a Codex adapter that runs the same live Directions command files as Claude
+  Code, plus a persistent Codex context/token status line; the two tools now share one workflow
+  source instead of maintaining translated copies.
 - **2026-08-25** — Two patterns out of a consumer project's deploy design: excluding a
   server-canonical directory from the mirror also excludes the `.htaccess` guarding it (auth
   silently bypassable on a site that works), and netrc's host-keying is *why* a sibling project's
@@ -39,17 +44,6 @@
   `git add -A`/`.` sweeps, cookbook #173 (crash-tolerant agent fan-out). En route, found and healed
   **200+ lines of template↔live CLAUDE.md drift** (live had newer pre-flight, template had newer
   index); migration flow now actually lives in `/setup` as the slim CLAUDE.md long claimed.
-- **2026-07-28** — Found the reason replies kept getting long despite two rounds of trimming: two
-  **output-style plugins** were enabled at once, and their prompt overrides the length budgets in the
-  command specs. Turned off; the global settings file now travels between Macs via
-  `CLAUDE-SETTINGS-TEMPLATE.json` + `redeploy.sh` (Rule 3a) so the fix can't drift back.
-- **2026-07-19** — Explored **Sanzo Wada's colour dictionary** as a palette source; it fits the
-  per-app brief (not house tokens). Trial app = Magpie, whose greys turn out to have no temperature
-  at all. Nothing locked — waiting on the human to pick a combination.
-- **2026-07-18** — Adopted the **house design system**: Claude-Desktop's screenshot critique distilled
-  into `42_design-system.md` (tokens + banned LLM-tells + per-app briefs), new `/check design` mode,
-  shell-check updated + versioned into repo; appearance standard now **dark default + user light**.
-
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · **Build 🔶** — iterating on improvements.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅
@@ -71,4 +65,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-08-25.*
+*Last updated: 2026-09-01.*
