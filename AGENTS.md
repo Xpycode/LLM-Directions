@@ -17,6 +17,8 @@
 
 - `commands/*.md` is the single procedural source of truth for Directions commands.
 - In Codex, use the `directions` skill and study the matching command file completely before acting.
+- Treat bare Directions requests such as `/status arrive`, `status arrive`, and `log clear` as skill
+  invocations; users do not need to prefix them with `$directions`.
 - The thin adapter lives at `codex/skills/directions/SKILL.md`. Do not create translated or duplicated Codex command files.
 - Interpret Claude-specific UI, hooks, and state as Codex equivalents only when a reliable equivalent exists; disclose any fallback.
 

@@ -33,10 +33,15 @@ Supported command files are discovered from that directory; do not assume this l
 
 ## Invocation
 
-Codex skills use `$directions`. Accept the original slash command inside the invocation, for example:
+Prefer the short Directions vocabulary. Treat bare slash commands and command-like requests as
+invocations of this skill, for example:
 
-`$directions /status`
+`/status arrive`
 
-`$directions /log clear`
+`status arrive`
 
-If the interface passes a bare supported slash command through to the model, handle it identically.
+`log clear`
+
+Users do not need to add `$directions`. If the Codex interface intercepts a slash command as a
+built-in instead of passing it to the model, the slashless form is the reliable fallback. Continue
+to accept explicit skill syntax such as `$directions /status` for compatibility.

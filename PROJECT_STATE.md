@@ -23,6 +23,8 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-01** — Made bare Directions requests such as `/status arrive` and `log clear` the
+  primary Codex convention; the longer `$directions` form is now only a compatibility fallback.
 - **2026-09-01** — Made `AGENTS.md` the first-class Codex project entry point, added a reusable
   template and dual-tool setup guidance, and kept the live Directions commands as the shared source.
 - **2026-08-30** — Added a Codex adapter that runs the same live Directions command files as Claude
@@ -38,12 +40,6 @@
   bands at 50/70/85/95 — it stayed blue through the whole "start compacting" zone. Gave this
   **public** repo the secret patterns its `.gitignore` never had; security rules gained the missing
   "secret already committed" step.
-- **2026-07-29** — Usage-report follow-ups: per-Mac capability registry (`MACHINES.md` — this M1 Max
-  has **no dev cert and no AppProbe**), house permission allowlist union-merged by `redeploy.sh` 2c
-  (fixture copies + read-only commands stop hitting the classifier), PreToolUse guard blocking
-  `git add -A`/`.` sweeps, cookbook #173 (crash-tolerant agent fan-out). En route, found and healed
-  **200+ lines of template↔live CLAUDE.md drift** (live had newer pre-flight, template had newer
-  index); migration flow now actually lives in `/setup` as the slim CLAUDE.md long claimed.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · **Build 🔶** — iterating on improvements.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅

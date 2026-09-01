@@ -52,6 +52,12 @@ and genuinely Claude-only hooks or state files need evidence-based fallbacks rat
 equivalence. Cross-Mac restore must install or link the Codex skill separately; that deployment step
 is not yet folded into `redeploy.sh`. Real-project use should drive any further adapter rules.
 
+**2026-09-01 refinement:** Real use showed that requiring `$directions` makes routine commands
+needlessly cumbersome. Bare workflow requests (`/status arrive` or `status arrive`) are now the
+primary Codex convention; `$directions /status` remains a compatibility fallback. Slashless forms
+also handle cases where the interface reserves a slash command before the model can see it. This
+changes invocation ergonomics only—the thin adapter and live `commands/*.md` source remain intact.
+
 ### 2026-07-18 - House design system (`42_`) + appearance standard: dark default, user-selectable light
 
 **Context:** A Claude-Desktop screenshot critique of DiskVerdict/Conjoyn/Penumbra/CropBatch/Magpie

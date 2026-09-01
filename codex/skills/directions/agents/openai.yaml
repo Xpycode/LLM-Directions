@@ -1,7 +1,7 @@
 interface:
   display_name: "Directions"
   short_description: "Shared Claude and Codex project workflows"
-  default_prompt: "Use $directions to run /status for this project."
+  default_prompt: "Run status for this project using the shared Directions workflow."
 
 policy:
   allow_implicit_invocation: true

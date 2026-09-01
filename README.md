@@ -57,13 +57,18 @@ with the path to your local clone (the install script prints it).
 
 ### For New Projects
 
-1. Open your coding tool in the project and run `/setup` in Claude Code or
-   `$directions /setup` in Codex. It creates or preserves the appropriate `CLAUDE.md` and/or
-   `AGENTS.md` entry point plus the project-specific Directions files: `docs/PROJECT_STATE.md`
-   (the setup sentinel), `docs/sessions/`, `docs/decisions.md`, and `docs/glossary.md`.
-   Universal guidance and command files are never copied.
+1. Open your coding tool in the project and run `/setup`. In Codex, `setup` without the slash is
+   an equivalent fallback if `/setup` is intercepted by the interface. It creates or preserves the
+   appropriate `CLAUDE.md` and/or `AGENTS.md` entry point plus the project-specific Directions files:
+   `docs/PROJECT_STATE.md` (the setup sentinel), `docs/sessions/`, `docs/decisions.md`, and
+   `docs/glossary.md`. Universal guidance and command files are never copied.
 2. Run `/spec deep` to create your first spec
 3. Run `/make-plan` to break into tasks, `/execute` to build
+
+Codex recognizes the same short workflow vocabulary: `/status arrive`, `/spec`, `/make-plan`,
+`/execute`, `/check`, and `/log`. The slashless forms (`status arrive`, `log clear`) are also
+supported and avoid collisions with Codex built-ins. `$directions` remains compatible but is not
+required.
 
 ### For Existing Projects (older copied-docs layout)
 
