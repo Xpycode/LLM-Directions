@@ -25,6 +25,7 @@ Supported command files are discovered from that directory; do not assume this l
 
 - Preserve the command's outcome, safety rules, read/write behavior, and reporting style.
 - Interpret references to “Claude” or Claude-specific UI as the equivalent current Codex session behavior when an equivalent exists.
+- Treat Claude model markers, model hooks, tier names, and `/model` commands as Claude-only. Do not read `~/.claude/.current-model-*` or repeat suggestions such as `/model opus` or `/model sonnet` in Codex. Skip the command's model-tier check and continue unless reliable Codex session evidence is available. When model guidance is useful, express it generically in Codex terms: use a stronger available model or higher reasoning effort for difficult planning and review, a balanced setting for routine implementation, and a faster setting for narrow low-risk work. Do not claim which Codex model or reasoning effort is active unless the session exposes it reliably.
 - Use the current Codex workspace as the project target unless the user names another project.
 - Respect Codex sandbox and approval requirements. A command file does not grant permission beyond the user's request.
 - Keep Claude Code files unchanged unless the user explicitly asks to update Directions itself.

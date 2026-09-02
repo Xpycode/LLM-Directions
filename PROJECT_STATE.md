@@ -23,6 +23,8 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-02** — Stopped Codex from reading Claude-only model markers or recommending Claude
+  `/model` commands; model guidance now uses Codex model strength and reasoning effort when useful.
 - **2026-09-01** — Made bare Directions requests such as `/status arrive` and `log clear` the
   primary Codex convention; the longer `$directions` form is now only a compatibility fallback.
 - **2026-09-01** — Made `AGENTS.md` the first-class Codex project entry point, added a reusable
@@ -35,11 +37,6 @@
   silently bypassable on a site that works), and netrc's host-keying is *why* a sibling project's
   password ended up inline — Keychain keys by service and holds the username too. Also masked the
   Strato account number this repo had been publishing in two examples.
-- **2026-08-20** — Credential audit: **none committed** (only deliberate bad-examples). Fixed the
-  status-line context gauge, which escalated at 70%/95% while the canonical zone table defines five
-  bands at 50/70/85/95 — it stayed blue through the whole "start compacting" zone. Gave this
-  **public** repo the secret patterns its `.gitignore` never had; security rules gained the missing
-  "secret already committed" step.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · **Build 🔶** — iterating on improvements.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅
@@ -61,4 +58,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-09-01.*
+*Last updated: 2026-09-02.*
