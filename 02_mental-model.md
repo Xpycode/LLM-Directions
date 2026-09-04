@@ -44,11 +44,12 @@ What this means for you:
 
 ---
 
-## Part 2: Working With Claude Code
+## Part 2: Working With a Coding Agent
 
 ### The "Brilliant But Untested Colleague" Model
 
-Think of Claude Code as a brilliant but untested colleague. This colleague is knowledgeable, fast, and genuinely capable. But they're new. You don't know their judgement yet.
+Think of the coding agent as a brilliant but untested colleague. It is knowledgeable, fast, and
+genuinely capable, but you still need evidence to calibrate its judgement.
 
 You wouldn't hand this person full access to everything and go make tea. You'd stay involved, review their work, keep your hand on the wheel.
 
@@ -63,7 +64,7 @@ Not all operations carry the same risk. Calibrate your involvement:
 - Database operations (migrations, resets)
 - External commands (`git push`, publishing, network requests)
 - Credential files (`.env` and friends)
-- Scope creep — Claude changing files you didn't mention
+- Scope creep — the agent changing files outside the requested work
 - `sudo` or elevated permission commands
 
 **Lower Risk (Generally Safe):**
@@ -78,7 +79,7 @@ Not all operations carry the same risk. Calibrate your involvement:
 ### Signs to Pause
 
 Stop and question when:
-- Claude modifying files you didn't mention
+- The agent modifying files outside the requested work
 - Database operations without discussing backups
 - Changes to credential or configuration files
 - Large numbers of files affected at once
@@ -174,7 +175,7 @@ You don't need to write code, but you need to recognize problems.
 See `01_quick-reference.md` → "Top 5 Bug Categories" and "Red Flags in Code" — canonical, not
 duplicated here.
 
-### Questions to Ask Claude
+### Questions to Ask the Coding Agent
 
 When reviewing implementation:
 
@@ -187,3 +188,6 @@ When reviewing implementation:
 ---
 
 *This guide will evolve. When you learn something the hard way, add it.*
+
+Provider-specific operation belongs in `64_codex.md` for Codex and `23_claude-code-cli.md` for
+Claude Code.

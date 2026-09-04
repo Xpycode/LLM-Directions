@@ -9,6 +9,7 @@ Create a specification before implementation. **`/spec` absorbs `/interview` (de
 | "deep", "interview", or a whole new project | **discovery** | new project / complex system / many unknowns — multi-phase triangulation |
 | "examples", "example map" | **examples** | complex business logic — discover requirements through concrete examples |
 
+<!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
 ## Step 0 — Model tier check (nudge, don't gate)
 
 Speccing resolves ambiguity and shapes a feature — **Opus-tier** judgment (Fable if gnarly).
@@ -23,6 +24,7 @@ echo "phase: spec · current model: ${MODEL:-unknown}"
 If `MODEL` is Sonnet/Haiku, **nudge once then continue** (don't gate — a mis-tiered spec is rarely costly):
 > 🔴 **You're on `<MODEL>` — speccing is Opus-tier judgment work. Consider `/model opus`.**
 Already Opus/Fable → say nothing.
+<!-- CLAUDE-ONLY:END -->
 
 ## Mode: mini-PRD  (default)
 

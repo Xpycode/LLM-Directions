@@ -61,10 +61,14 @@ Syncthing settle. The per-project, human-readable version of the session-start g
 
 1. **Who am I?**
    ```bash
-   MAC=$(cat ~/.claude/this-mac 2>/dev/null || scutil --get LocalHostName 2>/dev/null || hostname -s)
+   MAC=$(cat ~/.config/directions/this-mac 2>/dev/null \
+     || cat ~/.claude/this-mac 2>/dev/null \
+     || scutil --get LocalHostName 2>/dev/null \
+     || hostname -s)
    ```
-   `~/.claude/this-mac` is a one-line per-machine label (e.g. `M1 Max`), kept **outside** Syncthing so
-   it never travels — same path, different content per Mac. Missing → the Mac's own name is used.
+   `~/.config/directions/this-mac` is the tool-neutral one-line per-machine label (e.g. `M1 Max`),
+   kept **outside** Syncthing so it never travels — same path, different content per Mac. The old
+   Claude path remains a compatibility fallback. Missing → the Mac's own name is used.
 2. **git + remote?** `git rev-parse --is-inside-work-tree` and `git remote get-url origin`.
    - No git → "files travel by Syncthing only; nothing to compare." Skip to 4.
    - git but no remote → "history has no GitHub remote, so I can't see the other Mac's work — add one?" Skip to 4.
@@ -85,17 +89,23 @@ Syncthing settle. The per-project, human-readable version of the session-start g
 
 ## Same-folder session collision check  (all modes)
 
-Two Claude sessions in the **same folder** share one git checkout (one HEAD) — if either runs
+Two agent sessions in the **same folder** share one git checkout (one HEAD) — if either runs
 `git checkout`, it switches the branch for **both**. Run the detector and surface the result:
 
+<!-- CLAUDE-ONLY:START — this process detector currently recognizes Claude Code CLI sessions -->
 ```bash
 bash ~/.claude/hooks/session-guard.sh 2>/dev/null \
   || bash /Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/hooks/session-guard.sh 2>/dev/null
 ```
 
 - **No output** → no collision; say nothing (don't pad the report).
-- **A warning block** → show it plainly: *another Claude session shares this checkout; coordinate git
+- **A warning block** → show it plainly: *another agent session shares this checkout; coordinate git
   in one session, or split off with `/worktree`.* Two sessions in **different worktrees** are safe.
+<!-- CLAUDE-ONLY:END -->
+
+**Codex fallback:** no Directions process detector is installed yet. Do not run the Claude detector
+or claim there is no collision. If the user mentions another live session in this checkout, warn and
+offer `/worktree`; otherwise omit collision status.
 
 Read-only — it inspects running processes, never touches git.
 

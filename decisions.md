@@ -58,6 +58,26 @@ primary Codex convention; `$directions /status` remains a compatibility fallback
 also handle cases where the interface reserves a slash command before the model can see it. This
 changes invocation ergonomics only—the thin adapter and live `commands/*.md` source remain intact.
 
+**2026-09-04 refinement:** Make Codex deployment first-class rather than relying on a one-off link in
+the legacy `~/.codex/skills` directory. The versioned skill remains the adapter, but
+`deploy-codex.sh` now links it into the active build's user-skill location (`CODEX_HOME/skills`) and
+merges a generated, marked Directions block into global `$CODEX_HOME/AGENTS.md` (default
+`~/.codex/AGENTS.md`). The block carries the
+master path and live topic index while preserving unrelated personal instructions. Shared commands
+mark Claude-only model integration explicitly; `/directions update` selects the active tool's
+deployer. A standalone skill remains the right first deployment because this is one personal
+workflow still being exercised; a plugin and Codex hooks are deferred until their extra packaging,
+trust, payload, and noise behavior is proven in real sessions.
+
+**2026-09-04 model/context refinement:** Keep capability tiers and escalation order provider-neutral
+in `60_model-selection.md`; put volatile current model mappings in `23_claude-code-cli.md` and
+`64_codex.md`. Model capability, reasoning effort, context quality, and parallelism are separate
+controls. Diagnose missing or polluted context before escalating. The Codex reference owns current
+CLI controls such as `/usage`, `/status`, `/permissions`, and `/statusline`, while `AGENTS.md` stays
+lean. After an explicit fleet-backfill request, the ten recently active projects received tailored
+root `AGENTS.md` files containing only stable project facts, validation, safety constraints, and live
+Directions routing—no copied universal docs or mutable state.
+
 ### 2026-07-18 - House design system (`42_`) + appearance standard: dark default, user-selectable light
 
 **Context:** A Claude-Desktop screenshot critique of DiskVerdict/Conjoyn/Penumbra/CropBatch/Magpie

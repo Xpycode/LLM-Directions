@@ -1,11 +1,11 @@
 # Worktree (Parallel Session Isolation)
 
-Set up a **git worktree** so a second Claude session can work on a different branch **without
+Set up a **git worktree** so a second coding-agent session can work on a different branch **without
 sharing a checkout** with this one.
 
 ## Why this exists
 
-Two Claude sessions open in the *same folder* share one git checkout — git keeps a single HEAD per
+Two agent sessions open in the *same folder* share one git checkout — git keeps a single HEAD per
 working directory. The moment one session runs `git checkout other-branch`, it switches the branch
 for **both**, and a commit from one can land on the branch the other just moved to (the theme-editor
 cross-commit incident). A worktree gives the second session its **own directory with its own HEAD**,
@@ -57,7 +57,7 @@ git worktree list                    # confirm it registered
 Then tell the user, in plain language:
 
 > Created an isolated worktree at `../<repo>-<name>` on branch `<name>`.
-> **Open your second Claude session there** (`cd ../<repo>-<name>` and start `claude`). It now has
+> **Open your second coding-agent session there** (`cd ../<repo>-<name>` and start the tool). It now has
 > its own HEAD — the two sessions won't fight over the branch.
 
 This session's working tree is untouched — `git worktree add` never changes the current checkout.

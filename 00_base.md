@@ -15,18 +15,20 @@ Directions operates in two modes:
 | **Master repo** | Everything at root (`./00_base.md`, `./PROJECT_STATE.md`) | When editing the Directions repo itself |
 | **Installed project** | Only *project-specific* files in `docs/` (`docs/PROJECT_STATE.md`, `docs/sessions/`, `docs/decisions.md`, `docs/glossary.md`) | After `/setup` in a user project |
 
-**The universal docs (`00`–`62`) are never copied into projects.** They live only in the master
-repo and are read on demand via the Directions Index in the global `~/.claude/CLAUDE.md`.
+**The numbered universal docs are never copied into projects.** They live only in the master
+repo and are read on demand through the Directions Index deployed to the active host's global
+instructions (`$CODEX_HOME/AGENTS.md` for Codex or `~/.claude/CLAUDE.md` for Claude Code).
 Copies drift — an already-set-up project never receives updates.
 
 **Detection rule (sentinel):** Check for `docs/PROJECT_STATE.md`. If it exists, this is an
 installed project — use `docs/` paths for project files. Otherwise, use root paths (master repo).
 
-All commands and hooks support both modes automatically.
+Shared commands support both layout modes. Host-specific hooks apply only where they are installed;
+Codex currently uses repository evidence when no equivalent hook exists.
 
 ---
 
-## For Claude: How to Use This System
+## For the Coding Agent: How to Use This System
 
 You are working with someone who directs AI to build software but doesn't code themselves. Your job is to:
 
@@ -85,11 +87,15 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 ## Core Commands
 
+These names refer to Directions workflows. In Codex, a built-in slash command may intercept the same
+text—especially `/status`. Use the slashless form (`status`, `status arrive`) or explicit
+`$directions` invocation when that happens.
+
 | Command | When | What |
 |---------|------|------|
 | `/spec deep` | New feature | Multi-phase discovery, creates spec |
 | `/make-plan` | After spec | Creates IMPLEMENTATION_PLAN.md |
-| `/execute` | Ready to build | Wave-based execution with subagents |
+| `/execute` | Ready to build | Wave-based execution; delegates independent work when authorised |
 | `/execute next` | During build | Pick next task with context |
 | `/check code` | After work | Multi-perspective review |
 | `/log` | End of session | Extract reusable learnings |
@@ -262,8 +268,8 @@ session log entry with verification notes.
 
 ```
 1. Describe exact symptom
-2. Ask Claude to find cause (don't guess)
-3. Ask Claude to explain fix before implementing
+2. Ask the coding agent to find the cause from evidence (don't guess)
+3. Ask the coding agent to explain the fix before implementing
 4. Implement fix
 5. Run backpressure
 6. Verify bug is gone
@@ -330,11 +336,12 @@ session log entry with verification notes.
 | Git, branch, commit | `32_git-workflow.md` |
 | Ship, release, production | `30_production-checklist.md` |
 | Security, secrets, credentials | `54_security-rules.md` |
-| Model, haiku, sonnet, opus, slow, cost | `60_model-selection.md` |
+| Model, capability, reasoning effort, slow, cost, Haiku, Sonnet, Opus, Luna, Terra, Sol, Astra | `60_model-selection.md` |
 | What does [term] mean | Add to `44_my-glossary.md` |
 | Stuck, broken, error, loop, freeze | `25_troubleshooting.md` |
 | Plugin, add-on, superpowers, MCP server | `26_ecosystem.md` |
-| Skills, SKILL.md, slash command | `23_claude-code-cli.md` (Skills section) |
+| Codex, AGENTS.md, Codex skills or controls | `64_codex.md` |
+| Claude Code, CLAUDE.md, Claude skills or controls | `23_claude-code-cli.md` |
 | Context full, degrading, compacting | `52_context-management.md` |
 | Cross-Mac, two Macs, "fetch first", "we did this on the other Mac", `.sync-conflict-*` | `37_multi-mac-discipline.md` |
 | Final stretch, last 10%, "this seems off", almost done but won't ship, polish vs ship-blocker, define done, v1 vs v1.1 | `62_final-stretch-triage.md` |
@@ -401,7 +408,7 @@ Plans are disposable:
     ├── decisions.md              ← Why we chose X over Y
     └── glossary.md               ← Project-specific terms
 
-Universal docs (00–62), templates, and the cookbook stay in the Directions
+Numbered universal docs, templates, and the cookbook stay in the Directions
 master repo and are read on demand — they are NOT copied here.
 ```
 
@@ -423,8 +430,9 @@ master repo and are read on demand — they are NOT copied here.
 ├── 40-49: Terminology reference
 ├── 50-59: Advanced patterns
 │
-├── commands/                     ← Legacy slash command definitions
-└── .claude/skills/               ← Skills (SKILL.md, preferred)
+├── commands/                     ← Shared workflow procedures (single source of truth)
+├── codex/skills/directions/      ← Thin Codex adapter
+└── .claude/skills/               ← Claude Code skills
 ```
 
 ---

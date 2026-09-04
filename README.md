@@ -40,20 +40,29 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 ## Quick Start
 
 **Read-on-demand model:** the universal docs in this repo are the single source of truth.
-They are **never copied into your projects** — copies drift and stop receiving updates.
-Claude reads them on demand from your local clone of this repo, routed by the Directions
-Index in your global `~/.claude/CLAUDE.md`.
+They are **never copied into your projects** — copies drift and stop receiving updates. Codex and
+Claude Code read them from your local clone through thin tool adapters and a generated Directions
+Index.
 
 ### Install once (per machine)
 
 ```bash
 git clone https://github.com/Xpycode/LLM-Directions.git
 cd LLM-Directions
-./install-directions.sh
+
+# Codex
+bash deploy-codex.sh --dry-run
+bash deploy-codex.sh
+
+# Claude Code, only if you use it
+bash redeploy.sh --dry-run
+bash redeploy.sh
 ```
 
-Then open `~/.claude/CLAUDE.md` and replace every `[LOCAL_DIRECTIONS_PATH]` placeholder
-with the path to your local clone (the install script prints it).
+The Codex deployer links the Directions skill into `$CODEX_HOME/skills/` (default:
+`~/.codex/skills/`) and merges a generated, marked block into `$CODEX_HOME/AGENTS.md` (default:
+`~/.codex/AGENTS.md`); unrelated global guidance is preserved. Start a new Codex session after
+deployment.
 
 ### For New Projects
 
@@ -110,7 +119,8 @@ LLM-Directions/ (this repo — read on demand, never copied)
 ├── 20-29: Technical gotchas
 ├── 30-39: Quality & debugging
 ├── 40-49: Terminology reference
-└── 50-62: Advanced patterns
+├── 50-63: Advanced patterns
+└── 64_codex.md                    ← Codex integration, daily controls, and current model mapping
 ```
 
 ---
@@ -185,34 +195,34 @@ Reusable code patterns extracted from production apps. Copy-first beats building
 
 ## Installation
 
-### Option 1: Plugin Install (Recommended)
+### Codex (recommended for Codex users)
 
 ```bash
 git clone https://github.com/Xpycode/LLM-Directions.git
 cd LLM-Directions
-./install-directions.sh
+bash deploy-codex.sh --dry-run
+bash deploy-codex.sh
 ```
 
-Or manually:
-```bash
-mkdir -p ~/.claude/plugins/local
-ln -sf /path/to/LLM-Directions ~/.claude/plugins/local/directions
-cp commands/* ~/.claude/commands/
-cp CLAUDE-GLOBAL-TEMPLATE.md ~/.claude/CLAUDE.md
-```
+This uses the active Codex build's user skill directory and global `AGENTS.md`. The managed block is
+replaced on future deploys without replacing personal instructions outside it.
 
-**Then replace every `[LOCAL_DIRECTIONS_PATH]` placeholder in `~/.claude/CLAUDE.md`** with
-the path to your local clone — a raw copy of the template is not functional without this.
-
-### Option 2: Commands Only
+### Claude Code
 
 ```bash
-cp -r commands/* ~/.claude/commands/
+bash redeploy.sh --dry-run
+bash redeploy.sh
 ```
+
+`install-directions.sh` remains as the older Claude-only installer; `redeploy.sh` is the complete,
+idempotent path because it also prunes retired commands and refreshes hooks and settings.
 
 ---
 
-## Hooks (Plugin Only)
+## Claude Code hooks (plugin only)
+
+These hooks are not installed for Codex. See `64_codex.md` for the deliberate fallback and the
+criteria for a later native Codex port.
 
 | Hook | Trigger | Behavior |
 |------|---------|----------|

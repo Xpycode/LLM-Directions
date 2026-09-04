@@ -509,6 +509,15 @@ Must reassign the parent property to trigger updates.
 - Keep changing state in `docs/PROJECT_STATE.md` and active work in `IMPLEMENTATION_PLAN.md`.
 - Directions workflow procedures live in the master `commands/*.md`; do not copy or translate them.
 
+## Directions Workflow
+
+- Use the globally installed `directions` skill for `status`, `log`, `spec`, `make-plan`, `execute`,
+  `check`, `decide`, `cookbook`, `worktree`, and other Directions requests.
+- Current state: `docs/PROJECT_STATE.md`; active execution: `IMPLEMENTATION_PLAN.md`; detailed
+  history: `docs/sessions/`; durable choices: `docs/decisions.md`.
+- Read universal guidance from the Directions master on demand. Do not add copied universal docs to
+  this repository.
+
 ## Project Rules
 
 - [Architecture and threading rule]

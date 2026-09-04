@@ -13,7 +13,7 @@ Do **not** paste a hardcoded table (four hand-maintained catalogs drifted and al
 that's why this is generated). Build the list live from the command files:
 
 ```bash
-# from the Directions master (or ~/.claude/commands/ on a deployed Mac)
+# from the Directions master (Claude may also use its deployed ~/.claude/commands copy)
 for f in commands/*.md; do
   name=$(basename "$f" .md)
   # the one-line purpose is the file's first non-heading line
@@ -34,28 +34,34 @@ Because the list is read from `commands/` at run time, it always matches what ac
 
 ## Mode: update  (the old `/update-directions`)
 
-Pull the latest master and refresh the **global** config. Under the read-on-demand model, universal
-docs live only in the master and are read on demand via the Directions Index in `~/.claude/CLAUDE.md`
-— so in a *consumer project* this **removes** stale copied docs, it doesn't add any.
+Pull the latest master and refresh the **active tool's** global adapter. Universal docs stay in the
+master and are read on demand through the generated Directions Index; a consumer-project update
+removes stale copies, it never adds them.
 
-1. **Find master** — the "Local master:" path in `~/.claude/CLAUDE.md`, else
-   `/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS`.
-2. **Pull** — `cd <master> && git pull origin main` (warn first if the master has uncommitted changes).
-3. **Refresh global `~/.claude/`:**
-   ```bash
-   mkdir -p ~/.claude/commands
-   cp <master>/commands/*.md ~/.claude/commands/                       # commands are global — keep current
-   <master>/scripts/gen-directions-index.sh --write ~/.claude/CLAUDE.md # regenerate the Index (can't drift)
-   diff -q <master>/CLAUDE-GLOBAL-TEMPLATE.md ~/.claude/CLAUDE.md        # compare — do NOT auto-overwrite
-   ```
-   If `CLAUDE.md` differs beyond Index/paths, ask before changing (it has machine-specific paths +
-   personal sections): show the diff / merge specific sections / leave it (Index already refreshed).
-4. **Clean the current project** (only if `docs/PROJECT_STATE.md` exists): ensure the tree is clean, then
-   `git rm docs/[0-9][0-9]_*.md` and any copied command/skill/cookbook/template mirrors. **Never touch**
-   `docs/PROJECT_STATE.md`, `docs/decisions.md`, `docs/sessions/*`, `docs/glossary.md`, or the project's
-   root `CLAUDE.md`. Commit: `chore(directions): drop copied universal docs — read-on-demand via global Index`.
-5. **Restart reminder** — if the pull changed `hooks/hooks.json`, `scripts/*.py`, or
-   `.claude-plugin/plugin.json`, tell the user to restart Claude Code for it to take effect.
+1. **Find master:**
+   - Codex → resolve the active Directions skill symlink, then the `Local master:` value in
+     `$CODEX_HOME/AGENTS.md` (default `~/.codex/AGENTS.md`).
+   - Claude Code → read `Local master:` from `~/.claude/CLAUDE.md`.
+   - Last fallback → `/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS` when it exists.
+   Verify that the result contains `commands/` before continuing.
+2. **Inspect before pulling** — show `git -C <master> status --short` and the current branch. If the
+   tree is dirty, warn and stop for a decision; do not mix a pull with unexplained local changes.
+3. **Pull** — after a clean-tree check, run `git -C <master> pull --ff-only origin main`.
+4. **Refresh the active adapter:**
+   - Codex → run `bash <master>/deploy-codex.sh --dry-run`, show the result, then ask before running
+     `bash <master>/deploy-codex.sh` because it updates the active Codex home (`skills/` and
+     `AGENTS.md`).
+   - Claude Code → run `bash <master>/redeploy.sh --dry-run`, show the result, then ask before running
+     `bash <master>/redeploy.sh` because it updates `~/.claude`.
+   - If both tools are intentionally in use, offer both deployers; do not assume dual installation.
+5. **Clean a consumer project only when stale copies actually exist.** Preserve
+   `docs/PROJECT_STATE.md`, `docs/decisions.md`, `docs/sessions/*`, `docs/glossary.md`, root
+   `AGENTS.md`, and root `CLAUDE.md`. Show the exact copied universal files first. Remove them only
+   from a clean tree and with confirmation, then offer the commit
+   `chore(directions): drop copied universal docs — read on demand`.
+6. **Reload reminder** — if Codex global guidance, skills, or hooks changed, start a new Codex
+   session. If Claude commands, hooks, or plugin files changed, restart Claude Code.
 
-**Net effect:** one source of truth (the master) + a generated Index; consumer `docs/` folders hold
-only project-specific state. See `sessions/2026-06-08.md` for why copies drift.
+**Net effect:** one procedural source (the master) + thin tool adapters + a generated Index;
+consumer `docs/` folders hold only project-specific state. See `sessions/2026-06-08.md` for why
+copies drift.

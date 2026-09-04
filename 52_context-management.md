@@ -1,5 +1,5 @@
 <!--
-TRIGGERS: context, token limit, context too big, CLAUDE.md bloated, large project,
+TRIGGERS: context, token limit, context too big, AGENTS.md bloated, CLAUDE.md bloated, large project,
           context rot, compacting, /compact, /clear, prompt engineering,
           information environment, progressive loading, router pattern
 PHASE: any
@@ -26,8 +26,8 @@ Context problems show up at three different levels. Each needs its own disciplin
 
 | Layer | What it controls | Symptom when wrong |
 |-------|------------------|---------------------|
-| **Architecture** | How your project's docs are structured | CLAUDE.md is 400 lines, 90% irrelevant to current task |
-| **Runtime** | How context behaves during a session | Quality degrades after 70%; Claude forgets earlier instructions |
+| **Architecture** | How your project's docs are structured | The always-loaded entry point is 400 lines and mostly irrelevant |
+| **Runtime** | How context behaves during a session | Responses lose precision as an oversized conversation accumulates |
 | **Information design** | What you actually put in the context | "Fix the bug" without code, errors, or constraints — vague results |
 
 Get all three right and you ship 2-3x faster with fewer corrections.
@@ -40,25 +40,27 @@ Get all three right and you ship 2-3x faster with fewer corrections.
 
 ## The Problem
 
-As projects grow, monolithic CLAUDE.md files become problematic:
+As projects grow, monolithic agent entry points become problematic:
 
 | Issue | Impact |
 |-------|--------|
-| **Token waste** | 400+ line CLAUDE.md consumes context even when 90%+ is irrelevant |
-| **Attention dilution** | Claude tries to follow all rules simultaneously → confusion |
+| **Token waste** | A 400+ line `AGENTS.md` or `CLAUDE.md` consumes context even when most is irrelevant |
+| **Attention dilution** | The agent tries to follow all rules simultaneously → confusion |
 | **Maintenance overhead** | One giant file becomes unwieldy |
 
 **Solution:** Progressive context loading — load only documentation relevant to the current task.
 
 ## The Router Pattern
 
-Create a **lean main CLAUDE.md** (50-100 lines) that serves as a router, with detailed docs split into topic-specific files loaded only when needed.
+Create a lean project entry point that serves as a router, with detailed docs split into topic-specific
+files loaded only when needed. Use `AGENTS.md` for Codex and `CLAUDE.md` for Claude Code.
 
 ### Directory Structure
 
 ```
 project/
-├── CLAUDE.md                    # Main router (lean, always loaded)
+├── AGENTS.md                    # Codex entry point (when used)
+├── CLAUDE.md                    # Claude Code entry point (when used)
 ├── docs/
 │   ├── frontend-guidelines.md   # Loaded only for frontend work
 │   ├── backend-api-patterns.md  # Loaded only for backend work
@@ -66,15 +68,13 @@ project/
 │   ├── deployment-guide.md      # Loaded only for deployment
 │   └── security-guidelines.md   # Loaded only for auth/security
 └── src/
-    ├── frontend/
-    │   └── CLAUDE.md            # Nested context for frontend/
-    └── backend/
-        └── CLAUDE.md            # Nested context for backend/
+    ├── frontend/                # Optional nested host entry point
+    └── backend/                 # Optional nested host entry point
 ```
 
 ### Basic Router Example
 
-**Main CLAUDE.md:**
+**Main entry point (`AGENTS.md` or `CLAUDE.md`):**
 
 ```markdown
 # Project: My App
@@ -116,7 +116,7 @@ project/
 
 ## The "Pitch" Pattern
 
-Explain **why** and **when** to read files — dramatically improves Claude's loading decisions:
+Explain **why** and **when** to read files—this improves an agent's loading decisions:
 
 ```markdown
 ## Extended Documentation (Load Conditionally)
@@ -144,9 +144,13 @@ isolation rules that must be followed.
 **For simple View work, you do NOT need this file.**
 ```
 
-## Nested CLAUDE.md Pattern
+## Nested Entry-Point Pattern
 
-Claude Code automatically discovers nested CLAUDE.md files in subdirectories.
+Codex composes root and nested `AGENTS.md` instructions, with closer files applying to their subtree.
+Claude Code has its own nested `CLAUDE.md` discovery rules. Do not assume the two hosts use identical
+loading mechanics; see `64_codex.md` and `23_claude-code-cli.md`.
+
+The example below uses Claude Code naming:
 
 **How it works:**
 - **Root CLAUDE.md**: Always loaded at session start
@@ -221,7 +225,7 @@ DO NOT attempt to write tests without reading this file first.
 
 ## "DO NOT Load" Directives
 
-Explicitly tell Claude **not** to load files immediately:
+Explicitly tell the active agent **not** to load files immediately:
 
 ```markdown
 ## API Documentation Reference
@@ -288,17 +292,19 @@ Real-world data from production implementations:
 
 | Project Size | Approach | Strategy |
 |--------------|----------|----------|
-| **Small** (<10K LOC) | Single CLAUDE.md | Monolithic (50-150 lines) |
+| **Small** (<10K LOC) | Single host entry point | Monolithic (50-150 lines) |
 | **Medium** (10-50K LOC) | Router + 3-5 domain docs | Conditional routing |
-| **Large** (50-200K LOC) | Nested CLAUDE.md + router | Hierarchical |
-| **Very Large** (200K+ LOC) | Claude Skills | Progressive loading |
-| **Multi-repo** | Sub-agent orchestration | Specialized agents |
+| **Large** (50-200K LOC) | Nested entry points + router | Hierarchical |
+| **Very Large** (200K+ LOC) | Skills | Progressive loading |
+| **Multi-repo** | Optional subagent orchestration | Specialized agents when authorised |
 
-## Sub-Agent Orchestration
+## Optional Subagent Orchestration
 
-For very large projects, use orchestration with specialized Claude instances.
+For very large projects, delegation can isolate independent work when the user and active host
+instructions permit it. It is an optional context tool, not a requirement that the main agent avoid
+implementation.
 
-**Root CLAUDE.md (orchestrator):**
+**Provider-specific example (Claude Code):**
 ```markdown
 # Orchestrator Agent
 
@@ -410,7 +416,7 @@ Copy this as a starting point:
 
 ## The Problem: Context Rot
 
-As Claude's context window fills up, quality degrades:
+As a conversation accumulates context, quality can degrade:
 - Earlier instructions get "forgotten"
 - Responses become less precise
 - Code quality drops
@@ -441,7 +447,7 @@ Every file has a purpose and a size constraint:
 - `PROJECT_STATE.md` — source of truth for position
 - `decisions.md` — architectural history
 - `sessions/*.md` — daily logs
-- `CLAUDE.md` — project instructions
+- `AGENTS.md` and/or `CLAUDE.md` — durable host-specific project instructions
 
 **Temporary (execution artifacts):**
 - `IMPLEMENTATION_PLAN.md` — delete after execution completes
@@ -451,15 +457,16 @@ Temporary files prevent stale context from accumulating.
 
 ### 3. Orchestrator Pattern
 
-The main conversation should never exceed 40% context.
+Keep the main conversation focused. Delegate only independent, bounded work when delegation is
+authorised and provides a real context or latency benefit.
 
 ```
 Main Context (orchestrator)
 ├── Reads PROJECT_STATE.md, IMPLEMENTATION_PLAN.md
-├── Spawns subagents for heavy work
+├── May spawn subagents for independent work
 ├── Collects results
 ├── Updates state files
-└── Never does implementation directly
+└── May implement directly when that is clearer or safer
 
 Subagent (fresh context)
 ├── Receives only: task description, target files, success criteria
@@ -481,9 +488,10 @@ Wave 2: [D] [E]      ← depend on Wave 1
 Wave 3: [F]          ← verification
 ```
 
-Each task in a wave runs in a fresh subagent context.
+Tasks in a wave may use fresh subagent contexts when delegation is available and authorised. Waves
+still help sequence dependencies when one agent executes them serially.
 
-### 5. The 70% Rule
+### 5. The 70% Heuristic
 
 Community-derived guideline: treat ~70% context usage as your practical ceiling.
 
@@ -495,24 +503,33 @@ Community-derived guideline: treat ~70% context usage as your practical ceiling.
 | **Yellow** | 50-70% | Start thinking about compacting |
 | **Orange** | 70-85% | Don't read more files than needed. Prepare to compact |
 | **Red** | 85-95% | Stop new work. Compact now |
-| **Critical** | 95%+ | `/clear` immediately, create a handoff document first |
+| **Critical** | 95%+ | Record a handoff, then compact or start a fresh conversation |
 
-Response quality starts dipping before auto-compact triggers at ~95%. Keep headroom for complex tasks.
+Keep more headroom for complex tasks. Exact degradation and automatic compaction behaviour vary by
+model and client; the zones above are operating heuristics, not product guarantees.
 
-**Implemented by:** the status-line context gauge (`claude-statusline/statusline.sh`, `C_GAUGE` selection) colors itself from these exact five bands. If you change a threshold here, follow it there.
+The Claude status-line context gauge (`claude-statusline/statusline.sh`, `C_GAUGE` selection) mirrors
+these bands. Codex users can select context fields with `/statusline`; the exact presentation is
+host-specific.
 
 ### 6. Checking Context Usage
 
-**The `/status full` command** shows token breakdown:
+Use the active host's session status:
+
+| Host | Control |
+|---|---|
+| Codex | `/status` for session/context state; `/usage` for account usage |
+| Claude Code | `/status full` for the detailed session breakdown |
+
+Example Claude Code output:
 ```
-claude-sonnet-4-20250514 * 17k/200k tokens (8%)
+<current model> * <used>/<window> tokens (<percent>)
 Breakdown:
-- System prompt: 3,200 tokens (1.6%)
-- System tools: 11,600 tokens (5.8%)
-- Custom agents: 69 tokens (0.0%)
-- Memory files: 743 tokens (0.4%)
-- Messages: 1,200 tokens (0.6%)
-- Free space: 183,300 tokens (91.6%)
+- System prompt
+- System tools
+- Agent instructions and skills
+- Messages
+- Free space
 ```
 
 **Typical context breakdown:**
@@ -521,11 +538,12 @@ Breakdown:
 |----------|-----------|
 | System instructions | 5-10% (always present) |
 | Tool definitions (MCP, skills) | 5-15% (even if not used!) |
-| CLAUDE.md files | 1-5% |
+| Agent instruction files | 1-5% |
 | Conversation history | 40-70% (the big one) |
 | Response buffer | 10-20% |
 
-**Status bar shortcut:** `Ctx(u): 56.0%` — this percentage is the one to watch. Configure via `/terminal-setup`.
+Persistent context visibility is useful when the host supports it. Codex configures this with
+`/statusline`; the repository's Claude status-line integration uses its own context gauge.
 
 **When to check:**
 - Start of each session (know your baseline)
@@ -536,7 +554,7 @@ Breakdown:
 ### 7. What Degradation Looks Like
 
 Signs appear in this order:
-1. **Terse answers** where Claude used to give detailed ones
+1. **Terse answers** where the agent previously gave detailed ones
 2. **Context bleeding** — confusing current task with something discussed earlier
 3. **Lost instruction following** — style preferences and rules from earlier get ignored
 4. **Confident mistakes** — contradicts things it said earlier without awareness
@@ -559,7 +577,7 @@ By the time you notice symptoms, quality has already been degrading for a while.
 /compact Preserve the full list of modified files
 ```
 
-**Add to your CLAUDE.md:**
+**Add to the appropriate project entry point:**
 ```markdown
 # Compact instructions
 When compacting, always preserve:
@@ -568,23 +586,21 @@ When compacting, always preserve:
 - Key architectural decisions
 ```
 
-**`/clear` vs `/compact`:**
-- `/clear` — switching to unrelated work, context over 80%, starting fresh would be faster
-- `/compact` — need to preserve task context, continuing related work, hit a milestone in same domain
+**Fresh conversation vs `/compact`:**
+- Start fresh when switching to unrelated work or when polluted context costs more than reconstruction.
+- Use `/compact` when continuing related work and the current evidence still matters.
+- In Codex use `/new` or `/clear` for a fresh conversation; in Claude Code use `/clear`.
 
 ### 9. Context-Saving Strategies
 
-**Use CLAUDE.md for persistent instructions:** Instructions in conversation consume
-context every time. CLAUDE.md instructions consume context once and stay across
-sessions. Move repeated guidance there (coding style, conventions, terminology).
-Keep CLAUDE.md under 500 lines.
+**Use the host entry point for persistent instructions:** Move repeated, durable project guidance to
+`AGENTS.md` and/or `CLAUDE.md`. Keep changing state in `PROJECT_STATE.md`, plans, decisions, and logs.
 
-**Use skills instead of CLAUDE.md for workflow-specific instructions:** Skills load
+**Use skills instead of the entry point for workflow-specific instructions:** Skills load
 on-demand only when invoked, saving context until needed.
 
-**Subagents for research:** Each subagent runs in its own context window. Verbose
-output stays there. Only the relevant summary returns to your session. One of the
-most effective context-saving techniques.
+**Subagents for bounded research:** When authorised, a fresh subagent context can keep verbose
+exploration out of the main conversation. Delegate only work that is genuinely independent.
 
 **Disable unused MCP servers:** MCP servers consume tokens just by existing (tool
 definitions always loaded). Disable via `/mcp` to reclaim context. CLI tools like
@@ -902,11 +918,11 @@ The Directions system is designed for context engineering:
 
 | File | Provides Context For |
 |------|---------------------|
+| `AGENTS.md` | Codex project instructions and constraints |
 | `CLAUDE.md` | Claude Code project instructions |
 | `PROJECT_STATE.md` | Current focus, phase, blockers |
 | `specs/[feature].md` | Feature requirements and acceptance criteria |
 | `decisions.md` | Why things are the way they are |
-| `AGENTS.md` | Codex project instructions and constraints |
 
 ### Loading Order
 
@@ -917,9 +933,9 @@ The Directions system is designed for context engineering:
 4. Relevant code     → What we're changing
 ```
 
-## Claude Instructions
+## Project Instruction Template
 
-Add to CLAUDE.md:
+Adapt this for `AGENTS.md` and/or `CLAUDE.md`:
 
 ```markdown
 ## Context Discipline
@@ -945,18 +961,18 @@ When asking me to do something:
 
 | Anti-Pattern | Problem | Fix |
 |--------------|---------|-----|
-| **Monolithic CLAUDE.md** | 400+ lines always loaded; 90% irrelevant | Router pattern + conditional docs |
-| **Claude ignores conditionals** | All @-referenced files load immediately | Use "**DO NOT load**" directives; separate references from instructions |
-| **Nested CLAUDE.md not loading** | Subdirectory rules ignored | Claude loads nested CLAUDE.md only when reading/writing files in that dir — instruct it explicitly |
+| **Monolithic entry point** | Hundreds of always-loaded lines are mostly irrelevant | Router pattern + conditional docs |
+| **Agent ignores conditionals** | Referenced files load too eagerly | Use explicit when-to-read language; separate references from instructions |
+| **Nested instructions not applying** | Subtree rules are ignored | Verify the active host's instruction chain and place rules in the correct scope |
 | **Weak trigger language** | "See docs/testing.md" — gets ignored | Use IMPORTANT/MUST + explicit "before X you MUST read Y" |
 
 ### Runtime anti-patterns
 
 | Anti-Pattern | Problem | Fix |
 |--------------|---------|-----|
-| **The Kitchen Sink** | Mixing unrelated tasks fills context with noise | `/clear` between unrelated tasks |
-| **The Correction Spiral** | Three rounds of corrections = half the context is failed approaches | After 2 failed corrections, `/clear` + rewrite the prompt |
-| **Heavy work in main context** | Orchestrator does implementation directly | Spawn subagents; orchestrator stays light |
+| **The Kitchen Sink** | Mixing unrelated tasks fills context with noise | Start a fresh conversation between unrelated tasks |
+| **The Correction Spiral** | Three rounds of corrections leave failed approaches in context | After 2 failed corrections, reassess evidence and start fresh when needed |
+| **Needless orchestration** | Work is split despite tight dependencies | Implement directly; delegate only independent bounded work when authorised |
 | **Stale temp files** | `IMPLEMENTATION_PLAN.md`/`RESUME.md` linger after use | Delete aggressively when done |
 | **Bloated session logs** | Logs grow past 200 lines | Summarize, archive old details to decisions.md |
 | **Just-in-case context** | Reading files "in case we need them" | Load only what the current task requires |
@@ -975,8 +991,8 @@ When asking me to do something:
 ### Do
 - Delete temporary files aggressively
 - Summarize, don't duplicate
-- Spawn subagents for implementation
-- Keep orchestrator context light
+- Use subagents for independent work when authorised and beneficial
+- Keep the main context focused
 - Trust the file system as memory
 
 ---
@@ -1002,15 +1018,12 @@ Ending Session?
 └── Emergency → at minimum update PROJECT_STATE.md
 ```
 
-## Verification commands
+## Host context controls
 
-| Command | Purpose |
-|---------|---------|
-| `/status full` | View currently loaded context |
-| `/memory` | View all CLAUDE.md files discovered |
-| `/compact` | Compress current context |
-| `/clear` | Wipe context, start fresh |
-| `claude doctor` | Health check for configuration |
+| Host | Controls |
+|---|---|
+| Codex | `/status` for session/context state; `/usage` for account usage; `/compact`; `/new` or `/clear`; `/statusline` for persistent fields |
+| Claude Code | `/status full`; `/memory`; `/compact`; `/clear`; `claude doctor` |
 
 ## File lifecycle
 
@@ -1024,15 +1037,18 @@ Ending Session?
 
 ## Key principles
 
-1. **Main CLAUDE.md as index** (50-100 lines, always loaded)
+1. **Lean `AGENTS.md` and/or `CLAUDE.md` as the host entry point**
 2. **Domain-specific docs** split into separate files
 3. **Explicit "when to read" conditions** using natural language
 4. **"Pitch" pattern** explaining why and when docs matter
-5. **Nested CLAUDE.md** for directory-specific context
+5. **Nested host instructions** for directory-specific context when supported
 6. **Progressive loading** only what's needed for current task
-7. **Stay under 70%** context usage during sessions
-8. **Orchestrator + subagents** for heavy work
+7. **Preserve headroom**; treat 70% as a heuristic rather than a product boundary
+8. **Delegate independent work deliberately** when authorised
 9. **Show, don't reference** — paste the code, the error, the constraint
+
+Before escalating model capability, follow the diagnosis order in `60_model-selection.md`: clarify,
+improve context, compact or start fresh, then increase effort or model capability.
 
 ---
 
@@ -1044,6 +1060,8 @@ Ending Session?
 - [How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature)
 - Context-management patterns adapted from [Get Shit Done](https://github.com/glittercowboy/get-shit-done) by glittercowboy
 - "Context Engineering" concept from *Beyond Vibe Coding*
+
+Provider-specific controls: `23_claude-code-cli.md` and `64_codex.md`.
 
 ---
 

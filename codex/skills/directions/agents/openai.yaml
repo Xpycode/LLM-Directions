@@ -1,6 +1,6 @@
 interface:
   display_name: "Directions"
-  short_description: "Shared Claude and Codex project workflows"
+  short_description: "Specs, plans, execution, checks, state, and logs"
   default_prompt: "Run status for this project using the shared Directions workflow."
 
 policy:

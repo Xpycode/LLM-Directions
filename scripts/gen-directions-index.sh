@@ -2,7 +2,7 @@
 # gen-directions-index.sh — generate the "Directions Index" table from each doc's TRIGGERS header.
 #
 # The Index maps topic → master doc so a running project reads the *current* doc on demand
-# (see the "Directions Index" section in the global CLAUDE.md). Generating it from the docs'
+# (see the "Directions Index" section in the tool's global instructions). Generating it from the docs'
 # own TRIGGERS: headers means the table can never drift from the docs.
 #
 # Usage:
@@ -87,7 +87,7 @@ build_body() {
   fi
   printf '\n**Why read-on-demand:** Universal docs used to be copied into each project at `/setup`, so updates\n'
   printf 'never reached already-set-up projects (N copies silently drift). This Index lets a running project —\n'
-  printf 'which only reliably reads global + local `CLAUDE.md` — pull the *current* master doc instead.\n'
+  printf 'which reads global + project instructions — pull the *current* master doc instead.\n'
 }
 
 BODY=$(build_body)

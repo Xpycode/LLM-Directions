@@ -128,7 +128,7 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | When the task involves… | Read |
 |---|---|
 | Directions: AI-Assisted Development System | `00_base.md` |
-| cheatsheet, quick lookup, shortcuts, daily reference, prompts, checklist | `01_quick-reference.md` |
+| cheatsheet, quick lookup, shortcuts, daily reference, Codex controls, Claude Code commands | `01_quick-reference.md` |
 | philosophy, mindset, how to think, validate code, spot bugs, red flags … | `02_mental-model.md` |
 | architecture, tech stack, what technology, how to build, interview answers, technical decision | `04_architecture-decisions.md` |
 | new project, starting project, project setup, init, create project | `10_new-project.md` |
@@ -162,21 +162,22 @@ task matches a trigger below, **read the master doc on demand** from `[LOCAL_DIR
 | package, SPM, reusable, extract, shared code, zPackages … | `45_packages.md` |
 | main menu, menu bar, NSMenu, Commands, CommandMenu, CommandGroup … | `46_main-menu.md` |
 | NavigationSplitView, HSplitView, AppKit controls, NSViewRepresentable, no SwiftUI controls, Tahoe sidebar … | `47_project-ui-conventions.md` |
-| context, token limit, context too big, CLAUDE.md bloated, large project | `52_context-management.md` |
+| context, token limit, context too big, AGENTS.md bloated, CLAUDE.md bloated, large project | `52_context-management.md` |
 | LLM Failure Modes | `53_llm-failure-modes.md` |
 | security, secrets, credentials, authentication, privacy, HIPAA … | `54_security-rules.md` |
 | spec, specification, requirements, PRD, mini-PRD, feature doc … | `55_spec-template.md` |
 | acceptance criteria, given when then, gherkin, BDD, testable requirements, test cases | `56_acceptance-criteria.md` |
 | checkpoint, git snapshot, rollback, save point, phase transition, safe state | `57_checkpoint-discipline.md` |
 | example mapping, discovery, requirements, edge cases, rules, complex feature | `59_example-mapping.md` |
-| model, haiku, sonnet, opus, which model, slow … | `60_model-selection.md` |
+| model, model selection, capability, reasoning effort, cheap, fast … | `60_model-selection.md` |
 | notarization, notarytool, "Developer ID", Developer ID Application, staple, stapler … | `61_distribution-notarization.md` |
 | final stretch, last 10%, last 1%, almost done, can't ship, endgame drags | `62_final-stretch-triage.md` |
 | Security Audit Checklist (OWASP / VibeSec) | `63_security-audit.md` |
+| Codex, AGENTS.md, CODEX_HOME, Codex skill, Codex setup, Codex hooks … | `64_codex.md` |
 
 **Why read-on-demand:** Universal docs used to be copied into each project at `/setup`, so updates
 never reached already-set-up projects (N copies silently drift). This Index lets a running project —
-which only reliably reads global + local `CLAUDE.md` — pull the *current* master doc instead.
+which reads global + project instructions — pull the *current* master doc instead.
 <!-- DIRECTIONS-INDEX:END -->
 
 ---

@@ -2,7 +2,8 @@
 
 > **What this is:** the standing per-Mac capability registry — signing identities, tooling,
 > OS/Xcode versions, and known permission blocks with their workarounds. Read the section for
-> the Mac you are on (label = `~/.claude/this-mac`, one line, lives outside Syncthing) **before
+> the Mac you are on (label = `~/.config/directions/this-mac`, with legacy
+> `~/.claude/this-mac` fallback; one line, lives outside Syncthing) **before
 > resuming machine-dependent work**: builds that need signing, UI automation, fixture capture.
 >
 > This is the *registry* companion to `37_multi-mac-discipline.md` Rule 2, which says to stamp

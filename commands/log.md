@@ -163,7 +163,10 @@ Command+Shift+V hotkey, and broke auto-paste system-wide while reporting every p
 Only in Mac-handoff mode (or when the user asks to commit). Plain mode does **not** commit.
 
 ```bash
-MAC=$(cat ~/.claude/this-mac 2>/dev/null || scutil --get LocalHostName 2>/dev/null || hostname -s)
+MAC=$(cat ~/.config/directions/this-mac 2>/dev/null \
+  || cat ~/.claude/this-mac 2>/dev/null \
+  || scutil --get LocalHostName 2>/dev/null \
+  || hostname -s)
 ```
 
 1. **Stage only what this session touched.** If `git status` shows unrelated in-flight code, name it
@@ -206,6 +209,7 @@ MAC=$(cat ~/.claude/this-mac 2>/dev/null || scutil --get LocalHostName 2>/dev/nu
    `✓ <Project> wrapped on <MAC> · log + state synced · committed · pushed — safe to switch; run /status arrive on the other Mac after Syncthing settles.`
    If something didn't happen (no remote, nothing to push), **say that** — never claim "pushed" if it wasn't.
 
+<!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
 ## 9 · Next-session model reminder  (last thing before clear)
 
 Switching models re-reads the whole context (a cache miss); doing it right after `/clear` at an empty
@@ -229,6 +233,7 @@ Map the phase and show a **loud** reminder (chat can't render red — use **bold
 | unknown / empty | skip — no phase recorded |
 
 Always append: **"Clear FIRST, then `/model <X>`, then start."** This is a reminder, not an action.
+<!-- CLAUDE-ONLY:END -->
 
 ## What `/log` intentionally does NOT do
 

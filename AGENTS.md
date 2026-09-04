@@ -47,6 +47,8 @@ Do not claim a build or test passed unless this repository actually provides and
 ## Known Gotchas
 
 - `CLAUDE-GLOBAL-TEMPLATE.md` is rendered and deployed to a machine-local Claude configuration; edit the template, not the deployed copy.
-- The Codex adapter intentionally reads the live Claude command library so both tools share one workflow source.
+- `CODEX-GLOBAL-TEMPLATE.md` is rendered into a marked block in machine-local
+  `$CODEX_HOME/AGENTS.md` (default `~/.codex/AGENTS.md`); edit the template, not the deployed block.
+- The Codex adapter intentionally reads the live shared command library so both tools use one workflow source.
 - Universal docs are read on demand. Copies in consumer projects drift and must not be reintroduced.
 - Several files may already be modified by Syncthing or another session; unrelated changes belong to the user.

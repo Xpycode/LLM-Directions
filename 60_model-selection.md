@@ -1,169 +1,151 @@
 <!--
-TRIGGERS: model, haiku, sonnet, opus, which model, slow, expensive, cost, fast, sub-agent, subagent
+TRIGGERS: model, model selection, capability, reasoning effort, cheap, fast, slow, expensive,
+          context problem, sub-agent, subagent, haiku, sonnet, opus, luna, terra, sol, astra
 PHASE: any
 LOAD: full
 -->
 
 # Model Selection Guide
 
-Which Claude model tier to use for which task. Optimize for the right balance of speed, cost, and reasoning depth.
+Choose capability and reasoning deliberately. Provider model names, aliases, prices, context windows,
+and availability change too quickly to serve as the framework's permanent vocabulary.
 
-**A note on durability:** model versions and benchmark numbers change often — this guide is written to survive those changes by describing *tiers* (Haiku / Sonnet / Opus) rather than pinning it to a specific model version. As of this writing the current families are the Claude 5 family (Fable 5, Sonnet 5, Haiku 4.5) and Opus 4.8, but always check `claude-code-guide` or the `claude-api` skill for the current model IDs rather than trusting a hardcoded string here.
-
----
-
-## Quick Selector
-
-```
-Simple / fast / read-only   →  Haiku
-Daily coding work           →  Sonnet
-Hard problems / high-stakes →  Opus
+```text
+Explore cheap.
+Build balanced.
+Reason deep.
+Escalate deliberately.
 ```
 
----
-
-## Model Comparison
-
-| Dimension | Haiku | Sonnet | Opus |
-|-----------|-------|--------|------|
-| **Relative cost** | Lowest | Mid | Highest |
-| **Relative speed** | Fastest | Fast | Slower — trades speed for depth |
-| **Context window** | 200K | 1M | 1M |
-| **Reasoning depth** | Shallow — good for pattern-matching, not judgment calls | Strong, everyday-capable | Deepest — best for ambiguity and high-stakes judgment |
-
-**Key insight:** the gap that matters most isn't raw benchmark scores (which shift every release) — it's how well each tier handles *ambiguity* and *large context*. Opus is the tier to reach for when a task requires holding a lot of context in mind and reasoning carefully about trade-offs; Haiku is the tier for narrow, well-specified, high-volume work.
-
-**Thinking depth is adaptive on current models** — Claude decides when and how much to think per request. There's no separate "thinking" tier to pick, and no manual thinking-budget keyword ladder to invoke (see `01_quick-reference.md`).
+Use the fastest and least resource-intensive available setting that can reliably finish the task.
+Provider-specific mappings belong in `23_claude-code-cli.md` and `64_codex.md`, not here.
 
 ---
 
-## Task-to-Model Map
+## Two Separate Controls
 
-### Haiku: fast, simple, high-volume
+Treat model choice and reasoning effort as independent controls:
 
-| Task | Why |
-|------|-----|
-| File exploration / search / grep | Read-only, speed matters. Built-in Explore agent already uses Haiku. |
-| Simple edits (typos, renames) | Trivial changes, no deep reasoning needed. |
-| Boilerplate / scaffolding | Templates and repetitive patterns. |
-| Code navigation / find usages | Pattern matching, not reasoning. |
-| Quick syntax questions | "How do I write X in Swift?" |
-| Documentation lookups | Searching and summarizing existing docs. |
-
-**Watch out:** quality can degrade on large or complex code generation. Don't use Haiku for complex multi-file changes — step up to Sonnet or Opus.
-
-### Sonnet: daily workhorse
-
-| Task | Why |
-|------|-----|
-| New feature implementation | Good code quality at reasonable speed. |
-| Standard bug fixing | Strong enough reasoning for most bugs. |
-| Test writing | Understands patterns, generates comprehensive cases. |
-| Code review (standard) | Good thoroughness-to-speed ratio. |
-| Single-file refactoring | Handles restructuring within a module well. |
-| Documentation writing | Clear, well-structured output. |
-| Moderate multi-file changes | Coordinates across several related files. |
-| CI/CD and build scripts | Config files, pipeline definitions. |
-
-**Default choice.** When unsure, start with Sonnet.
-
-### Opus: hard problems, high stakes
-
-| Task | Why |
-|------|-----|
-| Architecture decisions | Deepest reasoning, weighs trade-offs, asks the right questions. |
-| Complex multi-file refactoring | Maintains consistency across large restructuring. Self-corrects. |
-| Subtle / hard-to-reproduce bugs | Superior root cause analysis for timing, state, race conditions. |
-| Security audits | Catches vulnerabilities shallower tiers miss. |
-| Performance optimization | Reasons about algorithmic complexity and systemic bottlenecks. |
-| Large codebase comprehension | Best at retaining and reasoning over large amounts of context. |
-| Planning and orchestration | Plans the work, delegates to Sonnet/Haiku sub-agents. |
-| Critical code review | Self-correction catches issues others overlook. |
-| Migration projects | Framework migrations, API upgrades spanning many files. |
-
-**Use when the cost of getting it wrong is high.**
-
----
-
-## The Orchestration Pattern
-
-**Opus plans, Sonnet builds, Haiku explores.**
-
-```
-┌─────────────────────────────────────┐
-│  Opus (orchestrator)                │
-│  - Architecture decisions           │
-│  - Planning                         │
-│  - Reviewing critical output        │
-│                                     │
-│  Delegates to:                      │
-│  ├── Haiku sub-agents (explore)     │
-│  │   - File search                  │
-│  │   - Codebase navigation          │
-│  │   - Quick lookups                │
-│  └── Sonnet sub-agents (implement)  │
-│      - Feature implementation       │
-│      - Test writing                 │
-│      - Standard refactoring         │
-└─────────────────────────────────────┘
+```text
+effective capability = model capability × reasoning effort × relevant context
 ```
 
-In Claude Code CLI, the Task tool supports a `model` parameter:
+- **Model capability** controls the kind and difficulty of work the model can handle reliably.
+- **Reasoning effort** controls how much time and token budget the selected model spends planning,
+  analysing, and checking.
+- **Context quality** controls whether the model has the right evidence and constraints in the first
+  place.
+- **Parallelism** controls whether independent work is delegated. It is an orchestration choice, not
+  a synonym for maximum reasoning.
+
+Exact effort names and supported ranges vary by provider, model, client, and release. Choose by role
+rather than assuming every provider exposes the same ladder.
+
+---
+
+## Capability Tiers
+
+| Tier | Role | Swift/macOS/iOS examples |
+|---|---|---|
+| **A — Mechanical** | Clear, repeatable, low-risk work | Find every use of a protocol; rename a symbol; extract a list from logs; apply a known formatting change |
+| **B — Implementation** | Normal feature work and routine debugging | Add `Codable`; implement a SwiftUI settings pane; write tests; refactor a few related views |
+| **C — Deep reasoning** | Ambiguous, cross-cutting, or correctness-sensitive work | Diagnose an `@Observable` state bug; resolve actor isolation; review a multi-file migration; reason about data integrity |
+| **D — Frontier / end-to-end** | Large unfamiliar systems and sustained multi-step judgment | Plan a macOS architecture change; recover from repeated failed approaches; coordinate a high-risk migration or release audit |
+
+These are workflow roles, not claims that models from different providers are technically equivalent.
+
+---
+
+## Reasoning-Effort Ladder
+
+Use effort as a second dial after choosing an adequate capability tier.
+
+| Task | Starting role |
+|---|---|
+| Search, inspect, classify | Mechanical capability + low effort |
+| Tiny, fully specified edit | Mechanical capability + low effort |
+| Normal feature or test work | Implementation capability + medium effort |
+| Moderate refactor or ordinary debugging | Implementation capability + medium/high effort |
+| Subtle state or concurrency problem | Deep capability + high/extra-high effort |
+| Architecture or large unfamiliar system | Deep/frontier capability + high/extra-high effort |
+| Repeated failed attempts or exceptional risk | Frontier capability + the highest justified effort |
+
+Do not use maximum effort habitually. It is slower, consumes more usage, and cannot repair missing or
+misleading context.
+
+---
+
+## Escalation Order
+
+Before upgrading the model, ask whether the task is genuinely difficult or merely poorly framed.
+
+```text
+Clarify the task and success criteria
+→ provide missing evidence and constraints
+→ remove polluted context or compact/start fresh
+→ increase reasoning effort
+→ upgrade model capability
 ```
-model: "haiku"   → fast exploration
-model: "sonnet"  → implementation work
-model: "opus"    → deep reasoning
-```
 
-The built-in Explore agent already uses Haiku automatically.
+See `52_context-management.md` before treating repeated mistakes as proof that the model is too weak.
 
----
+### Upgrade when
 
-## When to Upgrade Models
+- architectural judgment or subtle trade-offs dominate the work;
+- concurrency, state, security, destructive operations, or data integrity raise the cost of error;
+- many interacting files or systems must remain consistent;
+- the codebase is unfamiliar and the task is ambiguous;
+- a well-contextualised approach has failed repeatedly.
 
-Switch from Sonnet to Opus when:
-- Bug fix attempt #2 fails (deeper reasoning needed)
-- Multi-file refactor touches >5 files
-- You need to understand a large unfamiliar codebase
-- Security or correctness is critical
-- The AI keeps making the same mistake (self-correction needed)
+### Downgrade when
 
-Switch from Opus to Sonnet when:
-- Implementation plan is clear, just needs execution
-- Writing tests from a well-defined spec
-- Straightforward feature work
-- Cost is a concern and reasoning depth isn't needed
+- the plan and acceptance criteria are already clear;
+- the work is repetitive or mechanically verifiable;
+- a focused test or deterministic check supplies strong backpressure;
+- exploration can be isolated from the judgment-heavy part of the task.
+
+Avoid rigid triggers such as “more than five files always requires the strongest model.” File count is
+only a weak proxy for coupling and risk.
 
 ---
 
-## Cost Optimization
+## Delegation and Parallelism
 
-| Strategy | Why |
-|----------|-----|
-| **Use Haiku for exploration** | Cheapest tier — fine for search/read-only tasks where speed matters more than judgment. |
-| **Sonnet for implementation** | Meaningfully cheaper than Opus, and sufficient quality for most day-to-day work. |
-| **Opus only for decisions** | Reserve the priciest tier for high-value reasoning — architecture, hard bugs, security. |
-| **Prompt caching** | Cache hits cost a fraction of base price — big savings for repeated context. |
-| **Keep files small** | Smaller context = fewer tokens = lower cost (see `52_context-management.md`). |
+Use subagents when the user or active instructions permit delegation and the work separates into
+meaningfully independent tasks. Give each task its own evidence, boundaries, and success criteria.
 
-**Rule of thumb:** If the task is "find" or "write boilerplate," use the cheapest tier. If the task is "decide" or "debug something subtle," use the best tier.
+Do not delegate merely to imitate a provider-specific model slogan. A capable main agent can implement
+directly; delegation is valuable when it reduces context pollution, shortens independent research, or
+adds a genuinely independent review perspective.
 
 ---
 
-## Multi-Model Validation
+## Independent Validation
 
-For critical code (security, data integrity, core algorithms):
+For concurrency, data integrity, destructive file operations, migrations, security-sensitive code, or
+high-stakes architecture:
 
-1. Write/review with Opus
-2. Copy to a different model family (Gemini, GPT) for independent review
-3. Compare findings — disagreements reveal blind spots
+1. Complete the primary implementation or review.
+2. Ask an independent reviewer—preferably another model family when available—to look for faults.
+3. Compare disagreements and investigate the underlying evidence.
+4. Verify with tests, builds, logs, or real user flows.
 
-Already in `01_quick-reference.md` as "Multi-Model Validation" technique.
+Cross-model agreement is not proof of correctness. Its value is independent fault-finding.
+
+---
+
+## Provider Mappings
+
+- `64_codex.md` — current Codex models, reasoning controls, usage, permissions, and daily CLI workflow
+- `23_claude-code-cli.md` — current Claude Code mapping and CLI controls
+
+Date and source provider mappings when updating them. Never infer technical equivalence from a shared
+workflow role.
 
 ---
 
 ## Related
 
-- `52_context-management.md` — Canonical context guide (architecture, runtime, information design)
-- `AGENTS.md` — Codex project instructions
-- `01_quick-reference.md` — Multi-model validation technique
+- `52_context-management.md` — diagnose missing, oversized, or polluted context before escalating
+- `01_quick-reference.md` — daily workflow and provider-specific controls
+- `53_llm-failure-modes.md` — distinguish capability failures from process and verification failures

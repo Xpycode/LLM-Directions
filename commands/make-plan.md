@@ -2,6 +2,7 @@
 
 Enter planning mode to create or update IMPLEMENTATION_PLAN.md.
 
+<!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
 ## Step 0 — Model tier check (nudge)
 
 Planning = decomposition + architecture = **Opus-tier** reasoning. Record the phase and read the model:
@@ -18,6 +19,7 @@ If `MODEL` is Sonnet or Haiku (under-powered for architecture), **nudge once, th
 > 🔴 **You're on `<MODEL>` — planning is Opus-tier reasoning. Consider `/model opus`.**
 
 If already Opus/Fable, say nothing and proceed.
+<!-- CLAUDE-ONLY:END -->
 
 ## When to Use
 

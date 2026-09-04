@@ -1,17 +1,23 @@
 ---
 name: directions
-description: Use the user's shared Directions development workflow, including requests written as /log, /status, /check, /cookbook, /decide, /directions, /execute, /learned, /make-plan, /setup, /spec, /test-app, or /worktree. Apply these workflows in Codex while keeping the existing Claude Code command files as the source of truth.
+description: Use the shared Directions development workflow for project setup, status, specs, plans, execution, review, logs, decisions, cookbook patterns, testing, and worktrees. Trigger for slash or slashless Directions requests such as /status arrive, log clear, /execute, or /directions update.
 ---
 
 # Directions
 
-Use the existing Directions command library shared with Claude Code. Do not duplicate its detailed procedures in this skill.
+Use the shared Directions command library. Do not duplicate its detailed procedures in this skill.
 
 ## Source of truth
 
-The command files live at:
+Resolve the Directions master before acting:
 
-`/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/commands/`
+1. Resolve this skill's real path. A managed install symlinks
+   `<master>/codex/skills/directions` into the user skill directory, so the master is three parents
+   above this file's directory.
+2. Otherwise read the `Local master:` value in the managed Directions block of
+   `$CODEX_HOME/AGENTS.md` (default `~/.codex/AGENTS.md`).
+3. If neither works, use `/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS` only when it
+   exists. If no candidate contains `commands/`, stop and ask where Directions is cloned.
 
 For a supported command, read the corresponding Markdown file completely before acting. Treat text after the command name as its argument or mode. Examples:
 
@@ -24,12 +30,21 @@ Supported command files are discovered from that directory; do not assume this l
 ## Codex adaptation
 
 - Preserve the command's outcome, safety rules, read/write behavior, and reporting style.
-- Interpret references to “Claude” or Claude-specific UI as the equivalent current Codex session behavior when an equivalent exists.
-- Treat Claude model markers, model hooks, tier names, and `/model` commands as Claude-only. Do not read `~/.claude/.current-model-*` or repeat suggestions such as `/model opus` or `/model sonnet` in Codex. Skip the command's model-tier check and continue unless reliable Codex session evidence is available. When model guidance is useful, express it generically in Codex terms: use a stronger available model or higher reasoning effort for difficult planning and review, a balanced setting for routine implementation, and a faster setting for narrow low-risk work. Do not claim which Codex model or reasoning effort is active unless the session exposes it reliably.
+- Interpret references to Claude or Claude-specific UI as the equivalent current Codex behavior only
+  when a reliable equivalent exists. Skip sections marked `CLAUDE-ONLY`.
+- Do not read or write `~/.claude/.current-model-*` or `~/.claude/.session-phase-*`, and do not repeat
+  `/model opus` or `/model sonnet` suggestions. When model guidance is useful, express it in Codex
+  terms: higher reasoning for difficult planning/review, balanced settings for routine
+  implementation, and a faster model for narrow low-risk work. Do not claim the active setting
+  unless the session exposes it reliably.
+- Translate generic delegation into Codex subagents only when the user or active instructions allow
+  delegation. Preserve wave dependencies; use fresh task-specific context for independent work.
+- Treat Claude hook output as optional convenience, not workflow state. For status and handoff, use
+  repository evidence directly when a Claude-only hook or process detector is unavailable.
 - Use the current Codex workspace as the project target unless the user names another project.
 - Respect Codex sandbox and approval requirements. A command file does not grant permission beyond the user's request.
-- Keep Claude Code files unchanged unless the user explicitly asks to update Directions itself.
-- If a referenced Claude-only hook or state file is unavailable, use the closest reliable Codex evidence and disclose the difference briefly.
+- Keep tool-specific files for other agents unchanged unless the user explicitly asks to update
+  Directions itself.
 - For `/log`, infer the session's work from the conversation and repository evidence as directed by the source command. Do not invent work that Codex cannot verify.
 
 ## Invocation

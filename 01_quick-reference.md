@@ -1,5 +1,6 @@
 <!--
-TRIGGERS: cheatsheet, quick lookup, shortcuts, daily reference, prompts, checklist
+TRIGGERS: cheatsheet, quick lookup, shortcuts, daily reference, Codex controls, Claude Code commands,
+          prompts, checklist
 PHASE: any
 LOAD: full
 -->
@@ -7,6 +8,10 @@ LOAD: full
 # Quick Reference Card
 
 *Print this. Keep it visible.*
+
+Directions works in Codex and Claude Code. Workflow commands below are shared; host controls are
+labelled explicitly. In Codex, prefer slashless Directions commands when a built-in slash command
+uses the same name.
 
 ---
 
@@ -56,7 +61,30 @@ Is this thread-safe? Should any classes be actors?
 
 ---
 
-## Keyboard Shortcuts
+## Codex Daily Controls
+
+| Command | Purpose |
+|---|---|
+| `/usage` | Account usage activity and available resets |
+| `/status` | Current session model, permissions, token use, and context |
+| `/model` | Choose model and reasoning effort |
+| `/permissions` | Change what Codex may do without asking |
+| `/statusline` | Configure persistent footer information |
+| `/plan` | Enter Codex planning mode |
+| `/review` | Review the working tree |
+| `/compact` | Compress a long conversation |
+| `/new` or `/clear` | Start a fresh conversation |
+| `/fork` | Branch the current conversation |
+| `/side` | Ask an ephemeral side question |
+| `/skills` | Browse and invoke skills |
+| `/mcp` | Inspect configured MCP tools |
+
+Codex `/status` is not Directions `status`. Use `status`, `status arrive`, or `$directions /status`
+for project state. See `64_codex.md` for the full distinction and current model mapping.
+
+---
+
+## Claude Code Keyboard Shortcuts
 
 | Action | Shortcut |
 |--------|----------|
@@ -103,7 +131,7 @@ Is this thread-safe? Should any classes be actors?
 
 ---
 
-## Skills Commands
+## Claude Code Skills Commands
 
 | Command | Purpose |
 |---------|---------|
@@ -119,19 +147,19 @@ Is this thread-safe? Should any classes be actors?
 
 ## Context Management
 
-| Situation | Action |
-|-----------|--------|
-| Starting a session | Check `/status full` for baseline |
-| Context 50-70% (Yellow) | Start thinking about compacting |
-| Context 70-85% (Orange) | `/compact` with focus; don't read more files than needed |
-| Context 85-95% (Red) | Stop new work — `/compact` now |
-| Context 95%+ (Critical) | `/clear` immediately (write a handoff first) |
-| Switching topics | `/rename`, then `/clear` |
-| Resuming later | `/resume session-name` |
+| Situation | Codex | Claude Code |
+|---|---|---|
+| Starting a session | `/status` | `/status full` |
+| Context 50-70% | Prepare to compact | Prepare to compact |
+| Context 70-85% | `/compact` with focus | `/compact` with focus |
+| Context 85%+ | Finish the current unit, record a handoff, then compact or start fresh | Finish the current unit, record a handoff, then compact or start fresh |
+| Switching topics | `/new` or `/clear` | `/rename`, then `/clear` |
+| Resuming later | `/resume` | `/resume [session]` |
 
 **Quick compaction:** `/compact Focus on [what matters most]`
 
-*Canonical zone table: `52_context-management.md` (§ "The 70% Rule") — this row set mirrors it.*
+*The percentages are heuristics, not product guarantees. See `52_context-management.md` for the
+canonical context guidance.*
 
 **The correction spiral fix:** After 2 failed corrections, `/clear` and rewrite your initial prompt.
 
@@ -139,9 +167,14 @@ Is this thread-safe? Should any classes be actors?
 
 ## Plan Mode
 
-**Enter:** `Shift+Tab` twice (or `/plan`)
+| Host | Enter planning mode |
+|---|---|
+| Codex | `/plan` or cycle collaboration mode with `Shift+Tab`; use `/permissions` separately for authority |
+| Claude Code | `/plan` or `Shift+Tab` twice with the standard mode order |
 
-**Note:** `/plan` here is Claude Code's built-in plan mode. Directions' own custom command that writes a plan file to `docs/` is `/make-plan` — a different command, renamed to avoid this collision.
+**Note:** `/plan` is the host's planning mode. Directions' `make-plan` writes
+`IMPLEMENTATION_PLAN.md`; it is a different workflow. In Codex, `/permissions` controls authority
+separately from the planning approach.
 
 **Use for:**
 - New features
@@ -203,18 +236,19 @@ Is this thread-safe? Should any classes be actors?
 
 ```
 project/
-├── CLAUDE.md           ← Rules for AI (<500 lines)
-├── SPEC.md             ← Current feature
+├── AGENTS.md           ← Codex project instructions
+├── CLAUDE.md           ← Claude Code project instructions (when used)
+├── IMPLEMENTATION_PLAN.md ← Active execution only
 ├── README.md           ← What it does
-└── .claude/
-    ├── skills/         ← Skills (SKILL.md files)
-    ├── commands/       ← Legacy slash commands
-    └── settings.json   ← Permissions
+└── docs/
+    ├── PROJECT_STATE.md ← Lean current state
+    ├── decisions.md     ← Durable choices
+    └── sessions/        ← Detailed history
 ```
 
 ---
 
-## CLAUDE.md Essentials
+## Project Entry-Point Essentials
 
 ```markdown
 # Project Name
@@ -265,7 +299,7 @@ Before committing:
 
 1. **Describe precisely** — not "broken," but exact symptom
 2. **Add logging** — trace the actual execution
-3. **Share logs** — let Claude analyze
+3. **Share logs** — let the coding agent analyse the evidence
 4. **Document fix** — add comment if tricky
 
 ---
@@ -278,10 +312,10 @@ Before committing:
 - Something feels off
 
 **How:**
-1. Claude reviews first
-2. Copy to Gemini or another model
+1. The primary agent reviews first
+2. Ask another model family for an independent review when the risk justifies it
 3. Compare findings
-4. Fix what both agree on
+4. Investigate disagreements; agreement alone is not proof
 
 ---
 
@@ -305,7 +339,7 @@ Before committing:
 
 1. **Interview before coding** — specs prevent rework
 2. **30-minute phases** — always be close to working
-3. **Adversarial review** — Claude has false confidence
+3. **Adversarial review** — coding agents can be confidently wrong
 4. **Verify actual usage** — build success ≠ feature works
 5. **Document the WHY** — prevent "fix it back to broken"
 
@@ -360,7 +394,7 @@ Let's start fresh. Here's what I need: [one sentence]
 - [ ] Move completed to DONE with dates
 - [ ] Promote from NEXT if ready
 - [ ] Remove LATER items you'll never do
-- [ ] Update CLAUDE.md with new learnings
+- [ ] Update `AGENTS.md` and/or `CLAUDE.md` only with durable project guidance
 
 ---
 
@@ -368,9 +402,11 @@ Let's start fresh. Here's what I need: [one sentence]
 
 | Level | File | Scope |
 |-------|------|-------|
-| User | `~/.claude/CLAUDE.md` | All projects |
-| Project | `./CLAUDE.md` | Team shared |
-| Local | `./CLAUDE.local.md` | Personal (not committed) |
+| Codex user | `$CODEX_HOME/AGENTS.md` | Personal guidance across Codex projects |
+| Codex project | `./AGENTS.md` | Repository or subtree guidance |
+| Claude user | `~/.claude/CLAUDE.md` | Personal guidance across Claude Code projects |
+| Claude project | `./CLAUDE.md` | Repository guidance |
+| Claude local | `./CLAUDE.local.md` | Personal, uncommitted guidance |
 
 ---
 
@@ -382,6 +418,8 @@ Let's start fresh. Here's what I need: [one sentence]
 | Testing | 34_testing.md |
 | TDD workflow | 34_testing.md (TDD section) |
 | Step-by-step curriculum | Directions-CURRICULUM.md |
+| Model and reasoning selection | 60_model-selection.md |
+| Codex CLI and integration | 64_codex.md |
 | Claude Code CLI | 23_claude-code-cli.md |
 | Large project context | 52_context-management.md (Part 1) |
 | SwiftUI bugs | 20_swiftui-gotchas.md |

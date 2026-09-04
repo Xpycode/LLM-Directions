@@ -109,7 +109,8 @@ Don't just grep for `try?` — check intent:
 
 ### Deep Review Option
 
-For thorough contextual analysis, use the `feature-dev:code-reviewer` agent:
+For thorough contextual analysis, use an available code-review subagent when delegation is
+authorized:
 
 ```
 Review this code for production readiness using contextual analysis.
@@ -174,12 +175,14 @@ Before distributing to users:
 [ ] CHANGELOG entry added
 [ ] Version number incremented
 [ ] Build number follows scheme (v1.2 → 1200, v1.3.4 → 1340) and matches sparkle:version in appcast
+[ ] Release artifact was built after the final source fix; record the source commit/time it came from
+[ ] Smoke test the actual signed/notarized/deployed artifact, not a same-version Debug or stale archive
 [ ] Code signed and notarized (macOS)
 ```
 
 ---
 
-## Asking Claude to Review
+## Review prompts
 
 ### Production Review Prompt
 

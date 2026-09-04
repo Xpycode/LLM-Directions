@@ -4,6 +4,7 @@ Run implementation tasks with fresh context per wave, preventing quality degrada
 absorbs `/next`** — use wave mode for parallel work, single-task mode (`/execute next`) to walk one
 task at a time.
 
+<!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
 ## Step 0 — Model tier check (NUDGE, not a gate)
 
 Executing a clear plan is the canonical **Sonnet-tier** job; Opus/Fable burns premium tokens on bulk
@@ -21,6 +22,7 @@ If `MODEL` looks like Opus/Fable/Haiku, **nudge once and CONTINUE** (don't stop)
 
 Then proceed. (The model read is best-effort — under two concurrent sessions the newest `.current-model-*`
 may be the *other* session's, so this is a nudge, never a hard gate. Chat can't render red — use **bold + 🔴**.)
+<!-- CLAUDE-ONLY:END -->
 
 ## Step 1 — Find or create the plan
 
@@ -43,7 +45,8 @@ Grouping: same wave = parallel (no inter-dependencies); next wave = depends on t
 
 ## Step 2 — Execute waves
 
-For each wave, spawn parallel developer subagents (`Task(subagent_type="developer", …)`). Each prompt MUST include:
+For each wave, use the active tool's parallel subagents when delegation is available and authorized.
+Each task prompt MUST include:
 - the specific task + target files + success criteria, and project context from `PROJECT_STATE.md`;
 - **fresh context only — no conversation history.**
 

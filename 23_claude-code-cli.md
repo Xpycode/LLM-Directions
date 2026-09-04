@@ -85,7 +85,27 @@ There is no `/continue` slash command. To pick up your last conversation, run `c
 
 ## Extended Thinking
 
-Thinking depth is **adaptive** on current Claude models — Claude decides when and how much to think per request based on task complexity. There is no fixed thinking budget to request, and the old `think` / `think hard` / `think harder` / `ultrathink` keyword ladder has no special effect on current models. See `60_model-selection.md` for tier-level model guidance.
+Thinking controls vary by Claude model. Current Fable, Sonnet, and Opus families use adaptive
+thinking, while Haiku 4.5 retains different thinking controls. The old `think` / `think hard` /
+`think harder` / `ultrathink` keyword ladder is not a durable control surface. Verify the selected
+model's current controls rather than copying a fixed thinking budget.
+
+See `60_model-selection.md` for provider-neutral selection and escalation guidance.
+
+## Current Model Mapping
+
+**Verified 2026-09-04.** This is a Claude-specific snapshot, not permanent Directions vocabulary.
+
+| Workflow role | Current Claude model |
+|---|---|
+| Mechanical / latency-sensitive | Claude Haiku 4.5 |
+| Balanced implementation | Claude Sonnet 5 |
+| Deep reasoning | Claude Opus 5 |
+| Highest-capability long-horizon work | Claude Fable 5 |
+
+These roles do not imply technical equivalence with Codex models. Recheck the official
+[Anthropic model status](https://docs.anthropic.com/en/docs/about-claude/model-deprecations) and model
+overview before changing saved configuration.
 
 ---
 

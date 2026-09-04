@@ -13,10 +13,10 @@ and `/minimums`.** It has four modes:
 ## Golden rule — audit and present, don't interrogate
 
 The old `/review` + `/minimums` walked 40+ checklist items asking "✓ this? ✓ that?". **Don't.**
-Claude does the audit itself, then presents **one bucketed findings table** and asks **at most one**
+The active agent does the audit, then presents **one bucketed findings table** and asks **at most one**
 question. Pattern-matching finds candidates; **context decides if they're real** — verify each match,
-don't just grep. For deep contextual analysis on a large diff, hand off to the `feature-dev:code-reviewer`
-agent (it filters by confidence and understands structure, not just patterns).
+don't just grep. For deep contextual analysis on a large diff, use an available review subagent when
+delegation is authorized (it should filter by confidence and understand structure, not just patterns).
 
 ---
 
@@ -60,8 +60,10 @@ Production readiness + baseline features, as an audit — not a 40-question walk
 1. **Load** `30_production-checklist.md` (release prep), `33_app-minimums.md` (baseline: auto-update,
    version visibility, signing, icons, logging, prefs, error/empty/loading states, shortcuts, About,
    menu bar, window state), and `62_final-stretch-triage.md` (the *methodology*: capture-don't-fix).
-2. **Audit against them yourself** — walk the code/app, don't quiz the user. Capture every gap; **do
-   not fix mid-pass** (#62 Rule 1).
+2. **Audit against them yourself** — walk the code/app, don't quiz the user. Verify that the release
+   artifact was produced after the final source fix and test the actual signed/deployed artifact,
+   not a same-version Debug build or stale archive. Capture every gap; **do not fix mid-pass** (#62
+   Rule 1).
 3. **Triage into three buckets** honestly (most "seems off" items are 2 or 3 wearing bucket-1 clothes):
    | Bucket | Definition | Default |
    |---|---|---|
@@ -108,5 +110,4 @@ Audit UI against **`42_design-system.md`** (house design system) + the app's own
 - **Extract learnings** — that's `/log` §4 (the old `/reflect`→`/compound` handoff now lives there).
 
 Source: `35_ai-code-quality.md`, `30_production-checklist.md`, `33_app-minimums.md`,
-`62_final-stretch-triage.md`, `63_security-audit.md`, `42_design-system.md`;
-`feature-dev:code-reviewer` agent for deep passes.
+`62_final-stretch-triage.md`, `63_security-audit.md`, `42_design-system.md`.
