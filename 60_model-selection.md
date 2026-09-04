@@ -107,6 +107,33 @@ See `52_context-management.md` before treating repeated mistakes as proof that t
 Avoid rigid triggers such as “more than five files always requires the strongest model.” File count is
 only a weak proxy for coupling and risk.
 
+## User-Facing Model-Fit Notice
+
+Model advice must be visible without becoming a recurring nag. Show one concise notice when:
+
+- a workflow transition changes the recommended capability or reasoning effort;
+- new evidence materially raises the task's ambiguity, coupling, or cost of error;
+- a well-contextualised approach has failed repeatedly; or
+- a pre-clear or Mac-handoff log recommends the setting for the next session.
+
+Do not repeat the notice while the recommendation is unchanged. Do not interrupt routine work merely
+to advertise a cheaper model. For a consequential upgrade, explain the reason before continuing.
+
+Use this shape:
+
+```text
+Model fit: this has become subtle state/concurrency work.
+Recommended: deep capability + high reasoning.
+Current setting: not reliably visible. Use the host's model control if you want to switch; otherwise I'll continue.
+```
+
+If the host reliably exposes the active model and effort, compare them directly. Otherwise say that
+the current setting is not reliably visible—never guess. Use provider-neutral capability roles in
+shared workflow files; a host-specific guide may add the exact current control or model name.
+
+At a session boundary, base the recommendation on the recorded **next action**, not merely the phase
+that just ended. Put it in the Resume/next-session block so a fresh session does not have to infer it.
+
 ---
 
 ## Delegation and Parallelism

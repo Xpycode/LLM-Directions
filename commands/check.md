@@ -72,8 +72,11 @@ Production readiness + baseline features, as an audit — not a 40-question walk
    | **3 — Polish** | nobody will notice | v1.1 |
    A large bucket 3 is good — it means the worst thing left is cosmetic.
 4. **Present one table** grouped by bucket + a summary line: "X/Y passed · N ship-blockers · [ready once
-   bucket 1 clears]". If there's no written "done for v1" line yet, write one now (#62 Rule 8) — it's
-   what gives bucket 3 permission to wait. Then one question: "add bucket-1 gaps to this session's tasks?"
+   bucket 1 clears]". If there's no written "done for v1" line yet, propose one (#62 Rule 8) — it is
+   what gives bucket 3 permission to wait. The audit is read-only until the user approves capture.
+   Ask one explicit question covering the whole batch: *"Capture these dispositions? Bucket 1 → active
+   plan, Bucket 2/3 → `TASKS.md` Backlog tagged v1.1, unconfirmed observations → Inbox."* After approval,
+   report what was recorded and restate the active focus.
 
 ## Mode: `security`
 

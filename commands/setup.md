@@ -66,6 +66,7 @@ already-set-up project never receives new house-style — which is exactly the f
 - `docs/sessions/_index.md` — session history index
 - `docs/decisions.md` — this project's decision log
 - `docs/glossary.md` — *project-specific* terms only (the personal glossary lives globally)
+- `docs/TASKS.md` — persistent Backlog + Inbox; use the master's `TASKS.md` as the structural template
 
 Use the entry-point templates in `12_documentation-templates.md`. Keep stable project facts aligned
 between them, but keep tool-specific behavior separate. The live `commands/*.md` library remains the

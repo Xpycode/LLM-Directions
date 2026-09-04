@@ -70,7 +70,8 @@ deployment.
    an equivalent fallback if `/setup` is intercepted by the interface. It creates or preserves the
    appropriate `CLAUDE.md` and/or `AGENTS.md` entry point plus the project-specific Directions files:
    `docs/PROJECT_STATE.md` (the setup sentinel), `docs/sessions/`, `docs/decisions.md`, and
-   `docs/glossary.md`. Universal guidance and command files are never copied.
+   `docs/glossary.md`, plus `docs/TASKS.md` for deferred work and observations. Universal guidance
+   and command files are never copied.
 2. Run `/spec deep` to create your first spec
 3. Run `/make-plan` to break into tasks, `/execute` to build
 
@@ -108,7 +109,8 @@ your-project/
     ├── PROJECT_STATE.md          ← Current funnel position (the sentinel)
     ├── sessions/                 ← Session logs
     ├── decisions.md              ← Why we chose X over Y
-    └── glossary.md               ← Project-specific terms
+    ├── glossary.md               ← Project-specific terms
+    └── TASKS.md                  ← Deferred work + unconfirmed observations
 
 LLM-Directions/ (this repo — read on demand, never copied)
 ├── 00_base.md                    ← System overview + document router
@@ -173,6 +175,19 @@ After each session, extract learnings:
 - Codex-specific operating constraints → `AGENTS.md`
 - Terms → `44_my-glossary.md`
 - Decisions → `decisions.md`
+
+### Focus protection
+
+When work exposes an unrelated issue, Directions acknowledges and records it before continuing:
+
+```text
+Captured → Backlog: export button alignment (should-fix, not blocking).
+Continuing: persistence crash investigation.
+```
+
+Current blockers enter the active plan, confirmed non-blockers enter `TASKS.md` Backlog, and
+unconfirmed one-off observations enter its Inbox. Model-fit advice appears once when the recommended
+capability changes and again in a pre-clear or Mac-handoff summary for the next session.
 
 ### Patterns Cookbook
 Reusable code patterns extracted from production apps. Copy-first beats building new.

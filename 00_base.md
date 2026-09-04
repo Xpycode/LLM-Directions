@@ -113,7 +113,33 @@ text—especially `/status`. Use the slashless form (`status`, `status arrive`) 
 | `AGENTS.md` | Codex project instructions | When Codex-specific operating rules change |
 | `specs/[feature].md` | Feature specifications | During /spec deep |
 | `decisions.md` | Architecture choices | When decisions made |
+| `TASKS.md` | Deferred actionable work + unconfirmed observations | When work is captured or triaged |
 | `sessions/YYYY-MM-DD.md` | Session logs | After significant work |
+
+---
+
+## Focus Protection: Capture, Then Continue
+
+When unrelated work surfaces during an active task, do not silently ignore it and do not switch focus
+without saying so. Classify it, record it in its one durable home, acknowledge that visibly, then
+restate the active focus:
+
+| Finding | Record in | Default |
+|---|---|---|
+| Blocks the current acceptance criterion or makes continuing unsafe | Active `IMPLEMENTATION_PLAN.md` task | Promote to current work |
+| Confirmed and actionable, but not blocking | `TASKS.md` Backlog | Defer |
+| Seen once, unclear, or not yet reproducible | `TASKS.md` Inbox | Observe before promoting |
+| Architectural choice actually made | `decisions.md` | Record the rationale |
+
+Use a short interaction such as:
+
+```text
+Captured → Backlog: export button alignment (should-fix, not blocking).
+Continuing: persistence crash investigation.
+```
+
+For a blocker, say why it is being promoted before changing focus. A session log may explain the
+history, but it is never the only home for an actionable deferred issue.
 
 ---
 
@@ -406,7 +432,8 @@ Plans are disposable:
     │   ├── _index.md
     │   └── YYYY-MM-DD.md
     ├── decisions.md              ← Why we chose X over Y
-    └── glossary.md               ← Project-specific terms
+    ├── glossary.md               ← Project-specific terms
+    └── TASKS.md                  ← Backlog + unconfirmed-observation Inbox
 
 Numbered universal docs, templates, and the cookbook stay in the Directions
 master repo and are read on demand — they are NOT copied here.

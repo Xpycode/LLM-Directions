@@ -23,6 +23,7 @@ Don't read full session logs or `tasks-archive.md` unless asked.
 **Report — aim for ≤8 lines, plain English. Skip any line with nothing to say.**
 - **Phase / focus** — one sentence: where we are + what's active.
 - **Tasks** — `N/M sprint · X% overall`, only if `TASKS.md` exists.
+- **Deferred** — `N confirmed · M awaiting reproduction`, only when Backlog or Inbox is non-empty.
 - **Blockers** — name them, or `none`.
 - **Last session** — one sentence, translated out of jargon (no SHAs).
 - **Next** — one concrete suggested action.

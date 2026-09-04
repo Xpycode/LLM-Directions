@@ -4,6 +4,12 @@ Run implementation tasks with fresh context per wave, preventing quality degrada
 absorbs `/next`** — use wave mode for parallel work, single-task mode (`/execute next`) to walk one
 task at a time.
 
+Before starting, apply `60_model-selection.md` → **User-Facing Model-Fit Notice**. Clear execution
+normally uses implementation capability with medium reasoning; keep deep capability when the plan
+contains subtle state, concurrency, security, destructive operations, or data-integrity work. Show
+one notice only when the recommendation changes. The Claude-specific block below fulfils this step
+for Claude Code; do not emit both notices.
+
 <!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
 ## Step 0 — Model tier check (NUDGE, not a gate)
 
@@ -53,6 +59,21 @@ Each task prompt MUST include:
 After each wave: review all subagent results · make atomic commits (`feat(wave-N): …`) · tick
 `IMPLEMENTATION_PLAN.md` and matching `TASKS.md` Current Sprint boxes · update `PROJECT_STATE.md`.
 If blocked: write a `RESUME.md` checkpoint, ask the user, spawn a `debugger` agent if needed.
+
+### Interruptions discovered during execution
+
+Protect the active focus using `00_base.md` → **Focus Protection**:
+
+1. Current blocker/safety issue → add or promote it in the active plan and say why focus is changing.
+2. Confirmed but non-blocking issue → add it to `TASKS.md` Backlog.
+3. Unconfirmed or one-off observation → add it to `TASKS.md` Inbox with the date and available evidence.
+4. Acknowledge the capture and restate the task being resumed. Do not ask whether to switch unless
+   the classification is genuinely ambiguous or the user must choose a priority.
+
+```text
+Captured → Backlog: export button alignment (should-fix, not blocking).
+Continuing: persistence crash investigation.
+```
 
 ## Step 3 — Verify
 

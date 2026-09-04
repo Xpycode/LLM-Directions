@@ -2,6 +2,11 @@
 
 Enter planning mode to create or update IMPLEMENTATION_PLAN.md.
 
+Before starting, apply `60_model-selection.md` → **User-Facing Model-Fit Notice**. Planning normally
+starts at deep capability with high reasoning. Show one provider-neutral notice only when that is a
+change or a consequential recommendation. The Claude-specific block below fulfils this step for
+Claude Code; do not emit both notices.
+
 <!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
 ## Step 0 — Model tier check (nudge)
 
@@ -120,7 +125,8 @@ Don't patch broken plans. Regenerate.
 
 ## TASKS.md Integration
 
-After creating IMPLEMENTATION_PLAN.md, sync with `docs/TASKS.md`:
+After creating IMPLEMENTATION_PLAN.md, sync with the task tracker (`docs/TASKS.md` in an installed
+project; root `TASKS.md` in the Directions master):
 
 1. **If tasks exist in Backlog:** Move relevant tasks to Current Sprint
 2. **If new tasks:** Add them to Current Sprint (they weren't in Backlog)

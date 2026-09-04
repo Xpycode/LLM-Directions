@@ -37,6 +37,10 @@ Supported command files are discovered from that directory; do not assume this l
   terms: higher reasoning for difficult planning/review, balanced settings for routine
   implementation, and a faster model for narrow low-risk work. Do not claim the active setting
   unless the session exposes it reliably.
+- Apply `60_model-selection.md` → **User-Facing Model-Fit Notice** at the workflow transitions named
+  by the active command. Show it once when the recommendation changes or risk makes an upgrade
+  consequential; do not repeat it while the fit is unchanged. In pre-clear or Mac-handoff mode,
+  record the next action's recommended capability and reasoning in the Resume/next-session block.
 - Translate generic delegation into Codex subagents only when the user or active instructions allow
   delegation. Preserve wave dependencies; use fresh task-specific context for independent work.
 - Treat Claude hook output as optional convenience, not workflow state. For status and handoff, use

@@ -36,7 +36,8 @@ mode mid-pass.
 - Context-switching from *finding* to *fixing* is what makes the endgame feel infinite — you never
   complete a full pass.
 - One full testing pass → collect everything → triage the batch → then fix.
-- Route into `ideas.md` (or the active backlog), not into the current diff.
+- Route confirmed actionable findings into `TASKS.md` Backlog; route one-off or unconfirmed findings
+  into `TASKS.md` Inbox. Do not put either into the current diff.
 
 ```
 FIND (full pass)  →  TRIAGE (whole batch)  →  FIX (by bucket)
@@ -102,11 +103,11 @@ Batching by *type* of off-ness (not just into one list) makes each pass faster a
 
 ---
 
-## Rule 7: A "weird stuff seen" log, separate from the backlog
+## Rule 7: A "weird stuff seen" inbox, separate from the backlog
 
 Not every "off" is real. Half are misremembered intended behavior or a one-off that never recurs.
 
-- Keep an inbox separate from `ideas.md`.
+- Keep these observations in `TASKS.md` Inbox, separate from the actionable Backlog.
 - Let items sit ~a day before promoting them to the actionable backlog.
 - This filters out a surprising amount of noise for free.
 

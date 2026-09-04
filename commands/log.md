@@ -22,7 +22,7 @@ The argument is the **wrap-up mode**, not a goal. Detect it; don't ask which mod
 
 | Arg contains… | Mode | The log MUST… |
 |---|---|---|
-| "clear", "next session", "for next time" | **pre-clear** | end with a **Resume block**: uncommitted work, exact next pickup point, any half-done edit. The next session starts cold. (Replaces the old `/handoff` doc — no separate handoff file.) |
+| "clear", "next session", "for next time" | **pre-clear** | end with a **Resume block**: uncommitted work, exact next pickup point, deferred-item counts, recommended model fit, and any half-done edit. The next session starts cold. (Replaces the old `/handoff` doc — no separate handoff file.) |
 | "switch Macs", "handoff", "other Mac", "depart" | **Mac-handoff** | run **§8 Leaving a Mac** — commit + push, stamped with this Mac; verify tree clean / pushed before declaring done. |
 | (none, "log it", "just log") | **plain** | a normal log; no resume/sync ceremony, no commit. |
 
@@ -45,7 +45,7 @@ Do NOT ask (see Golden rule).]
 - [Any architectural/design choices — significant ones also go to decisions.md, see §4]
 ## Next
 - [What to do next time]
-## Resume        ← pre-clear mode only: uncommitted work + exact pickup point
+## Resume        ← pre-clear mode only: uncommitted work + exact pickup point + deferred counts + model fit
 ## Sync          ← Mac-handoff mode only: unpushed commits, branch, what the other Mac pulls
 ```
 
@@ -114,6 +114,11 @@ Route learnings to their **one home**; skip silently if nothing emerged (don't a
 | A **workflow improvement** to Directions itself | this master repo |
 
 Report "Extracted: …" only if you routed something.
+
+Also reconcile issues captured during the session: confirmed non-blockers belong in `TASKS.md`
+Backlog; unconfirmed observations belong in its Inbox; current blockers belong in the active plan.
+Do not leave an actionable deferred issue only in prose. In pre-clear/Mac-handoff mode, report the
+deferred counts in the Resume/next-session summary so the user knows they were not forgotten.
 
 ## 5 · Archive completed tasks  (skip if no `TASKS.md` or nothing checked)
 
@@ -209,8 +214,23 @@ MAC=$(cat ~/.config/directions/this-mac 2>/dev/null \
    `✓ <Project> wrapped on <MAC> · log + state synced · committed · pushed — safe to switch; run /status arrive on the other Mac after Syncthing settles.`
    If something didn't happen (no remote, nothing to push), **say that** — never claim "pushed" if it wasn't.
 
+## 9 · Next-session model-fit reminder  (pre-clear or Mac-handoff only)
+
+Read the recorded next action and apply `60_model-selection.md` → **User-Facing Model-Fit Notice**.
+Add one line to the Resume/next-session block:
+
+```text
+Model fit: deep capability + high reasoning — next action is a concurrency diagnosis.
+```
+
+If the host exposes the active setting reliably, say whether to stay or switch and name the host's
+control. Otherwise say that the current setting is not reliably visible. This is a single boundary
+reminder, not a gate and not a recurring prompt. The actual next action wins over a mechanical
+phase mapping.
+
 <!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
-## 9 · Next-session model reminder  (last thing before clear)
+
+### Claude Code phase-marker integration
 
 Switching models re-reads the whole context (a cache miss); doing it right after `/clear` at an empty
 context is nearly free, mid-session at full context is the expensive moment. So the ritual is
@@ -223,7 +243,8 @@ echo "this session phase: ${PHASE:-unknown}"
 rm -f "$HOME/.claude/.session-phase-$SID" 2>/dev/null   # consume it — fresh phase set next session
 ```
 
-Map the phase and show a **loud** reminder (chat can't render red — use **bold + 🔴 + CAPS**):
+When it agrees with the actual next action, use the phase marker to add the exact Claude Code model
+command to the shared reminder (do not emit a second notice):
 
 | This session was | Show |
 |---|---|
@@ -232,7 +253,7 @@ Map the phase and show a **loud** reminder (chat can't render red — use **bold
 | `execute` | 🔴 **More execution? STAY ON SONNET. Planning next? → `/model opus`** |
 | unknown / empty | skip — no phase recorded |
 
-Always append: **"Clear FIRST, then `/model <X>`, then start."** This is a reminder, not an action.
+Append: **"Clear FIRST, then `/model <X>`, then start."** This is a reminder, not an action.
 <!-- CLAUDE-ONLY:END -->
 
 ## What `/log` intentionally does NOT do

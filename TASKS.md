@@ -15,10 +15,11 @@
 
 ---
 
-## Ideas
-<!-- Undeveloped concepts, not yet scoped into a task. Optional phase tag, e.g. "(Phase 2)". -->
+## Inbox
+<!-- Untriaged ideas and observations. For a possible bug, include date + evidence/repro status. -->
+<!-- Promote confirmed actionable work to Backlog; dismiss observations that do not recur. -->
 
-- [ ] [Idea description] (Phase: [phase])
+- [ ] [YYYY-MM-DD] [Observation or idea] — [evidence / not yet reproduced]
 
 ---
 
@@ -40,6 +41,7 @@ Archived task count is read from `tasks-archive.md` header.
 | `/execute` | Checks off tasks as waves complete |
 | `/log` | Archives checked tasks, updates PROJECT_STATE.md progress bar |
 | `/status` | Reports progress from checkbox counts |
+| Any active workflow | Captures non-blocking issues in Backlog and unconfirmed observations in Inbox |
 
 ---
 *Location: `docs/TASKS.md`. Parsed by Directions app.*

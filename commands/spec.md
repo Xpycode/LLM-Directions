@@ -9,6 +9,11 @@ Create a specification before implementation. **`/spec` absorbs `/interview` (de
 | "deep", "interview", or a whole new project | **discovery** | new project / complex system / many unknowns — multi-phase triangulation |
 | "examples", "example map" | **examples** | complex business logic — discover requirements through concrete examples |
 
+Before starting, apply `60_model-selection.md` → **User-Facing Model-Fit Notice**. Spec work normally
+starts at deep capability with high reasoning. Show one provider-neutral notice only when that is a
+change or a consequential recommendation. The Claude-specific block below fulfils this step for
+Claude Code; do not emit both notices.
+
 <!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
 ## Step 0 — Model tier check (nudge, don't gate)
 
@@ -65,8 +70,9 @@ Multi-phase discovery with triangulation. One question at a time; don't solve du
    Technical Considerations / Edge Cases / Out of Scope); set PROJECT_STATE funnel to `define` + note
    doc flags; map answers to tech via `04_architecture-decisions.md`.
 5. **Validate** — read back a 3-point summary + the acceptance criteria; correct and re-triangulate if needed.
-6. **TASKS.md** — extract actionable tasks from the acceptance criteria into `TASKS.md` Backlog (create
-   from template if absent). Report "Added N tasks. Run `/make-plan` to move them to Current Sprint."
+6. **TASKS.md** — extract actionable tasks from the acceptance criteria into the task tracker's
+   Backlog (`docs/TASKS.md` in an installed project; root `TASKS.md` in the Directions master). Create
+   it from the master template if absent. Report "Added N tasks. Run `/make-plan` to move them to Current Sprint."
 
 ## Mode: examples  (adds the old `/example-map`)
 
