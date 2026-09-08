@@ -1,0 +1,114 @@
+{
+  "fixtureVersion": 1,
+  "kind": "declarativeLifecycleScenarios",
+  "clock": "continuous milliseconds relative to scenario start",
+  "cases": [
+    {
+      "id": "cached-execute-after-revoke",
+      "criteria": [
+        "AC09",
+        "AC21"
+      ],
+      "given": {
+        "A": "active",
+        "id": "7",
+        "op": "execute",
+        "originalReply": "lost"
+      },
+      "when": [
+        "stop revokes grant",
+        "resend exact frame id 7"
+      ],
+      "expect": {
+        "error": "invalidGrant",
+        "additionalInputEvents": 0,
+        "originalSuccessReplayed": false
+      }
+    },
+    {
+      "id": "cached-active-status-after-revoke",
+      "criteria": [
+        "AC09",
+        "AC21"
+      ],
+      "given": {
+        "A": "active",
+        "statusId": "8",
+        "cachedReplyContainsCapability": true
+      },
+      "when": [
+        "revoke",
+        "resend status id 8",
+        "new status id 9"
+      ],
+      "expect": {
+        "cachedCapabilityErased": true,
+        "id8Error": "staleMessage",
+        "id9CapabilityPresent": false
+      }
+    },
+    {
+      "id": "terminal-replay-without-payload",
+      "criteria": [
+        "AC03",
+        "AC21"
+      ],
+      "given": {
+        "A": "awaitingDecision",
+        "requestKey": "k1",
+        "payload": "harmless sample"
+      },
+      "when": [
+        "humanNo",
+        "erase request text",
+        "retry equivalent k1 with new envelope id"
+      ],
+      "expect": {
+        "A": "denied",
+        "comparisonUsesKeyedFingerprint": true,
+        "retainedText": false,
+        "promptRecreated": false
+      }
+    },
+    {
+      "id": "clean-bootstrap",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "broker": "recovering",
+        "exclusiveLock": true,
+        "verifiedNewLoginOrBoot": true,
+        "completeWorkerInventory": true,
+        "managedWorkerCount": 0
+      },
+      "when": [
+        "durably create clean ledger marker"
+      ],
+      "expect": {
+        "broker": "ready",
+        "interventionRequired": false,
+        "oldGrantsRestored": false
+      }
+    },
+    {
+      "id": "incomplete-bootstrap-inventory",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "broker": "recovering",
+        "processInventory": "denied"
+      },
+      "when": [
+        "try initialization"
+      ],
+      "expect": {
+        "broker": "recovering",
+        "interventionRequired": true,
+        "outcome": "unavailable",
+        "newGrantsAllowed": false
+      }
+    }
+  ]
+}

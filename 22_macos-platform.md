@@ -488,6 +488,30 @@ let used  = total - free                            // NOT a per-volume "used" r
 
 ## Debugging Tools
 
+### Disposable AppKit input targets and process identity
+
+Observed in the [Directions Stop spike](verification/mac-control/stop-spike.md), macOS 27.0:
+
+- `NSTextView(frame:textContainer:)` does **not** build the text system for a nil container. A
+  view can receive key events while its string stays empty. Supply retained `NSTextStorage`,
+  `NSLayoutManager` and `NSTextContainer`, or use the initializer that constructs the text system.
+  Check actual insertion as well as event delivery. See Apple's
+  [initializer contract](https://developer.apple.com/documentation/appkit/nstextview/init%28frame%3Atextcontainer%3A%29).
+- A directly spawned AppKit executable may lack `NSRunningApplication.launchDate`. For an owned
+  worker/target boundary, obtain kernel start seconds/microseconds via `proc_pidinfo`, and verify
+  UID, expected parent and the full executable path. Recheck before use; PID alone is insufficient.
+- Foundation path standardization rewrote `/private/var` to `/var` while Python's `Path.resolve()`
+  retained `/private/var`. Mixed-language identity checks must agree on normalization; the spike
+  uses `proc_pidpath` plus POSIX `realpath` and compares full paths. Never repair this by matching
+  only a basename. Swift may not import expression macros such as `PROC_PIDPATHINFO_MAXSIZE`;
+  use the installed SDK's equivalent expression (`4 * MAXPATHLEN`).
+- Check permissions in the **actual executable and execution context**. This worker's nonprompting
+  checks were false in the agent shell sandbox and true in approved outside-sandbox execution,
+  with no TCC changes. One probe does not describe another executable's grants. Respect host
+  approval requirements; do not change permissions merely to hide a sandbox/context mismatch.
+
+### General tools
+
 | Tool | Purpose | Command |
 |------|---------|---------|
 | Console.app | System logs | GUI app |

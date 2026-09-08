@@ -1,0 +1,282 @@
+{
+  "fixtureVersion": 1,
+  "kind": "declarativeLifecycleScenarios",
+  "clock": "continuous milliseconds relative to scenario start",
+  "cases": [
+    {
+      "id": "lost-execute-reply",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "A": "active",
+        "s1": "consumed"
+      },
+      "when": [
+        "reply lost",
+        "execute s1 again while running",
+        "s1 completes",
+        "execute s1 again"
+      ],
+      "expect": {
+        "firstRetry": "inFlight",
+        "secondRetry": "recordedSuccess",
+        "stepDispatchCount": 1
+      }
+    },
+    {
+      "id": "changed-request-same-key",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "key": "k1",
+        "text": "harmless sample"
+      },
+      "when": [
+        "request k1 with changed text"
+      ],
+      "expect": {
+        "error": "idempotencyConflict",
+        "newRequestCount": 0,
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "mutated-execute",
+      "criteria": [
+        "AC09",
+        "AC21"
+      ],
+      "given": {
+        "A": "active"
+      },
+      "when": [
+        "execute s1 with extra text field"
+      ],
+      "expect": {
+        "error": "invalidMessage",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "out-of-order-step",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "A": "active",
+        "s1": "notStarted"
+      },
+      "when": [
+        "execute s2"
+      ],
+      "expect": {
+        "error": "outOfOrderStep",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "stale-progress",
+      "criteria": [
+        "AC07",
+        "AC21"
+      ],
+      "given": {
+        "A": "active",
+        "lastProgressSequence": 5
+      },
+      "when": [
+        "progress sequence 4"
+      ],
+      "expect": {
+        "result": "ignored",
+        "lastProgressSequence": 5,
+        "displayChanged": false
+      }
+    },
+    {
+      "id": "agent-cannot-approve",
+      "criteria": [
+        "AC01",
+        "AC09"
+      ],
+      "given": {
+        "A": "awaitingDecision"
+      },
+      "when": [
+        "client frame op approve"
+      ],
+      "expect": {
+        "error": "unknownOperation",
+        "A": "awaitingDecision",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "malformed-frame",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "A": "active",
+        "ownerConnection": true
+      },
+      "when": [
+        "duplicate JSON key or invalid UTF-8 or depth 13"
+      ],
+      "expect": {
+        "connectionClosed": true,
+        "A": "stopping",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "frame-size-boundary",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "connection": "registered"
+      },
+      "when": [
+        "valid 65536-byte object plus LF",
+        "65537 bytes without LF"
+      ],
+      "expect": {
+        "at65536": "parseAndValidate",
+        "at65537": "closeWithoutFurtherBuffering",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "wait-timeout-is-not-consent",
+      "criteria": [
+        "AC04",
+        "AC21"
+      ],
+      "given": {
+        "A": "deferred"
+      },
+      "when": [
+        "status waitMs 30000 times out"
+      ],
+      "expect": {
+        "A": "deferred",
+        "capabilityIssued": false
+      }
+    },
+    {
+      "id": "replay-cap-does-not-evict",
+      "criteria": [
+        "AC03",
+        "AC21"
+      ],
+      "given": {
+        "connectionRequestKeys": 256,
+        "deniedKey": "k1"
+      },
+      "when": [
+        "request new key",
+        "retry k1"
+      ],
+      "expect": {
+        "newKeyResult": "busy",
+        "retryResult": "denied",
+        "promptRecreated": false
+      }
+    },
+    {
+      "id": "clipboard-preserve-user-change",
+      "criteria": [
+        "AC22"
+      ],
+      "given": {
+        "workerClipboardChangeCount": 10,
+        "currentChangeCount": 11
+      },
+      "when": [
+        "stop",
+        "clipboard cleanup"
+      ],
+      "expect": {
+        "clipboardRestored": false,
+        "userClipboardPreserved": true,
+        "clipboardLogged": false
+      }
+    },
+    {
+      "id": "clipboard-owned-restoration",
+      "criteria": [
+        "AC22"
+      ],
+      "given": {
+        "workerClipboardChangeCount": 10,
+        "currentChangeCount": 10
+      },
+      "when": [
+        "step ends",
+        "clipboard cleanup"
+      ],
+      "expect": {
+        "clipboardRestored": true,
+        "clipboardLogged": false
+      }
+    },
+    {
+      "id": "fresh-launch-pending",
+      "criteria": [
+        "AC19"
+      ],
+      "given": {
+        "A": "active",
+        "oldCopiesExited": true,
+        "newArtifactLaunched": false
+      },
+      "when": [
+        "humanStop",
+        "worker quiescent"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "freshLaunchPending": true,
+        "newArtifactLaunched": false,
+        "newGrantRequired": true
+      }
+    },
+    {
+      "id": "background-inspection",
+      "criteria": [
+        "AC17"
+      ],
+      "given": {
+        "A": "active",
+        "B": "background"
+      },
+      "when": [
+        "B reads source or inspected read-only AX attributes"
+      ],
+      "expect": {
+        "BDesktopGrantRequired": false,
+        "ACapabilityChanged": false
+      }
+    },
+    {
+      "id": "legacy-script",
+      "criteria": [
+        "AC18"
+      ],
+      "given": {
+        "adapter": "unguardedSystemEventsScript"
+      },
+      "when": [
+        "Directions reaches focus-changing UI test"
+      ],
+      "expect": {
+        "test": "pending",
+        "remedy": "Use a verified bounded executor adapter",
+        "scriptRun": false
+      }
+    }
+  ]
+}

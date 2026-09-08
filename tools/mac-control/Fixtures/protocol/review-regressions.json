@@ -1,0 +1,325 @@
+{
+  "fixtureVersion": 1,
+  "kind": "declarativeLifecycleScenarios",
+  "clock": "continuous milliseconds relative to scenario start",
+  "cases": [
+    {
+      "id": "launch-bound-target",
+      "criteria": [
+        "AC15"
+      ],
+      "given": {
+        "target": "alreadyBound"
+      },
+      "when": [
+        "validate manifest launch target"
+      ],
+      "expect": {
+        "error": "targetChanged",
+        "inputEvents": 0,
+        "launchCount": 0
+      }
+    },
+    {
+      "id": "input-before-launch",
+      "criteria": [
+        "AC15"
+      ],
+      "given": {
+        "target": "unbound"
+      },
+      "when": [
+        "validate manifest typeText before launch"
+      ],
+      "expect": {
+        "error": "targetChanged",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "launch-identity-mismatch",
+      "criteria": [
+        "AC15"
+      ],
+      "given": {
+        "target": "approvedUnboundArtifact",
+        "launchAdmitted": true
+      },
+      "when": [
+        "launch returns mismatched process identity",
+        "attempt typeText"
+      ],
+      "expect": {
+        "state": "stopping",
+        "error": "targetChanged",
+        "textEvents": 0
+      }
+    },
+    {
+      "id": "worker-heartbeat-loss",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "A": "active",
+        "workerProcess": "alive",
+        "lastWorkerHeartbeatMs": 0
+      },
+      "when": [
+        "clock 2999ms",
+        "clock 3000ms",
+        "no drain by 4000ms"
+      ],
+      "expect": {
+        "at2999": "active",
+        "at3000": "stopping",
+        "at4000": "interventionRequired",
+        "admissionClosedAtMs": 3000,
+        "slot": "A"
+      }
+    },
+    {
+      "id": "worker-channel-eof",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "A": "active",
+        "workerProcess": "alive"
+      },
+      "when": [
+        "worker channel EOF"
+      ],
+      "expect": {
+        "A": "stopping",
+        "admissionClosedImmediately": true,
+        "slot": "A"
+      }
+    },
+    {
+      "id": "recovery-missing-ledger",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "broker": "starting",
+        "ledger": "missing",
+        "previousWorkers": "unknown"
+      },
+      "when": [
+        "attempt reserve"
+      ],
+      "expect": {
+        "broker": "recovering",
+        "interventionRequired": true,
+        "newGrantsAllowed": false
+      }
+    },
+    {
+      "id": "recovery-corrupt-ledger",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "broker": "starting",
+        "ledger": "corrupt"
+      },
+      "when": [
+        "attempt reserve"
+      ],
+      "expect": {
+        "broker": "recovering",
+        "interventionRequired": true,
+        "newGrantsAllowed": false
+      }
+    },
+    {
+      "id": "recovery-live-worker",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "broker": "starting",
+        "ledger": "valid",
+        "previousWorker": "alive"
+      },
+      "when": [
+        "load ledger"
+      ],
+      "expect": {
+        "broker": "recovering",
+        "newGrantsAllowed": false,
+        "oldGrantRestored": false
+      }
+    },
+    {
+      "id": "recovery-unknown-delivery",
+      "criteria": [
+        "AC11",
+        "AC12"
+      ],
+      "given": {
+        "broker": "starting",
+        "previousWorker": "exited",
+        "ledgerBoundary": "uncertain"
+      },
+      "when": [
+        "reconcile process exit"
+      ],
+      "expect": {
+        "broker": "recovering",
+        "interventionRequired": true,
+        "controlReturned": false
+      }
+    },
+    {
+      "id": "recovery-write-failure",
+      "criteria": [
+        "AC09",
+        "AC12"
+      ],
+      "given": {
+        "A": "active"
+      },
+      "when": [
+        "ledger pre-dispatch write fails",
+        "attempt post event"
+      ],
+      "expect": {
+        "A": "stopping",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "duplicate-envelope-request",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "id": "7",
+        "op": "request",
+        "response": "lost"
+      },
+      "when": [
+        "resend exact frame id 7"
+      ],
+      "expect": {
+        "replayedOrPendingOriginalReply": true,
+        "operationDispatchCount": 1
+      }
+    },
+    {
+      "id": "duplicate-envelope-execute",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "id": "7",
+        "op": "execute",
+        "response": "lost"
+      },
+      "when": [
+        "resend exact frame id 7"
+      ],
+      "expect": {
+        "replayedOrPendingOriginalReply": true,
+        "operationDispatchCount": 1
+      }
+    },
+    {
+      "id": "duplicate-envelope-release",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "id": "7",
+        "op": "release",
+        "response": "lost"
+      },
+      "when": [
+        "resend exact frame id 7"
+      ],
+      "expect": {
+        "replayedOrPendingOriginalReply": true,
+        "operationDispatchCount": 1
+      }
+    },
+    {
+      "id": "changed-envelope-id",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "id": "7",
+        "op": "request"
+      },
+      "when": [
+        "resend id 7 with changed body"
+      ],
+      "expect": {
+        "error": "idempotencyConflict",
+        "additionalEffects": 0
+      }
+    },
+    {
+      "id": "evicted-envelope-id",
+      "criteria": [
+        "AC21"
+      ],
+      "given": {
+        "highWaterId": "200",
+        "retainedCompletedIds": "73..200"
+      },
+      "when": [
+        "resend old id 7"
+      ],
+      "expect": {
+        "error": "staleMessage",
+        "additionalEffects": 0
+      }
+    },
+    {
+      "id": "cancel-unknown-step",
+      "criteria": [
+        "AC11",
+        "AC21"
+      ],
+      "given": {
+        "A": "stopping",
+        "reason": "humanStop",
+        "s1": "consumed"
+      },
+      "when": [
+        "matching quiescent with s1 indeterminate and verified no-future-input"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "s1": "unknown",
+        "stepRetryAllowed": false,
+        "controlReturned": true
+      }
+    },
+    {
+      "id": "release-unknown-step",
+      "criteria": [
+        "AC08",
+        "AC11",
+        "AC21"
+      ],
+      "given": {
+        "A": "stopping",
+        "reason": "release",
+        "s1": "consumed"
+      },
+      "when": [
+        "matching quiescent with s1 indeterminate and verified no-future-input"
+      ],
+      "expect": {
+        "A": "failed",
+        "s1": "unknown",
+        "stepRetryAllowed": false,
+        "reportedSuccess": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,290 @@
+{
+  "reportVersion": 2,
+  "date": "2026-09-06",
+  "case": "heartbeat-loss",
+  "environment": {
+    "machineLabel": "M1 Max",
+    "architecture": "arm64",
+    "macOS": "27.0",
+    "osBuild": "26A5421a",
+    "swift": "6.3.3",
+    "python": "3.14.7",
+    "execution": "actual Codex session, approved shell execution outside sandbox"
+  },
+  "scope": "Single disposable owned AppKit target; task 1.3 and Gate A remain incomplete",
+  "traceSHA256": "2c1e44fa42e86187393a48529ae37d536a6a7bb3e7d4408a6185055a35064a23",
+  "artifactSHA256": {
+    "worker": "2ad6317b228f310a4961142770edaac3653599f4dff609556524ef1cc3419468",
+    "target": "fe0cebd89a0f9a1eefe9bff72e0a3ab2c07abd7623cae0838418e3d4a016fe29"
+  },
+  "sourceSHA256": {
+    "client.py": "8f1a62b3e4765b0907f56f4956df699c11223b22bce36cad8c3e441f34f581fb",
+    "supervisor.py": "873a4c9976f1bf6ed99cc072e6300e9613dfa9895773e46ed86fe36947494c02",
+    "StopSpikeWorker.swift": "459c1553087b9fde8fff9e1898382d0e92bbaff71070607179539306ceb0333c",
+    "StopSpikeTarget.swift": "48fa937a5e399144314b8e019735e67ad2451e174207f2b73d8e527dae3de9c1",
+    "build.sh": "c873a3b7f32fd73e849b6763e7e9a0a149d26ed7a08dc775eeaaf3d894f1d868"
+  },
+  "countdownMs": 5007.110792,
+  "result": {
+    "result": "measured",
+    "drainVerified": true,
+    "drainMs": 10.571042,
+    "admittedEvents": 36,
+    "receivedEvents": 36,
+    "duplicateReceipt": false,
+    "workerExited": true,
+    "targetLost": false,
+    "ownedEventsObserved": 0,
+    "textPrefixesVerified": 18,
+    "targetOriginsVerified": 36,
+    "gateA": "closed",
+    "reason": "clientHeartbeatLost"
+  },
+  "liveness": {
+    "heartbeatAgeAtDetectionMs": 3003.094042,
+    "clientLossInjectionTimestampRecorded": false,
+    "lossToDetectionMs": null,
+    "strict3000msHeartbeatAgeMet": false,
+    "ac12": "not established: exact loss origin absent; restart untested"
+  },
+  "observationAfterStopMs": 2007.367542,
+  "admissionsAfterStop": 0,
+  "postsAfterWorkerClosure": 0,
+  "cleanupUpPostsAfterStop": 0,
+  "receipts": [
+    {
+      "sequence": 1,
+      "event": "keyDown",
+      "relativeToStopMs": -3681.814292,
+      "characterCount": 1,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 2,
+      "event": "keyUp",
+      "relativeToStopMs": -3631.805917
+    },
+    {
+      "sequence": 3,
+      "event": "keyDown",
+      "relativeToStopMs": -3524.393375,
+      "characterCount": 2,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 4,
+      "event": "keyUp",
+      "relativeToStopMs": -3421.76225
+    },
+    {
+      "sequence": 5,
+      "event": "keyDown",
+      "relativeToStopMs": -3316.809,
+      "characterCount": 3,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 6,
+      "event": "keyUp",
+      "relativeToStopMs": -3201.726625
+    },
+    {
+      "sequence": 7,
+      "event": "keyDown",
+      "relativeToStopMs": -3105.760792,
+      "characterCount": 4,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 8,
+      "event": "keyUp",
+      "relativeToStopMs": -2990.608625
+    },
+    {
+      "sequence": 9,
+      "event": "keyDown",
+      "relativeToStopMs": -2867.915708,
+      "characterCount": 5,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 10,
+      "event": "keyUp",
+      "relativeToStopMs": -2789.161833
+    },
+    {
+      "sequence": 11,
+      "event": "keyDown",
+      "relativeToStopMs": -2685.149292,
+      "characterCount": 6,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 12,
+      "event": "keyUp",
+      "relativeToStopMs": -2572.9505
+    },
+    {
+      "sequence": 13,
+      "event": "keyDown",
+      "relativeToStopMs": -2472.351208,
+      "characterCount": 7,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 14,
+      "event": "keyUp",
+      "relativeToStopMs": -2369.064958
+    },
+    {
+      "sequence": 15,
+      "event": "keyDown",
+      "relativeToStopMs": -2247.264167,
+      "characterCount": 8,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 16,
+      "event": "keyUp",
+      "relativeToStopMs": -2158.225958
+    },
+    {
+      "sequence": 17,
+      "event": "keyDown",
+      "relativeToStopMs": -2055.303583,
+      "characterCount": 9,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 18,
+      "event": "keyUp",
+      "relativeToStopMs": -1956.837958
+    },
+    {
+      "sequence": 19,
+      "event": "keyDown",
+      "relativeToStopMs": -1841.471375,
+      "characterCount": 10,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 20,
+      "event": "keyUp",
+      "relativeToStopMs": -1738.853875
+    },
+    {
+      "sequence": 21,
+      "event": "keyDown",
+      "relativeToStopMs": -1630.304708,
+      "characterCount": 11,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 22,
+      "event": "keyUp",
+      "relativeToStopMs": -1523.317792
+    },
+    {
+      "sequence": 23,
+      "event": "keyDown",
+      "relativeToStopMs": -1419.140625,
+      "characterCount": 12,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 24,
+      "event": "keyUp",
+      "relativeToStopMs": -1322.12025
+    },
+    {
+      "sequence": 25,
+      "event": "keyDown",
+      "relativeToStopMs": -1205.636792,
+      "characterCount": 13,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 26,
+      "event": "keyUp",
+      "relativeToStopMs": -1107.550542
+    },
+    {
+      "sequence": 27,
+      "event": "keyDown",
+      "relativeToStopMs": -992.333917,
+      "characterCount": 14,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 28,
+      "event": "keyUp",
+      "relativeToStopMs": -888.313667
+    },
+    {
+      "sequence": 29,
+      "event": "keyDown",
+      "relativeToStopMs": -792.908417,
+      "characterCount": 15,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 30,
+      "event": "keyUp",
+      "relativeToStopMs": -692.875458
+    },
+    {
+      "sequence": 31,
+      "event": "keyDown",
+      "relativeToStopMs": -582.99575,
+      "characterCount": 16,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 32,
+      "event": "keyUp",
+      "relativeToStopMs": -473.529458
+    },
+    {
+      "sequence": 33,
+      "event": "keyDown",
+      "relativeToStopMs": -372.206333,
+      "characterCount": 17,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 34,
+      "event": "keyUp",
+      "relativeToStopMs": -272.785125
+    },
+    {
+      "sequence": 35,
+      "event": "keyDown",
+      "relativeToStopMs": -155.754792,
+      "characterCount": 18,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 36,
+      "event": "keyUp",
+      "relativeToStopMs": -54.120333
+    }
+  ],
+  "processExits": [
+    {
+      "process": "worker",
+      "exitCode": 0
+    },
+    {
+      "process": "target",
+      "exitCode": 0
+    }
+  ],
+  "finalExperimentMarker": "clean",
+  "limitations": [
+    "Drain starts at supervisor detection, not client fault injection",
+    "Client fault-injection and last-heartbeat timestamps are not preserved in trace",
+    "Generic measured result does not enforce a liveness detection deadline",
+    "Finite post-stop observation, ASCII only, no global own-event tap receipts",
+    "Intervention, crash/recovery, clipboard and two-client handoff remain unverified"
+  ]
+}

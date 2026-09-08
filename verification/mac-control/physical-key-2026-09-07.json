@@ -1,0 +1,801 @@
+{
+  "reportVersion": 1,
+  "date": "2026-09-07",
+  "case": "physical-key",
+  "environment": {
+    "macOS": "27.0 (26A5421a)",
+    "Swift": "6.3.3",
+    "Python": "3.14.7",
+    "architecture": "arm64"
+  },
+  "artifactDirectory": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-build.mYp0GY",
+  "artifactSHA256": {
+    "worker": "2ad6317b228f310a4961142770edaac3653599f4dff609556524ef1cc3419468",
+    "target": "fe0cebd89a0f9a1eefe9bff72e0a3ab2c07abd7623cae0838418e3d4a016fe29"
+  },
+  "sourceSHA256": {
+    "StopSpikeTarget.swift": "48fa937a5e399144314b8e019735e67ad2451e174207f2b73d8e527dae3de9c1",
+    "StopSpikeWorker.swift": "459c1553087b9fde8fff9e1898382d0e92bbaff71070607179539306ceb0333c",
+    "build.sh": "c873a3b7f32fd73e849b6763e7e9a0a149d26ed7a08dc775eeaaf3d894f1d868",
+    "client.py": "b5e97c0f782131d5f4467e0e699a983e8b87f73c428c8b54ac852407d90d655d",
+    "loss_timing.py": "1ae49a6fb80aa7e625b6c731219e50e3d8148fef98fd0f1506bab5c8491899ae",
+    "supervisor.py": "689606903516630ef5d472e7a542f3bceeb46ba3265d358a7fe35f38d1b4837c",
+    "test_client.py": "8efb2e242333ed37d12958c52a29133653c7b7c9a476f26a1e134efc87135d1c",
+    "test_supervisor.py": "8c81931f74baf21f9104a3347f0d46bc32550b19305e329f4606fc3248ae2a5c"
+  },
+  "clientEvidencePath": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-client-mktbl2uz/client-evidence.json",
+  "clientEvidenceSHA256": "fc0c943118962b4a9d183008f0a3ac8ac2ba2872cb11f4dd2f98011566a41111",
+  "tracePath": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-zwu3zaet/events.jsonl",
+  "traceSHA256": "32e524f6346f9169798f2e959626e4dfd6275471d43f80690221548dec91f2e8",
+  "clientExitCode": 0,
+  "clientEvidence": {
+    "version": 1,
+    "case": "physical-key",
+    "clock": "mach_continuous_time_ns",
+    "startedNs": "1102985764730791",
+    "lastHeartbeatSend": {
+      "beforeNs": "1102993975465625",
+      "afterNs": "1102993975631291"
+    },
+    "fault": null,
+    "stop": {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "1102992242570833",
+      "reason": "unownedInput",
+      "originNs": "1102992242150500",
+      "detectionNs": "1102992242500625",
+      "lastClientLivenessNs": "1102991923933791",
+      "clientHeartbeatAgeMs": 318.566834,
+      "clientReceivedNs": "1102992242866625"
+    },
+    "supervisorResult": {
+      "event": "result",
+      "result": "measured",
+      "drainVerified": true,
+      "drainMs": 1.4905,
+      "admittedEvents": 12,
+      "receivedEvents": 12,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 6,
+      "targetOriginsVerified": 12,
+      "gateA": "closed",
+      "reason": "unownedInput"
+    },
+    "supervisorExitCode": 0,
+    "supervisorTraceDirectory": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-zwu3zaet",
+    "errors": [],
+    "finishedNs": "1102994332177125",
+    "liveness": {
+      "result": "notApplicable"
+    },
+    "casePassed": true
+  },
+  "trace": [
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "1102985835618208",
+      "child": "worker",
+      "pid": 28388
+    },
+    {
+      "accessibility": true,
+      "event": "preflight",
+      "eventPosting": true,
+      "inputMonitoring": true,
+      "ns": "1102985867180541",
+      "source": "worker"
+    },
+    {
+      "event": "ready",
+      "ns": "1102985888652958",
+      "pid": 28388,
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "1102985890932166",
+      "child": "target",
+      "pid": 28389
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102985888794541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986003089833",
+      "source": "worker"
+    },
+    {
+      "ns": "1102986093907250",
+      "event": "ready",
+      "source": "target",
+      "pid": 28389
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986107533791",
+      "source": "worker"
+    },
+    {
+      "event": "bound",
+      "ns": "1102986181214166",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "countdown",
+      "ns": "1102986181370041",
+      "seconds": 5
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986220399541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986334478125",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986435588083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986538645875",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986644315416",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986760652250",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986852856000",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102986955826208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987066204958",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987169613375",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987290443208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987396878333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987508495583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987608270541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987717559583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987822957666",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102987934350166",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988054350166",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988172950166",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988287361125",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988387476916",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988501391458",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988606780583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988708710333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988812072083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102988919655041",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989022485541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989141221458",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989254596833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989371279250",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989471734333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989593813666",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989704175833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989804392583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102989903891541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990018553250",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990122546583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990234666166",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990353596500",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990455173208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990556377000",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990657071375",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990772693375",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990878752833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102990987687250",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991087243958",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "active",
+      "ns": "1102991185709791"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1102991185885833",
+      "downTag": 68594352205121537,
+      "upTag": 68594352205121538
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991196256125",
+      "source": "worker"
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1102991244020666",
+      "source": "worker",
+      "tag": 68594352205121537
+    },
+    {
+      "ns": "1102991263398041",
+      "source": "target",
+      "event": "changed",
+      "count": 1
+    },
+    {
+      "matchesSamplePrefix": true,
+      "tag": 68594352205121537,
+      "source": "target",
+      "count": 1,
+      "ns": "1102991263603875",
+      "event": "keyDown",
+      "sourcePID": 28388
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1102991289559166",
+      "source": "worker",
+      "tag": 68594352205121538
+    },
+    {
+      "event": "keyUp",
+      "ns": "1102991289936916",
+      "source": "target",
+      "tag": 68594352205121538,
+      "sourcePID": 28388
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991303029416",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1102991390593291",
+      "downTag": 68594352205121539,
+      "upTag": 68594352205121540
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1102991404932000",
+      "source": "worker",
+      "tag": 68594352205121539
+    },
+    {
+      "event": "changed",
+      "ns": "1102991406688500",
+      "count": 2,
+      "source": "target"
+    },
+    {
+      "count": 2,
+      "source": "target",
+      "matchesSamplePrefix": true,
+      "ns": "1102991406854750",
+      "tag": 68594352205121539,
+      "sourcePID": 28388,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991419963458",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1102991506558333",
+      "source": "worker",
+      "tag": 68594352205121540
+    },
+    {
+      "event": "keyUp",
+      "ns": "1102991507424083",
+      "source": "target",
+      "tag": 68594352205121540,
+      "sourcePID": 28388
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991521382833",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1102991599066375",
+      "downTag": 68594352205121541,
+      "upTag": 68594352205121542
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1102991609131250",
+      "source": "worker",
+      "tag": 68594352205121541
+    },
+    {
+      "event": "changed",
+      "ns": "1102991611427083",
+      "count": 3,
+      "source": "target"
+    },
+    {
+      "count": 3,
+      "source": "target",
+      "matchesSamplePrefix": true,
+      "ns": "1102991611594125",
+      "tag": 68594352205121541,
+      "sourcePID": 28388,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991623182291",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1102991705410250",
+      "source": "worker",
+      "tag": 68594352205121542
+    },
+    {
+      "event": "keyUp",
+      "ns": "1102991706144708",
+      "source": "target",
+      "tag": 68594352205121542,
+      "sourcePID": 28388
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991736758250",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1102991803387375",
+      "downTag": 68594352205121543,
+      "upTag": 68594352205121544
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1102991813721416",
+      "source": "worker",
+      "tag": 68594352205121543
+    },
+    {
+      "event": "changed",
+      "ns": "1102991821127208",
+      "count": 4,
+      "source": "target"
+    },
+    {
+      "count": 4,
+      "source": "target",
+      "matchesSamplePrefix": true,
+      "ns": "1102991821315458",
+      "tag": 68594352205121543,
+      "sourcePID": 28388,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991839605416",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1102991927996583",
+      "source": "worker",
+      "tag": 68594352205121544
+    },
+    {
+      "event": "keyUp",
+      "ns": "1102991930514500",
+      "source": "target",
+      "tag": 68594352205121544,
+      "sourcePID": 28388
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102991941258583",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1102992007357375",
+      "downTag": 68594352205121545,
+      "upTag": 68594352205121546
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1102992020639291",
+      "source": "worker",
+      "tag": 68594352205121545
+    },
+    {
+      "event": "changed",
+      "ns": "1102992022669708",
+      "count": 5,
+      "source": "target"
+    },
+    {
+      "count": 5,
+      "source": "target",
+      "matchesSamplePrefix": true,
+      "ns": "1102992022842500",
+      "tag": 68594352205121545,
+      "sourcePID": 28388,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102992047283833",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1102992119907583",
+      "source": "worker",
+      "tag": 68594352205121546
+    },
+    {
+      "event": "keyUp",
+      "ns": "1102992120427541",
+      "source": "target",
+      "tag": 68594352205121546,
+      "sourcePID": 28388
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102992160237041",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1102992215568541",
+      "downTag": 68594352205121547,
+      "upTag": 68594352205121548
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1102992221426208",
+      "source": "worker",
+      "tag": 68594352205121547
+    },
+    {
+      "event": "changed",
+      "ns": "1102992223587125",
+      "count": 6,
+      "source": "target"
+    },
+    {
+      "count": 6,
+      "source": "target",
+      "matchesSamplePrefix": true,
+      "ns": "1102992223756166",
+      "tag": 68594352205121547,
+      "sourcePID": 28388,
+      "event": "keyDown"
+    },
+    {
+      "event": "stopping",
+      "focusCheck": "none",
+      "ns": "1102992242150500",
+      "reason": "unownedInput",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "1102992242570833",
+      "reason": "unownedInput",
+      "originNs": "1102992242150500",
+      "detectionNs": "1102992242500625",
+      "lastClientLivenessNs": "1102991923933791",
+      "clientHeartbeatAgeMs": 318.566834
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1102992242968083",
+      "source": "worker",
+      "tag": 68594352205121548
+    },
+    {
+      "clipboard": "untouched",
+      "event": "stopped",
+      "heldKeysEmpty": true,
+      "ns": "1102992243015750",
+      "source": "worker"
+    },
+    {
+      "event": "keyUp",
+      "ns": "1102992243641000",
+      "source": "target",
+      "tag": 68594352205121548,
+      "sourcePID": 28388
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102992268652291",
+      "source": "worker"
+    },
+    {
+      "source": "target",
+      "count": 7,
+      "event": "changed",
+      "ns": "1102992291573000"
+    },
+    {
+      "sourcePID": 0,
+      "ns": "1102992291737791",
+      "event": "keyDown",
+      "matchesSamplePrefix": false,
+      "source": "target",
+      "count": 7,
+      "tag": 0
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1102992373759875",
+      "source": "worker"
+    },
+    {
+      "tag": 0,
+      "event": "keyUp",
+      "ns": "1102992375832041",
+      "source": "target",
+      "sourcePID": 0
+    },
+    {
+      "source": "supervisor",
+      "event": "result",
+      "ns": "1102994248586958",
+      "result": "measured",
+      "drainVerified": true,
+      "drainMs": 1.4905,
+      "admittedEvents": 12,
+      "receivedEvents": 12,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 6,
+      "targetOriginsVerified": 12,
+      "gateA": "closed",
+      "reason": "unownedInput"
+    },
+    {
+      "source": "supervisor",
+      "event": "workerExited",
+      "ns": "1102994248672875",
+      "pid": 28388,
+      "exitCode": 0
+    },
+    {
+      "source": "supervisor",
+      "event": "targetExited",
+      "ns": "1102994320691166",
+      "pid": 28389,
+      "exitCode": 0
+    }
+  ],
+  "replay": {
+    "uniqueMatchingEvents": 12,
+    "correctTextPrefixes": 6,
+    "drainNs": 1490500,
+    "admissionsAfterStop": 0,
+    "postsAfterWorkerClosure": 0,
+    "cleanupUpPostsAfterStop": 1,
+    "processExits": [
+      {
+        "source": "supervisor",
+        "event": "workerExited",
+        "ns": "1102994248672875",
+        "pid": 28388,
+        "exitCode": 0
+      },
+      {
+        "source": "supervisor",
+        "event": "targetExited",
+        "ns": "1102994320691166",
+        "pid": 28389,
+        "exitCode": 0
+      }
+    ],
+    "observationAfterStopMs": 2006.086333
+  },
+  "finalExperimentMarker": "clean",
+  "limitations": [
+    "Physical-event origin time is not separately logged; drain starts at worker stop detection.",
+    "Unowned input metadata alone cannot prove every physical/synthetic origin distinction.",
+    "Focus loss, clipboard, recovery and Gate A remain unverified."
+  ]
+}

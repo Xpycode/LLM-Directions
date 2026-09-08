@@ -1,0 +1,163 @@
+{
+  "fixtureVersion": 1,
+  "kind": "wireExamples",
+  "note": "Synthetic identities; no real credentials. Examples are objects; transmit compact JSON plus LF.",
+  "frames": [
+    {
+      "label": "register",
+      "valid": true,
+      "direction": "client",
+      "frame": {
+        "v": 1,
+        "id": "1",
+        "op": "register",
+        "body": {
+          "provider": "codex",
+          "project": "Disposable target",
+          "sessionLabel": "fixture-session"
+        }
+      }
+    },
+    {
+      "label": "registered",
+      "valid": true,
+      "direction": "broker",
+      "frame": {
+        "v": 1,
+        "id": "1",
+        "ok": true,
+        "generation": "11111111111111111111111111111111",
+        "body": {
+          "clientId": "22222222222222222222222222222222",
+          "incarnation": "33333333333333333333333333333333",
+          "limits": {
+            "frameBytes": 65536,
+            "requestsPerClient": 8,
+            "requestKeysPerConnection": 256
+          },
+          "heartbeatIntervalMs": 1000,
+          "lossTimeoutMs": 3000
+        }
+      }
+    },
+    {
+      "label": "request",
+      "valid": true,
+      "direction": "client",
+      "frame": {
+        "v": 1,
+        "id": "2",
+        "op": "request",
+        "generation": "11111111111111111111111111111111",
+        "clientId": "22222222222222222222222222222222",
+        "incarnation": "33333333333333333333333333333333",
+        "body": {
+          "key": "ui-smoke-1",
+          "purpose": "Enter harmless text in a disposable target",
+          "durationSeconds": 30,
+          "targets": [
+            {
+              "targetId": "target1",
+              "bundleId": "com.example.DisposableTarget",
+              "artifact": {
+                "path": "/private/tmp/MacControlDisposable.app/Contents/MacOS/DisposableTarget",
+                "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "instance": {
+                "pid": 1234,
+                "startIdentity": "fixture-start",
+                "codeIdentity": "fixture-code"
+              }
+            }
+          ],
+          "steps": [
+            {
+              "stepId": "s1",
+              "label": "Enter sample",
+              "targetId": "target1",
+              "kind": "typeText",
+              "arguments": {
+                "window": {
+                  "role": "AXWindow",
+                  "identifier": "fixture-window",
+                  "title": null
+                },
+                "element": {
+                  "role": "AXTextField",
+                  "identifier": "fixture-field",
+                  "title": null
+                },
+                "text": "harmless sample"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "heartbeat",
+      "valid": true,
+      "direction": "client",
+      "frame": {
+        "v": 1,
+        "id": "3",
+        "op": "heartbeat",
+        "generation": "11111111111111111111111111111111",
+        "clientId": "22222222222222222222222222222222",
+        "incarnation": "33333333333333333333333333333333",
+        "body": {}
+      }
+    },
+    {
+      "label": "status",
+      "valid": true,
+      "direction": "client",
+      "frame": {
+        "v": 1,
+        "id": "4",
+        "op": "status",
+        "generation": "11111111111111111111111111111111",
+        "clientId": "22222222222222222222222222222222",
+        "incarnation": "33333333333333333333333333333333",
+        "body": {
+          "requestId": "44444444444444444444444444444444",
+          "afterVersion": 0,
+          "waitMs": 30000
+        }
+      }
+    },
+    {
+      "label": "forbidden-agent-approval",
+      "valid": false,
+      "expectedError": "unknownOperation",
+      "direction": "client",
+      "frame": {
+        "v": 1,
+        "id": "5",
+        "op": "approve",
+        "generation": "11111111111111111111111111111111",
+        "clientId": "22222222222222222222222222222222",
+        "incarnation": "33333333333333333333333333333333",
+        "body": {
+          "requestId": "44444444444444444444444444444444"
+        }
+      }
+    },
+    {
+      "label": "wrong-version",
+      "valid": false,
+      "expectedError": "unsupportedVersion",
+      "direction": "client",
+      "frame": {
+        "v": 2,
+        "id": "6",
+        "op": "register",
+        "body": {
+          "provider": "codex",
+          "project": "Disposable target",
+          "sessionLabel": "fixture-session"
+        }
+      }
+    }
+  ]
+}

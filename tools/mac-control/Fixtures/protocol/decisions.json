@@ -1,0 +1,398 @@
+{
+  "fixtureVersion": 1,
+  "kind": "declarativeLifecycleScenarios",
+  "clock": "continuous milliseconds relative to scenario start",
+  "cases": [
+    {
+      "id": "two-projects",
+      "criteria": [
+        "AC01"
+      ],
+      "given": {
+        "slot": null
+      },
+      "when": [
+        "request A from Penumbra",
+        "request B from Game One",
+        "present FIFO head",
+        "humanYes A"
+      ],
+      "expect": {
+        "A": "countdown",
+        "B": "queued",
+        "reservedCount": 1,
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "typing-is-not-approval",
+      "criteria": [
+        "AC02"
+      ],
+      "given": {
+        "A": "awaitingDecision",
+        "focus": "otherApp"
+      },
+      "when": [
+        "ordinary Return",
+        "ordinary Space",
+        "first click on inactive panel"
+      ],
+      "expect": {
+        "A": "awaitingDecision",
+        "focus": "otherApp",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "no-and-request-retry",
+      "criteria": [
+        "AC03",
+        "AC21"
+      ],
+      "given": {
+        "A": "awaitingDecision",
+        "key": "k1"
+      },
+      "when": [
+        "humanNo A",
+        "request again with k1 and equal content"
+      ],
+      "expect": {
+        "A": "denied",
+        "requestCount": 1,
+        "promptCount": 1,
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "wait-needs-review",
+      "criteria": [
+        "AC04"
+      ],
+      "given": {
+        "A": "awaitingDecision"
+      },
+      "when": [
+        "humanWait A",
+        "advance 600000ms",
+        "another request finishes"
+      ],
+      "expect": {
+        "A": "deferred",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "close-pending-means-wait",
+      "criteria": [
+        "AC04"
+      ],
+      "given": {
+        "A": "awaitingDecision"
+      },
+      "when": [
+        "pending panel close"
+      ],
+      "expect": {
+        "A": "deferred",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "review-does-not-approve",
+      "criteria": [
+        "AC04"
+      ],
+      "given": {
+        "A": "deferred",
+        "B": "queued",
+        "slot": null
+      },
+      "when": [
+        "humanReview A"
+      ],
+      "expect": {
+        "queueOrder": [
+          "B",
+          "A"
+        ],
+        "A": "queued",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "countdown-boundary",
+      "criteria": [
+        "AC05"
+      ],
+      "given": {
+        "A": "countdown",
+        "yesAtMs": 0,
+        "durationSeconds": 10,
+        "ready": true
+      },
+      "when": [
+        "clock 4999ms",
+        "clock 5000ms"
+      ],
+      "expect": {
+        "at4999": {
+          "A": "countdown",
+          "display": 1,
+          "inputEvents": 0
+        },
+        "at5000": {
+          "A": "active",
+          "display": 0,
+          "deadlineMs": 15000
+        },
+        "newOwnerCount": 0
+      }
+    },
+    {
+      "id": "countdown-cancel",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "cancel",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "countdown-targetLost",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "targetLost",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "countdown-lock",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "lock",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "countdown-sleep",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "sleep",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "countdown-clientEOF",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "clientEOF",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "countdown-monitorLost",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "monitorLost",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "countdown-permissionLost",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "permissionLost",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "countdown-visibilityLost",
+      "criteria": [
+        "AC06"
+      ],
+      "given": {
+        "A": "countdown",
+        "nowMs": 4999
+      },
+      "when": [
+        "visibilityLost",
+        "clock 5000ms",
+        "attempt execute"
+      ],
+      "expect": {
+        "A": "cancelled",
+        "capabilityIssued": false,
+        "inputEvents": 0,
+        "slot": null
+      }
+    },
+    {
+      "id": "blocked-permission",
+      "criteria": [
+        "AC16"
+      ],
+      "given": {
+        "A": "awaitingDecision",
+        "AXTrusted": false
+      },
+      "when": [
+        "humanYes A"
+      ],
+      "expect": {
+        "A": "blocked",
+        "remedy": "Enable Accessibility for the actual executor before Review",
+        "slot": null,
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "remedy-does-not-approve",
+      "criteria": [
+        "AC16"
+      ],
+      "given": {
+        "A": "blocked"
+      },
+      "when": [
+        "permission becomes available",
+        "humanReview A",
+        "present FIFO head"
+      ],
+      "expect": {
+        "A": "awaitingDecision",
+        "capabilityIssued": false,
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "stale-panel",
+      "criteria": [
+        "AC01",
+        "AC21"
+      ],
+      "given": {
+        "A": "deferred",
+        "displayedVersion": 2,
+        "currentVersion": 3
+      },
+      "when": [
+        "humanYes A at version 2"
+      ],
+      "expect": {
+        "A": "deferred",
+        "error": "invalidState",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "absent-helper",
+      "criteria": [
+        "AC16",
+        "AC18"
+      ],
+      "given": {
+        "broker": "absent"
+      },
+      "when": [
+        "client requests foreground testing"
+      ],
+      "expect": {
+        "clientOutcome": "unavailable",
+        "inputEvents": 0,
+        "fallbackScriptRun": false
+      }
+    }
+  ]
+}

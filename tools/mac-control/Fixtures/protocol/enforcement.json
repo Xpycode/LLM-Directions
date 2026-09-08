@@ -1,0 +1,588 @@
+{
+  "fixtureVersion": 1,
+  "kind": "declarativeLifecycleScenarios",
+  "clock": "continuous milliseconds relative to scenario start",
+  "cases": [
+    {
+      "id": "progress-and-early-release",
+      "criteria": [
+        "AC07",
+        "AC08"
+      ],
+      "given": {
+        "A": "active",
+        "B": "queued",
+        "focus": "targetA"
+      },
+      "when": [
+        "progress A sequence 2 step s1",
+        "release A",
+        "worker quiescent matching stop epoch"
+      ],
+      "expect": {
+        "A": "finished",
+        "B": "awaitingDecision",
+        "focus": "targetA",
+        "progressVisibleWithinMs": 1000,
+        "nextOwnerApproved": false
+      }
+    },
+    {
+      "id": "no-grant",
+      "criteria": [
+        "AC09"
+      ],
+      "given": {
+        "action": "execute s1",
+        "invalidCondition": "no-grant"
+      },
+      "when": [
+        "submit action"
+      ],
+      "expect": {
+        "error": "invalidGrant",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "expired-grant",
+      "criteria": [
+        "AC09"
+      ],
+      "given": {
+        "action": "execute s1",
+        "invalidCondition": "expired-grant"
+      },
+      "when": [
+        "submit action"
+      ],
+      "expect": {
+        "error": "expiredGrant",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "wrong-owner",
+      "criteria": [
+        "AC09"
+      ],
+      "given": {
+        "action": "execute s1",
+        "invalidCondition": "wrong-owner"
+      },
+      "when": [
+        "submit action"
+      ],
+      "expect": {
+        "error": "wrongOwner",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "old-generation",
+      "criteria": [
+        "AC09"
+      ],
+      "given": {
+        "action": "execute s1",
+        "invalidCondition": "old-generation"
+      },
+      "when": [
+        "submit action"
+      ],
+      "expect": {
+        "error": "staleGeneration",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "old-incarnation",
+      "criteria": [
+        "AC09"
+      ],
+      "given": {
+        "action": "execute s1",
+        "invalidCondition": "old-incarnation"
+      },
+      "when": [
+        "submit action"
+      ],
+      "expect": {
+        "error": "staleIncarnation",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "stop-humanStop",
+      "criteria": [
+        "AC10",
+        "AC11"
+      ],
+      "given": {
+        "A": "active",
+        "step": "inFlight",
+        "stopEpoch": 1
+      },
+      "when": [
+        "humanStop",
+        "attempt next step",
+        "worker quiescent epoch 2 at +900ms"
+      ],
+      "expect": {
+        "admissionClosedBeforeRevoke": true,
+        "nextStepStarted": false,
+        "A": "cancelled",
+        "quiescentWithinMs": 1000,
+        "slot": null
+      }
+    },
+    {
+      "id": "stop-emergencyShortcut",
+      "criteria": [
+        "AC10",
+        "AC11"
+      ],
+      "given": {
+        "A": "active",
+        "step": "inFlight",
+        "stopEpoch": 1
+      },
+      "when": [
+        "emergencyShortcut",
+        "attempt next step",
+        "worker quiescent epoch 2 at +900ms"
+      ],
+      "expect": {
+        "admissionClosedBeforeRevoke": true,
+        "nextStepStarted": false,
+        "A": "cancelled",
+        "quiescentWithinMs": 1000,
+        "slot": null
+      }
+    },
+    {
+      "id": "stop-expiry",
+      "criteria": [
+        "AC10",
+        "AC11"
+      ],
+      "given": {
+        "A": "active",
+        "step": "inFlight",
+        "stopEpoch": 1
+      },
+      "when": [
+        "expiry",
+        "attempt next step",
+        "worker quiescent epoch 2 at +900ms"
+      ],
+      "expect": {
+        "admissionClosedBeforeRevoke": true,
+        "nextStepStarted": false,
+        "A": "expired",
+        "quiescentWithinMs": 1000,
+        "slot": null
+      }
+    },
+    {
+      "id": "failed-drain",
+      "criteria": [
+        "AC11"
+      ],
+      "given": {
+        "A": "active",
+        "B": "queued"
+      },
+      "when": [
+        "humanStop A",
+        "no worker acknowledgement",
+        "advance 1000ms"
+      ],
+      "expect": {
+        "A": "interventionRequired",
+        "B": "queued",
+        "slot": "A",
+        "controlReturned": false
+      }
+    },
+    {
+      "id": "late-matching-drain",
+      "criteria": [
+        "AC11"
+      ],
+      "given": {
+        "A": "interventionRequired",
+        "stopEpoch": 2
+      },
+      "when": [
+        "quiescent epoch 1",
+        "dismiss warning",
+        "quiescent epoch 2 with verified cleanup"
+      ],
+      "expect": {
+        "afterStaleAck": "interventionRequired",
+        "afterDismiss": "interventionRequired",
+        "afterMatchingAck": "cancelled"
+      }
+    },
+    {
+      "id": "owner-heartbeat-boundary",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "A": "active",
+        "lastHeartbeatMs": 0
+      },
+      "when": [
+        "clock 2999ms",
+        "clock 3000ms"
+      ],
+      "expect": {
+        "at2999": "active",
+        "at3000": "stopping",
+        "admissionClosedAtMs": 3000,
+        "drainDeadlineMs": 4000
+      }
+    },
+    {
+      "id": "connection-eof",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "A": "active"
+      },
+      "when": [
+        "client EOF"
+      ],
+      "expect": {
+        "A": "stopping",
+        "admissionClosedImmediately": true
+      }
+    },
+    {
+      "id": "broker-crash",
+      "criteria": [
+        "AC12"
+      ],
+      "given": {
+        "A": "active",
+        "worker": "owned",
+        "lastBrokerHeartbeatMs": 0
+      },
+      "when": [
+        "broker disappears without EOF",
+        "worker clock 3000ms",
+        "new broker starts"
+      ],
+      "expect": {
+        "workerAdmissionClosed": true,
+        "newBroker": "recovering",
+        "oldCapabilityValid": false,
+        "newGrantsAllowed": false
+      }
+    },
+    {
+      "id": "restart-does-not-resume",
+      "criteria": [
+        "AC12",
+        "AC13"
+      ],
+      "given": {
+        "generation": "old",
+        "A": "active"
+      },
+      "when": [
+        "restart",
+        "reconcile old worker and event boundary",
+        "retry old execute"
+      ],
+      "expect": {
+        "generation": "new",
+        "A": "unavailable",
+        "error": "staleGeneration",
+        "additionalInputEvents": 0
+      }
+    },
+    {
+      "id": "active-sleep",
+      "criteria": [
+        "AC13"
+      ],
+      "given": {
+        "A": "active"
+      },
+      "when": [
+        "sleep",
+        "wake or unlock",
+        "attempt old action"
+      ],
+      "expect": {
+        "A": "stopping",
+        "oldCapabilityValid": false,
+        "additionalInputEvents": 0,
+        "requiresNewYes": true
+      }
+    },
+    {
+      "id": "active-lock",
+      "criteria": [
+        "AC13"
+      ],
+      "given": {
+        "A": "active"
+      },
+      "when": [
+        "lock",
+        "wake or unlock",
+        "attempt old action"
+      ],
+      "expect": {
+        "A": "stopping",
+        "oldCapabilityValid": false,
+        "additionalInputEvents": 0,
+        "requiresNewYes": true
+      }
+    },
+    {
+      "id": "active-loginChanged",
+      "criteria": [
+        "AC13"
+      ],
+      "given": {
+        "A": "active"
+      },
+      "when": [
+        "loginChanged",
+        "wake or unlock",
+        "attempt old action"
+      ],
+      "expect": {
+        "A": "stopping",
+        "oldCapabilityValid": false,
+        "additionalInputEvents": 0,
+        "requiresNewYes": true
+      }
+    },
+    {
+      "id": "wall-clock-does-not-extend",
+      "criteria": [
+        "AC13"
+      ],
+      "given": {
+        "A": "active",
+        "deadlineMs": 10000
+      },
+      "when": [
+        "wall clock moves backward one day",
+        "continuous clock 10000ms"
+      ],
+      "expect": {
+        "A": "stopping",
+        "reason": "expiry",
+        "deadlineMs": 10000
+      }
+    },
+    {
+      "id": "intervention-physicalKey",
+      "criteria": [
+        "AC14"
+      ],
+      "given": {
+        "A": "active",
+        "focus": "targetA"
+      },
+      "when": [
+        "physicalKey"
+      ],
+      "expect": {
+        "A": "stopping",
+        "refocusAttempts": 0,
+        "physicalInputSuppressed": false
+      }
+    },
+    {
+      "id": "intervention-physicalClick",
+      "criteria": [
+        "AC14"
+      ],
+      "given": {
+        "A": "active",
+        "focus": "targetA"
+      },
+      "when": [
+        "physicalClick"
+      ],
+      "expect": {
+        "A": "stopping",
+        "refocusAttempts": 0,
+        "physicalInputSuppressed": false
+      }
+    },
+    {
+      "id": "intervention-physicalScroll",
+      "criteria": [
+        "AC14"
+      ],
+      "given": {
+        "A": "active",
+        "focus": "targetA"
+      },
+      "when": [
+        "physicalScroll"
+      ],
+      "expect": {
+        "A": "stopping",
+        "refocusAttempts": 0,
+        "physicalInputSuppressed": false
+      }
+    },
+    {
+      "id": "intervention-unexpectedFocus",
+      "criteria": [
+        "AC14"
+      ],
+      "given": {
+        "A": "active",
+        "focus": "targetA"
+      },
+      "when": [
+        "unexpectedFocus"
+      ],
+      "expect": {
+        "A": "stopping",
+        "refocusAttempts": 0,
+        "physicalInputSuppressed": false
+      }
+    },
+    {
+      "id": "unreliable-origin-monitor",
+      "criteria": [
+        "AC14",
+        "AC16"
+      ],
+      "given": {
+        "monitorCanDistinguishInput": false
+      },
+      "when": [
+        "request foreground testing"
+      ],
+      "expect": {
+        "outcome": "unsupported",
+        "inputEvents": 0
+      }
+    },
+    {
+      "id": "target-pidReused",
+      "criteria": [
+        "AC15"
+      ],
+      "given": {
+        "A": "active",
+        "expectedTarget": "instanceA"
+      },
+      "when": [
+        "pidReused",
+        "execute next step"
+      ],
+      "expect": {
+        "A": "stopping",
+        "error": "targetChanged",
+        "inputToOtherApp": 0
+      }
+    },
+    {
+      "id": "target-targetQuit",
+      "criteria": [
+        "AC15"
+      ],
+      "given": {
+        "A": "active",
+        "expectedTarget": "instanceA"
+      },
+      "when": [
+        "targetQuit",
+        "execute next step"
+      ],
+      "expect": {
+        "A": "stopping",
+        "error": "targetChanged",
+        "inputToOtherApp": 0
+      }
+    },
+    {
+      "id": "target-artifactChanged",
+      "criteria": [
+        "AC15"
+      ],
+      "given": {
+        "A": "active",
+        "expectedTarget": "instanceA"
+      },
+      "when": [
+        "artifactChanged",
+        "execute next step"
+      ],
+      "expect": {
+        "A": "stopping",
+        "error": "targetChanged",
+        "inputToOtherApp": 0
+      }
+    },
+    {
+      "id": "target-wrongWindow",
+      "criteria": [
+        "AC15"
+      ],
+      "given": {
+        "A": "active",
+        "expectedTarget": "instanceA"
+      },
+      "when": [
+        "wrongWindow",
+        "execute next step"
+      ],
+      "expect": {
+        "A": "stopping",
+        "error": "targetChanged",
+        "inputToOtherApp": 0
+      }
+    },
+    {
+      "id": "active-monitor-loss",
+      "criteria": [
+        "AC16"
+      ],
+      "given": {
+        "A": "active"
+      },
+      "when": [
+        "emergency stop monitoring disappears"
+      ],
+      "expect": {
+        "A": "stopping",
+        "additionalInputEvents": 0,
+        "remedyVisible": true
+      }
+    },
+    {
+      "id": "worker-exit-with-event-uncertainty",
+      "criteria": [
+        "AC11"
+      ],
+      "given": {
+        "A": "stopping",
+        "postedEventDelivery": "unknown"
+      },
+      "when": [
+        "owned worker exits"
+      ],
+      "expect": {
+        "A": "interventionRequired",
+        "controlReturned": false,
+        "newGrantsAllowed": false
+      }
+    }
+  ]
+}

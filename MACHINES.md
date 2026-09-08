@@ -36,6 +36,13 @@
 | AppProbe (UI automation) | ❌ not installed (no app, nothing on PATH) — fall back to AX-by-name automation (never coordinate clicks; display scaling breaks them) |
 | jq | ✅ (required by `hooks/install.sh` / `redeploy.sh`) |
 
+**Targeted recheck 2026-09-05:** macOS is now 27.0 (26A5421a); Xcode remains 26.6
+(17F113). Codex CLI 0.153.4 and Claude Code 2.1.260 are installed. AppProbe remains absent at
+the documented source path, checked app paths, and PATH. Nonprompting Accessibility and input
+listen/post preflights returned false for a Python child of the current sandboxed Codex shell;
+this does not establish another app's permission state. Signing identities were not rechecked.
+See [inventory and limitations](verification/mac-control/environment.md).
+
 **Known permission-classifier blocks on this Mac** (and the sanctioned way around them):
 - Compound identity probes (`cat X; hostname; sysctl …`) get blocked — run the pieces as
   separate simple commands, or rely on the allowlist rules deployed from

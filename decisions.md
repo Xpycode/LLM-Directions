@@ -20,8 +20,102 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
-> Full ADRs older than the one below live in [`decisions-archive.md`](decisions-archive.md) — a
-> one-paragraph summary of each still lives in the Condensed Log further down this file.
+> Earlier ADRs also live in [`decisions-archive.md`](decisions-archive.md), with summaries in the
+> Condensed Log further down this file.
+
+### 2026-09-06 - Separate loss-timing evidence from control authority and drain success
+
+**Context:** The disposable Mac-control client stopped successfully on EOF and missing heartbeats,
+but its trace recorded only detection/receipt timing. Heartbeat age at detection exceeded 3000 ms
+slightly; actual suppression began later than the last heartbeat. A drain-only verdict could neither
+establish nor refute the specified loss-to-detection bound. It also preceded target teardown.
+
+**Options Considered:**
+1. Treat heartbeat age or a generic drain result as the entire case verdict — simple, but conflates
+   different intervals and can conceal a missed deadline or incomplete teardown.
+2. Send a timestamped fault announcement through the control channel — convenient correlation, but
+   adds traffic around the fault and risks changing the behavior being measured.
+3. Record client operation brackets locally, combine with supervisor timestamps after teardown —
+   preserves the existing fault path and makes uncertainty explicit, at the cost of a second artifact.
+
+**Decision:** Use option 3 in the standalone spike. Share the continuous boot clock for evidence;
+client timestamps never authorize input or refresh liveness. Compare the conservative injection-start
+to detection upper bound against three seconds with integer nanoseconds and no tolerance. Report
+heartbeat age and threshold overshoot separately. Final case success also requires measured drain,
+the intended stop reason, supervisor exit, successful reported teardown and saved evidence.
+
+**Rationale:** This tests the interval the requirement names without silently relaxing it. Recording
+before/after brackets handles non-atomic pipe closure honestly; final evaluation catches errors that
+appear after the earlier drain result.
+
+**Consequences:** Preserve both client and supervisor artifacts. Crash before client persistence
+leaves missing evidence, not a pass or recovery proof. A polling timer does not establish zero
+overshoot. The updated implementation passed offline tests but still needs a new live window;
+task 1.3, AC12 and Gate A remain open. See [verification](verification/mac-control/loss-instrumentation.md).
+
+### 2026-09-05 - Plan a local Mac-control coordinator with enforcement in the input executor
+
+**Status:** Proposed architecture for the reviewed feature plan; no runtime implementation or
+provider compatibility approved as complete.
+
+**Context:** Concurrent coding sessions across projects interrupt the user's typing when they
+activate apps or send input. The requested interface includes session identity, Yes/No/Wait,
+a five-second countdown, remaining time, and test steps. Directions documents an AppProbe overlay,
+but AppProbe is absent at its local documented path and existing harnesses have no shared owner.
+
+**Options Considered:**
+1. **swiftDialog plus scripts:** useful existing buttons/timers, but still needs a broker and
+   reliable cancellation of input workers; another process separates UI from control state.
+2. **Native AppKit helper and shared CLI:** one queue/approval owner, clear lifecycle and native
+   nonactivating panels; requires a small maintained companion and verified tool adapters.
+3. **Provider controls or hooks alone:** existing approval/stop mechanisms help, but their coverage,
+   error behavior, and lock lifecycle do not establish the required cross-provider timed grants.
+
+**Planning decision:** use option 2 as the v1 design, gated by a standalone compatibility/stop
+spike. Put ownership and deadline checks at typed action dispatch. Treat hooks as supplementary
+routing/denial, not as permission to run an unchecked script. Keep the spec in Review until execution.
+
+**Rationale:** A visible timer is useful only if the actual input path respects it. A native helper
+can bind human approval, progress, and stop state to one local coordinator. Staged compatibility
+checks expose unsupported backends before a polished overlay creates a false sense of protection.
+
+**Consequences:** only cooperating, verified executors are protected; arbitrary same-user automation
+is outside the guarantee. No automatic approval, renewal, or resume. Stop/expiry closes admission,
+and another owner cannot start until managed input is quiescent. Fresh-build launch authorization
+persists, but a stopped handoff after quit leaves freshLaunchPending rather than launching anyway.
+State is per-Mac and outside synced projects. The first deliverable is evidence for a usable bounded
+input path, not deployment. See the [spec](specs/mac-control-coordinator.md),
+[plan](IMPLEMENTATION_PLAN.md), and [primary-source research](specs/mac-control-research.md).
+
+**2026-09-05 execution refinement — protocol revision 1:** The user identified occasional UI-test
+interruptions across projects and supplied a Conjoyn shell/AppleScript example. The accompanying
+temporary Swift inspector only reads AX/window metadata. This makes the boundary action-specific:
+verified noninterfering inspection remains background work; focus/input requires a controlled path.
+
+**Protocol alternatives and decision:** A check-then-run script and a reusable session-labelled
+permission cannot prevent retries or an in-flight worker from outliving Stop. Freeze a finite typed
+manifest, bind ownership to a live connection incarnation, and validate the current grant before
+each dispatch and cached execute reply. Keep envelope/request/step replay records separate from
+authority; terminal payloads become keyed fingerprints rather than retained text.
+
+**Recovery rationale and consequences:** A new socket or exited worker alone cannot prove queued
+input has drained. Use a private crash-surviving supervision ledger, stop-epoch acknowledgements
+with step dispositions, and verified bootstrap/recovery evidence before releasing the slot. Unknown
+step outcomes remain non-retryable. These requirements came from independent contract review and
+are frozen for the spike, not claimed as demonstrated OS behavior. Task 1.3 must prove they are
+implementable on the first Mac before production expansion. See [the protocol](tools/mac-control/Protocol.md)
+and [review resolutions](verification/mac-control/protocol.md).
+
+**2026-09-05 spike refinement — separate drain from functional success:** The first native input
+run delivered and accounted for every event, but a broken disposable text view inserted nothing.
+Treating any failed assertion as unresolved input would block a safe retry indefinitely; treating
+event receipt as functional success would hide the actual defect. Record those outcomes separately:
+`drainVerified` needs matching posts/target receipts and origins, closed admission, empty held keys
+and owned-worker exit; the text experiment additionally needs correct sample-prefix/count evidence.
+Unknown delivery still blocks retries. An old conservative marker may be reconciled only against
+its complete preserved trace and child-exit evidence, under exclusive ownership with no intervening
+run. This is not general crash/bootstrap recovery. The corrected first case passed, but broader
+Gate A and provider compatibility remain unproven. See [measured evidence](verification/mac-control/stop-spike.md).
 
 ### 2026-08-30 - Codex uses a thin adapter over the live Claude Directions commands
 

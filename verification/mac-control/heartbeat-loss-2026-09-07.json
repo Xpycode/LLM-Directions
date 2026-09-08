@@ -1,0 +1,1430 @@
+{
+  "reportVersion": 2,
+  "date": "2026-09-07",
+  "case": "heartbeat-loss",
+  "environment": {
+    "macOS": "27.0 (26A5421a)",
+    "Swift": "6.3.3",
+    "Python": "3.14.7",
+    "architecture": "arm64"
+  },
+  "artifactDirectory": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-build.bmNVuf",
+  "artifactSHA256": {
+    "worker": "2ad6317b228f310a4961142770edaac3653599f4dff609556524ef1cc3419468",
+    "target": "fe0cebd89a0f9a1eefe9bff72e0a3ab2c07abd7623cae0838418e3d4a016fe29"
+  },
+  "sourceSHA256": {
+    "loss_timing.py": "1ae49a6fb80aa7e625b6c731219e50e3d8148fef98fd0f1506bab5c8491899ae",
+    "StopSpikeWorker.swift": "459c1553087b9fde8fff9e1898382d0e92bbaff71070607179539306ceb0333c",
+    "supervisor.py": "689606903516630ef5d472e7a542f3bceeb46ba3265d358a7fe35f38d1b4837c",
+    "client.py": "b5e97c0f782131d5f4467e0e699a983e8b87f73c428c8b54ac852407d90d655d",
+    "build.sh": "c873a3b7f32fd73e849b6763e7e9a0a149d26ed7a08dc775eeaaf3d894f1d868",
+    "test_supervisor.py": "8c81931f74baf21f9104a3347f0d46bc32550b19305e329f4606fc3248ae2a5c",
+    "StopSpikeTarget.swift": "48fa937a5e399144314b8e019735e67ad2451e174207f2b73d8e527dae3de9c1",
+    "test_client.py": "8efb2e242333ed37d12958c52a29133653c7b7c9a476f26a1e134efc87135d1c"
+  },
+  "clientEvidencePath": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-client-yvrs0ui4/client-evidence.json",
+  "clientEvidenceSHA256": "8812207f9d6785653dc24e2d320fd13bc5bb6130888e78655e6e78e5601cd9f5",
+  "tracePath": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-_0crxjcx/events.jsonl",
+  "traceSHA256": "72270138b972018c1fab371a6e142f75fbab1821b18536795d799a50042aa4d5",
+  "clientExitCode": 0,
+  "clientEvidence": {
+    "version": 1,
+    "case": "heartbeat-loss",
+    "clock": "mach_continuous_time_ns",
+    "startedNs": "1097718807234916",
+    "lastHeartbeatSend": {
+      "beforeNs": "1097724964247583",
+      "afterNs": "1097724964311916"
+    },
+    "fault": {
+      "case": "heartbeat-loss",
+      "beforeNs": "1097725294788500",
+      "afterNs": "1097725294795000"
+    },
+    "stop": {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "1097727975523416",
+      "reason": "clientHeartbeatLost",
+      "originNs": "1097727975409166",
+      "detectionNs": "1097727975409166",
+      "lastClientLivenessNs": "1097724964405958",
+      "clientHeartbeatAgeMs": 3011.003208,
+      "clientReceivedNs": "1097727975825541"
+    },
+    "supervisorResult": {
+      "event": "result",
+      "result": "measured",
+      "drainVerified": true,
+      "drainMs": 0.260625,
+      "admittedEvents": 36,
+      "receivedEvents": 36,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 18,
+      "targetOriginsVerified": 36,
+      "gateA": "closed",
+      "reason": "clientHeartbeatLost"
+    },
+    "supervisorExitCode": 0,
+    "supervisorTraceDirectory": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-_0crxjcx",
+    "errors": [],
+    "finishedNs": "1097730069116333",
+    "liveness": {
+      "result": "measured",
+      "reason": "withinLossDeadline",
+      "lossToDetectionUpperBoundMs": 2680.620666,
+      "lossToDetectionLowerBoundMs": 2680.614166,
+      "heartbeatAgeAtDetectionMs": 3011.003208,
+      "heartbeatThresholdOvershootMs": 11.003208,
+      "detectionLimitMs": 3000.0
+    },
+    "casePassed": true
+  },
+  "trace": [
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "1097718879969000",
+      "child": "worker",
+      "pid": 98587
+    },
+    {
+      "accessibility": true,
+      "event": "preflight",
+      "eventPosting": true,
+      "inputMonitoring": true,
+      "ns": "1097718912364375",
+      "source": "worker"
+    },
+    {
+      "event": "ready",
+      "ns": "1097718926039416",
+      "pid": 98587,
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "1097718927901000",
+      "child": "target",
+      "pid": 98588
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097718926142000",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719034226375",
+      "source": "worker"
+    },
+    {
+      "ns": "1097719122472833",
+      "pid": 98588,
+      "event": "ready",
+      "source": "target"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719204730250",
+      "source": "worker"
+    },
+    {
+      "event": "bound",
+      "ns": "1097719218563416",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "countdown",
+      "ns": "1097719218697500",
+      "seconds": 5
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719244246333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719355678500",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719459832791",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719563488208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719676406500",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719776984166",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097719893967916",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720010414625",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720123683791",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720226654916",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720344177708",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720459456333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720563163458",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720675232250",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720781345875",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720883700208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097720992071666",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721107971250",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721208111041",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721322254041",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721423588208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721524888750",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721626917750",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721741619583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721857427000",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097721960835750",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722063998541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722174588916",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722282464083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722393272958",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722507738666",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722615175541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722725144708",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722838215375",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097722941094208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723063253708",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723181065750",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723274899833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723377001875",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723478338583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723583914916",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723683990541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723794118125",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097723896510458",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724011651708",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724133245458",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "active",
+      "ns": "1097724221228250"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097724221453333",
+      "downTag": 257713048653277185,
+      "upTag": 257713048653277186
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097724268768083",
+      "source": "worker",
+      "tag": 257713048653277185
+    },
+    {
+      "count": 1,
+      "ns": "1097724286743208",
+      "source": "target",
+      "event": "changed"
+    },
+    {
+      "source": "target",
+      "event": "keyDown",
+      "count": 1,
+      "sourcePID": 98587,
+      "matchesSamplePrefix": true,
+      "ns": "1097724286991541",
+      "tag": 257713048653277185
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724300117875",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097724325291458",
+      "source": "worker",
+      "tag": 257713048653277186
+    },
+    {
+      "ns": "1097724325736625",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277186,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724388605291",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097724432660541",
+      "downTag": 257713048653277187,
+      "upTag": 257713048653277188
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097724440517500",
+      "source": "worker",
+      "tag": 257713048653277187
+    },
+    {
+      "ns": "1097724442301666",
+      "source": "target",
+      "count": 2,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097724442481375",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 2,
+      "tag": 257713048653277187
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724493314708",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097724544440333",
+      "source": "worker",
+      "tag": 257713048653277188
+    },
+    {
+      "ns": "1097724545046833",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277188,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724614011125",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097724647461541",
+      "downTag": 257713048653277189,
+      "upTag": 257713048653277190
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097724653639083",
+      "source": "worker",
+      "tag": 257713048653277189
+    },
+    {
+      "ns": "1097724655931208",
+      "source": "target",
+      "count": 3,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097724656114625",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 3,
+      "tag": 257713048653277189
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724706723375",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097724759368041",
+      "source": "worker",
+      "tag": 257713048653277190
+    },
+    {
+      "ns": "1097724759869333",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277190,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724810136000",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097724854418541",
+      "downTag": 257713048653277191,
+      "upTag": 257713048653277192
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097724860865250",
+      "source": "worker",
+      "tag": 257713048653277191
+    },
+    {
+      "ns": "1097724862266958",
+      "source": "target",
+      "count": 4,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097724862380458",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 4,
+      "tag": 257713048653277191
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097724931282666",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097724976601666",
+      "source": "worker",
+      "tag": 257713048653277192
+    },
+    {
+      "ns": "1097724977362708",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277192,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725037987250",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097725071443208",
+      "downTag": 257713048653277193,
+      "upTag": 257713048653277194
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097725078896833",
+      "source": "worker",
+      "tag": 257713048653277193
+    },
+    {
+      "ns": "1097725080718458",
+      "source": "target",
+      "count": 5,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097725080892916",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 5,
+      "tag": 257713048653277193
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725141379416",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097725183122958",
+      "source": "worker",
+      "tag": 257713048653277194
+    },
+    {
+      "ns": "1097725184646583",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277194,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725252131791",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097725285093458",
+      "downTag": 257713048653277195,
+      "upTag": 257713048653277196
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097725292110500",
+      "source": "worker",
+      "tag": 257713048653277195
+    },
+    {
+      "ns": "1097725294241708",
+      "source": "target",
+      "count": 6,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097725294430541",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 6,
+      "tag": 257713048653277195
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725360644583",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097725405826333",
+      "source": "worker",
+      "tag": 257713048653277196
+    },
+    {
+      "ns": "1097725406288000",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277196,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725474023250",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097725496354541",
+      "downTag": 257713048653277197,
+      "upTag": 257713048653277198
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097725508166375",
+      "source": "worker",
+      "tag": 257713048653277197
+    },
+    {
+      "ns": "1097725509834041",
+      "source": "target",
+      "count": 7,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097725509996208",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 7,
+      "tag": 257713048653277197
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725578676166",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097725611899083",
+      "source": "worker",
+      "tag": 257713048653277198
+    },
+    {
+      "ns": "1097725612531791",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277198,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725697983791",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097725709311666",
+      "downTag": 257713048653277199,
+      "upTag": 257713048653277200
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097725712843416",
+      "source": "worker",
+      "tag": 257713048653277199
+    },
+    {
+      "ns": "1097725714868625",
+      "source": "target",
+      "count": 8,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097725715053666",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 8,
+      "tag": 257713048653277199
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725791551958",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097725816232166",
+      "source": "worker",
+      "tag": 257713048653277200
+    },
+    {
+      "ns": "1097725818029291",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277200,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097725893195125",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097725915635333",
+      "downTag": 257713048653277201,
+      "upTag": 257713048653277202
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097725922346041",
+      "source": "worker",
+      "tag": 257713048653277201
+    },
+    {
+      "ns": "1097725924747750",
+      "source": "target",
+      "count": 9,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097725924920708",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 9,
+      "tag": 257713048653277201
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726010806083",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097726032824166",
+      "source": "worker",
+      "tag": 257713048653277202
+    },
+    {
+      "ns": "1097726034728458",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277202,
+      "event": "keyUp"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097726122622625",
+      "downTag": 257713048653277203,
+      "upTag": 257713048653277204
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726131959208",
+      "source": "worker"
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097726132862500",
+      "source": "worker",
+      "tag": 257713048653277203
+    },
+    {
+      "ns": "1097726140998750",
+      "source": "target",
+      "count": 10,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097726141170000",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 10,
+      "tag": 257713048653277203
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726229202708",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097726230286041",
+      "source": "worker",
+      "tag": 257713048653277204
+    },
+    {
+      "ns": "1097726230933583",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277204,
+      "event": "keyUp"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097726329702833",
+      "downTag": 257713048653277205,
+      "upTag": 257713048653277206
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726341551375",
+      "source": "worker"
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097726342760041",
+      "source": "worker",
+      "tag": 257713048653277205
+    },
+    {
+      "ns": "1097726344764916",
+      "source": "target",
+      "count": 11,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097726344933083",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 11,
+      "tag": 257713048653277205
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097726440286541",
+      "source": "worker",
+      "tag": 257713048653277206
+    },
+    {
+      "ns": "1097726440739958",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277206,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726456159625",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097726533285166",
+      "downTag": 257713048653277207,
+      "upTag": 257713048653277208
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097726548662333",
+      "source": "worker",
+      "tag": 257713048653277207
+    },
+    {
+      "ns": "1097726559027291",
+      "source": "target",
+      "count": 12,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097726559256041",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 12,
+      "tag": 257713048653277207
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726561778291",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097726642795833",
+      "source": "worker",
+      "tag": 257713048653277208
+    },
+    {
+      "ns": "1097726643938375",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277208,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726675005125",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097726739945166",
+      "downTag": 257713048653277209,
+      "upTag": 257713048653277210
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097726742470500",
+      "source": "worker",
+      "tag": 257713048653277209
+    },
+    {
+      "ns": "1097726744966083",
+      "source": "target",
+      "count": 13,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097726745162291",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 13,
+      "tag": 257713048653277209
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726791290250",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097726854709666",
+      "source": "worker",
+      "tag": 257713048653277210
+    },
+    {
+      "ns": "1097726855503208",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277210,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097726896143416",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097726951630291",
+      "downTag": 257713048653277211,
+      "upTag": 257713048653277212
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097726959964958",
+      "source": "worker",
+      "tag": 257713048653277211
+    },
+    {
+      "ns": "1097726962121375",
+      "source": "target",
+      "count": 14,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097726962290750",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 14,
+      "tag": 257713048653277211
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727004135291",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097727076220291",
+      "source": "worker",
+      "tag": 257713048653277212
+    },
+    {
+      "ns": "1097727077338083",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277212,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727111107416",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097727166442916",
+      "downTag": 257713048653277213,
+      "upTag": 257713048653277214
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097727176702250",
+      "source": "worker",
+      "tag": 257713048653277213
+    },
+    {
+      "ns": "1097727177702708",
+      "source": "target",
+      "count": 15,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097727177815541",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 15,
+      "tag": 257713048653277213
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727222851791",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097727292595958",
+      "source": "worker",
+      "tag": 257713048653277214
+    },
+    {
+      "ns": "1097727293322625",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277214,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727325443458",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097727379591166",
+      "downTag": 257713048653277215,
+      "upTag": 257713048653277216
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097727388457625",
+      "source": "worker",
+      "tag": 257713048653277215
+    },
+    {
+      "ns": "1097727389352833",
+      "source": "target",
+      "count": 16,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097727389438750",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 16,
+      "tag": 257713048653277215
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727430185333",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097727493714125",
+      "source": "worker",
+      "tag": 257713048653277216
+    },
+    {
+      "ns": "1097727494406041",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277216,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727542303916",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097727586837083",
+      "downTag": 257713048653277217,
+      "upTag": 257713048653277218
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097727608931375",
+      "source": "worker",
+      "tag": 257713048653277217
+    },
+    {
+      "ns": "1097727610927500",
+      "source": "target",
+      "count": 17,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097727611132875",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 17,
+      "tag": 257713048653277217
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727641977666",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097727710288708",
+      "source": "worker",
+      "tag": 257713048653277218
+    },
+    {
+      "ns": "1097727711006083",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277218,
+      "event": "keyUp"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727757457625",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "1097727801239250",
+      "downTag": 257713048653277219,
+      "upTag": 257713048653277220
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "1097727818067000",
+      "source": "worker",
+      "tag": 257713048653277219
+    },
+    {
+      "ns": "1097727827779875",
+      "source": "target",
+      "count": 18,
+      "event": "changed"
+    },
+    {
+      "matchesSamplePrefix": true,
+      "ns": "1097727827966083",
+      "source": "target",
+      "event": "keyDown",
+      "sourcePID": 98587,
+      "count": 18,
+      "tag": 257713048653277219
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727857954750",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "1097727909155000",
+      "source": "worker",
+      "tag": 257713048653277220
+    },
+    {
+      "ns": "1097727909823541",
+      "sourcePID": 98587,
+      "source": "target",
+      "tag": 257713048653277220,
+      "event": "keyUp"
+    },
+    {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "1097727975523416",
+      "reason": "clientHeartbeatLost",
+      "originNs": "1097727975409166",
+      "detectionNs": "1097727975409166",
+      "lastClientLivenessNs": "1097724964405958",
+      "clientHeartbeatAgeMs": 3011.003208
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097727975478333",
+      "source": "worker"
+    },
+    {
+      "event": "stopping",
+      "focusCheck": "none",
+      "ns": "1097727975647875",
+      "reason": "requested",
+      "source": "worker"
+    },
+    {
+      "clipboard": "untouched",
+      "event": "stopped",
+      "heldKeysEmpty": true,
+      "ns": "1097727975669791",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097728080621958",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "1097728189813666",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "result",
+      "ns": "1097729985696708",
+      "result": "measured",
+      "drainVerified": true,
+      "drainMs": 0.260625,
+      "admittedEvents": 36,
+      "receivedEvents": 36,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 18,
+      "targetOriginsVerified": 36,
+      "gateA": "closed",
+      "reason": "clientHeartbeatLost"
+    },
+    {
+      "source": "supervisor",
+      "event": "workerExited",
+      "ns": "1097729985884208",
+      "pid": 98587,
+      "exitCode": 0
+    },
+    {
+      "source": "supervisor",
+      "event": "targetExited",
+      "ns": "1097730059468166",
+      "pid": 98588,
+      "exitCode": 0
+    }
+  ],
+  "replay": {
+    "uniqueMatchingEvents": 36,
+    "correctTextPrefixes": 18,
+    "drainNs": 260625,
+    "admissionsAfterStop": 0,
+    "postsAfterWorkerClosure": 0,
+    "cleanupUpPostsAfterStop": 0,
+    "processExits": [
+      {
+        "source": "supervisor",
+        "event": "workerExited",
+        "ns": "1097729985884208",
+        "pid": 98587,
+        "exitCode": 0
+      },
+      {
+        "source": "supervisor",
+        "event": "targetExited",
+        "ns": "1097730059468166",
+        "pid": 98588,
+        "exitCode": 0
+      }
+    ],
+    "observationAfterStopMs": 2010.287542
+  },
+  "finalExperimentMarker": "clean",
+  "limitations": [
+    "Finite observation only",
+    "AC12 restart remains untested",
+    "Task 1.3 and Gate A incomplete"
+  ]
+}

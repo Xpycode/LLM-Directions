@@ -3,13 +3,20 @@
 > **Completed tasks archive.** Used for progress calculation.
 
 ## Stats
-- **Total archived:** 6
-- **Last updated:** 2026-09-01
+- **Total archived:** 8
+- **Last updated:** 2026-09-05
 
 ## Completed
 
 <!-- Newest at top. Added by /log when tasks complete. -->
 <!-- Format: - [x] Task description (YYYY-MM-DD) -->
+
+- [x] Mac Control 1.1: Inventory actual clients and backends (2026-09-05)
+  - [Environment evidence](verification/mac-control/environment.md): local versions, identity hints,
+    permissions and user-reported cross-project UI tests. Live compatibility remains unverified.
+- [x] Mac Control 1.2: Freeze the protocol and lifecycle fixtures (2026-09-05)
+  - [Static verification](verification/mac-control/protocol.md): revision 1, six JSON files,
+    86 declarative scenarios and independent review fixes. No runtime stop test yet.
 
 - [x] Task 1.1: Define the Claude/Codex/shared instruction ownership boundary (2026-09-01)
 - [x] Task 1.2: Inventory instruction-file references and scaffolding surfaces (2026-09-01)

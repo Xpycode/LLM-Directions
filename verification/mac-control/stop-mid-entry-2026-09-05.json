@@ -1,0 +1,130 @@
+{
+  "reportVersion": 1,
+  "date": "2026-09-05",
+  "case": "stop-mid-entry",
+  "environment": {
+    "machineLabel": "M1 Max",
+    "architecture": "arm64",
+    "macOS": "27.0",
+    "osBuild": "26A5421a",
+    "swift": "6.3.3",
+    "python": "3.14.7",
+    "execution": "actual Codex session, approved shell execution outside sandbox"
+  },
+  "scope": "Single disposable owned AppKit target; not production compatibility or Gate A",
+  "traceSHA256": "8e0d0edf1dbdb7068afe00c9fbca58e505d52a103813f1cd13eb57304dcc0c4d",
+  "artifactSHA256": {
+    "worker": "2ad6317b228f310a4961142770edaac3653599f4dff609556524ef1cc3419468",
+    "target": "fe0cebd89a0f9a1eefe9bff72e0a3ab2c07abd7623cae0838418e3d4a016fe29"
+  },
+  "countdownMs": 5004.888416,
+  "result": {
+    "result": "measured",
+    "drainVerified": true,
+    "drainMs": 11.716291,
+    "admittedEvents": 12,
+    "receivedEvents": 12,
+    "duplicateReceipt": false,
+    "workerExited": true,
+    "targetLost": false,
+    "ownedEventsObserved": 0,
+    "textPrefixesVerified": 6,
+    "targetOriginsVerified": 12,
+    "gateA": "closed",
+    "reason": "clientStop"
+  },
+  "observationAfterStopMs": 2000.939541,
+  "admissionsAfterStop": 0,
+  "postsAfterWorkerClosure": 0,
+  "receipts": [
+    {
+      "sequence": 1,
+      "event": "keyDown",
+      "relativeToStopMs": -1019.048917,
+      "characterCount": 1,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 2,
+      "event": "keyUp",
+      "relativeToStopMs": -963.497625
+    },
+    {
+      "sequence": 3,
+      "event": "keyDown",
+      "relativeToStopMs": -848.096084,
+      "characterCount": 2,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 4,
+      "event": "keyUp",
+      "relativeToStopMs": -746.296209
+    },
+    {
+      "sequence": 5,
+      "event": "keyDown",
+      "relativeToStopMs": -631.806,
+      "characterCount": 3,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 6,
+      "event": "keyUp",
+      "relativeToStopMs": -527.045334
+    },
+    {
+      "sequence": 7,
+      "event": "keyDown",
+      "relativeToStopMs": -408.844917,
+      "characterCount": 4,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 8,
+      "event": "keyUp",
+      "relativeToStopMs": -313.443917
+    },
+    {
+      "sequence": 9,
+      "event": "keyDown",
+      "relativeToStopMs": -204.594125,
+      "characterCount": 5,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 10,
+      "event": "keyUp",
+      "relativeToStopMs": -105.271042
+    },
+    {
+      "sequence": 11,
+      "event": "keyDown",
+      "relativeToStopMs": -0.24875,
+      "characterCount": 6,
+      "samplePrefixMatches": true
+    },
+    {
+      "sequence": 12,
+      "event": "keyUp",
+      "relativeToStopMs": 11.716291
+    }
+  ],
+  "processExits": [
+    {
+      "process": "worker",
+      "exitCode": 0
+    },
+    {
+      "process": "target",
+      "exitCode": 0
+    }
+  ],
+  "finalExperimentMarker": "clean",
+  "limitations": [
+    "Worker exit latency not measured by drainMs",
+    "One bounded ASCII case only",
+    "No global own-event tap observations; target PID/tag origin verified",
+    "Disconnect, physical intervention, crash recovery, clipboard and two-client handoff remain unverified"
+  ]
+}

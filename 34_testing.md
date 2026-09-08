@@ -647,3 +647,37 @@ call to notice the substitution.
   is therefore **not** covered. That comment is where the next person finds the hole.
 - Suspect this specifically when a bug report sounds like "the feature does nothing" while the
   feature's own test is green. The test is probably starting downstream of the break.
+
+## Measure the Required Interval and Include Teardown in the Verdict
+
+Detection delay, time since the last heartbeat, input drain and process exit measure different
+things. A fast stop after detection cannot establish that detection itself was timely. Record the
+actual fault operation and detection on a shared monotonic clock. If an operation cannot have one
+atomic timestamp, bracket it before/after and use the conservative upper bound for a deadline pass.
+Test just below, at, and just beyond the boundary; reject absent, reversed or future timestamps.
+
+Keep instrumentation from changing the fault path: a new control message can refresh liveness or
+delay the fault. Buffer diagnostic evidence and persist it after active control ends when disk I/O
+would distort the measurement. State clearly what an interrupted run cannot prove.
+
+An early successful result can also outlive a later teardown failure. In particular, a Python return
+value chosen before `finally` is not changed merely by setting a failure flag inside `finally`.
+Evaluate the final verdict after required teardown and evidence persistence, or make the caller
+explicitly combine those outcomes. Test the case where the main assertion passes but a child stays
+open, exits unsuccessfully, or the evidence cannot be saved.
+
+Observed and regression-tested in the [Directions loss-timing spike](verification/mac-control/loss-instrumentation.md).
+
+## Isolate Competing Stop Triggers
+
+When several monitors can stop the same operation, a stopped result alone does not prove the
+intended monitor worked. For example, clicking away or pressing Command-Tab to test focus loss
+can trigger physical-input cancellation before the focus check runs.
+
+Inject the intended fault independently, record its origin and the specific stop cause, and keep
+the other safeguards enabled. For focus loss, use an owned disposable focus transition with a
+second event recorder. If a general reason such as `readinessLost` has multiple causes, require
+cause-specific evidence. Do not broaden accepted reasons merely to make the test pass.
+
+Identified while [preparing the Directions intervention tests](verification/mac-control/prepared-intervention-window.md#separate-focus-loss-experiment);
+the independent focus-loss fixture is still pending.
