@@ -12,7 +12,7 @@ LLM-Directions - Documentation system for AI-assisted development
 
 | Date | Focus | Outcome | Log |
 |------|-------|---------|-----|
-| 2026-09-08 | Verify Escape/key intervention and prepare the focus-loss handoff | September 7 live cases passed at 8.23/1.49 ms; all test processes closed and evidence saved. Next: independent disposable focus-loss fixture. Task 1.3 remains open; 22 Backlog, 0 Inbox. | [log](2026-09-08.md) |
+| 2026-09-08 | Record intervention results; reconcile Git and install Codex Directions on M4-Pro | Prior Escape/key cases passed; focus-loss proof remains pending. Fast-forwarded six commits with a recovery stash retained; installed and verified global Codex guidance and the skill link. Next: fresh-session `status arrive`, then the focus-loss fixture. | [log](2026-09-08.md) |
 | 2026-09-07 | Prepare and run the live loss-timing recheck | Disconnect and heartbeat loss met detection/drain limits; all test processes closed and evidence saved. Gate A remains incomplete. Next: prepare intervention/focus-loss testing and agree its window. | [log](2026-09-07.md) |
 | 2026-09-06 | Verify disconnect/heartbeat-loss stops and add loss-timing evidence | Both drains passed (11.11/10.57 ms); all test processes closed. Added fault timestamps, deadline assertions and teardown-failure checks; 32 offline tests passed. Next: agree a live timing recheck. Gate A remains closed. | [log](2026-09-06.md) |
 | 2026-09-05 | Plan shared Mac control and verify the first disposable Stop case | Inventory/protocol complete; built the harness and passed six-character Stop with 12 matching events and 11.72 ms drain. Both processes closed; 16 offline tests passed. Gate A remains closed. Next: schedule disconnect/watchdog tests. | [log](2026-09-05.md) |

@@ -21,7 +21,7 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
-- **2026-09-08** — Logged the intervention results and prepared the focus-loss handoff; cleanup rechecked and no test app remained running.
+- **2026-09-08** — Recorded intervention results and the focus-loss handoff; reconciled M4-Pro's checkout and installed Codex Directions there. Fresh-session discovery remains to be checked.
 - **2026-09-07** — Escape/key intervention stopped input in 8.23/1.49 ms; loss-detection cases also
   passed. All test processes closed; portable evidence saved. Focus-loss and recovery remain pending.
 - **2026-09-06** — Disconnect and heartbeat-loss input drains passed (11.11/10.57 ms); all test
@@ -51,9 +51,9 @@
 ## Resume
 - [Checkpoint](RESUME.md): task 1.3 partly verified; loss timing and Escape/key cases passed.
   [Latest verification](verification/mac-control/intervention-live.md) records the intervention window.
-  [Pre-clear session resume](sessions/2026-09-08.md#resume) records the exact focus-loss pickup.
+  [Session resume](sessions/2026-09-08.md#resume) summarizes the focus-loss pickup; the earlier full log is absent on M4-Pro.
   Both approved windows are finished; Mac-control work is included in this checkpoint commit.
-  Unrelated OtherSpaces guidance edits remain local; logs/checkpoint follow existing ignore rules.
+  The prior Mac's handoff reported local OtherSpaces guidance edits; logs/checkpoint follow existing ignore rules.
   Focus-loss/recovery/clipboard and broader intervention proof are still pending.
 - 22 Backlog items (21 feature + one index-maintenance); 0 Inbox; Current Sprint 0/2 after archiving.
 

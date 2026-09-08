@@ -31,6 +31,8 @@
 - [ ] Maintenance: make `scripts/sync-session-index.sh` archive-aware and handle suffixed dates;
   review the unindexed `sessions/2026-02-18-vic-variant.md`. Confirmed by the 2026-09-05 log audit;
   combined live/archive links have no missing targets. Outside the 25-task feature plan.
+  September 8 M4-Pro check also found prior ignored session logs absent locally; distinguish
+  cross-Mac log availability from index drift before repairing entries.
 
 ## Current Sprint
 <!-- Active work. Populated by /make-plan or /execute. Keep focused (3-7 tasks). -->
