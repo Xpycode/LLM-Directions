@@ -1,0 +1,124 @@
+{
+  "result": "passed",
+  "scope": "syntheticProcessesOnly",
+  "fault": "supervisor-crash",
+  "error": null,
+  "faultBracketNs": {
+    "before": 32252009660125,
+    "after": 32252010505125
+  },
+  "transportContained": true,
+  "syntheticDrainComplete": true,
+  "nativeDrainVerified": false,
+  "restartEligible": false,
+  "recorderSurvivedSupervisor": true,
+  "forcedChildren": [],
+  "exits": {
+    "recorder": 0,
+    "worker": 0,
+    "supervisor": 17
+  },
+  "trace": [
+    {
+      "source": "recorder",
+      "receivedNs": 32252008030166,
+      "event": "ready",
+      "ns": 32252007861541
+    },
+    {
+      "source": "worker",
+      "receivedNs": 32252008987000,
+      "event": "ready",
+      "ns": 32252008898750
+    },
+    {
+      "source": "supervisor",
+      "receivedNs": 32252009386541,
+      "event": "ready",
+      "ns": 32252009333625
+    },
+    {
+      "source": "worker",
+      "receivedNs": 32252009604375,
+      "event": "posted",
+      "ns": 32252009540083,
+      "tag": 1
+    },
+    {
+      "source": "worker",
+      "receivedNs": 32252009631708,
+      "event": "posted",
+      "ns": 32252009582375,
+      "tag": 2
+    },
+    {
+      "source": "recorder",
+      "receivedNs": 32252009644333,
+      "event": "receipt",
+      "ns": 32252009572375,
+      "tag": 1
+    },
+    {
+      "source": "recorder",
+      "receivedNs": 32252009657458,
+      "event": "receipt",
+      "ns": 32252009632125,
+      "tag": 2
+    },
+    {
+      "source": "supervisor",
+      "receivedNs": 32252009753041,
+      "event": "crashing",
+      "ns": 32252009696041
+    },
+    {
+      "source": "supervisor",
+      "receivedNs": 32252010494791,
+      "event": "streamEOF",
+      "ns": 32252010492416
+    },
+    {
+      "source": "worker",
+      "receivedNs": 32252010530416,
+      "event": "commandEOF",
+      "ns": 32252010473541
+    },
+    {
+      "source": "worker",
+      "receivedNs": 32252010539958,
+      "event": "stopped",
+      "ns": 32252010492625,
+      "heldKeysEmpty": true
+    },
+    {
+      "source": "worker",
+      "receivedNs": 32252010550208,
+      "event": "observationComplete",
+      "ns": 32252010498208
+    },
+    {
+      "source": "recorder",
+      "receivedNs": 32252010562291,
+      "event": "sourceEOF",
+      "ns": 32252010534958
+    },
+    {
+      "source": "worker",
+      "receivedNs": 32252014001416,
+      "event": "streamEOF",
+      "ns": 32252013999416
+    },
+    {
+      "source": "observer",
+      "receivedNs": 32252014024250,
+      "event": "fenceRequested",
+      "ns": 32252014023958
+    },
+    {
+      "source": "recorder",
+      "receivedNs": 32252014158208,
+      "event": "observationComplete",
+      "ns": 32252014104666
+    }
+  ]
+}

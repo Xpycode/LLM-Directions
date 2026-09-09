@@ -1,0 +1,38 @@
+{
+  "configuration": {
+    "transaction": "acquisition-35953f406b1d4ca991db2a29ac4d0ffe",
+    "marker_directory": "/private/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike",
+    "runtime_parent": "/private/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T",
+    "history_source": "/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/verification/mac-control/worker-crash-2026-09-09.json",
+    "evidence_directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/acquisition-35953f406b1d4ca991db2a29ac4d0ffe/slots",
+    "anchor_directory": "/Users/sim/.config/directions/mac-control-anchors/acquisition-35953f406b1d4ca991db2a29ac4d0ffe",
+    "archive_directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/acquisition-35953f406b1d4ca991db2a29ac4d0ffe/archive",
+    "synchronization_review": "Disjoint from all configured Syncthing folders; other services not assessed.",
+    "configured_sync_folder_count": 4
+  },
+  "results": {
+    "capture": {
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/tools/mac-control/Spikes/recovery_acquire.py",
+        "capture",
+        "--evidence-directory",
+        "/Users/sim/Library/Application Support/Directions/MacControlEvidence/acquisition-35953f406b1d4ca991db2a29ac4d0ffe/slots",
+        "--anchor-directory",
+        "/Users/sim/.config/directions/mac-control-anchors/acquisition-35953f406b1d4ca991db2a29ac4d0ffe",
+        "--archive-directory",
+        "/Users/sim/Library/Application Support/Directions/MacControlEvidence/acquisition-35953f406b1d4ca991db2a29ac4d0ffe/archive",
+        "--marker-directory",
+        "/private/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike",
+        "--history-source",
+        "/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/verification/mac-control/worker-crash-2026-09-09.json",
+        "--operator-record",
+        "2026-09-09 Codex resumes authorized handoff: fresh prospective baseline; original report pins not found; historical crash copy acquired now as failed/unknown, non-retryable context."
+      ],
+      "exit_code": 1,
+      "stdout": "{\"failure_stage\": \"inventoryAfterFirstScan\", \"launch_eligible\": false, \"native_recovery_verified\": false, \"operation\": \"capture\", \"reason\": \"ProbeFailure\", \"result\": \"unresolved\", \"schema\": \"prospectiveAcquisitionReport/v1\"}\n",
+      "stderr": ""
+    }
+  }
+}

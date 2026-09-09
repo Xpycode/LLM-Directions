@@ -1,0 +1,1040 @@
+{
+  "case": "focus-loss",
+  "date": "2026-09-09",
+  "tracePath": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-7zk1iueq/events.jsonl",
+  "traceSHA256": "54b68e0b7956a40239f429b9dede9e2fa0e887867373e6020561843bdf0e5dd4",
+  "trace": [
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "82867628373916",
+      "child": "worker",
+      "pid": 72370
+    },
+    {
+      "accessibility": true,
+      "event": "preflight",
+      "eventPosting": true,
+      "inputMonitoring": true,
+      "ns": "82867656260333",
+      "source": "worker"
+    },
+    {
+      "event": "ready",
+      "ns": "82867669854875",
+      "pid": 72370,
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "82867671814666",
+      "child": "focusSink",
+      "pid": 72371
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82867669955291",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82867777905958",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82867876379000",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82867975065333",
+      "source": "worker"
+    },
+    {
+      "pid": 72371,
+      "ns": "82867995136791",
+      "active": false,
+      "source": "focusSink",
+      "event": "ready"
+    },
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "82867997545375",
+      "child": "target",
+      "pid": 72372
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868093655083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868209493333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868321477541",
+      "source": "worker"
+    },
+    {
+      "ns": "82868366269916",
+      "pid": 72372,
+      "source": "target",
+      "event": "ready"
+    },
+    {
+      "source": "target",
+      "ns": "82868400793125",
+      "event": "becameActive"
+    },
+    {
+      "event": "bound",
+      "ns": "82868429412791",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "countdown",
+      "ns": "82868429551458",
+      "seconds": 5
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868441885666",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868561233083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868658577416",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868777962958",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868877869083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82868977031958",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869094781791",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869201148041",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869311579333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869427642083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869544136625",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869648335833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869744789583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869847452083",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82869959934833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870078957750",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870187182750",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870298926541",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870410455583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870527902208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870632546500",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870749705833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870853276708",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82870955742125",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871066374041",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871182355833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871296498833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871393577125",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871503210250",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871613420708",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871716656583",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871828106500",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82871934841458",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872033324791",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872147751333",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872258598291",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872361133458",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872478141625",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872584813041",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872695050666",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872796251500",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872898146625",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82872997226625",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873097537291",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873213831708",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873311222208",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873411060083",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "active",
+      "ns": "82873432330333"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "82873432390708",
+      "downTag": 14519015656521729,
+      "upTag": 14519015656521730
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "82873487574666",
+      "source": "worker",
+      "tag": 14519015656521729
+    },
+    {
+      "ns": "82873504879166",
+      "source": "target",
+      "count": 1,
+      "event": "changed"
+    },
+    {
+      "ns": "82873505100625",
+      "count": 1,
+      "matchesSamplePrefix": true,
+      "sourcePID": 72370,
+      "source": "target",
+      "tag": 14519015656521729,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873530258833",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "82873545061583",
+      "source": "worker",
+      "tag": 14519015656521730
+    },
+    {
+      "tag": 14519015656521730,
+      "source": "target",
+      "ns": "82873545604541",
+      "event": "keyUp",
+      "sourcePID": 72370
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "82873642103333",
+      "downTag": 14519015656521731,
+      "upTag": 14519015656521732
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873648552791",
+      "source": "worker"
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "82873649477625",
+      "source": "worker",
+      "tag": 14519015656521731
+    },
+    {
+      "ns": "82873652538916",
+      "source": "target",
+      "event": "changed",
+      "count": 2
+    },
+    {
+      "ns": "82873652793375",
+      "count": 2,
+      "matchesSamplePrefix": true,
+      "sourcePID": 72370,
+      "source": "target",
+      "tag": 14519015656521731,
+      "event": "keyDown"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "82873748921083",
+      "source": "worker",
+      "tag": 14519015656521732
+    },
+    {
+      "tag": 14519015656521732,
+      "source": "target",
+      "ns": "82873749527541",
+      "event": "keyUp",
+      "sourcePID": 72370
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873762388916",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "82873846782958",
+      "downTag": 14519015656521733,
+      "upTag": 14519015656521734
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "82873861948625",
+      "source": "worker",
+      "tag": 14519015656521733
+    },
+    {
+      "ns": "82873863916083",
+      "source": "target",
+      "event": "changed",
+      "count": 3
+    },
+    {
+      "ns": "82873864038666",
+      "count": 3,
+      "matchesSamplePrefix": true,
+      "sourcePID": 72370,
+      "source": "target",
+      "tag": 14519015656521733,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873881269458",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "82873962334250",
+      "source": "worker",
+      "tag": 14519015656521734
+    },
+    {
+      "tag": 14519015656521734,
+      "source": "target",
+      "ns": "82873962869000",
+      "event": "keyUp",
+      "sourcePID": 72370
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82873976554875",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "82874058552166",
+      "downTag": 14519015656521735,
+      "upTag": 14519015656521736
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "82874070208375",
+      "source": "worker",
+      "tag": 14519015656521735
+    },
+    {
+      "ns": "82874078213291",
+      "source": "target",
+      "event": "changed",
+      "count": 4
+    },
+    {
+      "ns": "82874078355208",
+      "count": 4,
+      "matchesSamplePrefix": true,
+      "sourcePID": 72370,
+      "source": "target",
+      "tag": 14519015656521735,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82874083667333",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "82874182745916",
+      "source": "worker",
+      "tag": 14519015656521736
+    },
+    {
+      "tag": 14519015656521736,
+      "source": "target",
+      "ns": "82874183164125",
+      "event": "keyUp",
+      "sourcePID": 72370
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82874196272625",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "82874275174666",
+      "downTag": 14519015656521737,
+      "upTag": 14519015656521738
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "82874284190375",
+      "source": "worker",
+      "tag": 14519015656521737
+    },
+    {
+      "ns": "82874286395333",
+      "source": "target",
+      "event": "changed",
+      "count": 5
+    },
+    {
+      "ns": "82874286541625",
+      "count": 5,
+      "matchesSamplePrefix": true,
+      "sourcePID": 72370,
+      "source": "target",
+      "tag": 14519015656521737,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82874297084708",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "82874378268000",
+      "source": "worker",
+      "tag": 14519015656521738
+    },
+    {
+      "tag": 14519015656521738,
+      "source": "target",
+      "ns": "82874378717708",
+      "event": "keyUp",
+      "sourcePID": 72370
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82874411269833",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "admittedPair",
+      "ns": "82874478150125",
+      "downTag": 14519015656521739,
+      "upTag": 14519015656521740
+    },
+    {
+      "down": true,
+      "event": "posted",
+      "ns": "82874496019916",
+      "source": "worker",
+      "tag": 14519015656521739
+    },
+    {
+      "ns": "82874497292916",
+      "source": "target",
+      "event": "changed",
+      "count": 6
+    },
+    {
+      "ns": "82874497386166",
+      "count": 6,
+      "matchesSamplePrefix": true,
+      "sourcePID": 72370,
+      "source": "target",
+      "tag": 14519015656521739,
+      "event": "keyDown"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82874529419416",
+      "source": "worker"
+    },
+    {
+      "down": false,
+      "event": "posted",
+      "ns": "82874588886416",
+      "source": "worker",
+      "tag": 14519015656521740
+    },
+    {
+      "tag": 14519015656521740,
+      "source": "target",
+      "ns": "82874599545666",
+      "event": "keyUp",
+      "sourcePID": 72370
+    },
+    {
+      "source": "supervisor",
+      "event": "focusInjection",
+      "ns": "82874599749208",
+      "pid": 72371
+    },
+    {
+      "source": "focusSink",
+      "ns": "82874605594791",
+      "event": "activationRequested",
+      "pid": 72371
+    },
+    {
+      "event": "stopping",
+      "focusCheck": "frontmost",
+      "ns": "82874616843375",
+      "reason": "wrongFocus",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "82874617028083",
+      "reason": "wrongFocus",
+      "originNs": "82874616843375",
+      "detectionNs": "82874616995041",
+      "lastClientLivenessNs": "82874229629583",
+      "clientHeartbeatAgeMs": 387.365458
+    },
+    {
+      "clipboard": "untouched",
+      "event": "stopped",
+      "heldKeysEmpty": true,
+      "ns": "82874616886125",
+      "source": "worker"
+    },
+    {
+      "ns": "82874618511250",
+      "source": "target",
+      "event": "resignedActive"
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82874625679125",
+      "event": "becameActive",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82874627273875",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82874641712375",
+      "source": "worker"
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82874735368708",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82874753846958",
+      "source": "worker"
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82874835680583",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82874936356875",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875046414208",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875156070208",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875266574333",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875376365791",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875486368166",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875586601916",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875686622875",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875795387958",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875895655416",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82875996173708",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82876096160458",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82876205497458",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82876305621375",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82876405538541",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82876507652791",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82876615620916",
+      "event": "focusSample",
+      "pid": 72371
+    },
+    {
+      "source": "supervisor",
+      "event": "observationFenceRequested",
+      "ns": "82876626800791"
+    },
+    {
+      "frontmostPID": 72371,
+      "source": "focusSink",
+      "isActive": true,
+      "ns": "82876636413250",
+      "event": "observationComplete",
+      "pid": 72371
+    },
+    {
+      "source": "target",
+      "ns": "82876667783208",
+      "event": "observationComplete",
+      "pid": 72372,
+      "isActive": false,
+      "frontmostPID": 72371
+    },
+    {
+      "source": "supervisor",
+      "event": "observationEnded",
+      "ns": "82876667937916"
+    },
+    {
+      "source": "supervisor",
+      "event": "result",
+      "ns": "82876668286416",
+      "result": "measured",
+      "drainVerified": true,
+      "drainMs": 0.04275,
+      "admittedEvents": 12,
+      "receivedEvents": 12,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 6,
+      "targetOriginsVerified": 12,
+      "gateA": "closed",
+      "focus": {
+        "result": "measured",
+        "sinkPID": 72371,
+        "sinkInputEvents": 0,
+        "requestToDetectionUpperBoundMs": 11.248584,
+        "observationMs": 2050.909833
+      },
+      "reason": "wrongFocus"
+    },
+    {
+      "source": "supervisor",
+      "event": "workerExited",
+      "ns": "82876668337250",
+      "pid": 72370,
+      "exitCode": 0
+    },
+    {
+      "source": "supervisor",
+      "event": "targetExited",
+      "ns": "82876738217791",
+      "pid": 72372,
+      "exitCode": 0
+    },
+    {
+      "source": "supervisor",
+      "event": "focusSinkExited",
+      "ns": "82876771511125",
+      "pid": 72371,
+      "exitCode": 0
+    }
+  ],
+  "client": {
+    "version": 1,
+    "case": "focus-loss",
+    "clock": "mach_continuous_time_ns",
+    "startedNs": "82867555131375",
+    "lastHeartbeatSend": {
+      "beforeNs": "82876298338833",
+      "afterNs": "82876298407708"
+    },
+    "fault": null,
+    "stop": {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "82874617028083",
+      "reason": "wrongFocus",
+      "originNs": "82874616843375",
+      "detectionNs": "82874616995041",
+      "lastClientLivenessNs": "82874229629583",
+      "clientHeartbeatAgeMs": 387.365458,
+      "clientReceivedNs": "82874617163208"
+    },
+    "supervisorResult": {
+      "event": "result",
+      "result": "measured",
+      "drainVerified": true,
+      "drainMs": 0.04275,
+      "admittedEvents": 12,
+      "receivedEvents": 12,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 6,
+      "targetOriginsVerified": 12,
+      "gateA": "closed",
+      "focus": {
+        "result": "measured",
+        "sinkPID": 72371,
+        "sinkInputEvents": 0,
+        "requestToDetectionUpperBoundMs": 11.248584,
+        "observationMs": 2050.909833
+      },
+      "reason": "wrongFocus"
+    },
+    "supervisorExitCode": 0,
+    "supervisorTraceDirectory": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-7zk1iueq",
+    "errors": [],
+    "finishedNs": "82876780193083",
+    "liveness": {
+      "result": "notApplicable"
+    },
+    "casePassed": true
+  },
+  "artifacts": {
+    "worker": "367322449f0eb8a3b1ebe3ad323f4cf53d7bee7c82632a5327e22779ad74b1d8",
+    "target": "d61bc989997f06478aa84b6ec3b81d06c98553fce0172d56a036b3c3e8c0207f",
+    "focusSink": "c0e7163fa36fbe03e8fe7bfab648fddcfd060dc2881503bd6b3420c633836a22"
+  },
+  "priorReconciliation": {
+    "reason": "reviewedCompleteInputClosureBeforeWorkerCrash",
+    "traceSHA256": "bd59c1b96d09e9aecf1ff640dab7e622b65a5854cb5cde5b199bcea7c2a72050",
+    "originalMarker": "unresolved",
+    "receiptClosureRechecked": {
+      "result": "measured",
+      "drainVerified": true,
+      "drainMs": 0.045292,
+      "admittedEvents": 12,
+      "receivedEvents": 12,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 6,
+      "targetOriginsVerified": 12,
+      "gateA": "closed"
+    },
+    "focusFencesRechecked": true,
+    "recordedExits": {
+      "workerExited": [
+        69281,
+        -5
+      ],
+      "targetExited": [
+        69283,
+        0
+      ],
+      "focusSinkExited": [
+        69282,
+        0
+      ]
+    },
+    "processScanEmpty": true,
+    "scope": "retained trace only; not general crash recovery"
+  }
+}

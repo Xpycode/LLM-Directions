@@ -33,15 +33,66 @@
   combined live/archive links have no missing targets. Outside the 25-task feature plan.
   September 8 M4-Pro check also found prior ignored session logs absent locally; distinguish
   cross-Mac log availability from index drift before repairing entries.
+  September 9 combined live/archive audit: no broken links; the existing February18 variant and
+  `sessions/2026-09-08.sync-conflict-20260908-223811-OLVB77F.md` are unindexed. Preserve the conflict
+  log (it contains the earlier full handoff) pending comparison with the canonical September8 log.
 
 ## Current Sprint
 <!-- Active work. Populated by /make-plan or /execute. Keep focused (3-7 tasks). -->
 <!-- When done: /log moves to tasks-archive.md -->
 
-- [ ] 1.3 Prove bounded input and stop in a disposable target — Stop, disconnect and heartbeat-loss
+- [ ] 1.3 Prove bounded input and stop in a disposable target —
+  [Fresh acquisition/reload caller](verification/mac-control/prospective-acquisition.md) is implemented
+  and privately tested; [native attempt failed](verification/mac-control/prospective-acquisition-live.md)
+  before baseline retention. [Safe diagnostics now implemented](verification/mac-control/context-probe-diagnostics.md);
+  fresh attempt failed at inventory boundary. Review that boundary next; preserve both transactions.
+  Historical report classified acquired-now failed/unknown,
+  never original crash-authenticated evidence. Marker/recovery and Gate A remain unresolved.
+  [Native storage/provenance check](verification/mac-control/storage-and-provenance-review.md) passed
+  disposable provision/reload. Original whole-report pins not found; prospective acquisition and
+  retention review is next, preserving the historical failed/unknown outcome and unresolved marker.
+  [Runnable native preflight](verification/mac-control/native-preflight.md) provides disposable
+  provision/reload and read-only legacy inspection; 13 focused tests pass. Establish original
+  external pins/provenance and review local storage locations before native use. Gate A stays open.
+  [Persistent slot/anchor provisioning](verification/mac-control/persistent-witness-provisioning.md)
+  passes 10 new tests; deployment-location validation and read-only native preflight next.
+  [Native caller/witness retention](verification/mac-control/native-caller-retention.md) implemented
+  with 12 new offline tests; persistent provisioning and external trust-anchor retention next.
+  Stop, disconnect and heartbeat-loss
   input drains passed; [live loss timing passed](verification/mac-control/loss-timing-live.md)
   after 32 offline tests. [Escape/key intervention passed](verification/mac-control/intervention-live.md)
-  at 8.233833/1.490500 ms; window ended. Next: prepare an independent disposable focus-loss fixture.
+  at 8.233833/1.490500 ms; window ended. [Independent focus-loss fixture prepared](verification/mac-control/prepared-focus-window.md)
+  September 9; [live startup failed before input](verification/mac-control/focus-loss-startup.md).
+  Singleton fix confirmed on [retry](verification/mac-control/focus-loss-retry.md); marker reconciled.
+  Final [focus-loss retest passed](verification/mac-control/focus-loss-live.md) after shutdown fix:
+  11.248584 ms detection, 0.04275 ms drain, all processes exited0; marker clean.
+  [Offline recovery preparation](verification/mac-control/recovery-preparation.md): 49 tests passed;
+  [independent subprocess observer now passed](verification/mac-control/recovery-observer.md), 57 tests.
+  [Native worker-crash case prepared](verification/mac-control/prepared-worker-crash-window.md): 61 tests;
+  [One approved native run completed](verification/mac-control/worker-crash-live.md): 1.794583 ms loss
+  detection upper bound, 12 matching events and target fence; all processes exited. Marker unresolved.
+  [Reconciliation review complete](verification/mac-control/worker-crash-reconciliation.md): missing
+  post-state-update checkpoint and run-bound durable record. [Record model implemented offline](verification/mac-control/recovery-record.md);
+  [Checkpoint transport and separate writer added](verification/mac-control/checkpoint-storage.md), 89 tests passed.
+  [Identity and durable admission integrated](verification/mac-control/recovery-admission.md).
+  [Read-only verifier implemented offline](verification/mac-control/recovery-verifier.md).
+  [Snapshot/evidence adapter implemented offline](verification/mac-control/recovery-adapter.md).
+  [Darwin context/inventory probe implemented offline](verification/mac-control/recovery-context.md),
+  with 15 tests. [Native wire/ack adapter](verification/mac-control/recovery-native.md) adds 12 tests.
+  [Single-reader supervisor integration](verification/mac-control/recovery-supervisor.md) connects
+  acknowledgements, fault gating and EOF/waits. [Held-lock reconciliation](verification/mac-control/recovery-reconciliation.md)
+  now checks retained evidence after teardown with bounded setup/writer and context waits.
+  [Native inventory visibility passed](verification/mac-control/native-context-live.md) outside sandbox;
+  legacy marker/boot baseline retained unchanged. [Fenced bootstrap initialization](verification/mac-control/legacy-bootstrap-implementation.md)
+  now has offline provenance/continuity and process-death tests; launcher rejects its retained artifacts.
+  [Activation contract/native handoff reviewed](verification/mac-control/legacy-activation-preparation.md);
+  v2 audit binds post-clean marker metadata and rejects six tested rewrite boundaries.
+  [Completion seal/read-only preflight](verification/mac-control/legacy-completion-seal.md) now implemented
+  offline, including external persistence and process-death checks.
+  [Activation/one-shot admission](verification/mac-control/legacy-activation.md) now reaches the actual
+  supervisor entry, with explicit checkpoint reconciliation and crash/replay tests. Next native
+  caller/independent pin retention; boot freshness and native recovery remain unverified.
+  Keep the marker unresolved and Gate A open.
   Broader intervention, clipboard and recovery evidence remain pending.
 - [ ] 2.1 Scaffold the isolated Swift package and test harness — depends on Gate A.
 

@@ -1,0 +1,231 @@
+{
+  "case": "focus-loss",
+  "date": "2026-09-09",
+  "tracePath": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-q71q9vji/events.jsonl",
+  "traceSHA256": "9a41419db3efd800cec1a0e52b0d351036e25185b81d954d1a8fc123c5ea4dfb",
+  "trace": [
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "82447852567333",
+      "child": "worker",
+      "pid": 68422
+    },
+    {
+      "accessibility": true,
+      "event": "preflight",
+      "eventPosting": true,
+      "inputMonitoring": true,
+      "ns": "82447884241416",
+      "source": "worker"
+    },
+    {
+      "event": "ready",
+      "ns": "82447901795791",
+      "pid": 68422,
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "launched",
+      "ns": "82447904195083",
+      "child": "focusSink",
+      "pid": 68423
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82447901895291",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82448007184791",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82448118356458",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82448220568416",
+      "source": "worker"
+    },
+    {
+      "event": "stopping",
+      "focusCheck": "none",
+      "ns": "82448320302250",
+      "reason": "unownedInput",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "82448320550000",
+      "reason": "unownedInput",
+      "originNs": "82448320302250",
+      "detectionNs": "82448320461500",
+      "lastClientLivenessNs": "82448305812708",
+      "clientHeartbeatAgeMs": 14.648792
+    },
+    {
+      "clipboard": "untouched",
+      "event": "stopped",
+      "heldKeysEmpty": true,
+      "ns": "82448320360833",
+      "source": "worker"
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82448320472208",
+      "source": "worker"
+    },
+    {
+      "event": "ready",
+      "source": "focusSink",
+      "ns": "82448355174958",
+      "active": false,
+      "pid": 68423
+    },
+    {
+      "event": "heartbeat",
+      "ns": "82448436881583",
+      "source": "worker"
+    },
+    {
+      "source": "supervisor",
+      "event": "observationFenceRequested",
+      "ns": "82450321174333"
+    },
+    {
+      "source": "supervisor",
+      "event": "observationFenceFailed",
+      "ns": "82450321182083",
+      "child": "target"
+    },
+    {
+      "source": "focusSink",
+      "event": "closed",
+      "pid": 68423,
+      "ns": "82450326354208",
+      "reason": "invalidOrRepeatedCommand"
+    },
+    {
+      "source": "supervisor",
+      "event": "observationFenceTimeout",
+      "ns": "82450829494541"
+    },
+    {
+      "source": "supervisor",
+      "event": "observationEnded",
+      "ns": "82450829499375"
+    },
+    {
+      "source": "supervisor",
+      "event": "result",
+      "ns": "82450829562875",
+      "result": "inconclusiveOrFailed",
+      "drainVerified": false,
+      "drainMs": null,
+      "admittedEvents": 0,
+      "receivedEvents": 0,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 0,
+      "targetOriginsVerified": 0,
+      "gateA": "closed",
+      "focus": {
+        "result": "inconclusiveOrFailed",
+        "reason": "missingOrInvalidFocusEvidence"
+      },
+      "reason": "unownedInput"
+    },
+    {
+      "source": "supervisor",
+      "event": "workerExited",
+      "ns": "82450829622000",
+      "pid": 68422,
+      "exitCode": 0
+    },
+    {
+      "source": "supervisor",
+      "event": "focusSinkExited",
+      "ns": "82450829635000",
+      "pid": 68423,
+      "exitCode": 0
+    }
+  ],
+  "client": {
+    "version": 1,
+    "case": "focus-loss",
+    "clock": "mach_continuous_time_ns",
+    "startedNs": "82447779539000",
+    "lastHeartbeatSend": {
+      "beforeNs": "82450373114041",
+      "afterNs": "82450373171333"
+    },
+    "fault": null,
+    "stop": {
+      "source": "supervisor",
+      "event": "stopping",
+      "ns": "82448320550000",
+      "reason": "unownedInput",
+      "originNs": "82448320302250",
+      "detectionNs": "82448320461500",
+      "lastClientLivenessNs": "82448305812708",
+      "clientHeartbeatAgeMs": 14.648792,
+      "clientReceivedNs": "82448320708541"
+    },
+    "supervisorResult": {
+      "event": "result",
+      "result": "inconclusiveOrFailed",
+      "drainVerified": false,
+      "drainMs": null,
+      "admittedEvents": 0,
+      "receivedEvents": 0,
+      "duplicateReceipt": false,
+      "workerExited": true,
+      "targetLost": false,
+      "ownedEventsObserved": 0,
+      "textPrefixesVerified": 0,
+      "targetOriginsVerified": 0,
+      "gateA": "closed",
+      "focus": {
+        "result": "inconclusiveOrFailed",
+        "reason": "missingOrInvalidFocusEvidence"
+      },
+      "reason": "unownedInput"
+    },
+    "supervisorExitCode": 2,
+    "supervisorTraceDirectory": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-q71q9vji",
+    "errors": [],
+    "finishedNs": "82450854226750",
+    "liveness": {
+      "result": "notApplicable"
+    },
+    "casePassed": false
+  },
+  "artifacts": {
+    "worker": "e91568a8ba931d14403f01fb1bcb7a7abd2b71b6a45ff985db88b0c84862e73d",
+    "target": "d61bc989997f06478aa84b6ec3b81d06c98553fce0172d56a036b3c3e8c0207f",
+    "focusSink": "c0e7163fa36fbe03e8fe7bfab648fddcfd060dc2881503bd6b3420c633836a22"
+  },
+  "priorReconciliation": {
+    "reason": "reviewedNoInputStartupFailure",
+    "originalMarker": "unresolved",
+    "traceSHA256": "fd86a320f0d5c9f846d3615297e13881ae2e18c9076c960598e322af1e03a030",
+    "tracePath": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike-dt576jb4/events.jsonl",
+    "workerStoppedEmpty": true,
+    "noTargetLaunched": true,
+    "noInputAdmittedOrPosted": true,
+    "recordedChildExits": {
+      "worker": 0,
+      "focusSink": -5
+    },
+    "processScanEmpty": true,
+    "scope": "this retained pre-input crash only; not general recovery proof"
+  }
+}

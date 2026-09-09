@@ -13,7 +13,10 @@
   [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
   [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
 - **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
-- **Next:** prepare a separate disposable focus-loss fixture to avoid input-monitor ambiguity.
+- **Next:** review the [native inventory-boundary failure](verification/mac-control/context-probe-diagnostics.md).
+  Safe diagnostics implemented; fresh capture failed at `inventoryAfterFirstScan`.
+  Both partial transactions preserved; no baseline/reload, automatic retry or reboot.
+  **Blocker:** runtime marker unresolved after the worker-crash experiment; no verified recovery or retry.
   Recovery, clipboard and broader intervention proof remain pending before task 1.3 can close.
   Scope is occasional UI-test interruption across projects; Conjoyn provides a shell/AppleScript example.
 - **Continuing backlog:** exercise shared Codex workflows in consumer projects and refine the ten
@@ -21,17 +24,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-09** — Added safe probe diagnostics; fresh capture failed at inventory boundary. 367 tests passed/one skip; 14 final probe tests passed. Both partial transactions preserved.
 - **2026-09-08** — Recorded intervention results and the focus-loss handoff; reconciled M4-Pro's checkout and installed Codex Directions there. Fresh-session discovery remains to be checked.
-- **2026-09-07** — Escape/key intervention stopped input in 8.23/1.49 ms; loss-detection cases also
-  passed. All test processes closed; portable evidence saved. Focus-loss and recovery remain pending.
-- **2026-09-06** — Disconnect and heartbeat-loss input drains passed (11.11/10.57 ms); all test
-  processes closed. Added timestamp/deadline checks and rejected teardown false passes; 32 offline
-  tests passed. Updated instrumentation still needs live evidence.
-- **2026-09-05** — Built the disposable harness and passed the first live Stop test: six correct
-  characters, 12 matching events, 11.72 ms input drain; both processes closed. Broader proof pending.
-- **2026-09-04** — Made model/context guidance provider-neutral, documented current Codex controls
-  and provider mappings, refreshed global routing, and added tailored `AGENTS.md` files to the ten
-  recently active projects after their logs and existing instructions were audited.
+- **2026-09-07** — Escape/key intervention and loss-detection cases passed; all processes closed and portable evidence saved.
+- **2026-09-06** — Disconnect/heartbeat input drains passed; added timing and teardown checks with 32 offline tests.
+- **2026-09-05** — First live Stop test passed: six correct characters, 12 matching events, 11.72 ms drain; both processes closed.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -49,14 +46,28 @@
   If Claude Code is also used, run its separate `redeploy.sh` flow.
 
 ## Resume
-- [Checkpoint](RESUME.md): task 1.3 partly verified; loss timing and Escape/key cases passed.
-  [Latest verification](verification/mac-control/intervention-live.md) records the intervention window.
-  [Session resume](sessions/2026-09-08.md#resume) summarizes the focus-loss pickup; the earlier full log is absent on M4-Pro.
-  Both approved windows are finished; Mac-control work is included in this checkpoint commit.
-  The prior Mac's handoff reported local OtherSpaces guidance edits; logs/checkpoint follow existing ignore rules.
-  Focus-loss/recovery/clipboard and broader intervention proof are still pending.
+- [Latest execution resume](sessions/2026-09-09.md#resume--after-native-acquisition-failures): start with `execute — resume the latest handoff`;
+  see the [latest diagnostic checkpoint](verification/mac-control/context-probe-diagnostics.md)
+  before any further capture; inventory-boundary review now precedes remaining Wave 1 gates.
+  [Latest continuation](verification/mac-control/legacy-activation.md): activation/reconciliation and
+  one-shot admission implemented through the actual supervisor entry, with crash/replay tests.
+  [Native caller and witness storage](verification/mac-control/native-caller-retention.md) now tested
+  offline; [persistent provisioning](verification/mac-control/persistent-witness-provisioning.md) now
+  retains original identities across processes. [Delivery review](verification/mac-control/delivery-review.md)
+  is complete; [native-preflight CLI/runbook](verification/mac-control/native-preflight.md) is ready.
+  [Native storage/provenance review](verification/mac-control/storage-and-provenance-review.md) passed
+  disposable location checks; no original whole-report pins found. The [prospective acquisition caller](verification/mac-control/prospective-acquisition.md)
+  is implemented and privately tested; its native attempt failed before baseline retention.
+  Ordinary startup remains fenced; no safety gate was waived.
+  Worker-crash marker unresolved. Candidate evidence never restores admission.
+  Swift checkpoint edit uncompiled. No automatic retry or foreground authorization.
+  [Latest evidence](verification/mac-control/worker-crash-2026-09-09.json) retains measurements and both traces.
+  This handoff includes the Mac-control spike and evidence; unrelated edits remain local.
+  Logs/checkpoint retain ignore rules. Native witness storage is machine-local and is not in Git.
+  All approved windows ended. Recovery/clipboard and broader intervention proof remain pending.
+- Model fit: deep capability + high reasoning for recovery state/durability; active host setting not reliably visible.
 - 22 Backlog items (21 feature + one index-maintenance); 0 Inbox; Current Sprint 0/2 after archiving.
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-09-08.*
+*Last updated: 2026-09-09.*

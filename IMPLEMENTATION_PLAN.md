@@ -1,6 +1,6 @@
 # Implementation Plan — Mac Control Coordinator
 
-**Created:** 2026-09-05 · **Status:** Tasks 1.1–1.2 complete; task 1.3 loss timing and Escape/key passed; focus-loss/recovery proof pending
+**Created:** 2026-09-05 · **Status:** Tasks 1.1–1.2 complete; task 1.3 loss timing, Escape/key and focus-loss passed; live recovery proof pending
 
 ## Goal
 
@@ -23,6 +23,17 @@ queue, five-second countdown, visible time/steps, and reliable cancellation for 
 
 ## Execution rules and boundaries
 
+- September 9 delivery review completed: [bounded path to pilot](verification/mac-control/delivery-review.md).
+  [Native-preflight CLI/runbook](verification/mac-control/native-preflight.md) now implements disposable
+  provision/reload and read-only legacy inspection. [Native storage checks passed](verification/mac-control/storage-and-provenance-review.md);
+  original whole-report pins were not located. The [prospective acquisition caller](verification/mac-control/prospective-acquisition.md)
+  is now implemented/reviewed in private fixtures; native acquisition/reload precedes any later-boot
+  inspection. Gate A still includes recovery and the
+  remaining interruption/clipboard cases; legacy initialization alone cannot close it.
+- September 9 session close: user asked about time to a usable tool and was surprised by 2/25
+  completed tasks. Next session starts with a bounded delivery review before more infrastructure:
+  identify the shortest path through live recovery to a pilot (one input path, queue, Yes/No,
+  countdown, Stop). This is a proposed focus, not approval to skip Gate A or reduce acceptance scope.
 - Planning delivered documents only. Execution completed inventory/protocol and the separately
   user-approved Stop, disconnect and heartbeat-loss cases. Further foreground cases need an agreed window;
   task listing alone authorizes neither desktop input nor installation.
@@ -72,6 +83,124 @@ queue, five-second countdown, visible time/steps, and reliable cancellation for 
     table against every AC01–AC16 branch. No agent-facing approval endpoint.
 
 - [ ] **1.3 Prove bounded input and stop in a disposable target** → `C/Spikes/`, `V/stop-spike.md`
+  - Latest diagnostic continuation September 9: [safe stages and fresh attempt](verification/mac-control/context-probe-diagnostics.md).
+    367 full-suite passes/one skip; 14 final probe tests passed. Three native diagnostics passed,
+    then fresh capture failed at `inventoryAfterFirstScan`. Preserve both partial transactions;
+    next inventory-boundary review, no automatic retry/reboot or Gate A completion.
+  - Latest native attempt September 9: [acquisition failed before baseline retention](verification/mac-control/prospective-acquisition-live.md).
+    Bounded context failure reproduced read-only, then later diagnostic probes passed. Preserve
+    the partial transaction; no retry, reload or reboot. Next: safe probe-stage diagnostics before
+    a separately arranged fresh acquisition. Nine focused tests passed; Gate A remains open.
+  - Prospective acquisition September 9: [capture/reload caller and procedure](verification/mac-control/prospective-acquisition.md)
+    use existing storage schemas/APIs, bind the acquired-now historical archive in a freshly retained
+    baseline, and pass nine focused tests. Native acquisition is next; no live marker access or recovery pass.
+  - Native storage September 9: [location validation/provenance search](verification/mac-control/storage-and-provenance-review.md)
+    passed disposable provision and separate-process reload at both local parents. Original writer
+    records lack whole-report pins. Next review prospective acquisition/retention using existing APIs;
+    no marker access or recovery pass, no reboot requested.
+  - Runnable preflight September 9: [CLI and native procedure](verification/mac-control/native-preflight.md)
+    pass 13 focused tests, including separate-process provision/reload and read-only rejection cases.
+    Native storage locations and original independently retained provenance remain unverified;
+    no native initialization, build or recovery pass. Existing repeat-run and Gate A gaps remain.
+  - Persistent provisioning September 9: [independent restart identities](verification/mac-control/persistent-witness-provisioning.md)
+    create immutable slots and a separate configured anchor; crash, replacement, flush and caller
+    integration tests pass. Next deployment-location validation/read-only native preflight;
+    historical marker unresolved and no persistent installation or live bootstrap occurred.
+  - Native caller continuation September 9: [caller/witness retention](verification/mac-control/native-caller-retention.md)
+    implements explicit activation with independent transition/acknowledgement slots and crash tests.
+    Persistent slot provisioning and external trust-anchor retention remain before native use;
+    historical marker unresolved, no live bootstrap or recovery pass.
+  - Activation continuation September 9: [activation and one-shot startup](verification/mac-control/legacy-activation.md)
+    implement intent/receipt durability, independently witnessed explicit reconciliation, permanent
+    consumption and actual supervisor-entry integration. Native caller/pin retention preparation next;
+    historical marker unresolved and Gate A open.
+  - Completion continuation September 9: [seal and read-only preflight](verification/mac-control/legacy-completion-seal.md)
+    retain external completion evidence only during fresh initialization, validate pinned audit/context
+    and exact namespace continuity. Storage faults and subprocess death retain startup fences. Next
+    activation/one-shot consumption with launcher integration; no native bootstrap or recovery pass.
+  - Activation preparation September 9: [reviewed contract/native handoff](verification/mac-control/legacy-activation-preparation.md)
+    defines completion seal, durable commit, interrupted-publication handling and one-shot admission.
+    Reproduced/fixed clean-marker rewrite acceptance at six initialization boundaries; v2 audit binds
+    post-clean fingerprint. Next completion seal/read-only preflight offline; launcher remains fenced.
+  - Bootstrap continuation September 9: [fenced initialization](verification/mac-control/legacy-bootstrap-implementation.md)
+    checks independently pinned provenance, different boot and exact namespace continuity; retains
+    durable fence/full audit. Launcher rejects all bootstrap artifacts. Offline process-death tests
+    enter the actual launch gate. Next separate activation review and concrete native handoff.
+  - Native preflight September 9: [inventory visibility passed](verification/mac-control/native-context-live.md)
+    outside sandbox; locked legacy marker bytes/metadata and boot baseline retained unchanged.
+    [Legacy bootstrap review](verification/mac-control/legacy-bootstrap-review.md) requires a separately
+    tested initialization transaction and verified later boot; no marker clear or recovery pass.
+  - Locked continuation September 9: [post-teardown reconciliation](verification/mac-control/recovery-reconciliation.md)
+    borrows original marker ownership and waits for setup/writer release, including late construction.
+    Bounded context helpers share the continuous clock; all verdicts remain non-authorizing.
+    Next native context visibility and historical-marker review; no native recovery pass.
+  - Supervisor continuation September 9: [single-reader integration](verification/mac-control/recovery-supervisor.md)
+    gates fault injection on independent final-ack binding and collects native-format EOF/waits.
+    Review fixed post-signal reservation race; synthetic verifier integration stays non-authorizing.
+    Next retained-evidence reconciliation under the existing lock; native validation remains pending.
+  - Native transport continuation September 9: [wire/ack adapter](verification/mac-control/recovery-native.md)
+    adapts Swift schemas, requires explicit continuous clock, returns exact writer acknowledgement
+    bytes and supports target EOF after fence. Twelve offline tests; text-progress review fix applied.
+    Next single-reader supervisor integration offline; native recovery remains unverified.
+  - Context continuation September 9: [Darwin inventory probe](verification/mac-control/recovery-context.md)
+    adds bounded UID enumeration, stable process/path/context checks and locked-adapter integration.
+    Fifteen offline tests passed; native visibility and observer/ack transport remain unverified.
+    Next native transport preparation offline; historical marker remains unresolved.
+  - Adapter continuation September 9: [locked snapshot and owned evidence](verification/mac-control/recovery-adapter.md)
+    connect actual files/locks/pipes/waits to the verifier. Final acknowledgement requires collected
+    receipts/checkpoints followed by observed worker liveness, fixing delayed-poll false acceptance.
+    Next Darwin context/inventory probe offline; native integration and historical marker remain unresolved.
+  - Verifier continuation September 9: [read-only evidence checker](verification/mac-control/recovery-verifier.md)
+    binds marker/record, checkpoints, receipts, owned exits and observation; separate new-boot path.
+    Offline candidates never authorize restart. Next trusted snapshot/evidence adapter in isolated tests;
+    historical marker and native recovery remain unresolved.
+  - Admission continuation September 9: [durable admission](verification/mac-control/recovery-admission.md)
+    connects OS identity setup, pair reservations and checkpoint/write acknowledgements to crash-mode
+    dispatch. Real-writer tests cover Stop/heartbeats during stalled I/O; early-bound and receipt-kind
+    review findings fixed. Next read-only restart/reconciliation verifier offline; no native recovery claim.
+  - Further offline continuation September 9: [checkpoint/storage](verification/mac-control/checkpoint-storage.md)
+    wires checkpoint transport into controlled-crash sequencing and adds a separately tested writer.
+    89 tests passed; Swift edit uncompiled. Next: verified OS identities and admission integration,
+    including write deadlines and Stop/watchdogs during stalled I/O. Marker remains unresolved.
+  - Offline continuation September 9: [versioned record model](verification/mac-control/recovery-record.md)
+    adds strict parsing, cumulative checkpoint transitions and simulated durable acknowledgements.
+    Runtime remains unchanged. Next: worker checkpoint transport and nonblocking persistence;
+    retain the legacy unresolved marker and keep Gate A open.
+  - Review September 9: [reconciliation contract](verification/mac-control/worker-crash-reconciliation.md)
+    retains the unresolved marker. `posted` precedes local held-state update; the marker lacks run
+    identity and traces are not a pre-dispatch durable ledger. Next bounded work: versioned spike
+    record parser/transitions offline, then explicit worker checkpoint and nonblocking persistence.
+  - Live September 9: [worker-crash observation retained](verification/mac-control/worker-crash-live.md).
+    Six correct characters, 12 matched events; EOF detection upper bound 1.794583 ms; target fence
+    at 2032.261375 ms. Worker exited -9, target 0, all processes closed. No closure/drain proof;
+    marker unresolved and window ended. Next: offline evidence-specific reconciliation contract review.
+  - Prepared September 9: [native worker-crash case](verification/mac-control/prepared-worker-crash-window.md).
+    61 offline tests passed. Six complete pairs precede owned-worker kill; independent client trace
+    and target fence preserve evidence. Case intentionally retains unresolved marker and failure exit.
+    Next: agreed compilation/foreground window for one case; no native run yet.
+  - Observer September 9: [independent subprocess observer passed](verification/mac-control/recovery-observer.md).
+    57 tests passed; standalone trace retains worker EOF/closure and recorder fence across synthetic
+    supervisor death. Next: prepare native between-pairs worker-crash source/transport with offline
+    tests, preserving parent identity. Native supervisor-death and held-key cleanup remain unproven.
+  - Offline September 9: [recovery preparation](verification/mac-control/recovery-preparation.md).
+    49 tests passed: synthetic crash/hung-event handling and isolated real lock retention after
+    abrupt process exit. Next: independent observer fixture using synthetic subprocesses; existing
+    in-memory trace/target EOF lifetime cannot support a supervisor-crash measurement. No live recovery pass.
+  - Final September 9: [independent focus-loss case passed](verification/mac-control/focus-loss-live.md).
+    Detection11.248584ms, drain0.04275ms, all12 events and fences, zero sink input, all exits0.
+    Prior marker reconciled from full retained evidence; final marker clean. Recovery/clipboard still pending.
+  - Latest September 9: [focus detection/drain measured, shutdown failed](verification/mac-control/focus-loss-shutdown.md).
+    Detection16.80225ms, drain0.045292ms, 12 matching events, no sink input. Worker SIGTRAP makes
+    overall case fail. Fixed cached-clock underflow and rebuilt; unresolved marker/retest pending.
+  - Retry 2026-09-09: [marker reconciled; startup fixed](verification/mac-control/focus-loss-retry.md).
+    Unowned input stopped the worker before typing; both children exited 0, marker clean. Focus-loss
+    evidence remains absent. Prepare bounded input-origin diagnostics before another agreed window.
+  - Attempt 2026-09-09: [focus sink startup failed before input](verification/mac-control/focus-loss-startup.md).
+    AppKit singleton construction fixed and recompiled; corrected artifact not launched. Both owned
+    children exited; unresolved marker retained. Reconciliation review/new window precede any retry.
+  - Preparation 2026-09-09: [independent focus-loss fixture and window](verification/mac-control/prepared-focus-window.md)
+    add an owned focus sink, explicit cause/foreground checks, two evidence fences and offline
+    client/supervisor/oracle coverage. Native build/live run await the scheduled window; task remains open.
   - Live intervention 2026-09-07: [Escape and physical-key cases passed](verification/mac-control/intervention-live.md)
     with 8.233833/1.490500 ms drains, 12 matching events and six prefixes each. All processes exited 0;
     window ended. Next: separate disposable focus-loss fixture; broader intervention/recovery still pending.

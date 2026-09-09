@@ -656,6 +656,14 @@ actual fault operation and detection on a shared monotonic clock. If an operatio
 atomic timestamp, bracket it before/after and use the conservative upper bound for a deadline pass.
 Test just below, at, and just beyond the boundary; reject absent, reversed or future timestamps.
 
+A timestamp taken when `poll()` or `wait()` notices process exit is only an upper bound on the
+actual exit. A receipt before that timestamp may still have arrived after the process died.
+Test delayed observation explicitly. To prove a completed boundary preceded exit, collect its
+receipts/checkpoints and then independently observe the owned process still alive before binding
+the result. Continue reading through EOF so later or duplicate events cannot disappear from the
+verdict. This false acceptance was reproduced and fixed in the
+[recovery evidence adapter](verification/mac-control/recovery-adapter.md).
+
 Keep instrumentation from changing the fault path: a new control message can refresh liveness or
 delay the fault. Buffer diagnostic evidence and persist it after active control ends when disk I/O
 would distort the measurement. State clearly what an interrupted run cannot prove.
@@ -669,6 +677,27 @@ open, exits unsuccessfully, or the evidence cannot be saved.
 Observed and regression-tested in the [Directions loss-timing spike](verification/mac-control/loss-instrumentation.md).
 
 ## Isolate Competing Stop Triggers
+
+Recovery tests must compare actual event semantics and multiplicity, not just matching IDs.
+Converting receipts to a set of tags can hide duplicate postings or accept a keyDown where the
+reserved keyUp was required. Preserve observed kinds and reject duplicates before resolving a
+durable boundary; never construct completion evidence from the planned actions alone.
+Also inject lifecycle messages before their prerequisites: an early `bound` acknowledgement must
+not start input before identity setup and durable admission are ready. Both bugs were reproduced
+and fixed in the [durable admission tests](verification/mac-control/recovery-admission.md).
+
+For timestamp-based cancellation, a callback in the current tick may record a stop time **after**
+the tick's cached clock reading. Subtracting the new stop time from that older `UInt64` sample
+underflows and can crash after otherwise successful cancellation. Resample the clock before
+computing elapsed time for a newly created transition. Confirm normal process exit as well as
+the earlier stop acknowledgement; the [focus-loss test](verification/mac-control/focus-loss-live.md)
+caught this exact shutdown failure.
+
+An observation interval also needs a stream boundary: waiting two seconds does not prove all
+child records emitted during that interval have been read. Request a terminal observation
+acknowledgement on each owned stream and consume through it before evaluating. Continuous-focus
+claims require bounded sampling gaps, not merely a fresh final sample. These finite observations
+do not establish that macOS cannot deliver an event indefinitely late.
 
 When several monitors can stop the same operation, a stopped result alone does not prove the
 intended monitor worked. For example, clicking away or pressing Command-Tab to test focus loss

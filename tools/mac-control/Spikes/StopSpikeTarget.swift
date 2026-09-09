@@ -167,6 +167,8 @@ final class StopSpikeTarget: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var stopButton: NSButton?
     private var standardInputTimer: Timer?
     private var standardInputFlags: Int32?
+    private var standardInput = Data()
+    private var observationComplete = false
     private var didEmitClosed = false
 
     static func main() {
@@ -249,6 +251,14 @@ final class StopSpikeTarget: NSObject, NSApplicationDelegate, NSWindowDelegate {
         beginStandardInputEOFObservation()
     }
 
+    func applicationDidBecomeActive(_ notification: Notification) {
+        recorder.emit("becameActive")
+    }
+
+    func applicationDidResignActive(_ notification: Notification) {
+        recorder.emit("resignedActive")
+    }
+
     @objc private func stopClicked(_ sender: Any?) {
         recorder.emit("stopClicked")
         stopButton?.isEnabled = false
@@ -274,11 +284,11 @@ final class StopSpikeTarget: NSObject, NSApplicationDelegate, NSWindowDelegate {
         recorder.emit("closed")
     }
 
-    /// The harness owns the inherited input pipe. Its close is a cooperative shutdown signal; any
-    /// non-EOF bytes are deliberately ignored, and this target never accepts a command on stdin.
+    /// The harness owns this pipe. It can request one evidence-stream fence; EOF closes the app.
     private func beginStandardInputEOFObservation() {
         let flags = fcntl(STDIN_FILENO, F_GETFL)
         guard flags != -1, fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK) != -1 else {
+            failStandardInput("stdinUnavailable")
             return
         }
         standardInputFlags = flags
@@ -304,12 +314,47 @@ final class StopSpikeTarget: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @objc private func pollStandardInput(_ timer: Timer) {
-        var byte: UInt8 = 0
-        let result = read(STDIN_FILENO, &byte, 1)
-        if result == 0 {
-            timer.invalidate()
-            standardInputTimer = nil
-            window?.close()
+        var buffer = [UInt8](repeating: 0, count: 256)
+        let count = buffer.withUnsafeMutableBytes { bytes in
+            Darwin.read(STDIN_FILENO, bytes.baseAddress, bytes.count)
         }
+        if count == 0 {
+            window?.close()
+            return
+        }
+        if count < 0 {
+            if errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR {
+                failStandardInput("stdinReadFailed")
+            }
+            return
+        }
+        standardInput.append(contentsOf: buffer.prefix(count))
+        guard standardInput.count <= 512 else {
+            failStandardInput("commandTooLarge")
+            return
+        }
+        while let newline = standardInput.firstIndex(of: 0x0A) {
+            let line = Data(standardInput[..<newline])
+            standardInput.removeSubrange(...newline)
+            guard !observationComplete,
+                  let object = try? JSONSerialization.jsonObject(with: line),
+                  let command = object as? [String: String],
+                  command == ["op": "observeEnd"] else {
+                failStandardInput("invalidOrRepeatedCommand")
+                return
+            }
+            observationComplete = true
+            recorder.emit("observationComplete", fields: [
+                "pid": Int64(ProcessInfo.processInfo.processIdentifier),
+                "isActive": NSApplication.shared.isActive,
+                "frontmostPID": Int64(NSWorkspace.shared.frontmostApplication?.processIdentifier ?? 0),
+            ])
+            // Keep recording after the fence; only the owner's later EOF ends this app.
+        }
+    }
+
+    private func failStandardInput(_ reason: String) {
+        recorder.emit("error", fields: ["reason": reason])
+        window?.close()
     }
 }

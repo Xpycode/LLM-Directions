@@ -20,6 +20,145 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
+### 2026-09-09 - Bind acquired-now history to a freshly retained prospective baseline
+
+**Context:** Original acquisition records contain marker and raw-trace hashes, but no independently
+retained digest for either complete historical report. The prepared preflight cannot authenticate
+those reports by calculating hashes now and describing them as original pins.
+
+**Options Considered:**
+1. Treat a new hash as original authority — misstates acquisition history.
+2. Continue searching indefinitely or build another generic storage format — no concrete delivery gain.
+3. Acquire a fresh marker/boot baseline and bind an explicitly acquired-now copy of historical evidence.
+
+**Decision:** Implement option 3 with existing baseline/provisioning/retention APIs. Preserve exact
+historical bytes separately, classify them as acquired-now failed/unknown archival context, and bind
+their hash/size inside the new baseline's authenticated canonical provenance. The new original writer
+retains that baseline in an independently configured slot before any later restart use.
+
+**Rationale:** The new acquisition establishes an honest prospective observation without inventing
+the old crash's identity or changing existing storage schemas. Fresh-process reload validates the
+binding through the original slot identities, not a self-supplied report hash.
+
+**Consequences:** Native capture remains pending. A later boot and unchanged original namespace are
+still required; reload alone grants no input or recovery authority. Historical outcomes remain failed/
+unknown. Partial artifacts are preserved; no repair or automatic retry. Private tests and independent
+review passed. See [procedure and validation](verification/mac-control/prospective-acquisition.md).
+
+### 2026-09-09 - Preserve witness identities in a separate configured local anchor
+
+**Context:** The activation caller could retain original evidence bytes and provenance, but a fresh
+process still needed an independently trusted identity for its storage directory. Deriving that
+identity from discovered evidence at restart would lose the original acquisition boundary.
+
+**Options Considered:**
+1. Keep identity pins only in memory — cannot support caller restart.
+2. Trust identities/hashes supplied by arbitrary surviving reports — circular authentication.
+3. Store original slot identities in a separate explicitly configured local anchor during provisioning.
+
+**Decision:** Implement option 3 under the existing trusted-caller/cooperating same-UID model.
+Provision fixed private slots once, durably retain their original identities before evidence
+collection, and require the configured evidence and anchor roots explicitly during reload.
+
+**Rationale:** A separate configuration namespace preserves the original identities across process
+death without reconstructing trust from later evidence. Permanent provisioning fences and exclusive
+publication retain failures; complete publication can establish durability anew on explicit reload.
+
+**Consequences:** The installer-selected anchor and original writer remain the root of trust; hostile
+same-UID modification is outside this model. Missing or replaced state is not repaired. Offline
+tests and independent review passed; persistent deployment-location validation remains pending.
+This does not authorize native bootstrap, input, replay or a change to Gate A. See
+[implementation and validation](verification/mac-control/persistent-witness-provisioning.md).
+
+### 2026-09-09 - Require independently retained activation evidence and permanent one-shot consumption
+
+**Context:** A clean initialization marker and published activation receipt can survive a crash
+before the writer finishes its directory flush. Removing fences or hashing surviving files would
+erase the distinction between completed activation and interrupted publication. Later normal
+cleanup to clean could also make a reusable receipt admit another run.
+
+**Options Considered:**
+1. Treat receipt presence as completion and remove startup fences — simple, but cannot establish
+   durability or prevent replay after cleanup.
+2. Refuse every interrupted publication permanently — conservative, but discards independently
+   acquired evidence even when exact continuity can be verified.
+3. Retain completion evidence externally, permit explicit reconciliation only from an original
+   post-publication checkpoint, and consume activation permanently before identified admission.
+
+**Decision:** Choose option 3. Completion sealing happens during fresh initialization under the
+original lock. Activation may deliver an independently retained checkpoint after its last namespace
+mutation. Explicit reconciliation requires that exact pinned checkpoint, validates fresh context and
+unchanged files, and establishes durability anew. Admission permanently writes consumption, flushes
+the directory and the identified unresolved marker through the existing inode before returning ownership.
+
+**Rationale:** Post-publication evidence binds the directory metadata a pre-publication stamp cannot
+predict. Independently acquired pins distinguish retained observations from self-authenticating
+reports. Permanent consumption prevents receipt replay even after cleanup restores clean.
+
+**Consequences:** Ordinary startup rejects all initialization/activation artifacts; the CLI never
+loads authority automatically. Missing checkpoints or changed evidence stay blocked. Native caller,
+durable pin retention and live validation remain pending; no foreground grant or historical success
+is inferred. See [implementation and verification](verification/mac-control/legacy-activation.md).
+
+### 2026-09-09 - Keep legacy bootstrap initialization fenced until separate activation verification
+
+**Context:** The historical worker-crash marker is plain `unresolved`, without a run-bound ledger
+or post-state checkpoint. Native inventory now works outside the shell sandbox, but an empty
+current inventory cannot settle that old event uncertainty. A prospective locked boot/marker
+baseline can support a subsequently verified boot transition; it cannot retrofit historical identity.
+
+**Options Considered:**
+1. Relax the existing recovery verifier for the legacy report — would treat incomplete historical
+   evidence as authority and weaken the run-bound recovery contract.
+2. Initialize a clean marker and immediately remove bootstrap artifacts — requires crash-safe
+   activation and durable cleanup to be proven in the same transaction.
+3. Separate initialization from activation, retaining a durable fence and complete audit — keeps
+   partial writes and successful preparation unambiguously blocked at the launch gate.
+
+**Decision:** Use option 3 for the isolated spike. Initialization requires independently pinned
+baseline/history provenance, fresh different-boot context, complete empty inventory and unchanged
+namespace/marker identity under the original lock. Preserve the fence and all audit artifacts after
+success; the launcher rejects every bootstrap artifact before interpreting marker bytes.
+
+**Rationale:** A digest authenticates nothing when computed from the same untrusted report at load
+time. Similarly, a clean marker is insufficient when evidence publication or activation may still
+be incomplete. Retained ownership, evidence checks and an explicit fence make these boundaries
+testable without introducing another implicit recovery path.
+
+**Consequences:** `initializedFenced` never permits launch or establishes native recovery. Activation
+needs its own reviewed durable commit point and launcher validation. Historical evidence remains
+failed/unknown; no old input or capability is replayed. Offline tests cover process death, integrity
+changes and failed writes; actual boot freshness and native bootstrap remain unverified. See
+[implementation and validation](verification/mac-control/legacy-bootstrap-implementation.md).
+
+### 2026-09-09 - Require explicit crash recovery checkpoints and run-bound durable evidence
+
+**Context:** The disposable worker-crash case retained twelve matching events, detected worker EOF
+within 1.795 ms and closed the target normally. It lacked worker closure. Source review showed that
+the final key-up posting acknowledgement precedes the worker's held-state update; the plain runtime
+marker also lacks identity linking its uncertainty to a specific run. Buffered trace persistence
+after teardown cannot satisfy the protocol's pre-dispatch recovery ledger requirement.
+
+**Options Considered:**
+1. Clear the marker from balanced receipts and process absence — convenient, but lacks explicit
+   state/identity proof and cannot survive a missing trace or unrelated later run.
+2. Require only a normal stop acknowledgement — preserves current behavior but leaves no recovery
+   route for a worker that has already died.
+3. Retain the current marker and develop an independently verifiable checkpoint plus durable
+   run-bound record — additional spike work, aligned with the existing recovery protocol.
+
+**Decision:** Choose option 3. Implement record parsing/transitions offline first, then a checkpoint
+after the worker's held-state update and persistence that blocks new admission without blocking
+Stop/watchdogs. Current evidence remains detection evidence, not retrospective recovery authority.
+
+**Rationale:** Recovery must account for both process identity and every uncertain event boundary.
+An explicit checkpoint can support a replacement proof for a dead worker; matching receipts and
+process death alone do not establish the full contract.
+
+**Consequences:** Keep the existing unresolved marker and task1.3/GateA open. Reject legacy/corrupt
+records and stale checkpoints; never replay old input. Native delivery/cleanup proof and future
+foreground approval are still required. See [review and acceptance cases](verification/mac-control/worker-crash-reconciliation.md).
+
 > Earlier ADRs also live in [`decisions-archive.md`](decisions-archive.md), with summaries in the
 > Condensed Log further down this file.
 

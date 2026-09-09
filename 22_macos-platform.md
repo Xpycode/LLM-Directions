@@ -490,6 +490,12 @@ let used  = total - free                            // NOT a per-volume "used" r
 
 ### Disposable AppKit input targets and process identity
 
+- When subclassing `NSApplication`, obtain the singleton through `YourApplication.shared` before
+  any base-class shared access. Do not directly call `YourApplication()`: AppKit can later invoke
+  its shared factory during `finishLaunching` and trap for creating a second instance. This occurred
+  in the [focus-loss fixture startup](verification/mac-control/focus-loss-startup.md); the singleton
+  factory fix was confirmed in the [successful live case](verification/mac-control/focus-loss-live.md).
+
 Observed in the [Directions Stop spike](verification/mac-control/stop-spike.md), macOS 27.0:
 
 - `NSTextView(frame:textContainer:)` does **not** build the text system for a nil container. A

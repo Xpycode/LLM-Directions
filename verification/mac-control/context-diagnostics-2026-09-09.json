@@ -1,0 +1,47 @@
+{
+  "schema": "contextDiagnostics/v1",
+  "samples": [
+    {
+      "index": 0,
+      "started_ns": 114001080548708,
+      "ended_ns": 114001321178500,
+      "result": "observed",
+      "sample": {
+        "boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d",
+        "session": "100024",
+        "checked_ns": 114001313456500,
+        "inventory_complete": true,
+        "executors": []
+      }
+    },
+    {
+      "index": 1,
+      "started_ns": 114001321182208,
+      "ended_ns": 114001507655458,
+      "result": "observed",
+      "sample": {
+        "boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d",
+        "session": "100024",
+        "checked_ns": 114001500221791,
+        "inventory_complete": true,
+        "executors": []
+      }
+    },
+    {
+      "index": 2,
+      "started_ns": 114001507659291,
+      "ended_ns": 114001690835416,
+      "result": "observed",
+      "sample": {
+        "boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d",
+        "session": "100024",
+        "checked_ns": 114001682872083,
+        "inventory_complete": true,
+        "executors": []
+      }
+    }
+  ],
+  "marker_unchanged": true,
+  "launch_eligible": false,
+  "native_recovery_verified": false
+}

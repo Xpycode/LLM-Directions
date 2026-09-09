@@ -26,8 +26,13 @@ def run_case(artifacts, case):
              "stop": None, "supervisorResult": None, "supervisorExitCode": None,
              "supervisorTraceDirectory": None, "errors": []}
     # No trace writes on heartbeat, fault injection, or active Stop paths.
-    child = subprocess.Popen([sys.executable, str(Path(__file__).with_name("supervisor.py")),
-                              "--artifacts", artifacts], stdin=subprocess.PIPE,
+    command = [sys.executable, str(Path(__file__).with_name("supervisor.py")), "--artifacts", artifacts]
+    if case == "focus-loss":
+        command.append("--focus-loss")
+    if case == "worker-crash":
+        command.append("--worker-crash")
+        audit.update(recoveryTrace=[], recoveryTraceSaved=None)
+    child = subprocess.Popen(command, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, bufsize=0)
     selector = selectors.DefaultSelector()
     selector.register(child.stdout, selectors.EVENT_READ)
@@ -42,6 +47,8 @@ def run_case(artifacts, case):
         "heartbeat-loss": {"clientHeartbeatLost"}, "escape": {"escape"},
         "wrong-focus": {"wrongFocus", "readinessLost"}, "physical-key": {"unownedInput"},
         "stop-button": {"stopClicked", "unownedInput"},
+        "focus-loss": {"wrongFocus", "readinessLost"},
+        "worker-crash": {"workerEOF", "workerExited", "workerWriteFailed"},
     }
 
     def send(op, **fields):
@@ -84,13 +91,23 @@ def run_case(artifacts, case):
                     if type(row) is not dict:
                         raise ValueError("invalid supervisor frame")
                     print(json.dumps(row), flush=True)
+                    if row.get("event") == "recoveryTrace":
+                        if (case != "worker-crash" or type(row.get("row")) is not dict
+                                or len(audit["recoveryTrace"]) >= 10000):
+                            raise ValueError("invalid recovery trace")
+                        audit["recoveryTrace"].append(row["row"])
+                    if row.get("event") == "recoveryTraceSaved":
+                        if case != "worker-crash" or audit["recoveryTraceSaved"] is not None:
+                            raise ValueError("unexpected recovery persistence evidence")
+                        audit["recoveryTraceSaved"] = row.get("rows")
                     if row.get("event") == "trace":
                         audit["supervisorTraceDirectory"] = row.get("directory")
                     if row.get("event") == "stopping":
                         if audit["stop"] is not None:
                             raise ValueError("duplicate stop evidence")
                         audit["stop"] = {**row, "clientReceivedNs": str(now())}
-                    if row.get("event") in ("targetStillOpen", "targetExitFailed", "workerExitFailed"):
+                    if row.get("event") in ("targetStillOpen", "targetExitFailed", "workerExitFailed",
+                                            "focusSinkStillOpen", "focusSinkExitFailed"):
                         audit["errors"].append(row["event"])
                     if row.get("event") == "result":
                         if audit["supervisorResult"] is not None:
@@ -115,7 +132,7 @@ def run_case(artifacts, case):
         if not child.stdin.closed:
             child.stdin.close() # EOF revokes. Never kill the agent or the test target.
         try:
-            audit["supervisorExitCode"] = child.wait(timeout=6)
+            audit["supervisorExitCode"] = child.wait(timeout=8 if case == "focus-loss" else 6)
         except subprocess.TimeoutExpired:
             audit["errors"].append("supervisorTeardownTimeout")
             print("Supervisor has not exited; inspect the experiment before another run.", file=sys.stderr)
@@ -128,10 +145,20 @@ def run_case(artifacts, case):
     result = audit["supervisorResult"] or {}
     matched = (result.get("reason") in expected_reasons[case]
                and (audit["stop"] or {}).get("reason") == result.get("reason"))
-    audit["casePassed"] = (not audit["errors"] and audit["supervisorExitCode"] == 0 and matched
+    audit["casePassed"] = (case != "worker-crash" and not audit["errors"]
+                           and audit["supervisorExitCode"] == 0 and matched
                            and result.get("result") == "measured"
                            and result.get("drainVerified") is True
+                           and (case != "focus-loss" or result.get("focus", {}).get("result") == "measured")
                            and audit["liveness"]["result"] in ("measured", "notApplicable"))
+    if case == "worker-crash":
+        audit["recoveryTraceComplete"] = (
+            type(audit["recoveryTraceSaved"]) is int
+            and audit["recoveryTraceSaved"] == len(audit["recoveryTrace"])
+            and audit["recoveryTraceSaved"] > 0
+            and audit["supervisorExitCode"] == 2
+            and not any(error != "workerExitFailed" for error in audit["errors"]))
+        audit["restartEligible"] = False
     evidence_path = runtime / "client-evidence.json"
     try:
         with evidence_path.open("x", encoding="utf-8") as output:
@@ -152,7 +179,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifacts", required=True)
     parser.add_argument("--case", choices=("stop-mid-entry", "disconnect", "heartbeat-loss",
-                                          "escape", "wrong-focus", "physical-key", "stop-button"),
+                                          "escape", "wrong-focus", "focus-loss", "physical-key", "stop-button",
+                                          "worker-crash"),
                         default="stop-mid-entry")
     args = parser.parse_args()
     return run_case(args.artifacts, args.case)

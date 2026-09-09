@@ -1,0 +1,36 @@
+{
+  "recordedAtUTC": "2026-09-09T16:18:30Z",
+  "host": "M1-Max.local",
+  "platform": "macOS 27.0 (26A5425a), arm64",
+  "python": "3.14.7",
+  "scope": "read-only prospective baseline; not a historical run ledger or bootstrap authority",
+  "sandboxProbe": {"result": "blocked", "elapsedMs": 90.47575, "reason": "bounded context unresolved"},
+  "outsideSandboxProbe": {"result": "contextVisible", "elapsedMs": 158.812542},
+  "metadataVerification": {
+    "result": "legacyBaselineMetadataVerified",
+    "fingerprintFields": ["deviceAndInode", "mode", "uid", "gid", "linkCount", "size", "mtimeNs", "ctimeNs"],
+    "rootFingerprint": [[16777232, 18052057], 16832, 501, 20, 5, 160, 1788950584241303136, 1788950584241303136],
+    "markerFingerprint": [[16777232, 18052058], 33152, 501, 20, 1, 10, 1788951998783152637, 1788951998783152637],
+    "contextSamples": [
+      {"boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d", "session": "100024", "checked_ns": 103067343459041, "inventory_complete": true, "executors": []},
+      {"boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d", "session": "100024", "checked_ns": 103067496506208, "inventory_complete": true, "executors": []}
+    ],
+    "markerAndDirectoryUnchanged": true,
+    "restartEligible": false
+  },
+  "lockedBaseline": {
+    "result": "legacyBaselineObserved",
+    "markerDirectory": "/private/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike",
+    "markerClass": "legacyUnresolved",
+    "markerBytes": 10,
+    "markerSHA256": "27a888c9d5e6c6c2d1530d15680651f4eefc9a98aaba319953362e3cf5a24996",
+    "markerUnchanged": true,
+    "contextSamples": [
+      {"boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d", "session": "100024", "checked_ns": 102975218316791, "inventory_complete": true, "executors": []},
+      {"boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d", "session": "100024", "checked_ns": 102975372173291, "inventory_complete": true, "executors": []}
+    ],
+    "elapsedMs": 305.131667,
+    "restartEligible": false,
+    "nativeRecoveryVerified": false
+  }
+}

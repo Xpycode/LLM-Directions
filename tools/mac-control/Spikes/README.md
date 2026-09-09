@@ -26,10 +26,27 @@ and recovery remain pending. See the [next-fixture rationale](../../../verificat
 
 ## Foreground test procedure
 
+**Worker-crash window completed:** [native observation](../../../verification/mac-control/worker-crash-live.md)
+recorded 1.794583 ms detection upper bound, twelve matched events, target fence and all processes
+exited. Worker closure remains absent; marker unresolved. No automatic retry or marker clearing.
+
+**Prepared worker-crash case:** [source, offline checks and proposed window](../../../verification/mac-control/prepared-worker-crash-window.md).
+`--case worker-crash` kills only the owned worker after six verified pairs, retains a client trace
+copy and target fence, and deliberately leaves the marker unresolved with exit 2. All 61 offline
+tests pass; this native case has not run. Agree the window before compiling or launching it.
+
+**Latest September 9:** [independent focus-loss case passed](../../../verification/mac-control/focus-loss-live.md)
+after fixing singleton startup and shutdown-clock underflow. Detection11.248584ms, drain0.04275ms,
+all12 events, zero sink input and all exits0. The window ended; remaining Gate A work stays pending.
+
+**2026-09-09 preparation:** the new `focus-loss` case adds a separate owned focus sink, foreground
+sampling and end-of-observation acknowledgements. [Prepared window](../../../verification/mac-control/prepared-focus-window.md)
+describes offline coverage and the exact next run. Source preparation is not a native build or live pass.
+
 Agree the window with the user before compiling or running, as required by
 [the plan](../../../IMPLEMENTATION_PLAN.md). The first approved case was **`stop-mid-entry`**:
 
-1. Compile the two standalone Swift files into a fresh private temporary directory.
+1. Compile the standalone Swift files into a fresh private temporary directory.
 2. Invoke the minimal client from this actual agent session. It starts the owned supervisor;
    the worker checks its own Accessibility, input-monitoring and event-posting permissions.
    A failed preflight ends the experiment without launching the target or requesting permissions.
@@ -70,10 +87,14 @@ replacement is part of this experiment. Fresh artifacts remain in machine-local 
 | `supervisor.py` | Owned child processes, one event at a time, admission closure, watchdog, receipt oracle, temporary trace |
 | `StopSpikeWorker.swift` | Own permission checks, main-run-loop state, kernel process-start/UID/parent/executable and AX focus checks, tagged PID-directed events, paired key-up cleanup |
 | `StopSpikeTarget.swift` | Owned AppKit window/text view, event timestamps/PID/tag and sample-prefix checks, Stop request, graceful EOF close |
+| `StopSpikeFocusSink.swift` | Separate inactive receiver; one-shot AppKit focus transfer, local event recording, foreground samples and evidence fence |
+| `focus_evidence.py` | Focus-specific identity, cause, sampling, fence and no-stray-input oracle |
+| `test_focus_evidence.py`, `test_focus_supervisor.py` | Synthetic focus traces and actual supervisor sequencing with substituted child transports; no native apps |
 | `build.sh` | Swift 6 language mode and complete concurrency checking; isolated temporary app/worker artifacts with SHA-256 manifest |
 | `test_supervisor.py` | Offline parser and evidence-oracle regression tests; never starts the live harness |
 | `loss_timing.py` | Offline conservative loss-duration oracle; heartbeat age and drain stay separate |
 | `test_client.py` | Actual client over real pipes to a synthetic Python peer; no native supervisor or apps |
+| `recovery_observer.py`, `recovery_peer.py`, `test_recovery_observer.py` | Independent observer with fixed Python subprocesses, real EOF/crash/fence checks and bounded cleanup; no native artifacts |
 
 The worker owns all mutable state on the main actor because AppKit identity/focus queries and its
 event-tap source are serviced by that run loop. It has no unstructured input tasks. Synchronous AX
@@ -134,12 +155,52 @@ An empty first-run marker is **not** the protocol's clean-bootstrap proof. A ful
 trace may support a narrowly reviewed reconciliation; never substitute PID absence or a failed
 text assertion alone for complete receipt/closure and owned-process-exit evidence.
 
+The separate [offline legacy bootstrap](../../../verification/mac-control/legacy-bootstrap-implementation.md)
+uses an independently pinned prospective baseline and a verified different boot. It retains
+`bootstrap.pending` even after writing a clean marker and committed audit. The launcher rejects
+every pending/staged/committed bootstrap artifact; successful isolated initialization does not
+activate the runtime or authorize a new foreground window.
+
+The [activation preparation](../../../verification/mac-control/legacy-activation-preparation.md)
+defines completion provenance and one-shot admission. The v2 initialization audit now binds the
+post-clean marker fingerprint and rejects an intervening rewrite back to clean. The
+[completion seal/preflight](../../../verification/mac-control/legacy-completion-seal.md) now retain
+external completion evidence under uninterrupted initialization ownership and verify it read-only.
+The [activation/one-shot admission](../../../verification/mac-control/legacy-activation.md) now accepts
+explicit independently pinned evidence through `run`/`experiment_lock`, permanently consumes it and
+fully flushes the identified marker before returning ownership. Ordinary startup still rejects all
+bootstrap/activation artifacts; the CLI never loads authority automatically. The
+[native caller/witness storage](../../../verification/mac-control/native-caller-retention.md) now
+retains transition and acknowledgement bytes/pins/provenance in explicit authenticated slots.
+The [persistent provisioner](../../../verification/mac-control/persistent-witness-provisioning.md)
+now creates immutable slots and retains original identities in a separate configured anchor for
+restart. Deployment-location validation and live bootstrap remain pending.
+
+`recovery_preflight.py` now exposes disposable `storage-provision`/`storage-reload` and read-only
+`inspect-legacy` operations. See the [exact invocation and failure procedure](../../../verification/mac-control/native-preflight.md).
+No defaults discover live authority; original external pins and reviewed configured paths are
+required. Reports never authorize initialization, activation or foreground control.
+
+`recovery_acquire.py` provides the [fresh prospective acquisition/reload procedure](../../../verification/mac-control/prospective-acquisition.md)
+for the missing-original-pin case. It binds an acquired-now historical archive inside a freshly
+observed and retained baseline, using existing storage formats. Native capture remains pending.
+
 The runtime lock does not exclude legacy automation, native provider control or arbitrary tools.
 Run only in the supervised window with other foreground automation paused. Traces contain timings,
 event types, PIDs, tags, counts and booleans, never typed content, clipboard data or screenshots.
 The target disables copy/cut/paste and does not intentionally access the general pasteboard.
 
 ## Later cases and remaining Gate A work
+
+**September 9 recovery preparation:** [offline fault and restart checks](../../../verification/mac-control/recovery-preparation.md)
+cover synthetic worker crash/hung-event handling and real isolated lock persistence after process
+death. No live recovery case is available yet. An independent observer must preserve evidence and
+target lifetime across supervisor death before that experiment can run.
+
+**Observer follow-up:** [independent Python subprocess fixture passed](../../../verification/mac-control/recovery-observer.md),
+bringing the suite to 57 tests. Its recorder survives supervisor death and verifies terminal
+evidence. Native parent-identity/cleanup integration remains separate; do not substitute its sibling
+process topology into the native harness. Next prepare the between-pairs worker-crash case offline.
 
 The successful run required approved execution outside the shell sandbox: the worker's own
 `--preflight` reported all three checks false inside and true outside, without permission changes.
@@ -153,6 +214,9 @@ only once sample entry begins. `heartbeat-loss` leaves the pipe open and stops h
 records detection age separately from drain. A passing generic event-drain result does not prove
 the three-second disconnect requirement or any unexercised stop route.
 
+Use the prepared `focus-loss` case for independent focus evidence. The older manual `wrong-focus`
+case does not require the new focus-specific oracle and cannot establish this result.
+
 Task 1.3 still needs worker/broker crash and hung-call fault injection, full startup/recovery
 evidence, permission/monitor loss, sleep/lock, clipboard ownership/conflict cleanup, target replacement
 and broader text boundaries. This first path uses only printable ASCII, no clipboard and no
@@ -165,6 +229,28 @@ Review after Wait, one countdown/active owner, and no next owner until input dra
 that queue; task 3.4 proves exclusion with two real clients. This spike lock implements no queue.
 
 ## Offline validation
+
+The [versioned recovery record model](../../../verification/mac-control/recovery-record.md) adds
+strict parsing, checkpoint transitions and simulated durable-write acknowledgement tests.
+The [checkpoint/storage follow-up](../../../verification/mac-control/checkpoint-storage.md) wires
+explicit worker checkpoints into crash sequencing and tests a dedicated writer with real temporary
+files and stalled flushes. The [admission integration](../../../verification/mac-control/recovery-admission.md) connects
+storage to the worker-crash case: OS identity setup, durable pair reservations/checkpoints and
+write deadlines now gate dispatch. The existing unresolved marker cannot be cleared by these tests.
+The [read-only reconciliation verifier](../../../verification/mac-control/recovery-verifier.md) checks
+normalized same-boot and new-boot evidence; candidates never authorize restart. The
+[snapshot/evidence adapter](../../../verification/mac-control/recovery-adapter.md) now connects locked
+files and independent owned pipes/waits in offline tests. The
+[Darwin context probe](../../../verification/mac-control/recovery-context.md) now supplies bounded
+UID inventory and context checks through mocked-kernel adapter tests. The
+[native wire/ack adapter](../../../verification/mac-control/recovery-native.md) handles Swift schemas,
+explicit clocks and target EOF with Python peers. The
+[single-reader supervisor integration](../../../verification/mac-control/recovery-supervisor.md) now
+binds final acknowledgements before fault injection and retains actual EOF/waits. The
+[held-lock reconciliation](../../../verification/mac-control/recovery-reconciliation.md) now checks
+that evidence after teardown under retained marker ownership, with writer-release and context-probe
+deadlines. Its verdict remains non-authorizing; native visibility remains pending. The Swift checkpoint change is uncompiled
+and requires rebuilding the worker before any future agreed native run.
 
 Safe preparation checks, requiring no foreground window:
 

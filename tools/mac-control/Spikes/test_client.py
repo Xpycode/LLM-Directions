@@ -22,6 +22,22 @@ def stub_peer(mode):
     # Enter through the real client's request/heartbeat and fault-injection paths.
     assert json.loads(sys.stdin.readline())["op"] == "typeText"
     assert json.loads(sys.stdin.readline())["op"] == "heartbeat"
+    if mode.startswith("crash-"):
+        emit(event="recoveryTrace", row={"source": "supervisor", "event": "workerExited",
+                                        "ns": str(time.monotonic_ns()), "exitCode": -9})
+        emit(event="stopping", reason="workerExited")
+        # A misleading generic success must never pass an intentional crash case.
+        emit(event="result", reason="workerExited", result="measured", drainVerified=True)
+        if mode != "crash-truncated":
+            emit(event="recoveryTraceSaved", rows=2 if mode == "crash-mismatch" else 1)
+        raise SystemExit(2)
+    if mode.startswith("focus-"):
+        emit(event="stopping", reason="wrongFocus")
+        fields = {} if mode == "focus-missing" else {"focus": {"result": "measured"}}
+        emit(event="result", reason="wrongFocus", result="measured", drainVerified=True, **fields)
+        if mode in ("focus-focusSinkStillOpen", "focus-focusSinkExitFailed"):
+            emit(event=mode.removeprefix("focus-"))
+        return
     last_heartbeat = time.monotonic_ns()
     emit(event="trace", directory="synthetic-peer-no-native-trace")
     time.sleep(0.05) # Separate actual fault origin from last heartbeat.
@@ -63,6 +79,8 @@ class ClientPipeTests(unittest.TestCase):
 
         def fake_launch(argv, **kwargs):
             self.assertEqual(Path(argv[1]).name, "supervisor.py")
+            self.assertEqual("--focus-loss" in argv, mode.startswith("focus-"))
+            self.assertEqual("--worker-crash" in argv, mode.startswith("crash-"))
             child = original_popen([sys.executable, "-B", __file__, "--stub", mode], **kwargs)
             owned.append(child)
             if teardown_timeout:
@@ -85,8 +103,10 @@ class ClientPipeTests(unittest.TestCase):
                      patch.object(client.tempfile, "mkdtemp", return_value=str(runtime)), \
                      patch.object(client, "mac_clock", return_value=time.monotonic_ns), \
                      contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-                    code = client.run_case("unused-native-artifacts", "heartbeat-loss" if mode == "heartbeat"
-                                           else "disconnect")
+                    case = "worker-crash" if mode.startswith("crash-") else (
+                        "focus-loss" if mode.startswith("focus-") else (
+                            "heartbeat-loss" if mode == "heartbeat" else "disconnect"))
+                    code = client.run_case("unused-native-artifacts", case)
                 audit = None if save_failure else json.loads((runtime / "client-evidence.json").read_text())
                 if audit is not None:
                     self.assertEqual((runtime / "client-evidence.json").stat().st_mode & 0o777, 0o600)
@@ -147,6 +167,24 @@ class ClientPipeTests(unittest.TestCase):
     def test_evidence_save_failure_prevents_success(self):
         code, _ = self.run_peer("disconnect", save_failure=True)
         self.assertEqual(code, 2)
+
+    def test_focus_case_requires_specific_evidence_and_sink_teardown(self):
+        for mode, expected in (("focus-valid", 0), ("focus-missing", 2),
+                               ("focus-focusSinkStillOpen", 2), ("focus-focusSinkExitFailed", 2)):
+            with self.subTest(mode=mode):
+                code, audit = self.run_peer(mode)
+                self.assertEqual(code, expected)
+                self.assertEqual(audit["casePassed"], expected == 0)
+
+    def test_worker_crash_retains_independent_rows_without_claiming_drain(self):
+        for mode in ("crash-valid", "crash-truncated", "crash-mismatch"):
+            with self.subTest(mode=mode):
+                code, audit = self.run_peer(mode)
+                self.assertEqual(code, 2)
+                self.assertFalse(audit["casePassed"])
+                self.assertFalse(audit["restartEligible"])
+                self.assertEqual(len(audit["recoveryTrace"]), 1)
+                self.assertEqual(audit["recoveryTraceComplete"], mode == "crash-valid")
 
 
 if __name__ == "__main__":

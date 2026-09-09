@@ -1,0 +1,187 @@
+{
+  "schema": "nativeStorageLocationCheck/v1",
+  "result": "passed",
+  "config_path": "/Users/sim/Library/Application Support/Syncthing/config.xml",
+  "configured_sync_folder_count": 4,
+  "sync_overlap": false,
+  "created_directories": [
+    "/Users/sim/Library/Application Support/Directions",
+    "/Users/sim/Library/Application Support/Directions/MacControlEvidence",
+    "/Users/sim/.config/directions",
+    "/Users/sim/.config/directions/mac-control-anchors"
+  ],
+  "transaction": "preflight-47cb6c9f33014610a3529148df308fde",
+  "operations": [
+    {
+      "exit_code": 0,
+      "report": {
+        "anchor_directory": "/Users/sim/.config/directions/mac-control-anchors/preflight-47cb6c9f33014610a3529148df308fde",
+        "evidence_directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde",
+        "flush_calls_completed": true,
+        "launch_eligible": false,
+        "location_policy_verified": false,
+        "location_review": "2026-09-09: parsed local Syncthing config.xml; both canonical parents outside all 4 configured roots; private owned nonsymlink directories. Disposable storage only.",
+        "native_recovery_verified": false,
+        "operation": "storage-provision",
+        "platform": "darwin",
+        "power_loss_verified": false,
+        "result": "disposableStorageProvisioned",
+        "root_fingerprints": {
+          "anchor": [
+            [
+              16777232,
+              18368716
+            ],
+            16832,
+            501,
+            20,
+            5,
+            160,
+            1788978678375175199,
+            1788978678375175199
+          ],
+          "evidence": [
+            [
+              16777232,
+              18368715
+            ],
+            16832,
+            501,
+            20,
+            7,
+            224,
+            1788978678369089921,
+            1788978678369089921
+          ]
+        },
+        "schema": "recoveryPreflight/v1",
+        "slots": {
+          "activation": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/activation",
+            "identity": [
+              16777232,
+              18368721
+            ]
+          },
+          "baseline": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/baseline",
+            "identity": [
+              16777232,
+              18368718
+            ]
+          },
+          "reconciliation": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/reconciliation",
+            "identity": [
+              16777232,
+              18368722
+            ]
+          },
+          "seal": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/seal",
+            "identity": [
+              16777232,
+              18368719
+            ]
+          },
+          "transition": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/transition",
+            "identity": [
+              16777232,
+              18368720
+            ]
+          }
+        },
+        "validated_owner_uid": 501,
+        "validated_root_mode": "0700"
+      }
+    },
+    {
+      "exit_code": 0,
+      "report": {
+        "anchor_directory": "/Users/sim/.config/directions/mac-control-anchors/preflight-47cb6c9f33014610a3529148df308fde",
+        "evidence_directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde",
+        "flush_calls_completed": true,
+        "launch_eligible": false,
+        "location_policy_verified": false,
+        "location_review": "2026-09-09: parsed local Syncthing config.xml; both canonical parents outside all 4 configured roots; private owned nonsymlink directories. Disposable storage only.",
+        "native_recovery_verified": false,
+        "operation": "storage-reload",
+        "platform": "darwin",
+        "power_loss_verified": false,
+        "result": "disposableStorageReloaded",
+        "root_fingerprints": {
+          "anchor": [
+            [
+              16777232,
+              18368716
+            ],
+            16832,
+            501,
+            20,
+            5,
+            160,
+            1788978678375175199,
+            1788978678375175199
+          ],
+          "evidence": [
+            [
+              16777232,
+              18368715
+            ],
+            16832,
+            501,
+            20,
+            7,
+            224,
+            1788978678369089921,
+            1788978678369089921
+          ]
+        },
+        "schema": "recoveryPreflight/v1",
+        "slots": {
+          "activation": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/activation",
+            "identity": [
+              16777232,
+              18368721
+            ]
+          },
+          "baseline": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/baseline",
+            "identity": [
+              16777232,
+              18368718
+            ]
+          },
+          "reconciliation": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/reconciliation",
+            "identity": [
+              16777232,
+              18368722
+            ]
+          },
+          "seal": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/seal",
+            "identity": [
+              16777232,
+              18368719
+            ]
+          },
+          "transition": {
+            "directory": "/Users/sim/Library/Application Support/Directions/MacControlEvidence/preflight-47cb6c9f33014610a3529148df308fde/transition",
+            "identity": [
+              16777232,
+              18368720
+            ]
+          }
+        },
+        "validated_owner_uid": 501,
+        "validated_root_mode": "0700"
+      }
+    }
+  ],
+  "native_recovery_verified": false,
+  "launch_eligible": false,
+  "power_loss_verified": false
+}

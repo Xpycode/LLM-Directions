@@ -32,6 +32,7 @@ private final class Worker {
     var bindDeadline: UInt64 = 0
     var lastFocusFailure = "none"
     var tagBase: Int64 = 0
+    var runID = ""
     var nextSequence: Int64 = 1
     var held = false
     var heldTag: Int64 = 0
@@ -198,8 +199,10 @@ private final class Worker {
             let op = row["op"] as? String else { stop("invalidMessage"); return }
         switch op {
         case "bind":
-            guard target == nil, Set(row.keys) == ["op", "pid", "path", "tagBase"],
+            guard target == nil, Set(row.keys) == ["op", "pid", "path", "tagBase", "run"],
                 let pid = row["pid"] as? Int32, pid > 1,
+                let run = row["run"] as? String, run.utf8.count == 32,
+                run.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }),
                 let path = row["path"] as? String, let base = row["tagBase"] as? Int64,
                 base > 0, base < Int64.max - 1024
             else { stop("invalidBindingMessage"); return }
@@ -214,6 +217,7 @@ private final class Worker {
             targetStart = start
             targetPath = executable
             tagBase = base
+            runID = run
             // Launch activation/AX publication is asynchronous. This is a one-use,
             // two-second initial transition, never permission to reclaim lost focus.
             bindDeadline = continuousNS() + 2_000_000_000
@@ -235,13 +239,21 @@ private final class Worker {
             else { stop("readinessLost"); return }
             // AX may have taken time. Recheck time and process/focus before each post.
             guard !stopped, continuousNS() - parentHeartbeat < 3_000_000_000,
-                sameInstance(), NSWorkspace.shared.frontmostApplication?.processIdentifier == target?.processIdentifier
+                sameInstance()
             else { stop("readinessLost"); return }
+            guard NSWorkspace.shared.frontmostApplication?.processIdentifier == target?.processIdentifier
+            else { lastFocusFailure = "frontmost"; stop("wrongFocus"); return }
             let tag = tagBase + sequence
             nextSequence += 1 // Consumed even if post fails. Never retry unknown input.
             if down { held = true; heldTag = tag; lastUnit = unit }
             guard post(down: down, tag: tag, unit: unit) else { stop("postFailed"); return }
-            if !down { held = false }
+            if !down {
+                held = false
+                // Distinct from `posted`, which is emitted inside post(). This
+                // main-run-loop boundary follows both return and held-state update.
+                emit("checkpoint", ["run": runID, "sequence": sequence,
+                    "tag": tag, "heldKeysEmpty": !held])
+            }
         default:
             stop("unknownOperation")
         }
@@ -266,7 +278,9 @@ private final class Worker {
             emit("heartbeat")
             lastHeartbeat = now
         }
-        if let stopAt, now - stopAt >= 200_000_000 { exit(held ? 2 : 0) }
+        // Focus checks above can call stop() during this tick, after `now` was sampled.
+        // Resample before subtracting so a newly recorded stop cannot underflow UInt64.
+        if let stopAt, continuousNS() - stopAt >= 200_000_000 { exit(held ? 2 : 0) }
         var bytes = [UInt8](repeating: 0, count: 1024)
         let count = Darwin.read(STDIN_FILENO, &bytes, bytes.count)
         if count == 0 { stop("parentEOF"); return }
