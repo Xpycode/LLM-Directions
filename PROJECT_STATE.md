@@ -22,18 +22,21 @@
   Scope is occasional UI-test interruption across projects; Conjoyn provides a shell/AppleScript example.
 - **Continuing backlog:** exercise shared Codex workflows in consumer projects and refine the ten
   new entry points from real use; broader lifecycle-hook migration remains evidence-gated.
+- **Queued plan:** [Directions lean efficiency](specs/directions-lean-efficiency-plan.md), 14 tasks in
+  eight waves plus host acceptance; LE01 is prerequisite-ready, execution not requested. Define/plan
+  gate passed for staged work; policy/migration choices have named gates. Mac-control remains active.
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-10** — Reviewed lean efficiency with Sol, Luna and official web sources; wrote the separate dependency/ownership/validation plan, preserving Mac-control work.
 - **2026-09-09** — Strengthened wave planning/execution, added status reminders and automatic pre-clear logging; Codex guidance installed on M4-Pro. [Review and checks](verification/wave-execution-workflow.md).
 - **2026-09-09** — Reconciled M4-Pro with M1-Max's checkpoint, retained a recovery stash, and preserved the iOS gesture and private credential-entry guidance for this documentation handoff.
 - **2026-09-09** — Added safe probe diagnostics; fresh capture failed at inventory boundary. 367 tests passed/one skip; 14 final probe tests passed. Both partial transactions preserved.
 - **2026-09-08** — Recorded intervention results and the focus-loss handoff; reconciled M4-Pro's checkout and installed Codex Directions there. Fresh-session discovery remains to be checked.
-- **2026-09-07** — Escape/key intervention and loss-detection cases passed; all processes closed and portable evidence saved.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
-- **Tracked progress:** 8/32 = 25% overall; active Mac-control plan 2/25 = 8% (inventory/protocol only).
+- **Tracked progress:** 8/33 ≈ 24% overall; active Mac-control plan 2/25 = 8% (inventory/protocol only).
 
 ## Detail (read only if needed)
 - **Why** → `decisions.md` · **history** → `sessions/_index.md` · **backlog** → `TASKS.md` (+ archive)
@@ -72,8 +75,8 @@
   Logs/checkpoint retain ignore rules. Native witness storage is machine-local and is not in Git.
   All approved windows ended. Recovery/clipboard and broader intervention proof remain pending.
 - Model fit: deep capability + high reasoning for recovery state/durability; active host setting not reliably visible.
-- 22 Backlog items (21 feature + one index-maintenance); 0 Inbox; Current Sprint 0/2 after archiving.
+- 23 Backlog items (21 feature, one index-maintenance, one lean-efficiency review); 0 Inbox; Current Sprint 0/2 after archiving.
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-09-09.*
+*Last updated: 2026-09-10.*

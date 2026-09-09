@@ -36,6 +36,13 @@
   September 9 combined live/archive audit: no broken links; the existing February18 variant and
   `sessions/2026-09-08.sync-conflict-20260908-223811-OLVB77F.md` are unindexed. Preserve the conflict
   log (it contains the earlier full handoff) pending comparison with the canonical September8 log.
+  Lean review independently reproduced the archive false positive; see
+  [F01 / AC01](specs/directions-lean-efficiency.md) and LE02 in the linked lean-efficiency plan.
+- [ ] Implement the queued [Directions lean-efficiency plan](specs/directions-lean-efficiency-plan.md):
+  review/planning completed with Sol, Luna and web sources on September 10; 14 tasks/eight waves plus
+  host acceptance. LE01 freezes the baseline; LE03–LE14 cover F02–F11; F01 uses the maintenance item
+  above via LE02. Awaiting explicit execution, with policy/migration gates in the plan. Keep the
+  Mac-control Current Sprint intact; no implementation or deployment performed by planning.
 
 ## Current Sprint
 <!-- Active work. Populated by /make-plan or /execute. Keep focused (3-7 tasks). -->
