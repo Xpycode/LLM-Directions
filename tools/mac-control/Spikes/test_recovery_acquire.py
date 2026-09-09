@@ -70,10 +70,10 @@ class AcquisitionTests(unittest.TestCase):
 
     def test_probe_failure_reports_stage_and_preserves_failed_transaction(self):
         from recovery_probe import ProbeFailure
-        with patch.object(self, 'observe', side_effect=ProbeFailure('processPath')):
+        with patch.object(self, 'observe', side_effect=ProbeFailure('inventoryAfterFirstScanChanged')):
             code, report = self.invoke()
         self.assertEqual(code, 1)
-        self.assertEqual(report['failure_stage'], 'processPath')
+        self.assertEqual(report['failure_stage'], 'inventoryAfterFirstScanChanged')
         self.assertFalse(report['launch_eligible'])
         self.assertFalse(report['native_recovery_verified'])
         self.assertEqual(list((self.evidence / 'baseline').iterdir()), [])

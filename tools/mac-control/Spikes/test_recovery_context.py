@@ -65,12 +65,28 @@ class ContextTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     context.capture_context()
 
-    def test_process_set_changes_at_either_boundary(self):
-        for samples in (((101, 102), (101,), (101,)),
-                        ((101, 102), (101, 102), (101, 102, 103))):
+    def test_inventory_failure_cause_and_boundary_are_distinguished_without_retry(self):
+        cases = (
+            ('inventoryInitialQuery', (OSError('query'),), 1),
+            ('inventoryInitialMalformed', ((101, 101),), 1),
+            ('inventoryInitialMalformed', ((102,),), 1),
+            ('inventoryAfterFirstScanQuery', ((101, 102), OSError('query')), 2),
+            ('inventoryAfterFirstScanMalformed', ((101, 102), (101, 101)), 2),
+            ('inventoryAfterFirstScanChanged', ((101, 102), (101,)), 2),
+            ('inventoryAfterSecondScanQuery',
+             ((101, 102), (101, 102), OSError('query')), 3),
+            ('inventoryAfterSecondScanMalformed',
+             ((101, 102), (101, 102), (101, 101)), 3),
+            ('inventoryAfterSecondScanChanged',
+             ((101, 102), (101, 102), (101, 102, 103)), 3),
+        )
+        for expected, samples, calls in cases:
+            self.kernel.pids.reset_mock(side_effect=True)
             self.kernel.pids.side_effect = samples
-            with self.assertRaises(ValueError):
+            with self.subTest(expected=expected), self.assertRaises(ValueError) as caught:
                 context.capture_context()
+            self.assertEqual(caught.exception.stage, expected)
+            self.assertEqual(self.kernel.pids.call_count, calls)
 
     def test_failure_stage_does_not_expose_process_details(self):
         self.kernel.path.side_effect = OSError('private/path/and/process')
@@ -78,13 +94,6 @@ class ContextTests(unittest.TestCase):
             context.capture_context()
         self.assertEqual(caught.exception.stage, 'processPath')
         self.assertNotIn('private', str(caught.exception))
-
-    def test_inventory_change_is_identified_without_retry(self):
-        self.kernel.pids.side_effect = [(101, 102), (101,)]
-        with self.assertRaises(ValueError) as caught:
-            context.capture_context()
-        self.assertEqual(caught.exception.stage, 'inventoryAfterFirstScan')
-        self.assertEqual(self.kernel.pids.call_count, 2)
 
     def test_pid_reuse_uid_parent_and_path_drift(self):
         original = self.rows[102]
@@ -218,6 +227,19 @@ class EnumerationTests(unittest.TestCase):
             self.kernel.lib.proc_listpids.return_value = count
             with self.subTest(count=count), self.assertRaises(ValueError):
                 self.kernel.pids(501)
+
+    def test_native_query_and_returned_inventory_failures_are_distinct(self):
+        self.kernel.lib.proc_listpids.side_effect = OSError('native query detail')
+        with self.assertRaises(ValueError) as caught:
+            self.kernel.pids(501)
+        self.assertEqual(caught.exception.kind, 'Query')
+        self.assertNotIn('native query detail', str(caught.exception))
+
+        self.kernel.lib.proc_listpids.side_effect = None
+        self.kernel.lib.proc_listpids.return_value = 3
+        with self.assertRaises(ValueError) as caught:
+            self.kernel.pids(501)
+        self.assertEqual(caught.exception.kind, 'Malformed')
 
     def test_duplicate_zero_and_negative_entries_reject(self):
         for entries in ((101, 101), (101, 0), (101, -1)):

@@ -21,13 +21,23 @@ MAX_PIDS = 65536
 EXECUTOR_NAMES = frozenset(('MacControlExecutor', 'StopSpikeWorker'))
 FAILURE_STAGES = frozenset(('caller', 'kernel', 'boot', 'session', 'inventoryInitial',
     'processIdentity', 'processPath', 'processRecheck', 'inventoryAfterFirstScan',
-    'scanComparison', 'inventoryAfterSecondScan', 'contextRecheck', 'timestamp'))
+    'scanComparison', 'inventoryAfterSecondScan', 'contextRecheck', 'timestamp',
+    'inventoryInitialQuery', 'inventoryInitialMalformed',
+    'inventoryAfterFirstScanQuery', 'inventoryAfterFirstScanMalformed',
+    'inventoryAfterFirstScanChanged', 'inventoryAfterSecondScanQuery',
+    'inventoryAfterSecondScanMalformed', 'inventoryAfterSecondScanChanged'))
 
 
 class ContextFailure(ValueError):
     def __init__(self, stage):
         self.stage = stage if type(stage) is str and stage in FAILURE_STAGES else 'kernel'
         super().__init__('Darwin context unresolved: ' + self.stage)
+
+
+class _InventoryFailure(ValueError):
+    def __init__(self, kind):
+        self.kind = kind if kind in ('Query', 'Malformed') else 'Malformed'
+        super().__init__('Darwin inventory unresolved: ' + self.kind)
 
 
 class _Kernel(IdentityKernel):
@@ -42,11 +52,18 @@ class _Kernel(IdentityKernel):
         require(type(uid) is int and 0 < uid < 0xffffffff)
         buffer = (C.c_int * MAX_PIDS)()
         capacity = C.sizeof(buffer)
-        count = self.lib.proc_listpids(4, uid, buffer, capacity)
-        # A full buffer might have silently omitted processes. No retry or
-        # guessed sizing; any ambiguity makes this entire observation unusable.
-        require(0 < count < capacity and count % C.sizeof(C.c_int) == 0)
-        return _pids(tuple(buffer[:count // C.sizeof(C.c_int)]))
+        try:
+            count = self.lib.proc_listpids(4, uid, buffer, capacity)
+        except (OSError, ValueError, TypeError, AttributeError, OverflowError,
+                C.ArgumentError):
+            raise _InventoryFailure('Query') from None
+        try:
+            # A full buffer might have silently omitted processes. No retry or
+            # guessed sizing; any ambiguity makes this observation unusable.
+            require(0 < count < capacity and count % C.sizeof(C.c_int) == 0)
+            return _pids(tuple(buffer[:count // C.sizeof(C.c_int)]))
+        except (ValueError, TypeError, OverflowError):
+            raise _InventoryFailure('Malformed') from None
 
 
 def _pids(values):
@@ -76,8 +93,19 @@ runtime default. Caller security-session identity is not a login-freshness proof
         boot = kernel.boot()
         stage = 'session'
         session = _session(kernel)
-        stage = 'inventoryInitial'
-        pids = _pids(kernel.pids(uid))
+        def inventory(boundary):
+            nonlocal stage
+            stage = boundary + 'Query'
+            try:
+                values = kernel.pids(uid)
+            except _InventoryFailure as error:
+                stage = boundary + error.kind
+                raise
+            stage = boundary + 'Malformed'
+            return _pids(values)
+
+        pids = inventory('inventoryInitial')
+        stage = 'inventoryInitialMalformed'
         require(caller in pids)
 
         def scan():
@@ -101,13 +129,15 @@ runtime default. Caller security-session identity is not a login-freshness proof
             return rows
 
         first = scan()
-        stage = 'inventoryAfterFirstScan'
-        require(_pids(kernel.pids(uid)) == pids)
+        after_first = inventory('inventoryAfterFirstScan')
+        stage = 'inventoryAfterFirstScanChanged'
+        require(after_first == pids)
         second = scan()
         stage = 'scanComparison'
         require(second == first)
-        stage = 'inventoryAfterSecondScan'
-        require(_pids(kernel.pids(uid)) == pids)
+        after_second = inventory('inventoryAfterSecondScan')
+        stage = 'inventoryAfterSecondScanChanged'
+        require(after_second == pids)
         stage = 'contextRecheck'
         require(kernel.boot() == boot and _session(kernel) == session
                 and os.getuid() == os.geteuid() == uid and os.getpid() == caller)

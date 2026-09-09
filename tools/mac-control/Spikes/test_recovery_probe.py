@@ -49,6 +49,19 @@ class ProbeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.run_source(f'print({json.dumps(error)!r})')
 
+    def test_inventory_diagnostic_refinements_survive_exact_wire_validation(self):
+        stages = (
+            'inventoryInitialQuery', 'inventoryInitialMalformed',
+            'inventoryAfterFirstScanQuery', 'inventoryAfterFirstScanMalformed',
+            'inventoryAfterFirstScanChanged', 'inventoryAfterSecondScanQuery',
+            'inventoryAfterSecondScanMalformed', 'inventoryAfterSecondScanChanged',
+        )
+        for stage in stages:
+            error = dict(schema='contextFailure/v1', stage=stage)
+            with self.subTest(stage=stage), self.assertRaises(ValueError) as caught:
+                self.run_source(f'print({json.dumps(error)!r}); raise SystemExit(1)')
+            self.assertEqual(caught.exception.stage, stage)
+
     def test_actual_helper_entry_serializes_safe_failure(self):
         # Enter the actual helper with only the native boundary substituted.
         directory = os.path.dirname(probe.__file__)
@@ -61,10 +74,54 @@ class ProbeTests(unittest.TestCase):
             self.run_source(source)
         self.assertEqual(caught.exception.stage, 'processPath')
 
+    def test_native_malformed_inventory_reaches_exact_helper_wire_stage(self):
+        # Keep the real native inventory validator, capture flow, helper entry,
+        # subprocess boundary and parent parser. Only Darwin calls are fixtures.
+        directory = os.path.dirname(probe.__file__)
+        for failure_call, expected in (
+                (2, 'inventoryAfterFirstScanMalformed'),
+                (3, 'inventoryAfterSecondScanMalformed')):
+            source = f'''import os, sys
+sys.path.insert(0, {directory!r})
+import recovery_context as c
+class ProcList:
+    def __init__(self): self.calls = 0
+    def __call__(self, kind, uid, buffer, capacity):
+        self.calls += 1
+        if self.calls == {failure_call}:
+            if self.calls == 2: return 3
+            buffer[0] = buffer[1] = os.getpid()
+            return 2 * c.C.sizeof(c.C.c_int)
+        buffer[0] = os.getpid()
+        return c.C.sizeof(c.C.c_int)
+proc = ProcList()
+kernel = object.__new__(c._Kernel)
+kernel.lib = type('Lib', (), {{}})()
+kernel.lib.proc_listpids = proc
+kernel.boot = lambda: '12345678-1234-1234-1234-123456789abc'
+kernel.session = lambda: (42, 16)
+kernel.process = lambda pid: (pid, 1, os.geteuid(), os.geteuid(), os.geteuid(), 123, 456)
+kernel.path = lambda pid: '/usr/bin/python3'
+original = c.capture_context
+c._Kernel = lambda: kernel
+def checked(clock):
+    try: return original(clock=clock)
+    except c.ContextFailure as error:
+        if error.stage != {expected!r} or proc.calls != {failure_call}:
+            raise c.ContextFailure('kernel')
+        raise
+c.capture_context = checked
+raise SystemExit(c.probe_main(clock=lambda: 1))'''
+            with self.subTest(expected=expected), self.assertRaises(ValueError) as caught:
+                self.run_source(source)
+            self.assertEqual(caught.exception.stage, expected)
+
     def test_untrusted_helper_diagnostic_is_not_echoed(self):
         for output in ('private/path', '{"schema":"contextFailure/v1","stage":"private/path"}',
                        '{"schema":"contextFailure/v1","stage":"processPath","extra":1}',
-                       '{"schema":"contextFailure/v1","stage":"processPath","stage":"boot"}'):
+                       '{"schema":"contextFailure/v1","stage":"processPath","stage":"boot"}',
+                       '{"schema":"contextFailure/v1","stage":"inventoryAfterFirstScanChanged","extra":1}',
+                       '{"schema":"contextFailure/v1","stage":"inventoryAfterFirstScanChanged","stage":"boot"}'):
             with self.subTest(output=output), self.assertRaises(ValueError) as caught:
                 self.run_source(f'print({output!r}); raise SystemExit(1)')
             self.assertEqual(caught.exception.stage, 'helperExit')

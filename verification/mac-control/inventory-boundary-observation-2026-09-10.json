@@ -1,0 +1,17 @@
+{
+  "schema": "inventoryBoundaryObservation/v1",
+  "launch_eligible": false,
+  "native_recovery_verified": false,
+  "observation_count": 1,
+  "marker_unchanged": true,
+  "result": "observed",
+  "started_ns": 125970072139375,
+  "sample": {
+    "boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d",
+    "session": "100024",
+    "checked_ns": 125970323825666,
+    "inventory_complete": true,
+    "executors": []
+  },
+  "ended_ns": 125970332228958
+}
