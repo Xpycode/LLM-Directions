@@ -86,8 +86,9 @@ queue, five-second countdown, visible time/steps, and reliable cancellation for 
   - September 10 continuation: [inventory-boundary review](verification/mac-control/inventory-boundary-review.md)
     separates raised-query, malformed-inventory and observed-PID-change diagnostics without
     changing completeness or retry rules. Full suite: 369 passed/one existing skip; final focused
-    suite: 34 passed. One native diagnostic passed with unchanged marker. Fresh acquisition/reload
-    is prepared and awaiting separate native-storage scope; task 1.3/Gate A remain open.
+    suite: 34 passed. One native diagnostic passed with unchanged marker. Subsequently authorized
+    acquisition failed at `processIdentity` in final observation after baseline retention.
+    Witness/archive/anchor preserved; no reload/retry. Review that failure next; task 1.3/Gate A open.
   - Latest diagnostic continuation September 9: [safe stages and fresh attempt](verification/mac-control/context-probe-diagnostics.md).
     367 full-suite passes/one skip; 14 final probe tests passed. Three native diagnostics passed,
     then fresh capture failed at `inventoryAfterFirstScan`. Preserve both partial transactions;
@@ -461,5 +462,5 @@ The first milestone is **Gate A**, not a polished overlay. The second is **Gate 
 |---|---|---|---|
 | Planning | 2026-09-05 | 2026-09-05 | Spec, primary-source research, repository audit, independent planning review |
 | 1 | 2026-09-05 | — | Tasks 1.1–1.2 complete; task 1.3 built and first live Stop case passed; broader proof pending |
-| 1 / 1.3 continuation | 2026-09-10 | — | Sol owned diagnostic source/tests; coordinator owned acquisition regression, integration/state/Git; Astra independently reviewed. 369 broad passes/one skip, 34 final focused passes; one locked native diagnostic passed. [Evidence and prepared acquisition](verification/mac-control/inventory-boundary-review.md). Local execution commit; no push. Fresh capture/reload awaits separate native-storage scope; Gate A remains open. |
+| 1 / 1.3 continuation | 2026-09-10 | — | Sol owned diagnostic source/tests; coordinator owned acquisition regression, integration/state/Git; Astra independently reviewed. 369 broad passes/one skip, 34 final focused passes; one locked native diagnostic passed. [Evidence and authorized acquisition failure](verification/mac-control/inventory-boundary-review.md). Capture failed in final process-identity observation after retention; no reload/retry. Local execution commits; no push. Gate A remains open. |
 | 2–7 | Not started | — | No implementation/build/desktop test performed |

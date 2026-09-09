@@ -106,7 +106,34 @@ Fresh transaction: `acquisition-390583674a3f43c88fd04375da922533`.
 The wrapper makes one fresh capture, reloads in a separate process only after success, compares
 the retained digest/acquisition metadata, and stops/preserves partial artifacts on failure.
 It does not reuse either failed transaction, request a reboot, mutate the marker or launch apps.
-`run` has **not** been executed. Re-run read-only `inspect` before use to detect changed inputs.
+The user subsequently authorized `run`; the result is recorded below. This transaction
+must not be reused, and `inspect` now correctly rejects its existing paths.
+
+### Authorized native result — failed after baseline retention
+
+Read-only `inspect` passed again, then the exact `run` invocation above was executed once.
+[Retained command/output](prospective-acquisition-2026-09-10.json) records capture exit 1,
+`failure_stage: processIdentity`, `result: unresolved`, and both authority flags false.
+The wrapper stopped immediately; no reload followed and no retry was made.
+
+Read-only artifact verification found:
+
+- The archive is 32,678 bytes and matches the selected historical source byte-for-byte.
+- Baseline `witness.json` and `witness.tmp` each contain 3,005 bytes; the other four witness
+  directories are empty. Independent `anchor.json`, `anchor.tmp` and `anchor.fence` remain.
+- The current original marker bytes are `unresolved`.
+
+Unlike the September 9 attempts, this attempt reached baseline retention. In `capture`, the
+baseline is retained before the final `_observe_locked` recheck; a `processIdentity` failure
+after those retained artifacts therefore localizes this run to that final observation phase.
+The stage does not distinguish an unreadable/disappearing process from invalid identity data,
+nor identify which of the two final observations failed. No native error text or PID details
+were collected. Current marker bytes are not a substitute for a successful final continuity
+check. Surviving witness files do not establish completed acquisition or authorize recovery.
+
+All three failed transactions are preserved. Next: review the final process-identity failure
+and its retained evidence before proposing another native action. No reboot, initialization,
+activation, app build/launch or desktop input occurred. The stop-on-failure boundary is active.
 
 Task 1.3 and Gate A stay open. The two failed September 9 transactions remain preserved.
 The historical crash remains failed/unknown and the runtime marker unresolved. A successful

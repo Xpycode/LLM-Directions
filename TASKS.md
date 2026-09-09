@@ -51,8 +51,9 @@
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
   [September 10 inventory review](verification/mac-control/inventory-boundary-review.md) refines
   query/malformed/process-change diagnostics; full suite 369 passed/one skip, 34 final focused
-  passes. One native observation passed with unchanged marker; fresh acquisition/reload is
-  prepared and awaiting separate native-storage scope. Preserve both failed transactions and Gate A.
+  passes. One native observation passed with unchanged marker; authorized acquisition then failed
+  at final `processIdentity` observation after baseline retention. No reload/retry; review the
+  late failure next. Preserve all three failed transactions and Gate A.
   [Fresh acquisition/reload caller](verification/mac-control/prospective-acquisition.md) is implemented
   and privately tested; [native attempt failed](verification/mac-control/prospective-acquisition-live.md)
   before baseline retention. [Safe diagnostics now implemented](verification/mac-control/context-probe-diagnostics.md);
