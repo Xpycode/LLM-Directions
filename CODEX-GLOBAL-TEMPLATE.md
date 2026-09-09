@@ -15,6 +15,10 @@ These instructions apply to Codex sessions using this Codex home. This file is d
   intercepted by the interface.
 - The master `commands/*.md` files are the single procedural source of truth. Read the matching
   command completely before acting; do not copy or translate the command library into projects.
+- In Directions projects, requests to execute/resume an approved plan (including “continue
+  implementation” or “next wave”) route through the `directions` skill and `commands/execute.md`.
+  Follow its dependency, fresh-context delegation and validation rules; continue ready work within
+  the user's authorized scope without renewed task/wave permission. Explicit user limits prevail.
 - Keep changing state in `docs/PROJECT_STATE.md`, `IMPLEMENTATION_PLAN.md`, specs, decisions, and
   session logs. Keep `AGENTS.md` limited to durable repository guidance.
 - Universal Directions docs are read from the master on demand. Never restore copied `docs/00_*.md`

@@ -17,6 +17,8 @@ Detect mode: `docs/PROJECT_STATE.md` exists → `docs/` paths; else `./PROJECT_S
 1. `PROJECT_STATE.md` — the digest; almost always all you need.
 2. The **first data row** of `sessions/_index.md` (most recent). **Never** the whole file.
 3. `TASKS.md` top section — only if it exists.
+4. For an active implementation plan, apply the execution reminder below; read only the relevant
+   plan section and prerequisite/gate entries if the digest lacks enough evidence.
 
 Don't read full session logs or `tasks-archive.md` unless asked.
 
@@ -27,6 +29,25 @@ Don't read full session logs or `tasks-archive.md` unless asked.
 - **Blockers** — name them, or `none`.
 - **Last session** — one sentence, translated out of jargon (no SHAs).
 - **Next** — one concrete suggested action.
+
+### Execution reminder (all modes, including full and arrive)
+
+When a plan is active, use the **Next** line to remind the user of wave execution and its current
+boundary. Prefer `Now → Execution` when present; otherwise use the linked plan (then root or
+`docs/IMPLEMENTATION_PLAN.md`) and inspect the next task's prerequisites. Do not require consumers
+to migrate their state format just to receive this reminder.
+
+- Ready: `Next: /execute — continue Wave N: <plain-language work>.`
+- Blocked, with independent work ready: `Next: /execute — <ready work>; <check> still blocks <dependent work>.`
+- No ready work: `Next: Wave N blocked by <specific check>; resolve <input/action> before continuing.`
+- Plan not yet approved for execution: `Next: review the plan, then /execute when ready.`
+- Required acceptance remains after implementation: `Next: finish <acceptance check>; execution is not complete.`
+- Plan complete: suggest its recorded next action; do not advertise another implementation wave.
+
+If readiness cannot be established from available records, say so and suggest reviewing the plan;
+do not invent a wave number or imply that a missing gate passed. Keep the lean report within its
+normal budget by replacing the generic Next line, not appending a second checklist. This is read-only:
+showing `/execute` never starts work, grants authorization or runs `/log`.
 
 **Style:** translate technobabble ("moved the sentinel" → "changed which file marks a project as set
 up"). No hashes / path-soup / codenames unless the user used them first. Empty field → two words
@@ -85,7 +106,8 @@ Syncthing settle. The per-project, human-readable version of the session-start g
    - **behind N** → "⚠ <Mac> pushed <when> — you're N behind. Pull first?" Offer `git pull --ff-only`; pull only on **yes**.
    - **ahead M** → "M commits here not pushed (prior session on this Mac). Fine to keep working — `/log` before you leave."
    - **diverged (ahead+behind)** → "⚠ Both Macs have unpushed work — diverged. Don't pull blindly." → `37_multi-mac-discipline.md` Rule 1. No auto-pull/reset.
-4. **Where did I leave off?** Read `PROJECT_STATE.md`; show just **Now → Focus** and **Now → Next** (one line each).
+4. **Where did I leave off?** Read `PROJECT_STATE.md`; show **Now → Focus** and **Next** (one line
+   each), applying the execution reminder above when a plan is active.
 5. **Collision check** (light) — see §Same-folder below.
 
 ## Same-folder session collision check  (all modes)

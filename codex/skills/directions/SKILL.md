@@ -1,6 +1,6 @@
 ---
 name: directions
-description: Use the shared Directions development workflow for project setup, status, specs, plans, execution, review, logs, decisions, cookbook patterns, testing, and worktrees. Trigger for slash or slashless Directions requests such as /status arrive, log clear, /execute, or /directions update.
+description: Use the shared Directions development workflow for project setup, status, specs, plans, execution, review, logs, decisions, cookbook patterns, testing, and worktrees. Trigger for slash or slashless Directions requests such as /status arrive, log clear, /execute, or /directions update, and requests to execute or resume an approved plan in a Directions project.
 ---
 
 # Directions
@@ -24,6 +24,9 @@ For a supported command, read the corresponding Markdown file completely before 
 - `/status arrive` -> read `commands/status.md`, then use its `arrive` mode.
 - `/log clear` -> read `commands/log.md`, then use its pre-clear mode.
 - `status full` or a request phrased as “give me full project status” -> use `commands/status.md` when the intent clearly matches.
+- “continue implementation”, “execute the plan” or “next wave” in a Directions project -> read
+  `commands/execute.md` and preserve the requested scope. Status/planning discussion alone does
+  not authorize execution; a small standalone fix does not require wave planning.
 
 Supported command files are discovered from that directory; do not assume this list is permanently exhaustive.
 
@@ -42,7 +45,9 @@ Supported command files are discovered from that directory; do not assume this l
   consequential; do not repeat it while the fit is unchanged. In pre-clear or Mac-handoff mode,
   record the next action's recommended capability and reasoning in the Resume/next-session block.
 - Translate generic delegation into Codex subagents only when the user or active instructions allow
-  delegation. Preserve wave dependencies; use fresh task-specific context for independent work.
+  delegation. Apply the execution command's authorization and fallback rules. For fresh task
+  contexts, use `fork_turns="none"` when the tool supports it and supply the task packet explicitly;
+  do not rely on a default conversation fork. Disclose when fresh contexts are unavailable.
 - Treat Claude hook output as optional convenience, not workflow state. For status and handoff, use
   repository evidence directly when a Claude-only hook or process detector is unavailable.
 - Use the current Codex workspace as the project target unless the user names another project.

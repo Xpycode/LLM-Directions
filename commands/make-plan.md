@@ -36,8 +36,7 @@ If already Opus/Fable, say nothing and proceed.
 
 ### Step 1: Scope (Define the Goal)
 
-Ask the user:
-> "What are we building? One sentence is fine."
+Infer the goal from the request and existing spec. Ask what to build only when that is missing.
 
 If they have a spec already, read it. If not, run a quick interview:
 - What's the core functionality?
@@ -75,24 +74,40 @@ Break the delta into atomic tasks:
 
 ### Step 4: Organize into Waves
 
-Group tasks by dependencies:
+Build the schedule from explicit task dependencies, not feature headings. Within a wave, tasks have
+no mutual prerequisites and exclusive write ownership. Later waves start after their named
+prerequisites have been integrated and validated; they need not depend on every earlier task.
 
-| Wave | Criteria |
-|------|----------|
-| **Wave 1** | No dependencies, can run in parallel |
-| **Wave 2** | Depends on Wave 1 completing |
-| **Wave N** | Depends on Wave N-1 |
-| **Final** | Verification, integration tests |
+- Name prerequisite task IDs and accepted interfaces. Check for cycles and missing prerequisites.
+- Assign source/test files per task. Shared-file changes must be serialized, split at an interface,
+  or owned by the coordinator during integration. Include shared project/build resources.
+- Group dependency-ready, disjoint tasks for parallel agents. A single-task wave is valid for coupled
+  integration work; give the reason. Use the execution command's delegation and authorization rules.
+- Separate external checks (user fixtures, devices, credentials, provider delivery, manual acceptance)
+  and name exactly which tasks/claims each gates. They must neither stop unrelated ready work nor be
+  waived to advance dependent work. If provisional development is valid, specify its limits and the
+  task that replaces/verifies the provisional assumption before acceptance.
+- Include final integration and product acceptance. Distinguish implemented, validated and blocked
+  work; a passing unit suite alone does not complete a manual acceptance task.
+
+Before calling the plan ready, check every wave for dependency and ownership conflicts. If no safe
+parallel work exists, say why. “Six waves” alone is not a validated execution schedule.
 
 ### Step 5: Write IMPLEMENTATION_PLAN.md
 
-Use the template from `IMPLEMENTATION_PLAN-template.md` (in root or docs/).
+Read `IMPLEMENTATION_PLAN-template.md` from the Directions master. Write the project-specific plan
+at the project's established path; do not copy the shared procedural library into the project.
 
 Include for each task:
 - Description
+- Dependencies and external gates (explicitly `none` when absent)
 - Target file(s)
+- Exclusive ownership and interfaces needed by other tasks
 - Success criteria
 - Backpressure command
+
+Include a compact execution log for actual assignments, validation evidence, commits/exceptions and
+continuation or stop reasons. Do not prefill success evidence. Follow `commands/execute.md` at runtime.
 
 ### Step 6: Exit Planning
 
@@ -102,6 +117,8 @@ Include for each task:
 Update PROJECT_STATE.md:
 - Funnel: `plan` -> validation gate passed
 - Ready to move to `build`
+- Now → Execution: link the plan and name the first wave/tasks with their prerequisite status;
+  distinguish ready work from execution not yet requested. `/status` uses this for its reminder.
 
 ## Quick Start
 
@@ -115,11 +132,10 @@ If user just types `/make-plan`:
 
 ## Regeneration
 
-Plans are disposable. If the current plan is wrong:
-
-> "This plan has diverged from reality. Regenerating costs one planning loop but ensures we're working from accurate state. Regenerate?"
-
-Don't patch broken plans. Regenerate.
+If the schedule is wrong, repair dependencies and ownership while preserving task IDs, completed
+evidence and approved requirements. Explain material scheduling changes. Regenerate the affected
+plan when the goal or architecture has changed; obtain a decision for scope changes rather than
+silently replacing approved work. Routine scheduling repairs do not need renewed permission.
 
 ---
 

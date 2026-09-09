@@ -13,6 +13,7 @@
   [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
   [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
 - **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
+- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 remains open; inventory-boundary diagnosis next, recovery and further native capture gated.
 - **Next:** review the [native inventory-boundary failure](verification/mac-control/context-probe-diagnostics.md).
   Safe diagnostics implemented; fresh capture failed at `inventoryAfterFirstScan`.
   Both partial transactions preserved; no baseline/reload, automatic retry or reboot.
@@ -24,11 +25,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-09** — Strengthened wave planning/execution, added status reminders and automatic pre-clear logging; Codex guidance installed on M4-Pro. [Review and checks](verification/wave-execution-workflow.md).
 - **2026-09-09** — Reconciled M4-Pro with M1-Max's checkpoint, retained a recovery stash, and preserved the iOS gesture and private credential-entry guidance for this documentation handoff.
 - **2026-09-09** — Added safe probe diagnostics; fresh capture failed at inventory boundary. 367 tests passed/one skip; 14 final probe tests passed. Both partial transactions preserved.
 - **2026-09-08** — Recorded intervention results and the focus-loss handoff; reconciled M4-Pro's checkout and installed Codex Directions there. Fresh-session discovery remains to be checked.
 - **2026-09-07** — Escape/key intervention and loss-detection cases passed; all processes closed and portable evidence saved.
-- **2026-09-06** — Disconnect/heartbeat input drains passed; added timing and teardown checks with 32 offline tests.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -46,6 +47,10 @@
   If Claude Code is also used, run its separate `redeploy.sh` flow.
 
 ## Resume
+- Workflow changes are recorded in [the review](verification/wave-execution-workflow.md). Start a new
+  Codex session to reload global routing; observe the next consumer execution for actual wave
+  assignments, gate handling, status reminders and automatic logging. Claude's template is aligned
+  but its live configuration has not been redeployed. This does not close the Mac-control gates below.
 - [Latest execution resume](sessions/2026-09-09.md#resume--after-native-acquisition-failures): start with `execute — resume the latest handoff`;
   see the [latest diagnostic checkpoint](verification/mac-control/context-probe-diagnostics.md)
   before any further capture; inventory-boundary review now precedes remaining Wave 1 gates.

@@ -12,6 +12,11 @@ project facts aligned between them, but keep tool-specific behavior separate. Sh
 procedures live only in the Directions `commands/*.md` files; do not create a translated Codex
 command library.
 
+In Directions projects, requests to execute/resume an approved plan (including “continue
+implementation” or “next wave”) use the master `commands/execute.md` procedure. Follow its
+dependency, fresh-context delegation and validation rules; continue ready work within the user's
+authorized scope without renewed task/wave permission. Explicit user limits prevail.
+
 ---
 
 ## Session Start: Auto-Detect and Resume

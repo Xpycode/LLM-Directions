@@ -19,6 +19,10 @@
 - In Codex, use the `directions` skill and study the matching command file completely before acting.
 - Treat bare Directions requests such as `/status arrive`, `status arrive`, and `log clear` as skill
   invocations; users do not need to prefix them with `$directions`.
+- Route requests to execute/resume an approved plan, including “continue implementation” and
+  “next wave”, through `commands/execute.md`. Follow its dependency, fresh-context delegation and
+  validation rules; continue ready work within authorized scope without renewed task/wave permission.
+  Preserve explicit user limits. Small standalone fixes do not require a wave plan.
 - The thin adapter lives at `codex/skills/directions/SKILL.md`. Do not create translated or duplicated Codex command files.
 - Interpret Claude-specific UI, hooks, and state as Codex equivalents only when a reliable equivalent exists; disclose any fallback.
 

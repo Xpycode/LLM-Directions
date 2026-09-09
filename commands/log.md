@@ -29,6 +29,14 @@ The argument is the **wrap-up mode**, not a goal. Detect it; don't ask which mod
 Default to **plain** — don't ask. Detect path mode once: `docs/sessions/` exists → `docs/` paths;
 else `./sessions/` (master repo).
 
+**Automatic execution close:** when `commands/execute.md` calls this workflow at the end of a run,
+use **pre-clear** mode even without an explicit `/log clear` message. Preserve the execution outcome
+(whole plan complete, selected scope complete, or blocked/incomplete) and the next pickup point.
+Refresh today's existing entry rather than duplicating the execution history. Do not restart
+execution from the Resume instructions. Local execution-commit permission does not authorize a push;
+apply §8 only within the user's actual Git/handoff authorization. Respect explicit instructions to
+leave a fresh app running for user acceptance. This close saves context; it does not clear the session.
+
 ## 1 · Write the log
 
 Create today's `sessions/YYYY-MM-DD.md` (actual date). If it exists, **append/refresh** rather than
@@ -57,6 +65,9 @@ and `sessions/_index.md`. Update only what the session evidence supports:
 
 - **`Last updated:`** — bump to today. Always.
 - **Now → Focus / Next** — if the session shifted them, propose new one-liners.
+- **Now → Execution** — when a plan is active, keep one concise line with its link, current wave/task
+  IDs and ready/blocked/awaiting-acceptance status. Preserve unresolved gates. Once the whole plan is
+  verified and archived, remove the active execution line and set Next to the actual follow-up.
 - **Blockers** — if one surfaced or cleared, update the one-liner. For a real blocker worth detail,
   use: `**What:** … · **Tried:** … · **Unblock:** …` (mark `✅ RESOLVED` + `**Resolution:**` when cleared).
 - **Recent** — prepend a **one-line, plain-language** entry (no SHAs, no jargon). Keep ~5; drop the oldest.
