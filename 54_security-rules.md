@@ -39,6 +39,21 @@ let apiKey = KeychainManager.shared.get("api_key")
 let config = try Configuration.load() // reads from Config.plist (gitignored)
 ```
 
+### Private credential entry: open a local prompt
+
+For user-entered passwords, tokens and similar private values, prefer a prepared,
+tested local setup opened in the user's Terminal. Collect related identifiers in
+the same flow. Keep secret entry outside chat, agent forms and captured tool PTYs;
+on macOS, let Keychain prompt directly (`security add-generic-password ... -w`,
+with `-w` last and no value). Do not echo, trace, log or screenshot secrets, put them
+in command arguments, or retrieve them into tool output to verify storage.
+
+This is the owner's preferred workflow, confirmed in MacroPorn on 2026-09-09.
+Report saving, connection verification and deployment separately. See
+[cookbook #183](cookbook/183-local-terminal-secret-entry.md) for the interaction,
+example and validation; [#180](cookbook/180-keychain-holds-both-credential-halves.md)
+for storing both credential halves in Keychain.
+
 ### 2. Validate All User Input
 
 Never trust input from:

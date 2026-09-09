@@ -24,11 +24,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-09** — Reconciled M4-Pro with M1-Max's checkpoint, retained a recovery stash, and preserved the iOS gesture and private credential-entry guidance for this documentation handoff.
 - **2026-09-09** — Added safe probe diagnostics; fresh capture failed at inventory boundary. 367 tests passed/one skip; 14 final probe tests passed. Both partial transactions preserved.
 - **2026-09-08** — Recorded intervention results and the focus-loss handoff; reconciled M4-Pro's checkout and installed Codex Directions there. Fresh-session discovery remains to be checked.
 - **2026-09-07** — Escape/key intervention and loss-detection cases passed; all processes closed and portable evidence saved.
 - **2026-09-06** — Disconnect/heartbeat input drains passed; added timing and teardown checks with 32 offline tests.
-- **2026-09-05** — First live Stop test passed: six correct characters, 12 matching events, 11.72 ms drain; both processes closed.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -62,7 +62,8 @@
   Worker-crash marker unresolved. Candidate evidence never restores admission.
   Swift checkpoint edit uncompiled. No automatic retry or foreground authorization.
   [Latest evidence](verification/mac-control/worker-crash-2026-09-09.json) retains measurements and both traces.
-  This handoff includes the Mac-control spike and evidence; unrelated edits remain local.
+  M4-Pro reconciled the Mac-control checkpoint; this documentation handoff includes the remaining
+  iOS gesture and private credential-entry guidance. The arrival recovery stash remains on M4-Pro.
   Logs/checkpoint retain ignore rules. Native witness storage is machine-local and is not in Git.
   All approved windows ended. Recovery/clipboard and broader intervention proof remain pending.
 - Model fit: deep capability + high reasoning for recovery state/durability; active host setting not reliably visible.

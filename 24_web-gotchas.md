@@ -384,3 +384,26 @@ cross-axis alignment. The ratio is a wish; the parent's alignment is the law.
 (Found 2026-08-09 on KinoBerlin's featured-film banner, reported from a phone: the poster frame
 measured 64×200 — ratio 0.319 — against the declared 0.667, because the wrapped title/tagline/credit
 made the row 200px tall. One `self-start` restored 64×96 mobile / 112×168 desktop.)
+
+
+## iOS long-press loupe can survive disabled text selection
+
+`-webkit-user-select: none` and `-webkit-touch-callout: none` can suppress selection
+and menus without suppressing the native iOS magnifier. Observed on iOS 26 in Orion
+while implementing hold-for-2× on a video. The CSS-only fix failed on the device.
+
+An active `touchstart` listener with `{ passive: false }` and `preventDefault()` on
+the gesture surface suppressed the loupe in the owner's follow-up check. Scope this
+to the actual surface; do not cancel touches across the page or over player controls.
+This takes ownership of native touch behavior: scrolling must start elsewhere, and
+quick taps need an explicit action because the browser-generated click is suppressed.
+Keep touch and pointer state separate to prevent duplicate toggles. In particular,
+implicit touch pointer-capture loss can arrive before touchend; it must not cancel
+the touch-release action. Restore temporary state on release, cancellation and hide.
+
+Desktop WebKit tests do not prove native iOS UI is absent. Verify tap/hold/cancel
+state in browser checks, then obtain a real-device confirmation. Mute automated
+media playback before playing test clips; a headless test is not proof of silence.
+
+Source: [WebKit issue 231161](https://bugs.webkit.org/show_bug.cgi?id=231161).
+Observed and confirmed in MacroPorn, 2026-09-09.
