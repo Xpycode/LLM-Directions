@@ -113,6 +113,20 @@ class ContextTests(unittest.TestCase):
             self.assertEqual(self.kernel.process.call_count, calls)
             self.assertNotIn('private', str(caught.exception))
 
+    def test_native_read_categories_keep_scan_position_and_stop_without_retry(self):
+        rows = (self.rows[101], self.rows[101], self.rows[102], self.rows[102])
+        for kind in context.PROCESS_IDENTITY_FAILURE_KINDS:
+            for before, boundary in (((), 'processIdentityFirstScanRead'),
+                                     (rows[:1], 'processRecheckRead'),
+                                     (rows, 'processIdentitySecondScanRead')):
+                self.kernel.process.reset_mock(side_effect=True)
+                self.kernel.process.side_effect = (*before, context.ProcessIdentityFailure(kind))
+                with self.subTest(kind=kind, boundary=boundary), \
+                        self.assertRaises(context.ContextFailure) as caught:
+                    context.capture_context()
+                self.assertEqual(caught.exception.stage, boundary + kind)
+                self.assertEqual(self.kernel.process.call_count, len(before) + 1)
+
     def test_pid_reuse_uid_parent_and_path_drift(self):
         original = self.rows[102]
         for index in range(1, 7):

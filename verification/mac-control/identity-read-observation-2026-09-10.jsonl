@@ -1,0 +1,3 @@
+{"launch_eligible": false, "marker_unchanged": false, "native_recovery_verified": false, "observation_count": 0, "result": "prepared", "schema": "identityReadObservation/v1"}
+{"launch_eligible": false, "marker_unchanged": false, "native_recovery_verified": false, "observation_count": 1, "result": "started", "schema": "identityReadObservation/v1", "started_ns": 174380837480666}
+{"ended_ns": 174380985638416, "failure_stage": "processIdentityFirstScanReadMissing", "launch_eligible": false, "marker_unchanged": true, "native_recovery_verified": false, "observation_count": 1, "result": "unresolved", "schema": "identityReadObservation/v1", "started_ns": 174380837480666}

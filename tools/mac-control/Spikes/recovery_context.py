@@ -14,20 +14,25 @@ import ctypes as C
 import os
 import time
 
-from recovery_identity import _Kernel as IdentityKernel, _session
+from recovery_identity import (_Kernel as IdentityKernel, _session,
+                               ProcessIdentityFailure, PROCESS_IDENTITY_FAILURE_KINDS)
 from recovery_record import require
 
 MAX_PIDS = 65536
 EXECUTOR_NAMES = frozenset(('MacControlExecutor', 'StopSpikeWorker'))
 FAILURE_STAGES = frozenset(('caller', 'kernel', 'boot', 'session', 'inventoryInitial',
-    'processIdentity', 'processPath', 'processRecheck', 'inventoryAfterFirstScan',
+    'processIdentity', 'processPath', 'processRecheck', 'processRecheckRead', 'inventoryAfterFirstScan',
     'scanComparison', 'inventoryAfterSecondScan', 'contextRecheck', 'timestamp',
     'processIdentityFirstScanRead', 'processIdentityFirstScanMalformed',
     'processIdentitySecondScanRead', 'processIdentitySecondScanMalformed',
     'inventoryInitialQuery', 'inventoryInitialMalformed',
     'inventoryAfterFirstScanQuery', 'inventoryAfterFirstScanMalformed',
     'inventoryAfterFirstScanChanged', 'inventoryAfterSecondScanQuery',
-    'inventoryAfterSecondScanMalformed', 'inventoryAfterSecondScanChanged'))
+    'inventoryAfterSecondScanMalformed', 'inventoryAfterSecondScanChanged')) | frozenset(
+        boundary + kind
+        for boundary in ('processIdentityFirstScanRead', 'processIdentitySecondScanRead',
+                         'processRecheckRead')
+        for kind in PROCESS_IDENTITY_FAILURE_KINDS)
 
 
 class ContextFailure(ValueError):
@@ -113,11 +118,16 @@ runtime default. Caller security-session identity is not a login-freshness proof
         def scan(identity_boundary):
             nonlocal stage
             rows = {}
+            def read_process(pid, boundary):
+                nonlocal stage
+                stage = boundary
+                try:
+                    return kernel.process(pid)
+                except ProcessIdentityFailure as error:
+                    stage = boundary + error.kind
+                    raise
             for pid in pids:
-                # IdentityKernel.process rejects short native reads itself, so
-                # any exception here still means that no usable row was read.
-                stage = identity_boundary + 'Read'
-                row = kernel.process(pid)
+                row = read_process(pid, identity_boundary + 'Read')
                 stage = identity_boundary + 'Malformed'
                 require(type(row) is tuple and len(row) == 7
                         and all(type(value) is int for value in row))
@@ -128,8 +138,9 @@ runtime default. Caller security-session identity is not a login-freshness proof
                 path = kernel.path(pid)
                 require(type(path) is str and os.path.isabs(path)
                         and '\x00' not in path and os.path.normpath(path) == path)
+                rechecked = read_process(pid, 'processRecheckRead')
                 stage = 'processRecheck'
-                require(kernel.process(pid) == row)
+                require(rechecked == row)
                 rows[pid] = row, path
             return rows
 

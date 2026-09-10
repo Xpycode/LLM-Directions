@@ -125,6 +125,9 @@ class AcquisitionTests(unittest.TestCase):
     def test_second_final_observation_failure_preserves_without_retry(self):
         self.late_probe_failure(4, 'processIdentitySecondScanMalformed')
 
+    def test_native_read_failure_category_preserves_retained_baseline(self):
+        self.late_probe_failure(3, 'processIdentityFirstScanReadMissing')
+
     def test_replaced_baseline_slot_is_not_discovered(self):
         self.assertEqual(self.invoke()[0], 0)
         (self.evidence / 'baseline').rename(self.root / 'old-baseline')

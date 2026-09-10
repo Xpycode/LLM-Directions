@@ -51,6 +51,10 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  Latest [identity-read review](verification/mac-control/identity-read-review.md): fixed native
+  failure categories, 397 tests passed/one skip, independent review passed. Single diagnostic
+  failed with ESRCH during first identity scan; marker unchanged, no capture/retry. Next review
+  all-process inventory stability/completeness; task 1.3 and Gate A remain incomplete.
   Latest [authorized capture failed](verification/mac-control/fresh-caller-review.md#authorized-native-outcome)
   at observation 3/final/processIdentityFirstScanRead after retention. No reload/retry; all four
   failed transactions preserved. Next review native identity-read handling offline; Gate A open.

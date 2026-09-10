@@ -133,13 +133,16 @@ raise SystemExit(c.probe_main(clock=lambda: 1))'''
         # real capture, helper wire, subprocess boundary, and parent parser.
         directory = os.path.dirname(probe.__file__)
         cases = (
-            (1, 'exception', 'processIdentityFirstScanRead'),
+            (1, 'exception', 'processIdentityFirstScanReadQuery'),
             (1, 'malformed', 'processIdentityFirstScanMalformed'),
-            (3, 'short', 'processIdentitySecondScanRead'),
+            (3, 'short', 'processIdentitySecondScanReadShort'),
             (3, 'malformed', 'processIdentitySecondScanMalformed'),
+            (1, 'missing', 'processIdentityFirstScanReadMissing'),
+            (2, 'denied', 'processRecheckReadDenied'),
+            (3, 'zero', 'processIdentitySecondScanReadZero'),
         )
         for failure_call, mode, expected in cases:
-            source = f'''import ctypes as C, os, sys
+            source = f'''import ctypes as C, errno, os, sys
 sys.path.insert(0, {directory!r})
 import recovery_context as c
 import recovery_identity as identity
@@ -151,6 +154,9 @@ class Lib:
             raise OSError('private/process/native-detail')
         if self.calls == {failure_call} and {mode!r} == 'short':
             return size - 1
+        if self.calls == {failure_call} and {mode!r} in ('missing', 'denied', 'zero'):
+            C.set_errno({{'missing': errno.ESRCH, 'denied': errno.EPERM, 'zero': 0}}[{mode!r}])
+            return 0
         info = C.cast(target, C.POINTER(identity._BSDInfo)).contents
         info.pid = pid + (self.calls == {failure_call} and {mode!r} == 'malformed')
         info.ppid = 1

@@ -7,6 +7,7 @@ The login identity is the caller's security session (inherited at fork/exec);
 this does not attest children that deliberately change security sessions.
 """
 import ctypes as C
+import errno
 import hashlib
 import os
 import stat
@@ -16,6 +17,17 @@ import uuid
 from recovery_record import check_identity, require, token
 
 MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
+PROCESS_IDENTITY_FAILURE_KINDS = frozenset((
+    'Query', 'Missing', 'Denied', 'NativeError', 'Zero', 'Negative', 'Short',
+    'Oversize'))
+
+
+class ProcessIdentityFailure(ValueError):
+    """Fixed diagnostic for a rejected proc_pidinfo observation."""
+    def __init__(self, kind):
+        self.kind = (kind if type(kind) is str and
+                     kind in PROCESS_IDENTITY_FAILURE_KINDS else 'Query')
+        super().__init__('Darwin process identity unresolved: ' + self.kind)
 
 
 # Darwin SDK sys/proc_info.h and sys/param.h: MAXCOMLEN=16,
@@ -61,7 +73,35 @@ class _Kernel:
 
     def process(self, pid):
         info = _BSDInfo()
-        require(self.lib.proc_pidinfo(pid, 3, 0, C.byref(info), C.sizeof(info)) == C.sizeof(info))
+        size = C.sizeof(info)
+        try:
+            # Apple libproc converts an underlying __proc_info -1 to zero while
+            # preserving errno. Clear it first so an unclassified zero cannot
+            # inherit unrelated thread-local state. A full read ignores errno.
+            C.set_errno(0)
+            count = self.lib.proc_pidinfo(pid, 3, 0, C.byref(info), size)
+            native_errno = C.get_errno()
+        except (OSError, ValueError, TypeError, AttributeError, OverflowError,
+                C.ArgumentError):
+            raise ProcessIdentityFailure('Query') from None
+        if type(count) is not int:
+            raise ProcessIdentityFailure('Query')
+        if count != size:
+            if count < 0:
+                kind = 'Negative'
+            elif count == 0 and native_errno == errno.ESRCH:
+                kind = 'Missing'
+            elif count == 0 and native_errno in (errno.EPERM, errno.EACCES):
+                kind = 'Denied'
+            elif count == 0 and native_errno:
+                kind = 'NativeError'
+            elif count == 0:
+                kind = 'Zero'
+            elif count < size:
+                kind = 'Short'
+            else:
+                kind = 'Oversize'
+            raise ProcessIdentityFailure(kind)
         return (info.pid, info.ppid, info.uid, info.ruid, info.svuid, info.seconds, info.micros)
 
     def path(self, pid):

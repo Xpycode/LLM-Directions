@@ -13,10 +13,10 @@
   [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
   [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
 - **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
-- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 authorized capture failed at observation 3; no reload, recovery blocked and Gate A open.
-- **Next:** review process-identity native read/short-return handling offline using the
-  [precise failed capture](verification/mac-control/fresh-caller-review.md#authorized-native-outcome).
-  Preserve all four failed transactions, including retained baseline witnesses; no retry arranged.
+- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 blocked: native observation reports a missing process; recovery/Gate A incomplete.
+- **Next:** review the all-process inventory stability contract against the
+  [native ESRCH observation](verification/mac-control/identity-read-review.md#native-outcome).
+  Preserve all four failed transactions and the consumed diagnostic journal; no retry arranged.
   **Blocker:** runtime marker unresolved after the worker-crash experiment; no verified recovery or retry.
   Recovery, clipboard and broader intervention proof remain pending before task 1.3 can close.
   Scope is occasional UI-test interruption across projects; Conjoyn provides a shell/AppleScript example.
@@ -28,11 +28,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-10** — Fixed lost native read diagnostics; 397 tests passed/one skip, independent review passed. One observation reported a missing process; marker unchanged, no retry.
 - **2026-09-10** — Reviewed fresh caller then ran the authorized capture once; failed at observation 3's first identity read after retention. Journal preserved precise failure; no reload/retry.
 - **2026-09-10** — Added precise final-observation diagnostics and durable timeout reporting; 386 tests passed/one skip, independent review passed. No native retry; recovery gate remains open.
 - **2026-09-10** — Refined diagnostics and one native observation passed. Authorized capture then failed during final process-identity observation after baseline retention; evidence preserved, no reload/retry.
 - **2026-09-10** — Reviewed lean efficiency with Sol, Luna and official web sources; wrote the separate dependency/ownership/validation plan, preserving Mac-control work.
-- **2026-09-09** — Strengthened wave planning/execution, added status reminders and automatic pre-clear logging; Codex guidance installed on M4-Pro. [Review and checks](verification/wave-execution-workflow.md).
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -50,11 +50,13 @@
   If Claude Code is also used, run its separate `redeploy.sh` flow.
 
 ## Resume
+- Latest [identity-read review and native result](verification/mac-control/identity-read-review.md):
+  diagnostic fix validated; single native observation failed with ESRCH, marker unchanged.
+  Review the all-process stability/completeness contract next; no further capture is arranged.
 - [September 10 Wave 1 checkpoint](sessions/2026-09-10.md#resume): task 1.3 incomplete.
-  [Offline review/fixes complete](verification/mac-control/final-observation-review.md): precise
-  scan/observation diagnostics, append-only outcome reporting and late-failure regressions validated.
-  [Fresh caller failed after authorization](verification/mac-control/fresh-caller-review.md#authorized-native-outcome);
-  review native identity-read handling offline next. No further native action is arranged.
+  Earlier [capture failure](verification/mac-control/fresh-caller-review.md#authorized-native-outcome)
+  and [final-observation fixes](verification/mac-control/final-observation-review.md) remain recorded.
+  No further native action is arranged.
   Preserve all four transactions; surviving baseline witness files do not prove completion.
   M1 Max arrival recovery stash retained; continuation committed locally, not pushed.
 - Workflow changes are recorded in [the review](verification/wave-execution-workflow.md). Start a new

@@ -1,4 +1,6 @@
 """Read-only identity tests; no app launch or runtime namespace access."""
+import ctypes as C
+import errno
 import hashlib
 import os
 from pathlib import Path
@@ -158,10 +160,69 @@ class SyscallValidationTests(unittest.TestCase):
         self.kernel.lib = Mock()
         self.kernel.security = Mock()
 
-    def test_truncated_process_struct(self):
-        self.kernel.lib.proc_pidinfo.return_value = 135
-        with self.assertRaises(ValueError):
+    def test_process_struct_matches_installed_darwin_abi(self):
+        self.assertEqual(C.sizeof(identity._BSDInfo), 136)
+        self.assertEqual({name: getattr(identity._BSDInfo, name).offset for name in
+                          ('flags', 'pid', 'ppid', 'uid', 'ruid', 'svuid', 'comm',
+                           'name', 'nfiles', 'nice', 'seconds', 'micros')},
+                         {'flags': 0, 'pid': 12, 'ppid': 16, 'uid': 20,
+                          'ruid': 28, 'svuid': 36, 'comm': 48, 'name': 64,
+                          'nfiles': 96, 'nice': 116, 'seconds': 120,
+                          'micros': 128})
+
+    def test_full_process_struct_succeeds_and_ignores_stale_errno(self):
+        def fill(pid, flavor, arg, pointer, size):
+            self.assertEqual((pid, flavor, arg, size), (123, 3, 0, 136))
+            info = C.cast(pointer, C.POINTER(identity._BSDInfo)).contents
+            info.pid, info.ppid, info.uid = 123, 12, 501
+            info.ruid, info.svuid = 502, 503
+            info.seconds, info.micros = 456, 789
+            C.set_errno(errno.EPERM)
+            return size
+        self.kernel.lib.proc_pidinfo.side_effect = fill
+        self.assertEqual(self.kernel.process(123), (123, 12, 501, 502, 503, 456, 789))
+
+    def test_process_read_failures_are_fixed_safe_kinds_without_retry(self):
+        size = C.sizeof(identity._BSDInfo)
+        cases = (
+            ('Missing', 0, errno.ESRCH),
+            ('Denied', 0, errno.EPERM),
+            ('Denied', 0, errno.EACCES),
+            ('NativeError', 0, errno.EIO),
+            ('Zero', 0, 0),
+            ('Negative', -1, errno.ESRCH),
+            ('Short', size - 1, 0),
+            ('Oversize', size + 1, 0),
+        )
+        for expected, count, native_errno in cases:
+            def result(*args):
+                C.set_errno(native_errno)
+                return count
+            self.kernel.lib.proc_pidinfo.reset_mock(side_effect=True)
+            self.kernel.lib.proc_pidinfo.side_effect = result
+            with self.subTest(expected=expected), \
+                    self.assertRaises(identity.ProcessIdentityFailure) as caught:
+                self.kernel.process(123)
+            self.assertEqual(caught.exception.kind, expected)
+            self.assertEqual(str(caught.exception),
+                             'Darwin process identity unresolved: ' + expected)
+            self.assertNotIn('123', str(caught.exception))
+            self.assertEqual(self.kernel.lib.proc_pidinfo.call_count, 1)
+
+    def test_process_call_exception_is_safe_query_failure_without_retry(self):
+        self.kernel.lib.proc_pidinfo.side_effect = OSError('private native detail')
+        with self.assertRaises(identity.ProcessIdentityFailure) as caught:
             self.kernel.process(123)
+        self.assertEqual(caught.exception.kind, 'Query')
+        self.assertNotIn('private', str(caught.exception))
+        self.assertEqual(self.kernel.lib.proc_pidinfo.call_count, 1)
+
+    def test_process_read_clears_stale_errno_before_zero_result(self):
+        C.set_errno(errno.EPERM)
+        self.kernel.lib.proc_pidinfo.return_value = 0
+        with self.assertRaises(identity.ProcessIdentityFailure) as caught:
+            self.kernel.process(123)
+        self.assertEqual(caught.exception.kind, 'Zero')
 
     def test_missing_or_truncated_path(self):
         for count in (0, -1, 4096, 4):
