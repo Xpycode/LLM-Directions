@@ -51,6 +51,9 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  [Fresh caller prepared/reviewed](verification/mac-control/fresh-caller-review.md): location
+  inspection, 23 focused tests and independent review passed. Next agree exact native capture/reload
+  scope; no capture performed, task 1.3 and Gate A remain incomplete.
   [Final-observation offline fixes](verification/mac-control/final-observation-review.md) complete:
   precise identity/observation diagnostics, append-only wrapper outcomes and late-failure tests.
   386 full-suite passes/one skip; independent review passed. No native retry or Gate A closure.
