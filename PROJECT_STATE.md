@@ -13,9 +13,9 @@
   [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
   [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
 - **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
-- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 blocked: capture failed on inventory change after the revised native probe passed; recovery/Gate A incomplete.
-- **Next:** review a kernel-backed inventory snapshot contract against the
-  [latest capture failure](verification/mac-control/inventory-contract-review.md#capture-outcome-and-handoff).
+- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 blocked: kernel-inventory prototype stays isolated pending shared-root launch exclusion; recovery/Gate A incomplete.
+- **Next:** define and enforce one trusted existing runtime root before integrating the
+  [kernel-inventory prototype](verification/mac-control/kernel-inventory-review.md#shared-root-counterexample).
   Preserve all five failed transactions and both observation journals; no retry arranged.
   **Blocker:** runtime marker unresolved after the worker-crash experiment; no verified recovery or retry.
   Recovery, clipboard and broader intervention proof remain pending before task 1.3 can close.
@@ -28,11 +28,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-10** — Kernel-inventory prototype passed 19 tests and independent review; reproduced a shared-lock directory gap that blocks live integration.
 - **2026-09-10** — Added reviewed disappearance handling; 406 broad tests passed/one skip, 29 final focused passed. Native probe passed; capture failed on inventory change, no reload/retry.
 - **2026-09-10** — Fixed lost native read diagnostics; 397 tests passed/one skip, independent review passed. One observation reported a missing process; marker unchanged, no retry.
 - **2026-09-10** — Reviewed fresh caller then ran the authorized capture once; failed at observation 3's first identity read after retention. Journal preserved precise failure; no reload/retry.
 - **2026-09-10** — Added precise final-observation diagnostics and durable timeout reporting; 386 tests passed/one skip, independent review passed. No native retry; recovery gate remains open.
-- **2026-09-10** — Refined diagnostics and one native observation passed. Authorized capture then failed during final process-identity observation after baseline retention; evidence preserved, no reload/retry.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -50,6 +50,13 @@
   If Claude Code is also used, run its separate `redeploy.sh` flow.
 
 ## Resume
+- [Kernel inventory contract/prototype](verification/mac-control/kernel-inventory-review.md):
+  conditional absence proof reviewed; source-only current worker naming is supported.
+  Directory-helper fallback can select different runtime roots; reproduced using mocked
+  directory selection and real private locks. Define one trusted existing root and reject
+  disagreement before launch. Preserve the current marker; no namespace migration or retry.
+  Prototype passed 19 focused tests, warning-clean C compilation and independent review.
+  Disconnected from recovery; task 1.3/Gate A remain open. Scoped local checkpoint, no push.
 - Latest [inventory contract and capture outcome](verification/mac-control/inventory-contract-review.md):
   reviewed narrow disappearance rule passed one native observation; acquisition failed at
   observation 3/final/inventoryAfterFirstScanChanged after retention. No reload/retry.

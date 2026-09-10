@@ -83,6 +83,13 @@ queue, five-second countdown, visible time/steps, and reliable cancellation for 
     table against every AC01–AC16 branch. No agent-facing approval endpoint.
 
 - [ ] **1.3 Prove bounded input and stop in a disposable target** → `C/Spikes/`, `V/stop-spike.md`
+  - Current continuation: [kernel inventory contract/prototype](verification/mac-control/kernel-inventory-review.md)
+    has a reviewed conditional absence proof and isolated SDK-native implementation;
+    19 focused tests passed and C compilation was warning-clean.
+    Shared-root selection is a prerequisite: directory-helper fallback can select different
+    lock roots, reproduced with private real locks and mocked directory selection. Define and
+    enforce the trusted existing runtime root before integration; preserve the unresolved marker.
+    No live probe replacement or capture; task 1.3/Gate A remain open.
   - Latest continuation: [inventory disappearance contract](verification/mac-control/inventory-contract-review.md)
     implemented/reviewed; 406 broad-suite passes/one skip and 29 final focused passes.
     One native observation passed with marker unchanged. Fresh acquisition then failed at
@@ -461,6 +468,10 @@ The first milestone is **Gate A**, not a polished overlay. The second is **Gate 
 
 ## Blocked Tasks / Open Gates
 
+- Kernel-inventory replacement in task 1.3 requires shared runtime-root selection across supported
+  launchers. [Directory fallback counterexample](verification/mac-control/kernel-inventory-review.md#shared-root-counterexample)
+  is reproduced offline. Reject divergent selection before launch without migrating the current
+  unresolved marker; the isolated prototype does not satisfy this prerequisite or Gate A.
 - UI-test interruption scope is identified across projects; the Conjoyn example shows shell
   AppleScript/System Events. Exact legacy actions remain unverified; task 1.3 must prove a bounded
   replacement usable by actual sessions. No native or legacy backend is declared supported yet.
@@ -491,3 +502,4 @@ The first milestone is **Gate A**, not a polished overlay. The second is **Gate 
 | 1 / 1.3 fresh caller | 2026-09-10 | Preparation complete | Coordinator prepared configuration and ran location/syntax checks plus 23 focused tests; fresh-context Astra reviewed independently with no blocker. [Exact proposed operation](verification/mac-control/fresh-caller-review.md). Native scope pending; task/Gate A incomplete. Scoped local commit; no push. |
 | 1 / 1.3 identity-read continuation | 2026-09-10 | Blocked/incomplete | Sol owned identity adapter/tests; coordinator owned context integration, regressions, single-observation caller, records and Git; Astra independently reviewed and teardown finding was fixed. [397 passes/one skip and native ESRCH result](verification/mac-control/identity-read-review.md). Marker unchanged; no capture/retry. Local execution commit, no push. Next inventory completeness/stability contract review; task 1.3/Gate A open. |
 | 1 / 1.3 inventory contract | 2026-09-10 | Blocked/incomplete | Sol owned context source/tests; coordinator owned helper integration, native callers, records and Git; Astra reviewed proof, final implementation and callers independently. [406 broad passes/one skip, 29 final focused passes, native probe pass and capture failure](verification/mac-control/inventory-contract-review.md). Capture failed at observation 3/final/inventoryAfterFirstScanChanged; fifth transaction preserved, no reload/retry. Scoped local execution commit; no push. Next bounded inventory-change contract review; Gate A remains open. |
+| 1 / 1.3 kernel inventory review | 2026-09-10 | Review/prototype complete; task blocked | Fresh-context Sol owned isolated C prototype/tests; Astra reviewed kernel proof, launch preconditions and C implementation; coordinator owned contract, real-lock private counterexample, records and Git. [19 focused passes, warning-clean C compilation and conditional contract](verification/mac-control/kernel-inventory-review.md). Directory fallback can split runtime roots; define/enforce one trusted existing root before live integration. Prototype disconnected, no native query/capture; all prior evidence preserved. Scoped local execution checkpoint; no push. Gate A remains open. |

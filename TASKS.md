@@ -51,6 +51,12 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  Current [kernel-inventory review/prototype](verification/mac-control/kernel-inventory-review.md)
+  passed 19 focused tests and independent review; it stays isolated because shared runtime-root
+  selection must be enforced before integration.
+  Directory-helper fallback can split the lock namespace; reproduced with private locks and
+  mocked directory selection. Next trusted existing root contract, preserving the unresolved
+  marker and all five failed transactions. No live probe replacement; task/Gate A remain open.
   Latest [inventory disappearance contract](verification/mac-control/inventory-contract-review.md)
   implemented/reviewed: 406 broad passes/one skip, 29 final focused passes. Native probe passed;
   fresh capture failed at observation 3/final/inventoryAfterFirstScanChanged after retention.
