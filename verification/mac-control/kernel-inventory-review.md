@@ -2,6 +2,11 @@
 
 September 10, 2026 · Wave 1 / task 1.3 · offline prototype only; recovery incomplete.
 
+Later continuation: [shared-root fix and opt-in integration](shared-root-and-kernel-integration.md)
+resolved the directory-selection prerequisite, passed independent review and one native
+read-only observation with unchanged marker. The report below preserves the original
+prototype checkpoint; recovery/Gate A remain incomplete.
+
 ## Finding
 
 The [fifth acquisition failure](inventory-contract-review.md#capture-outcome-and-handoff)

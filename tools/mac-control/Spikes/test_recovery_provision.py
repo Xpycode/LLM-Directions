@@ -12,6 +12,7 @@ import recovery_provision as provision
 import recovery_retention as retention
 import recovery_caller as caller
 import recovery_bootstrap as bootstrap
+import runtime_root
 from recovery_snapshot import identity
 import test_recovery_activation as fixtures
 
@@ -142,9 +143,11 @@ print(json.dumps({role: [slot.directory, slot.trusted_identity] for role, slot i
         helper = fixtures.ActivationTests()
         self.addCleanup(helper.doCleanups)
         fixture = helper.fixture()
-        # Substitute only native clock/context, preserving caller/activation,
+        # Pin the private fixture root and substitute native clock/context, preserving caller/activation,
         # provision/retention, marker locking and actual admission implementation.
         with patch.object(caller, "mac_clock", return_value=lambda: fixture.now), \
+             patch.object(runtime_root, "TRUSTED_RUNTIME_ROOT", fixture.root), \
+             patch.object(runtime_root.os, "confstr", return_value=str(fixture.parent)), \
              patch.object(caller, "capture_bounded_context", side_effect=lambda **kw: fixture.observe()):
             ack = caller.activate_retained(fixture.owner, fixture.seal, fixture.baseline,
                 history=fixture.history, trusted_history_sha256=bootstrap.digest(fixture.history),

@@ -5,11 +5,15 @@ through to a host process query. All build artifacts live in TemporaryDirectory.
 """
 
 import ctypes as C
+import hashlib
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+
+import recovery_probe as probe
 
 
 HERE = Path(__file__).resolve().parent
@@ -172,6 +176,43 @@ mc_test_sysctl(int *mib, u_int mib_count, void *output, size_t *output_size,
 
 @unittest.skipUnless(sys.platform == 'darwin', 'requires the installed macOS SDK')
 class RecoveryInventoryTests(unittest.TestCase):
+    def test_compiled_parser_through_opt_in_helper_and_parent_wire(self):
+        # The existing test library compiles the real C parser, substituting only
+        # sysctl. Enter the real loader, context adapter and subprocess protocol.
+        path = Path(self.lib._name).resolve()
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        for candidate in (False, True):
+            command = probe._probe_command((str(path), digest))
+            setup = f'''
+import ctypes as C, os
+import recovery_kernel_context as context
+fixture = C.CDLL({str(path)!r})
+fixture.mc_test_add.argtypes = [C.c_int, C.c_uint, C.c_int64, C.c_int, C.c_int, C.c_char_p, C.c_int]
+fixture.mc_test_reset(0)
+fixture.mc_test_add(os.getpid(), os.geteuid(), 123, 456, 2, b'python3', 1)
+if {candidate!r}:
+    fixture.mc_test_add(os.getpid() + 1, os.geteuid(), 123, 457, 2, b'StopSpikeWorker', 1)
+class Kernel:
+    def boot(self): return '12345678-1234-1234-1234-123456789abc'
+    def session(self): return (42, 16)
+context._Kernel = Kernel
+'''
+            source = command[4].replace('from supervisor import mac_clock;',
+                                       'mac_clock = lambda: lambda: 987654321;')
+            source = source.replace('raise SystemExit(', setup + '\nraise SystemExit(')
+            with self.subTest(candidate=candidate), \
+                 patch.object(probe, '_probe_command', return_value=[*command[:4], source]) as launch:
+                if candidate:
+                    with self.assertRaises(probe.ProbeFailure) as caught:
+                        probe.capture_bounded_context(inventory_library=(str(path), digest))
+                    self.assertEqual(caught.exception.stage, 'kernelInventoryCandidate')
+                else:
+                    result = probe.capture_bounded_context(inventory_library=(str(path), digest))
+                    self.assertTrue(result['inventory_complete'])
+                    self.assertEqual(result['executors'], [])
+                    self.assertEqual(result['checked_ns'], 987654321)
+                launch.assert_called_once_with((str(path), digest))
+
     @classmethod
     def setUpClass(cls):
         cls.temporary = tempfile.TemporaryDirectory()

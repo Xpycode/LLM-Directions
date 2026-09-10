@@ -7,6 +7,7 @@ import recovery_activation as activation
 from recovery_snapshot import MarkerLock
 import test_recovery_activation as fixtures
 import supervisor
+import runtime_root
 
 
 class ActivationStorageTests(unittest.TestCase):
@@ -121,6 +122,7 @@ class ActivationStorageTests(unittest.TestCase):
                 MarkerLock.acquire(fixture.root)
             return 2
         with patch.object(supervisor.os, "confstr", return_value=str(fixture.parent)), \
+             patch.object(runtime_root, "TRUSTED_RUNTIME_ROOT", fixture.root), \
              patch.object(supervisor, "mac_clock", return_value=lambda: fixture.now), \
              patch.object(supervisor, "verified_artifacts", return_value=({}, {})), \
              patch.object(supervisor, "_run_owned", side_effect=body):

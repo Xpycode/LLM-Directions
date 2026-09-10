@@ -13,6 +13,7 @@ import unittest
 from unittest.mock import patch
 
 import supervisor
+import runtime_root
 import test_focus_supervisor as fixture
 
 
@@ -78,6 +79,15 @@ class RecoverySupervisorTests(unittest.TestCase):
 
 
 class RecoveryLockTests(unittest.TestCase):
+    def existing_clean_root(self, directory):
+        # Offline provisioning is explicit; the launcher never creates its namespace.
+        root = Path(directory).resolve() / 'directions-stop-spike'
+        root.mkdir(mode=0o700)
+        marker = root / 'lock'
+        marker.write_bytes(b'clean')
+        marker.chmod(0o600)
+        return root
+
     def test_bootstrap_artifacts_block_clean_or_empty_marker_without_modification(self):
         for name in ('bootstrap.pending', 'bootstrap.committed.json', 'bootstrap.committed.tmp'):
             for kind in ('file', 'directory', 'broken-link'):
@@ -96,7 +106,8 @@ class RecoveryLockTests(unittest.TestCase):
                             artifact.mkdir()
                         else:
                             artifact.symlink_to(root / 'missing')
-                        with patch.object(supervisor.os, 'confstr', return_value=directory):
+                        with patch.object(supervisor.os, 'confstr', return_value=directory), \
+                             patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', root.resolve()):
                             with self.assertRaisesRegex(ValueError, 'bootstrap remains fenced'):
                                 supervisor.experiment_lock()
                         self.assertEqual(marker.read_bytes(), marker_value)
@@ -106,7 +117,9 @@ class RecoveryLockTests(unittest.TestCase):
 
     def test_new_run_marker_binds_identity_and_never_migrates_on_restart(self):
         with tempfile.TemporaryDirectory(prefix="run-marker-test-") as directory:
-            with patch.object(supervisor.os, "confstr", return_value=directory):
+            root = self.existing_clean_root(directory)
+            with patch.object(supervisor.os, "confstr", return_value=directory), \
+                 patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', root):
                 fd = supervisor.experiment_lock("a" * 32)
                 fd.close()
                 marker = Path(directory) / "directions-stop-spike" / "lock"
@@ -121,15 +134,19 @@ class RecoveryLockTests(unittest.TestCase):
         # The child owns no worker; its death tests marker persistence only.
         source = """
 import os, sys
+from pathlib import Path
 from unittest.mock import patch
 import supervisor
-with patch.object(supervisor.os, 'confstr', return_value=sys.argv[1]):
+import runtime_root
+with patch.object(supervisor.os, 'confstr', return_value=sys.argv[1]), \\
+     patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', Path(sys.argv[1]).resolve() / 'directions-stop-spike'):
     fd = supervisor.experiment_lock()
     print('locked', flush=True)
     sys.stdin.buffer.read(1)
     os._exit(17)  # Abrupt exit: no Python cleanup or marker reconciliation.
 """
         with tempfile.TemporaryDirectory(prefix="recovery-lock-test-") as directory:
+            root = self.existing_clean_root(directory)
             child = subprocess.Popen(
                 [sys.executable, "-B", "-c", source, directory],
                 cwd=Path(__file__).resolve().parent,
@@ -142,7 +159,8 @@ with patch.object(supervisor.os, 'confstr', return_value=sys.argv[1]):
                 self.assertEqual(out, b"locked\n")
                 marker = Path(directory) / "directions-stop-spike" / "lock"
                 self.assertEqual(marker.read_bytes(), b"unresolved")
-                with patch.object(supervisor.os, "confstr", return_value=directory):
+                with patch.object(supervisor.os, "confstr", return_value=directory), \
+                     patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', root):
                     with self.assertRaisesRegex(ValueError, "unresolved previous spike"):
                         supervisor.experiment_lock()
                 self.assertEqual(marker.read_bytes(), b"unresolved")
@@ -153,7 +171,9 @@ with patch.object(supervisor.os, 'confstr', return_value=sys.argv[1]):
 
     def test_live_owner_blocks_second_acquisition_and_preserves_marker(self):
         with tempfile.TemporaryDirectory(prefix="recovery-lock-test-") as directory:
-            with patch.object(supervisor.os, "confstr", return_value=directory):
+            root = self.existing_clean_root(directory)
+            with patch.object(supervisor.os, "confstr", return_value=directory), \
+                 patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', root):
                 fd = supervisor.experiment_lock()
                 try:
                     with self.assertRaises(ValueError):
@@ -171,7 +191,8 @@ with patch.object(supervisor.os, 'confstr', return_value=sys.argv[1]):
                 lock = root / "lock"
                 lock.write_bytes(value)
                 lock.chmod(0o600)
-                with patch.object(supervisor.os, "confstr", return_value=directory):
+                with patch.object(supervisor.os, "confstr", return_value=directory), \
+                     patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', root.resolve()):
                     with self.assertRaisesRegex(ValueError, "unresolved previous spike"):
                         supervisor.experiment_lock()
                 self.assertEqual(lock.read_bytes(), value)

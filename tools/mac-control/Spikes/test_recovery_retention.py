@@ -10,6 +10,7 @@ import recovery_activation as activation
 import recovery_retention as retention
 import recovery_caller as caller
 import recovery_bootstrap as bootstrap
+import runtime_root
 from recovery_snapshot import identity
 import test_recovery_activation as fixtures
 
@@ -119,9 +120,11 @@ class RetentionTests(unittest.TestCase):
         ack_dir = fixture.parent / "acknowledgement"
         ack_dir.mkdir(mode=0o700)
         ack_pin = identity(ack_dir.stat())
-        # Enter the actual caller, substituting only native clock/context. All
+        # Enter the actual caller with a private pinned root and synthetic context. All
         # activation, retention, flushes and downstream launch gating are real.
         with patch.object(caller, "mac_clock", return_value=lambda: fixture.now), \
+             patch.object(runtime_root, "TRUSTED_RUNTIME_ROOT", fixture.root), \
+             patch.object(runtime_root.os, "confstr", return_value=str(fixture.parent)), \
              patch.object(caller, "capture_bounded_context", side_effect=lambda **kw: fixture.observe()):
             ack = caller.activate_retained(fixture.owner, fixture.seal, fixture.baseline,
                 history=fixture.history, trusted_history_sha256=bootstrap.digest(fixture.history),
@@ -138,7 +141,9 @@ class RetentionTests(unittest.TestCase):
         fixture, directory, pin = self.fixture()
         before = fixture.state()
         slot = caller.WitnessSlot(str(directory), pin)
-        with self.assertRaises(ValueError):
+        with patch.object(runtime_root, "TRUSTED_RUNTIME_ROOT", fixture.root), \
+             patch.object(runtime_root.os, "confstr", return_value=str(fixture.parent)), \
+             self.assertRaisesRegex(ValueError, "witnessSlotsNotSeparate"):
             caller.activate_retained(fixture.owner, fixture.seal, fixture.baseline,
                 history=fixture.history, trusted_history_sha256=bootstrap.digest(fixture.history),
                 transition_slot=slot, acknowledgement_slot=slot, provenance="fixture")
@@ -219,6 +224,8 @@ retention.retain(directory, value, trusted_directory_identity=(int(dev), int(ino
                 raise OSError("ack retention failed")
             return original(path, value, **kwargs)
         with patch.object(caller, "mac_clock", return_value=lambda: fixture.now), \
+             patch.object(runtime_root, "TRUSTED_RUNTIME_ROOT", fixture.root), \
+             patch.object(runtime_root.os, "confstr", return_value=str(fixture.parent)), \
              patch.object(caller, "capture_bounded_context", side_effect=lambda **kw: fixture.observe()), \
              patch.object(retention, "retain", side_effect=retain):
             with self.assertRaises(OSError):

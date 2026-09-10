@@ -28,7 +28,10 @@ FAILURE_STAGES = frozenset(('caller', 'kernel', 'boot', 'session', 'inventoryIni
     'inventoryInitialQuery', 'inventoryInitialMalformed',
     'inventoryAfterFirstScanQuery', 'inventoryAfterFirstScanMalformed',
     'inventoryAfterFirstScanChanged', 'inventoryAfterSecondScanQuery',
-    'inventoryAfterSecondScanMalformed', 'inventoryAfterSecondScanChanged')) | frozenset(
+    'inventoryAfterSecondScanMalformed', 'inventoryAfterSecondScanChanged',
+    'kernelLibrary', 'kernelInventoryQuery', 'kernelInventoryCandidate',
+    'kernelInventoryArgument', 'kernelInventoryAlloc', 'kernelInventoryQueryError',
+    'kernelInventoryMalformed', 'kernelInventoryCallerMissing', 'kernelInventoryStatus')) | frozenset(
         boundary + kind
         for boundary in ('processIdentityFirstScanRead', 'processIdentitySecondScanRead',
                          'processRecheckRead')

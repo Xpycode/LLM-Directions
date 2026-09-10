@@ -19,6 +19,7 @@ import recovery_activation as activation
 import recovery_bootstrap as bootstrap
 import recovery_seal as sealing
 import supervisor
+import runtime_root
 from recovery_snapshot import MarkerLock
 parent, mode, stage, retain = Path(sys.argv[1]), sys.argv[2], sys.argv[3], sys.argv[4] == 'yes'
 inputs = json.loads((parent / 'trusted-inputs.json').read_bytes())
@@ -54,7 +55,8 @@ elif mode == 'consume':
     ack = load(activation.load_activation, inputs['ack'])
     request = activation.ActivationRequest(acknowledgement=ack, seal=seal, baseline=baseline,
                                            boundary=crash, **args)
-    with patch.object(supervisor.os, 'confstr', return_value=str(parent)):
+    with patch.object(supervisor.os, 'confstr', return_value=str(parent)), \
+         patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', parent / 'directions-stop-spike'):
         owner = supervisor.experiment_lock('abcdef0123456789' * 2, activation=request)
     owner.close()
 else:

@@ -51,6 +51,11 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  Latest [shared-root and kernel integration](verification/mac-control/shared-root-and-kernel-integration.md)
+  passed independent review: 456 broad passes/one skip; 20 final C/parser/helper passes.
+  One native read-only observation passed in 337.630 ms, marker unchanged. Shared-root
+  prerequisite resolved; fresh acquisition caller prepared and inspected, native storage
+  scope pending. Preserve all five transactions and three consumed journals; Gate A open.
   Current [kernel-inventory review/prototype](verification/mac-control/kernel-inventory-review.md)
   passed 19 focused tests and independent review; it stays isolated because shared runtime-root
   selection must be enforced before integration.

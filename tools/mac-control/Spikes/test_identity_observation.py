@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from recovery_probe import ProbeFailure
+import runtime_root
 
 path = Path(__file__).resolve().parents[3] / 'verification/mac-control/identity-read-observation.py'
 spec = importlib.util.spec_from_file_location('identity_observation', path)
@@ -28,6 +29,7 @@ class ObservationTests(unittest.TestCase):
         self.owner.read_marker.return_value = b'unresolved'
         self.observe = Mock(return_value=dict(inventory_complete=True, executors=[]))
         for item in (patch.object(caller, 'MARKER', self.marker),
+                     patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', self.marker),
                      patch.object(caller, 'REPORT', self.report),
                      patch.object(caller.os, 'confstr', return_value=str(root)),
                      patch.object(caller.MarkerLock, 'acquire', return_value=self.owner),
@@ -63,6 +65,19 @@ class ObservationTests(unittest.TestCase):
         self.assertTrue(self.records()[-1]['marker_unchanged'])
         self.observe.assert_called_once()
         self.owner.close.assert_called_once()
+
+    def test_opt_in_kernel_observation_uses_pinned_library_and_fresh_report(self):
+        library = ('/private/tmp/fixture.dylib', 'a' * 64)
+        fresh_report = self.report.with_name('kernel.jsonl')
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(caller.main(inventory_library=library, report_path=fresh_report), 0)
+            self.assertEqual(caller.main(inventory_library=library, report_path=fresh_report), 1)
+        self.assertFalse(self.report.exists())
+        rows = [json.loads(line) for line in fresh_report.read_text().splitlines()]
+        self.assertEqual(rows[-1]['schema'], 'kernelInventoryObservation/v1')
+        self.assertEqual(rows[-1]['inventory_library_sha256'], 'a' * 64)
+        self.assertTrue(rows[-1]['marker_unchanged'])
+        self.observe.assert_called_once_with(clock=unittest.mock.ANY, inventory_library=library)
 
     def test_marker_change_overrides_success(self):
         self.owner.read_marker.side_effect = (b'unresolved', b'changed')

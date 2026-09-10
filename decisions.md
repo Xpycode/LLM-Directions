@@ -20,6 +20,27 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
+### 2026-09-10 - Pin the existing spike runtime root independently of temporary-directory lookup
+
+**Context:** A private-lock counterexample showed that successful Darwin temporary-directory
+lookup can select different roots for cooperating launchers, defeating cross-session exclusion.
+The historical unresolved marker must remain authoritative; creating another namespace bypasses it.
+
+**Options Considered:**
+1. Keep discovery authoritative — preserves the demonstrated split-lock possibility.
+2. Add a machine-local registry/provisioning subsystem — introduces a new bootstrap trust boundary.
+3. Share the canonical source pin already used by native capture callers — narrow, explicit host scope.
+
+**Decision:** Use one shared source pin, require lookup agreement and open only the existing
+directory/marker without creation. Native entry points validate the same pin. Opt-in kernel inventory
+uses an explicitly hashed compiled artifact under that shared exclusion.
+**Rationale:** This fixes the reproduced prerequisite using the existing configured namespace and
+descriptor validation, without moving or recreating historical recovery state.
+**Consequences:** Other Macs and missing runtime state fail closed; future provisioning or pin
+changes need their own reviewed contract. Fixed worker names/UID, cooperative launchers and retained
+namespace continuity remain assumptions. Native observation passed, but recovery and Gate A remain
+incomplete. [Implementation, review and native evidence](verification/mac-control/shared-root-and-kernel-integration.md).
+
 ### 2026-09-09 - Bind acquired-now history to a freshly retained prospective baseline
 
 **Context:** Original acquisition records contain marker and raw-trace hashes, but no independently

@@ -17,6 +17,7 @@ import recovery_seal as seals
 from recovery_probe import ProbeFailure, capture_bounded_context
 from recovery_snapshot import MarkerLock, _Snapshot, fingerprint, require
 from recovery_storage import flush_directory
+from runtime_root import trusted_runtime_root
 
 
 def namespaces(args):
@@ -26,6 +27,22 @@ def namespaces(args):
     for i, first in enumerate(paths):
         for second in paths[i + 1:]:
             provision._separate(first, second)
+
+
+def inventory_configuration(path, digest):
+    """Validate explicit configuration before any acquisition writes or probes.
+
+    This checks spelling only; the bounded helper authenticates and opens the
+    library without following symlinks before making native inventory calls.
+    """
+    if path is None and digest is None:
+        return None
+    require(type(path) is str and path.startswith('/') and not path.startswith('//')
+            and '\x00' not in path and os.path.normpath(path) == path and path != '/'
+            and type(digest) is str and len(digest) == 64
+            and all(char in '0123456789abcdef' for char in digest),
+            'invalidInventoryConfiguration')
+    return path, digest
 
 
 def read_history_source(path):
@@ -156,16 +173,27 @@ def main(argv=None, *, observe=None, clock=None):
         if operation == 'capture':
             for field in ('marker-directory', 'history-source', 'operator-record'):
                 command.add_argument('--' + field, required=True)
+            command.add_argument('--inventory-library')
+            command.add_argument('--inventory-sha256')
     args = parser.parse_args(argv)
     report = dict(schema='prospectiveAcquisitionReport/v1', operation=args.operation,
                   launch_eligible=False, native_recovery_verified=False)
+    if args.operation == 'capture' and (args.inventory_library is not None or args.inventory_sha256 is not None):
+        report['inventory_sha256'] = args.inventory_sha256
     try:
         if args.operation == 'capture':
+            inventory_library = inventory_configuration(args.inventory_library, args.inventory_sha256)
+            require(inventory_library is None or observe is None, 'ambiguousInventoryObserver')
+            if observe is None or clock is None:
+                trusted_runtime_root(args.marker_directory)
             if clock is None:
                 from supervisor import mac_clock
                 clock = mac_clock()
             if observe is None:
-                observe = lambda: capture_bounded_context(clock=clock)
+                if inventory_library is None:
+                    observe = lambda: capture_bounded_context(clock=clock)
+                else:
+                    observe = lambda: capture_bounded_context(clock=clock, inventory_library=inventory_library)
             baseline, metadata = capture(args, observe=observe, clock=clock)
         else:
             baseline, metadata = load_acquired(args)

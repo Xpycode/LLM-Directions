@@ -14,6 +14,7 @@ import recovery_retention as retention
 from recovery_probe import capture_bounded_context
 from recovery_snapshot import MarkerLock, require
 from supervisor import mac_clock
+from runtime_root import trusted_runtime_root
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ def activate_retained(owner, seal, baseline, *, history, trusted_history_sha256,
     the bounded helper and the supervisor's continuous clock.
     """
     require(type(owner) is MarkerLock, "untrustedMarkerLock")
+    trusted_runtime_root(owner.directory)
     owner.recheck()
     slots = (transition_slot, acknowledgement_slot)
     for slot in slots:

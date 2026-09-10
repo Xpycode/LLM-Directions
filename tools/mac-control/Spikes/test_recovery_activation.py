@@ -11,6 +11,7 @@ import recovery_bootstrap as bootstrap
 import recovery_seal as sealing
 from recovery_snapshot import MarkerLock, fingerprint
 import supervisor
+import runtime_root
 
 
 NAMES = {"activation.intent", "activation.receipt.tmp", "activation.receipt.json"}
@@ -71,7 +72,8 @@ class ActivationTests(unittest.TestCase):
 
     def gate(self, request=None, run=RUN):
         self.owner.close()
-        with patch.object(supervisor.os, "confstr", return_value=str(self.parent)):
+        with patch.object(supervisor.os, "confstr", return_value=str(self.parent)), \
+             patch.object(runtime_root, "TRUSTED_RUNTIME_ROOT", self.root):
             if request is None:
                 return supervisor.experiment_lock(run)
             return supervisor.experiment_lock(run, activation=request)

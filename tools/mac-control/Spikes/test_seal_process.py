@@ -11,6 +11,7 @@ import unittest
 from unittest.mock import patch
 
 import supervisor
+import runtime_root
 import test_bootstrap_process as bootstrap_process
 
 
@@ -61,7 +62,8 @@ class SealProcessTests(unittest.TestCase):
                 before = {p.name: p.read_bytes() for p in root.iterdir()}
                 expected = ('unresolved previous spike' if stage == 'verified'
                             else 'bootstrap remains fenced')
-                with patch.object(supervisor.os, 'confstr', return_value=str(parent)):
+                with patch.object(supervisor.os, 'confstr', return_value=str(parent)), \
+                     patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', root):
                     with self.assertRaisesRegex(ValueError, expected):
                         supervisor.experiment_lock()
                 self.assertEqual({p.name: p.read_bytes() for p in root.iterdir()}, before)

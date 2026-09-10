@@ -5,6 +5,13 @@ input drain.** [Evidence and runtime fixes](../../../verification/mac-control/st
 This is a supervised, disposable experiment for the [protocol](../Protocol.md), not the production
 coordinator. Task 1.3 and Gate A remain open. Do not use it to control another application.
 
+**Current runtime contract:** startup uses one source-pinned existing host directory and
+marker; missing or divergent state rejects instead of creating a new namespace. The
+[shared-root and opt-in kernel inventory review](../../../verification/mac-control/shared-root-and-kernel-integration.md)
+records the supported launcher assumptions, build-only library command, passed read-only
+observation and prepared fresh acquisition. Other Macs fail closed. No marker migration,
+initialization, activation or foreground authorization follows from the diagnostic result.
+
 **2026-09-06:** disconnect and heartbeat-loss input drains also passed (11.109334/10.571042 ms).
 [Latest evidence](../../../verification/mac-control/loss-cases.md) records clean exits and the
 detection-timing gap: heartbeat age reached 3003.094042 ms; exact client loss origin is unlogged.

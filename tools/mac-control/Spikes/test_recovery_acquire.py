@@ -13,6 +13,7 @@ from unittest.mock import patch
 import recovery_acquire as acquire
 import recovery_bootstrap as bootstrap
 import recovery_retention as retention
+import runtime_root
 from recovery_snapshot import fingerprint
 
 
@@ -62,6 +63,109 @@ class AcquisitionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual(json.loads(result.stdout)['baseline_sha256'], report['baseline_sha256'])
         self.assertEqual(self.invoke()[0], 1)  # No repeat acquisition/overwrite.
+
+    def native_fixture(self):
+        marker = self.root / 'directions-stop-spike'
+        self.marker.rename(marker)
+        self.marker = marker
+        self.args[self.args.index('--marker-directory') + 1] = str(marker)
+        self.library = (str(self.root / 'inventory.dylib'), 'a' * 64)
+        self.args += ['--inventory-library', self.library[0], '--inventory-sha256', self.library[1]]
+
+    def invoke_native(self, *, failure=None, injected_clock=False):
+        calls = []
+        clock = lambda: self.now
+        def bounded(**kwargs):
+            self.assertEqual(kwargs, dict(clock=clock, inventory_library=self.library))
+            calls.append(kwargs)
+            if failure == len(calls):
+                raise acquire.ProbeFailure('kernelInventoryQueryError')
+            return self.observe()
+        out = io.StringIO()
+        with patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', self.marker), \
+             patch.object(runtime_root.os, 'confstr', return_value=str(self.root)) as lookup, \
+             patch('supervisor.mac_clock', return_value=clock) as mac_clock, \
+             patch.object(acquire, 'capture_bounded_context', side_effect=bounded), \
+             contextlib.redirect_stdout(out):
+            code = acquire.main(self.args, clock=clock if injected_clock else None)
+        lookup.assert_called_once_with(65537)
+        self.assertEqual(mac_clock.call_count, 0 if injected_clock else 1)
+        return code, json.loads(out.getvalue()), calls
+
+    def test_explicit_inventory_native_cli_capture_and_separate_reload(self):
+        self.native_fixture()
+        stamps = self.stamps()
+        code, report, calls = self.invoke_native()
+        self.assertEqual(code, 0, report)
+        self.assertEqual(len(calls), 4)
+        self.assertEqual(report['inventory_sha256'], self.library[1])
+        self.assertEqual(self.stamps(), stamps)
+        result = subprocess.run([sys.executable, '-B', acquire.__file__, 'reload', *self.common],
+                                capture_output=True, text=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(json.loads(result.stdout)['baseline_sha256'], report['baseline_sha256'])
+
+    def test_explicit_inventory_late_failure_preserves_stage_and_evidence(self):
+        self.native_fixture()
+        stamps = self.stamps()
+        code, report, calls = self.invoke_native(failure=4, injected_clock=True)
+        self.assertEqual(code, 1)
+        self.assertEqual(len(calls), 4)
+        self.assertEqual(report['failure_stage'], 'kernelInventoryQueryError')
+        self.assertEqual(report['failure_observation'], 4)
+        self.assertEqual(report['failure_phase'], 'final')
+        self.assertEqual(report['inventory_sha256'], self.library[1])
+        self.assertEqual(self.stamps(), stamps)
+        self.assertTrue((self.evidence / 'baseline/witness.json').is_file())
+        self.assertEqual((self.archive / 'history.json').read_bytes(), self.source.read_bytes())
+        result = subprocess.run([sys.executable, '-B', acquire.__file__, 'reload', *self.common],
+                                capture_output=True, text=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertFalse(json.loads(result.stdout)['native_recovery_verified'])
+
+    def test_inventory_configuration_rejects_before_capture_artifacts(self):
+        invalid = [
+            ['--inventory-library', '/fixture.dylib'],
+            ['--inventory-sha256', 'a' * 64],
+            *[['--inventory-library', path, '--inventory-sha256', digest]
+              for path, digest in [('relative', 'a' * 64), ('//fixture', 'a' * 64),
+                                   ('/a/../fixture', 'a' * 64), ('/a/./fixture', 'a' * 64),
+                                   ('/fixture/', 'a' * 64), ('/fixture\x00', 'a' * 64),
+                                   ('/', 'a' * 64), ('/fixture', 'A' * 64),
+                                   ('/fixture', 'a' * 63), ('/fixture', 'g' * 64)]]]
+        for flags in invalid:
+            with self.subTest(flags=flags), patch.object(acquire, 'capture') as capture, \
+                 patch.object(acquire, 'trusted_runtime_root') as root_guard, \
+                 contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(acquire.main([*self.args, *flags]), 1)
+                capture.assert_not_called()
+                root_guard.assert_not_called()
+            for directory in (self.evidence, self.anchor, self.archive):
+                self.assertEqual(list(directory.iterdir()), [])
+
+    def test_inventory_flags_reject_injected_observer(self):
+        self.native_fixture()
+        with patch.object(acquire, 'capture') as capture:
+            code, report = self.invoke()
+        self.assertEqual(code, 1)
+        self.assertEqual(report['inventory_sha256'], self.library[1])
+        capture.assert_not_called()
+
+    def test_inventory_flags_are_capture_only(self):
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as raised:
+            acquire.main(['reload', *self.common, '--inventory-library', '/fixture',
+                          '--inventory-sha256', 'a' * 64])
+        self.assertEqual(raised.exception.code, 2)
+        for directory in (self.evidence, self.anchor, self.archive):
+            self.assertEqual(list(directory.iterdir()), [])
+
+    def test_inventory_with_injected_clock_still_rejects_untrusted_root(self):
+        self.native_fixture()
+        with patch.object(runtime_root, 'TRUSTED_RUNTIME_ROOT', self.root), \
+             patch.object(acquire, 'capture') as capture, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(acquire.main(self.args, clock=lambda: self.now), 1)
+        capture.assert_not_called()
 
     def test_archive_corruption_rejects(self):
         self.assertEqual(self.invoke()[0], 0)

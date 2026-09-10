@@ -20,6 +20,7 @@ from recovery_evidence import OwnedEvidence, check_recovery
 from recovery_snapshot import MarkerLock
 from recovery_verifier import Verdict
 from recovery_probe import capture_bounded_context
+from runtime_root import trusted_runtime_root
 
 MAX_FRAME = 1024
 
@@ -166,17 +167,8 @@ def verified_artifacts(directory, focus_loss=False):
 
 def experiment_lock(run_id=None, *, activation=None):
     """Exclude concurrent spike runs; a dirty marker blocks automatic crash retries."""
-    # Python's name table omits this Darwin extension. unistd.h defines its ABI value.
-    root = Path(os.confstr(65537)) / "directions-stop-spike" # _CS_DARWIN_USER_TEMP_DIR
-    if activation is None:
-        try:
-            root.mkdir(mode=0o700)
-        except FileExistsError:
-            pass
-    info = root.lstat()
-    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
-        raise ValueError("unsafe experiment directory")
-    owner = MarkerLock.acquire(root.resolve(strict=True), create=activation is None)
+    root = trusted_runtime_root()
+    owner = MarkerLock.acquire(root, create=False)
     try:
         from recovery_activation import FENCES, consume
         if activation is not None:

@@ -30,6 +30,32 @@ class ProbeTests(unittest.TestCase):
         self.assertIn('from supervisor import mac_clock', command[4])
         self.assertIn('probe_main(clock=mac_clock())', command[4])
 
+    def test_kernel_command_is_explicit_and_uses_continuous_clock(self):
+        command = probe._probe_command(('/private/tmp/explicit.dylib', 'a' * 64))
+        self.assertIn('from recovery_kernel_context import probe_main', command[4])
+        self.assertIn('clock=mac_clock()', command[4])
+        self.assertIn("library_path='/private/tmp/explicit.dylib'", command[4])
+        self.assertIn("library_sha256='" + 'a' * 64 + "'", command[4])
+        compile(command[4], '<helper>', 'exec')
+
+    def test_invalid_library_configuration_never_launches(self):
+        with patch.object(probe.subprocess, 'Popen') as launch:
+            for configuration in ('path', (), ('relative', 'a' * 64),
+                                  ('/absolute', 'wrong'), ('/absolute', None)):
+                with self.subTest(configuration=configuration), self.assertRaises(probe.ProbeFailure):
+                    probe.capture_bounded_context(inventory_library=configuration)
+            launch.assert_not_called()
+
+    def test_kernel_failures_survive_wire_without_fallback(self):
+        stages = ('kernelLibrary', 'kernelInventoryQuery', 'kernelInventoryCandidate',
+                  'kernelInventoryArgument', 'kernelInventoryAlloc', 'kernelInventoryQueryError',
+                  'kernelInventoryMalformed', 'kernelInventoryCallerMissing', 'kernelInventoryStatus')
+        for stage in stages:
+            error = dict(schema='contextFailure/v1', stage=stage)
+            with self.subTest(stage=stage), self.assertRaises(probe.ProbeFailure) as caught:
+                self.run_source(f'print({json.dumps(error)!r}); raise SystemExit(1)')
+            self.assertEqual(caught.exception.stage, stage)
+
     def test_strict_output(self):
         malformed = ['', '{}', '[]', '{', json.dumps(self.context) + '{}',
                      json.dumps(self.context).replace('987654321', 'true'),

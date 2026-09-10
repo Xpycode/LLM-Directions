@@ -15,6 +15,7 @@ REPO = Path('/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS')
 sys.path.insert(0, str(REPO / 'tools/mac-control/Spikes'))
 from recovery_storage import flush_directory
 from recovery_acquire_run import run_operations
+from runtime_root import trusted_runtime_root
 
 TXN = 'acquisition-cd911942b7cb40adb20dc1753668b3ae'
 EVIDENCE_PARENT = Path('/Users/sim/Library/Application Support/Directions/MacControlEvidence')
@@ -45,7 +46,7 @@ def flush(path):
     finally:
         os.close(fd)
 
-assert (Path(os.confstr(65537)) / 'directions-stop-spike').resolve(strict=True) == MARKER
+trusted_runtime_root(MARKER)
 for path in [EVIDENCE_PARENT, ANCHOR_PARENT, MARKER]:
     checked(path, private=True)
 sync = ET.parse('/Users/sim/Library/Application Support/Syncthing/config.xml')

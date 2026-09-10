@@ -1,7 +1,8 @@
 /*
  * Isolated KERN_PROC_UID inventory prototype.
  *
- * This file is not linked into recovery_context.py or any runtime caller.  A
+ * Opt-in recovery_kernel_context loads an explicitly pinned build; the legacy
+ * recovery_context default does not use it. A
  * zero result only means that this one validated SDK-native result contained
  * no fixed-name worker candidate.  It is not an inventory-completeness claim
  * and must never authorize recovery, restart, marker changes, or signalling.

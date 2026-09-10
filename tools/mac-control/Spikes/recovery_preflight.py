@@ -15,6 +15,7 @@ import recovery_bootstrap as bootstrap
 import recovery_provision as provision
 from recovery_probe import capture_bounded_context
 from recovery_snapshot import MarkerLock, _Snapshot, fingerprint, require
+from runtime_root import trusted_runtime_root
 
 
 def _read(path, limit):
@@ -105,6 +106,8 @@ def main(argv=None, *, observe=None, clock=None):
                   launch_eligible=False, native_recovery_verified=False, platform=sys.platform)
     try:
         if args.operation == 'inspect-legacy':
+            if observe is None or clock is None:
+                trusted_runtime_root(args.marker_directory)
             if clock is None:
                 from supervisor import mac_clock
                 clock = mac_clock()

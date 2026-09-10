@@ -1,6 +1,7 @@
 """One read-only identity diagnostic for the Wave 1 continuation; never retry.
 
-No acquisition, marker mutation, process signalling, activation or desktop input.
+No acquisition, marker mutation, discovered-process signalling, activation or desktop input.
+Timeout cleanup may terminate only the owned observation helper.
 The exclusive append-only report is consumed even if this invocation fails.
 """
 import json
@@ -14,21 +15,25 @@ from recovery_probe import capture_bounded_context, ProbeFailure
 from recovery_snapshot import MarkerLock
 from recovery_bootstrap import _stamps
 from supervisor import mac_clock
+from runtime_root import trusted_runtime_root
 
 MARKER = Path('/private/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-stop-spike')
 REPORT = REPO / 'verification/mac-control/identity-read-observation-2026-09-10.jsonl'
 
 
-def main():
-    report = dict(schema='identityReadObservation/v1', launch_eligible=False,
+def main(*, inventory_library=None, report_path=None):
+    report_path = REPORT if report_path is None else report_path
+    report = dict(schema=('identityReadObservation/v1' if inventory_library is None
+                          else 'kernelInventoryObservation/v1'), launch_eligible=False,
                   native_recovery_verified=False, observation_count=0,
                   marker_unchanged=False, result='prepared')
+    if inventory_library is not None:
+        report['inventory_library_sha256'] = inventory_library[1]
     owner = None
     code = 1
     try:
-        if (Path(os.confstr(65537)) / 'directions-stop-spike').resolve(strict=True) != MARKER:
-            raise ValueError('configured marker does not match this Mac')
-        with REPORT.open('x') as output:
+        trusted_runtime_root(MARKER)
+        with report_path.open('x') as output:
             def append():
                 output.write(json.dumps(report, sort_keys=True, allow_nan=False) + '\n')
                 output.flush()
@@ -44,7 +49,8 @@ def main():
                 report.update(result='started', observation_count=1, started_ns=clock())
                 append()
                 try:
-                    report['sample'] = capture_bounded_context(clock=clock)
+                    options = {} if inventory_library is None else dict(inventory_library=inventory_library)
+                    report['sample'] = capture_bounded_context(clock=clock, **options)
                     report['result'] = 'observed'
                     code = 0
                 except ProbeFailure as error:
