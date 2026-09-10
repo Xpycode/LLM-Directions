@@ -38,6 +38,8 @@
   log (it contains the earlier full handoff) pending comparison with the canonical September8 log.
   Lean review independently reproduced the archive false positive; see
   [F01 / AC01](specs/directions-lean-efficiency.md) and LE02 in the linked lean-efficiency plan.
+  September 10 close: combined live/archive links still have no missing targets; also preserve
+  the unindexed `sessions/2026-09-09.sync-conflict-20260910-012344-OLVB77F.md` pending comparison.
 - [ ] Implement the queued [Directions lean-efficiency plan](specs/directions-lean-efficiency-plan.md):
   review/planning completed with Sol, Luna and web sources on September 10; 14 tasks/eight waves plus
   host acceptance. LE01 freezes the baseline; LE03–LE14 cover F02–F11; F01 uses the maintenance item
@@ -49,6 +51,10 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  [Final-observation offline fixes](verification/mac-control/final-observation-review.md) complete:
+  precise identity/observation diagnostics, append-only wrapper outcomes and late-failure tests.
+  386 full-suite passes/one skip; independent review passed. No native retry or Gate A closure.
+  Next prepare/review fresh caller configuration before separately scoped native work.
   [September 10 inventory review](verification/mac-control/inventory-boundary-review.md) refines
   query/malformed/process-change diagnostics; full suite 369 passed/one skip, 34 final focused
   passes. One native observation passed with unchanged marker; authorized acquisition then failed

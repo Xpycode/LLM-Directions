@@ -83,6 +83,11 @@ queue, five-second countdown, visible time/steps, and reliable cancellation for 
     table against every AC01–AC16 branch. No agent-facing approval endpoint.
 
 - [ ] **1.3 Prove bounded input and stop in a disposable target** → `C/Spikes/`, `V/stop-spike.md`
+  - September 10 offline review/fixes: [final-observation packet](verification/mac-control/final-observation-review.md)
+    distinguishes first/second identity scan read vs malformed data and acquisition observations 1–4.
+    Tracked caller uses append-only timeout/outcome reporting; both late failures have regressions.
+    Final suite 386 passed/one skip; independent review passed. Selected offline scope complete,
+    task 1.3/Gate A open. Next prepare/review fresh caller configuration before separate native scope.
   - September 10 continuation: [inventory-boundary review](verification/mac-control/inventory-boundary-review.md)
     separates raised-query, malformed-inventory and observed-PID-change diagnostics without
     changing completeness or retry rules. Full suite: 369 passed/one existing skip; final focused
@@ -463,4 +468,5 @@ The first milestone is **Gate A**, not a polished overlay. The second is **Gate 
 | Planning | 2026-09-05 | 2026-09-05 | Spec, primary-source research, repository audit, independent planning review |
 | 1 | 2026-09-05 | — | Tasks 1.1–1.2 complete; task 1.3 built and first live Stop case passed; broader proof pending |
 | 1 / 1.3 continuation | 2026-09-10 | — | Sol owned diagnostic source/tests; coordinator owned acquisition regression, integration/state/Git; Astra independently reviewed. 369 broad passes/one skip, 34 final focused passes; one locked native diagnostic passed. [Evidence and authorized acquisition failure](verification/mac-control/inventory-boundary-review.md). Capture failed in final process-identity observation after retention; no reload/retry. Local execution commits; no push. Gate A remains open. |
+| 1 / 1.3 offline fixes | 2026-09-10 | Selected scope complete | Sol owned identity diagnostics/tests; coordinator owned acquisition reporting, journal runner/caller, integration, docs and Git; Astra independently reviewed. [Final-observation review and validation](verification/mac-control/final-observation-review.md): 386 full-suite passes/one skip. Scoped local execution commit; no push. Native recovery/Gate A remain open; next prepare/review fresh caller configuration before separate native scope. |
 | 2–7 | Not started | — | No implementation/build/desktop test performed |

@@ -62,6 +62,18 @@ class ProbeTests(unittest.TestCase):
                 self.run_source(f'print({json.dumps(error)!r}); raise SystemExit(1)')
             self.assertEqual(caught.exception.stage, stage)
 
+    def test_process_identity_diagnostics_and_legacy_stage_survive_wire_validation(self):
+        stages = (
+            'processIdentityFirstScanRead', 'processIdentityFirstScanMalformed',
+            'processIdentitySecondScanRead', 'processIdentitySecondScanMalformed',
+            'processIdentity',
+        )
+        for stage in stages:
+            error = dict(schema='contextFailure/v1', stage=stage)
+            with self.subTest(stage=stage), self.assertRaises(ValueError) as caught:
+                self.run_source(f'print({json.dumps(error)!r}); raise SystemExit(1)')
+            self.assertEqual(caught.exception.stage, stage)
+
     def test_actual_helper_entry_serializes_safe_failure(self):
         # Enter the actual helper with only the native boundary substituted.
         directory = os.path.dirname(probe.__file__)
@@ -115,6 +127,56 @@ raise SystemExit(c.probe_main(clock=lambda: 1))'''
             with self.subTest(expected=expected), self.assertRaises(ValueError) as caught:
                 self.run_source(source)
             self.assertEqual(caught.exception.stage, expected)
+
+    def test_native_process_identity_failures_reach_parent_without_retry_or_details(self):
+        # Exercise the inherited IdentityKernel.process implementation and the
+        # real capture, helper wire, subprocess boundary, and parent parser.
+        directory = os.path.dirname(probe.__file__)
+        cases = (
+            (1, 'exception', 'processIdentityFirstScanRead'),
+            (1, 'malformed', 'processIdentityFirstScanMalformed'),
+            (3, 'short', 'processIdentitySecondScanRead'),
+            (3, 'malformed', 'processIdentitySecondScanMalformed'),
+        )
+        for failure_call, mode, expected in cases:
+            source = f'''import ctypes as C, os, sys
+sys.path.insert(0, {directory!r})
+import recovery_context as c
+import recovery_identity as identity
+class Lib:
+    def __init__(self): self.calls = 0
+    def proc_pidinfo(self, pid, flavor, arg, target, size):
+        self.calls += 1
+        if self.calls == {failure_call} and {mode!r} == 'exception':
+            raise OSError('private/process/native-detail')
+        if self.calls == {failure_call} and {mode!r} == 'short':
+            return size - 1
+        info = C.cast(target, C.POINTER(identity._BSDInfo)).contents
+        info.pid = pid + (self.calls == {failure_call} and {mode!r} == 'malformed')
+        info.ppid = 1
+        info.uid = info.ruid = info.svuid = os.geteuid()
+        info.seconds, info.micros = 123, 456
+        return C.sizeof(identity._BSDInfo)
+kernel = object.__new__(c._Kernel)
+kernel.lib = Lib()
+kernel.boot = lambda: '12345678-1234-1234-1234-123456789abc'
+kernel.session = lambda: (42, 16)
+kernel.pids = lambda uid: (os.getpid(),)
+kernel.path = lambda pid: '/usr/bin/python3'
+original = c.capture_context
+c._Kernel = lambda: kernel
+def checked(clock):
+    try: return original(clock=clock)
+    except c.ContextFailure as error:
+        if error.stage != {expected!r} or kernel.lib.calls != {failure_call}:
+            raise c.ContextFailure('kernel')
+        raise
+c.capture_context = checked
+raise SystemExit(c.probe_main(clock=lambda: 1))'''
+            with self.subTest(expected=expected), self.assertRaises(ValueError) as caught:
+                self.run_source(source)
+            self.assertEqual(caught.exception.stage, expected)
+            self.assertNotIn('private', str(caught.exception))
 
     def test_untrusted_helper_diagnostic_is_not_echoed(self):
         for output in ('private/path', '{"schema":"contextFailure/v1","stage":"private/path"}',

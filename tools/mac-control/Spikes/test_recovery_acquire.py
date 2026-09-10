@@ -74,11 +74,56 @@ class AcquisitionTests(unittest.TestCase):
             code, report = self.invoke()
         self.assertEqual(code, 1)
         self.assertEqual(report['failure_stage'], 'inventoryAfterFirstScanChanged')
+        self.assertEqual(report['failure_observation'], 1)
+        self.assertEqual(report['failure_phase'], 'baseline')
         self.assertFalse(report['launch_eligible'])
         self.assertFalse(report['native_recovery_verified'])
         self.assertEqual(list((self.evidence / 'baseline').iterdir()), [])
         self.assertEqual((self.marker / 'lock').read_bytes(), b'unresolved')
         self.assertEqual((self.archive / 'history.json').read_bytes(), self.source.read_bytes())
+
+    def late_probe_failure(self, failed_call, stage='processIdentity'):
+        from recovery_probe import ProbeFailure
+        stamps = self.stamps()
+        samples = [self.observe() for _ in range(failed_call - 1)]
+        samples.append(ProbeFailure(stage))  # Both historical and refined stages survive.
+        with patch.object(self, 'observe', side_effect=samples) as observer:
+            code, report = self.invoke()
+        self.assertEqual(observer.call_count, failed_call)
+        self.assertEqual(code, 1)
+        self.assertEqual(report['failure_stage'], stage)
+        self.assertEqual(report['failure_observation'], failed_call)
+        self.assertEqual(report['failure_phase'], 'final')
+        self.assertFalse(report['launch_eligible'])
+        self.assertFalse(report['native_recovery_verified'])
+        self.assertEqual(stamps, self.stamps())
+        self.assertEqual((self.marker / 'lock').read_bytes(), b'unresolved')
+        self.assertTrue((self.evidence / 'baseline/witness.json').exists())
+        roots = (self.evidence, self.anchor, self.archive)
+        def artifacts():
+            return {str(p): p.read_bytes() for root in roots for p in root.rglob('*') if p.is_file()}
+        retained = artifacts()
+        with patch.object(self, 'observe') as observer:
+            self.assertEqual(self.invoke()[0], 1)
+            observer.assert_not_called()
+        self.assertEqual(artifacts(), retained)
+        # In a separate process, evidence-only reload still grants no authority
+        # and cannot assert that this interrupted acquisition completed.
+        reloaded = subprocess.run([sys.executable, '-B', acquire.__file__, 'reload', *self.common],
+                                  capture_output=True, text=True, timeout=15)
+        self.assertEqual(reloaded.returncode, 0, reloaded.stdout)
+        report = json.loads(reloaded.stdout)
+        self.assertEqual(report['result'], 'acquiredEvidenceReloaded')
+        self.assertIsNone(report['marker_unchanged'])
+        self.assertFalse(report['launch_eligible'])
+        self.assertFalse(report['native_recovery_verified'])
+        self.assertEqual(artifacts(), retained)
+
+    def test_first_final_observation_failure_preserves_without_retry(self):
+        self.late_probe_failure(3)
+
+    def test_second_final_observation_failure_preserves_without_retry(self):
+        self.late_probe_failure(4, 'processIdentitySecondScanMalformed')
 
     def test_replaced_baseline_slot_is_not_discovered(self):
         self.assertEqual(self.invoke()[0], 0)

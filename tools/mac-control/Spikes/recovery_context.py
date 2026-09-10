@@ -22,6 +22,8 @@ EXECUTOR_NAMES = frozenset(('MacControlExecutor', 'StopSpikeWorker'))
 FAILURE_STAGES = frozenset(('caller', 'kernel', 'boot', 'session', 'inventoryInitial',
     'processIdentity', 'processPath', 'processRecheck', 'inventoryAfterFirstScan',
     'scanComparison', 'inventoryAfterSecondScan', 'contextRecheck', 'timestamp',
+    'processIdentityFirstScanRead', 'processIdentityFirstScanMalformed',
+    'processIdentitySecondScanRead', 'processIdentitySecondScanMalformed',
     'inventoryInitialQuery', 'inventoryInitialMalformed',
     'inventoryAfterFirstScanQuery', 'inventoryAfterFirstScanMalformed',
     'inventoryAfterFirstScanChanged', 'inventoryAfterSecondScanQuery',
@@ -108,12 +110,15 @@ runtime default. Caller security-session identity is not a login-freshness proof
         stage = 'inventoryInitialMalformed'
         require(caller in pids)
 
-        def scan():
+        def scan(identity_boundary):
             nonlocal stage
             rows = {}
             for pid in pids:
-                stage = 'processIdentity'
+                # IdentityKernel.process rejects short native reads itself, so
+                # any exception here still means that no usable row was read.
+                stage = identity_boundary + 'Read'
                 row = kernel.process(pid)
+                stage = identity_boundary + 'Malformed'
                 require(type(row) is tuple and len(row) == 7
                         and all(type(value) is int for value in row))
                 require(row[0] == pid and row[2] == uid and row[1] >= 0
@@ -128,11 +133,11 @@ runtime default. Caller security-session identity is not a login-freshness proof
                 rows[pid] = row, path
             return rows
 
-        first = scan()
+        first = scan('processIdentityFirstScan')
         after_first = inventory('inventoryAfterFirstScan')
         stage = 'inventoryAfterFirstScanChanged'
         require(after_first == pids)
-        second = scan()
+        second = scan('processIdentitySecondScan')
         stage = 'scanComparison'
         require(second == first)
         after_second = inventory('inventoryAfterSecondScan')

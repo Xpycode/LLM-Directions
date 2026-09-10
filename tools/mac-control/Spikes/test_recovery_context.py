@@ -95,6 +95,24 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(caught.exception.stage, 'processPath')
         self.assertNotIn('private', str(caught.exception))
 
+    def test_process_identity_cause_and_scan_are_distinguished_without_retry(self):
+        first_scan = (self.rows[101], self.rows[101], self.rows[102], self.rows[102])
+        cases = (
+            ('processIdentityFirstScanRead', (OSError('private process'),), 1),
+            ('processIdentityFirstScanMalformed', ((101, 1),), 1),
+            ('processIdentitySecondScanRead',
+             first_scan + (ValueError('private process'),), 5),
+            ('processIdentitySecondScanMalformed', first_scan + ((101, 1),), 5),
+        )
+        for expected, samples, calls in cases:
+            self.kernel.process.reset_mock(side_effect=True)
+            self.kernel.process.side_effect = samples
+            with self.subTest(expected=expected), self.assertRaises(ValueError) as caught:
+                context.capture_context()
+            self.assertEqual(caught.exception.stage, expected)
+            self.assertEqual(self.kernel.process.call_count, calls)
+            self.assertNotIn('private', str(caught.exception))
+
     def test_pid_reuse_uid_parent_and_path_drift(self):
         original = self.rows[102]
         for index in range(1, 7):

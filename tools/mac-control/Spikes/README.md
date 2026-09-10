@@ -30,10 +30,10 @@ and recovery remain pending. See the [next-fixture rationale](../../../verificat
 recorded 1.794583 ms detection upper bound, twelve matched events, target fence and all processes
 exited. Worker closure remains absent; marker unresolved. No automatic retry or marker clearing.
 
-**Prepared worker-crash case:** [source, offline checks and proposed window](../../../verification/mac-control/prepared-worker-crash-window.md).
+**Historical worker-crash preparation (before the completed window above):** [source, offline checks and proposed window](../../../verification/mac-control/prepared-worker-crash-window.md).
 `--case worker-crash` kills only the owned worker after six verified pairs, retains a client trace
 copy and target fence, and deliberately leaves the marker unresolved with exit 2. All 61 offline
-tests pass; this native case has not run. Agree the window before compiling or launching it.
+tests passed at preparation. Any new compilation or native run needs its own agreed window.
 
 **Latest September 9:** [independent focus-loss case passed](../../../verification/mac-control/focus-loss-live.md)
 after fixing singleton startup and shutdown-clock underflow. Detection11.248584ms, drain0.04275ms,

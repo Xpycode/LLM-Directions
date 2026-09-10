@@ -88,6 +88,19 @@ def load_acquired(args):
 
 
 def capture(args, *, observe, clock):
+    # The caller report identifies which of the four observations failed without
+    # altering the helper wire contract or attributing new detail to old reports.
+    observation = 0
+    original_observe = observe
+    def observe():
+        nonlocal observation
+        observation += 1
+        try:
+            return original_observe()
+        except ProbeFailure as error:
+            error.acquisition_observation = observation
+            raise
+
     namespaces(args)
     bootstrap._provenance(args.operator_record)
     history = read_history_source(args.history_source)
@@ -164,6 +177,10 @@ def main(argv=None, *, observe=None, clock=None):
         report.update(result='unresolved', reason=type(error).__name__)
         if isinstance(error, ProbeFailure):
             report['failure_stage'] = error.stage
+            observation = getattr(error, 'acquisition_observation', None)
+            if type(observation) is int and 1 <= observation <= 4:
+                report['failure_observation'] = observation
+                report['failure_phase'] = 'baseline' if observation <= 2 else 'final'
         code = 1
     print(json.dumps(report, sort_keys=True, allow_nan=False))
     return code

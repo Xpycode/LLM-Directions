@@ -2,6 +2,10 @@
 
 September 10, 2026 · Wave 1, task 1.3 continuation on M1 Max.
 
+**Later offline continuation:** [final-observation review and validated fixes](final-observation-review.md)
+adds precise identity/observation diagnostics and append-only wrapper reporting. No native retry;
+the historical results below remain unchanged.
+
 ## Finding and bounded change
 
 The September 9 `inventoryAfterFirstScan` failure covers enumeration, validation and

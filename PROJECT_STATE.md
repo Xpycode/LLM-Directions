@@ -13,10 +13,10 @@
   [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
   [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
 - **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
-- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 blocked by failed final process-identity observation after baseline retention; Gate A remains open.
-- **Next:** review the [post-retention acquisition failure](verification/mac-control/inventory-boundary-review.md#authorized-native-result--failed-after-baseline-retention).
-  Authorized capture failed at `processIdentity`; no reload or retry followed.
-  All three failed transactions preserved, including the newly retained baseline witness.
+- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 offline diagnostic/reporting fixes complete; native recovery still blocked and Gate A open.
+- **Next:** prepare/review one fresh caller configuration from the [validated offline packet](verification/mac-control/final-observation-review.md)
+  before a separately scoped native attempt. Exact failure cause remains unknown; no retry arranged.
+  Preserve all three failed transactions, including the retained baseline witness.
   **Blocker:** runtime marker unresolved after the worker-crash experiment; no verified recovery or retry.
   Recovery, clipboard and broader intervention proof remain pending before task 1.3 can close.
   Scope is occasional UI-test interruption across projects; Conjoyn provides a shell/AppleScript example.
@@ -28,11 +28,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-10** — Added precise final-observation diagnostics and durable timeout reporting; 386 tests passed/one skip, independent review passed. No native retry; recovery gate remains open.
 - **2026-09-10** — Refined diagnostics and one native observation passed. Authorized capture then failed during final process-identity observation after baseline retention; evidence preserved, no reload/retry.
 - **2026-09-10** — Reviewed lean efficiency with Sol, Luna and official web sources; wrote the separate dependency/ownership/validation plan, preserving Mac-control work.
 - **2026-09-09** — Strengthened wave planning/execution, added status reminders and automatic pre-clear logging; Codex guidance installed on M4-Pro. [Review and checks](verification/wave-execution-workflow.md).
 - **2026-09-09** — Reconciled M4-Pro with M1-Max's checkpoint, retained a recovery stash, and preserved the iOS gesture and private credential-entry guidance for this documentation handoff.
-- **2026-09-09** — Added safe probe diagnostics; fresh capture failed at inventory boundary. 367 tests passed/one skip; 14 final probe tests passed. Both partial transactions preserved.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -51,8 +51,9 @@
 
 ## Resume
 - [September 10 Wave 1 checkpoint](sessions/2026-09-10.md#resume): task 1.3 incomplete.
-  [Authorized capture failed after retention](verification/mac-control/inventory-boundary-review.md#authorized-native-result--failed-after-baseline-retention)
-  at `processIdentity`; no reload/retry. Review final observation failure next.
+  [Offline review/fixes complete](verification/mac-control/final-observation-review.md): precise
+  scan/observation diagnostics, append-only outcome reporting and late-failure regressions validated.
+  Prepare/review a fresh caller configuration next; no further native action is arranged.
   Preserve all three transactions; surviving baseline witness files do not prove completion.
   M1 Max arrival recovery stash retained; continuation committed locally, not pushed.
 - Workflow changes are recorded in [the review](verification/wave-execution-workflow.md). Start a new
