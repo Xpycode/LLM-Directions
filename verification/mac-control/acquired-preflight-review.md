@@ -84,6 +84,6 @@ Pre-clear: project state, task, plan and today's existing local log/index were r
 The known archive-unaware index checker still reports 45 missing/zero orphan entries; combined
 live/archive checking found zero missing targets and the same three previously recorded unindexed
 logs. No repair or push. Local branch `fix/acquired-recovery-preflight` holds this continuation;
-today's session log/index remain ignored/local under existing policy. Machine-local witness
+today's session log remains ignored/local under existing policy; the session index is tracked. Machine-local witness
 storage and the staged dylib are outside Git. Task 1.3 and Gate A remain incomplete awaiting
 an agreed same-Mac restart, namespace continuity inspection and remaining recovery experiments.
