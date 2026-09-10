@@ -51,6 +51,10 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  September 10: prepared kernel capture and separate-process reload now passed once; marker
+  unchanged. Preserve the successful transaction and all previous evidence. Retained later-boot
+  CLI/caller independently reviewed, persistent library staged; arrange same-Mac restart next.
+  No initialization, activation or foreground proof; Gate A remains open.
   Latest [shared-root and kernel integration](verification/mac-control/shared-root-and-kernel-integration.md)
   passed independent review: 456 broad passes/one skip; 20 final C/parser/helper passes.
   One native read-only observation passed in 337.630 ms, marker unchanged. Shared-root

@@ -69,7 +69,7 @@ empty conforming-executor inventory, unchanged marker bytes/fingerprints, and bo
 flags false. No retry, native acquisition, marker mutation or foreground action occurred.
 The journal is consumed; do not rerun this caller.
 
-## Next operation — fresh acquisition prepared, not executed
+## Fresh acquisition — capture and reload passed
 
 ```sh
 python3 -B verification/mac-control/prospective-acquisition-kernel.py inspect
@@ -90,8 +90,14 @@ process only if capture succeeds. Any failure stops and preserves the new partia
 none of the five previous attempts or three observation journals is reused. The marker remains
 read-only; no initialization, activation, reboot, app launch or input is included.
 
-Native storage writes remain pending the [delivery boundary](delivery-review.md#next-bounded-work-packet).
-Task 1.3/Gate A remains incomplete even if this future capture succeeds; later-boot continuity,
+After the user's September 10 continuation and tool approval, `inspect` passed again and
+`run` executed exactly once outside the sandbox, exiting 0. The
+[consumed journal](prospective-acquisition-c6448ce2f81c44f78af0752199fdae2b.jsonl)
+records successful capture and separate-process reload, matching baseline/acquisition bindings,
+unchanged marker and both authority flags false. All five failed transactions and three earlier
+observation journals remain preserved. Do not rerun this caller or reuse its transaction.
+
+Task 1.3/Gate A remains incomplete; later-boot continuity,
 explicit initialization/activation and actual recovery/clipboard/intervention proof remain.
 
 ## Assignments and validation

@@ -11,6 +11,7 @@ import os
 import stat
 import sys
 
+import recovery_acquire as acquire
 import recovery_bootstrap as bootstrap
 import recovery_provision as provision
 from recovery_probe import capture_bounded_context
@@ -32,26 +33,60 @@ def _read(path, limit):
         os.close(fd)
 
 
+def _inspect_trusted(marker_directory, baseline, *, observe, clock):
+    """Observe one authenticated baseline while holding its original marker."""
+    directory, stamps, old_samples = bootstrap._baseline_data(baseline)
+    require(marker_directory == directory, 'baselineNamespaceMismatch')
+    owner = MarkerLock.acquire(marker_directory, create=False)
+    try:
+        current_stamps, samples, _ = bootstrap._observe_locked(owner, observe, clock, stamps)
+        require(samples[0]['boot'] != old_samples[0]['boot'], 'sameBoot')
+        return directory, current_stamps, samples
+    finally:
+        owner.close()
+
+
+def _observation_report(result, directory, fingerprints, samples, baseline, history_sha256):
+    # Reports remain non-authorizing even if every read-only check passes.
+    return dict(result=result, marker_directory=directory,
+        marker_unchanged=True, marker_class='legacyUnresolved', fingerprints=fingerprints,
+        samples=samples, baseline_sha256=baseline.trusted_sha256,
+        history_sha256=history_sha256, provenance=baseline.provenance,
+        historical_outcome='failedOrUnknownNonRetryable')
+
+
 def inspect_legacy(args, *, observe, clock):
     # Authenticate original bytes BEFORE touching the runtime namespace.
     baseline = bootstrap.load_baseline(_read(args.baseline, bootstrap.MAX_BASELINE),
         trusted_sha256=args.baseline_sha256, provenance=args.provenance)
     bootstrap._pin(_read(args.history, bootstrap.MAX_HISTORY), args.history_sha256,
                    bootstrap.MAX_HISTORY)
-    directory, stamps, old_samples = bootstrap._baseline_data(baseline)
-    require(args.marker_directory == directory, 'baselineNamespaceMismatch')
-    owner = MarkerLock.acquire(args.marker_directory, create=False)
-    try:
-        current_stamps, samples, _ = bootstrap._observe_locked(owner, observe, clock, stamps)
-        require(samples[0]['boot'] != old_samples[0]['boot'], 'sameBoot')
-        # The returned report remains non-authorizing even if every check passes.
-        return dict(result='legacyPreflightObserved', marker_directory=directory,
-            marker_unchanged=True, marker_class='legacyUnresolved', fingerprints=current_stamps,
-            samples=samples, baseline_sha256=args.baseline_sha256,
-            history_sha256=args.history_sha256, provenance=args.provenance,
-            historical_outcome='failedOrUnknownNonRetryable')
-    finally:
-        owner.close()
+    directory, fingerprints, samples = _inspect_trusted(
+        args.marker_directory, baseline, observe=observe, clock=clock)
+    return _observation_report('legacyPreflightObserved', directory, fingerprints, samples,
+                               baseline, args.history_sha256)
+
+
+def _acquired_namespaces(args):
+    paths = [args.marker_directory, args.evidence_directory,
+             args.anchor_directory, args.archive_directory]
+    for index, first in enumerate(paths):
+        for second in paths[index + 1:]:
+            provision._separate(first, second)
+
+
+def inspect_acquired(args, *, observe, clock):
+    # Establish the complete explicit topology before loading/flushing retained
+    # witnesses. load_acquired returns the already authenticated baseline and
+    # acquisition provenance; no temporary export or caller-created pin exists.
+    _acquired_namespaces(args)
+    baseline, metadata = acquire.load_acquired(args)
+    directory, fingerprints, samples = _inspect_trusted(
+        args.marker_directory, baseline, observe=observe, clock=clock)
+    report = _observation_report('acquiredPreflightObserved', directory, fingerprints, samples,
+                                 baseline, metadata['history_sha256'])
+    report['acquisition'] = metadata
+    return report
 
 
 def storage(args):
@@ -97,6 +132,11 @@ def parser():
     command = commands.add_parser('inspect-legacy', help='Read-only observation; never a recovery grant')
     for name in ('marker-directory', 'baseline', 'baseline-sha256', 'history', 'history-sha256', 'provenance'):
         command.add_argument('--' + name, required=True)
+    command = commands.add_parser('inspect-acquired',
+                                  help='Read-only observation of retained acquisition')
+    for name in ('marker-directory', 'evidence-directory', 'anchor-directory',
+                 'archive-directory', 'inventory-library', 'inventory-sha256'):
+        command.add_argument('--' + name, required=True)
     return result
 
 
@@ -104,16 +144,28 @@ def main(argv=None, *, observe=None, clock=None):
     args = parser().parse_args(argv)
     report = dict(schema='recoveryPreflight/v1', operation=args.operation,
                   launch_eligible=False, native_recovery_verified=False, platform=sys.platform)
+    if args.operation == 'inspect-acquired':
+        report['inventory_sha256'] = args.inventory_sha256
     try:
-        if args.operation == 'inspect-legacy':
+        if args.operation in ('inspect-legacy', 'inspect-acquired'):
+            inventory_library = None
+            if args.operation == 'inspect-acquired':
+                inventory_library = acquire.inventory_configuration(
+                    args.inventory_library, args.inventory_sha256)
+                require(observe is None, 'ambiguousInventoryObserver')
             if observe is None or clock is None:
                 trusted_runtime_root(args.marker_directory)
             if clock is None:
                 from supervisor import mac_clock
                 clock = mac_clock()
             if observe is None:
-                observe = lambda: capture_bounded_context(clock=clock)
-            report.update(inspect_legacy(args, observe=observe, clock=clock))
+                if inventory_library is None:
+                    observe = lambda: capture_bounded_context(clock=clock)
+                else:
+                    observe = lambda: capture_bounded_context(
+                        clock=clock, inventory_library=inventory_library)
+            operation = inspect_legacy if args.operation == 'inspect-legacy' else inspect_acquired
+            report.update(operation(args, observe=observe, clock=clock))
         else:
             report.update(storage(args))
         code = 0

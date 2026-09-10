@@ -13,10 +13,9 @@
   [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
   [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
 - **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
-- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 awaiting fresh acquisition scope: shared-root fix and opt-in kernel observation passed; recovery/Gate A incomplete.
-- **Next:** approve the prepared [fresh capture/reload](verification/mac-control/shared-root-and-kernel-integration.md#next-operation--fresh-acquisition-prepared-not-executed)
-  using the reviewed kernel adapter. Location inspection passed; native storage writes pending.
-  Preserve all five failed transactions and three observation journals; no retry arranged.
+- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3: capture/reload passed; later-boot inspection prepared, awaiting agreed restart. Recovery/Gate A incomplete.
+- **Next:** arrange a restart of this Mac, then use the reviewed [later-boot caller](verification/mac-control/acquired-preflight-review.md).
+  Preserve the successful acquisition, all five failed transactions and three observation journals.
   **Blocker:** runtime marker unresolved after the worker-crash experiment; no verified recovery or retry.
   Recovery, clipboard and broader intervention proof remain pending before task 1.3 can close.
   Scope is occasional UI-test interruption across projects; Conjoyn provides a shell/AppleScript example.
@@ -28,11 +27,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-10** — Native evidence capture and fresh-process reload passed; preserved the inventory library for restart and prepared retained-evidence inspection.
 - **2026-09-10** — Fixed shared runtime selection and reviewed opt-in kernel inventory; native read-only check passed with marker unchanged. Fresh acquisition prepared.
 - **2026-09-10** — Kernel-inventory prototype passed 19 tests and independent review; reproduced a shared-lock directory gap that blocks live integration.
 - **2026-09-10** — Added reviewed disappearance handling; 406 broad tests passed/one skip, 29 final focused passed. Native probe passed; capture failed on inventory change, no reload/retry.
 - **2026-09-10** — Fixed lost native read diagnostics; 397 tests passed/one skip, independent review passed. One observation reported a missing process; marker unchanged, no retry.
-- **2026-09-10** — Reviewed fresh caller then ran the authorized capture once; failed at observation 3's first identity read after retention. Journal preserved precise failure; no reload/retry.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -50,6 +49,12 @@
   If Claude Code is also used, run its separate `redeploy.sh` flow.
 
 ## Resume
+- [Successful acquisition and later-boot preparation](verification/mac-control/acquired-preflight-review.md):
+  kernel capture/reload passed once, marker unchanged. Successful transaction and all prior evidence
+  preserved. Persistent byte-identical library staged; CLI/caller independently reviewed.
+  Broad suite: 478 passed/one skip; 52 focused tests and three wrapper tests passed.
+  Local branch `fix/acquired-recovery-preflight`; scoped checkpoint, no push.
+  Arrange a restart; no reboot, initialization, activation or foreground test has occurred.
 - [Shared-root and kernel integration](verification/mac-control/shared-root-and-kernel-integration.md):
   source pin now shared by native boundaries, startup never creates a missing root/marker.
   Opt-in kernel adapter and prepared caller independently reviewed; 456 broad passes/one skip,
