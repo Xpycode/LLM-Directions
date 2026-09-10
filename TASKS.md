@@ -51,6 +51,9 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  Latest [authorized capture failed](verification/mac-control/fresh-caller-review.md#authorized-native-outcome)
+  at observation 3/final/processIdentityFirstScanRead after retention. No reload/retry; all four
+  failed transactions preserved. Next review native identity-read handling offline; Gate A open.
   [Fresh caller prepared/reviewed](verification/mac-control/fresh-caller-review.md): location
   inspection, 23 focused tests and independent review passed. Next agree exact native capture/reload
   scope; no capture performed, task 1.3 and Gate A remain incomplete.

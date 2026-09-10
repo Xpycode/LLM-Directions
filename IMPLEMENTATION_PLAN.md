@@ -83,6 +83,9 @@ queue, five-second countdown, visible time/steps, and reliable cancellation for 
     table against every AC01–AC16 branch. No agent-facing approval endpoint.
 
 - [ ] **1.3 Prove bounded input and stop in a disposable target** → `C/Spikes/`, `V/stop-spike.md`
+  - Latest authorized capture: [precise native failure](verification/mac-control/fresh-caller-review.md#authorized-native-outcome)
+    at observation 3/final/processIdentityFirstScanRead after baseline retention. Journal preserved;
+    no reload/retry. Four failed transactions retained. Next offline native-adapter read review.
   - September 10 caller preparation: [fresh caller review](verification/mac-control/fresh-caller-review.md)
     passed read-only location inspection, 23 focused tests and independent review. Exact fresh
     capture/reload caller is ready for separately agreed native scope; no capture run. Gate A open.
@@ -473,4 +476,5 @@ The first milestone is **Gate A**, not a polished overlay. The second is **Gate 
 | 1 / 1.3 continuation | 2026-09-10 | — | Sol owned diagnostic source/tests; coordinator owned acquisition regression, integration/state/Git; Astra independently reviewed. 369 broad passes/one skip, 34 final focused passes; one locked native diagnostic passed. [Evidence and authorized acquisition failure](verification/mac-control/inventory-boundary-review.md). Capture failed in final process-identity observation after retention; no reload/retry. Local execution commits; no push. Gate A remains open. |
 | 1 / 1.3 offline fixes | 2026-09-10 | Selected scope complete | Sol owned identity diagnostics/tests; coordinator owned acquisition reporting, journal runner/caller, integration, docs and Git; Astra independently reviewed. [Final-observation review and validation](verification/mac-control/final-observation-review.md): 386 full-suite passes/one skip. Scoped local execution commit; no push. Native recovery/Gate A remain open; next prepare/review fresh caller configuration before separate native scope. |
 | 2–7 | Not started | — | No implementation/build/desktop test performed |
+| 1 / 1.3 native capture | 2026-09-10 | Failed/incomplete | User authorized exact caller; coordinator repeated inspect and ran once. Observation 3/final/processIdentityFirstScanRead failed after retention; journal retained, no reload/retry. [Outcome](verification/mac-control/fresh-caller-review.md#authorized-native-outcome). No source changes; local checkpoint, no push. Gate A open. |
 | 1 / 1.3 fresh caller | 2026-09-10 | Preparation complete | Coordinator prepared configuration and ran location/syntax checks plus 23 focused tests; fresh-context Astra reviewed independently with no blocker. [Exact proposed operation](verification/mac-control/fresh-caller-review.md). Native scope pending; task/Gate A incomplete. Scoped local commit; no push. |
