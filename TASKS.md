@@ -51,6 +51,11 @@
 <!-- When done: /log moves to tasks-archive.md -->
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
+  Latest [inventory disappearance contract](verification/mac-control/inventory-contract-review.md)
+  implemented/reviewed: 406 broad passes/one skip, 29 final focused passes. Native probe passed;
+  fresh capture failed at observation 3/final/inventoryAfterFirstScanChanged after retention.
+  Preserve five transactions, no reload/retry. Next bounded inventory-change contract review;
+  task 1.3/Gate A still incomplete.
   Latest [identity-read review](verification/mac-control/identity-read-review.md): fixed native
   failure categories, 397 tests passed/one skip, independent review passed. Single diagnostic
   failed with ESRCH during first identity scan; marker unchanged, no capture/retry. Next review

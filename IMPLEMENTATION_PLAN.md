@@ -83,6 +83,12 @@ queue, five-second countdown, visible time/steps, and reliable cancellation for 
     table against every AC01–AC16 branch. No agent-facing approval endpoint.
 
 - [ ] **1.3 Prove bounded input and stop in a disposable target** → `C/Spikes/`, `V/stop-spike.md`
+  - Latest continuation: [inventory disappearance contract](verification/mac-control/inventory-contract-review.md)
+    implemented/reviewed; 406 broad-suite passes/one skip and 29 final focused passes.
+    One native observation passed with marker unchanged. Fresh acquisition then failed at
+    observation 3/final/inventoryAfterFirstScanChanged after retention; no reload/retry.
+    Preserve all five transactions. Next review bounded inventory-change handling before
+    another capture; task 1.3/Gate A remain open.
   - Latest continuation: [native identity-read review](verification/mac-control/identity-read-review.md)
     added fixed errno/return categories; 397 tests passed/one skip and independent review passed.
     One native observation failed with `processIdentityFirstScanReadMissing` (zero/ESRCH), marker
@@ -484,3 +490,4 @@ The first milestone is **Gate A**, not a polished overlay. The second is **Gate 
 | 1 / 1.3 native capture | 2026-09-10 | Failed/incomplete | User authorized exact caller; coordinator repeated inspect and ran once. Observation 3/final/processIdentityFirstScanRead failed after retention; journal retained, no reload/retry. [Outcome](verification/mac-control/fresh-caller-review.md#authorized-native-outcome). No source changes; local checkpoint, no push. Gate A open. |
 | 1 / 1.3 fresh caller | 2026-09-10 | Preparation complete | Coordinator prepared configuration and ran location/syntax checks plus 23 focused tests; fresh-context Astra reviewed independently with no blocker. [Exact proposed operation](verification/mac-control/fresh-caller-review.md). Native scope pending; task/Gate A incomplete. Scoped local commit; no push. |
 | 1 / 1.3 identity-read continuation | 2026-09-10 | Blocked/incomplete | Sol owned identity adapter/tests; coordinator owned context integration, regressions, single-observation caller, records and Git; Astra independently reviewed and teardown finding was fixed. [397 passes/one skip and native ESRCH result](verification/mac-control/identity-read-review.md). Marker unchanged; no capture/retry. Local execution commit, no push. Next inventory completeness/stability contract review; task 1.3/Gate A open. |
+| 1 / 1.3 inventory contract | 2026-09-10 | Blocked/incomplete | Sol owned context source/tests; coordinator owned helper integration, native callers, records and Git; Astra reviewed proof, final implementation and callers independently. [406 broad passes/one skip, 29 final focused passes, native probe pass and capture failure](verification/mac-control/inventory-contract-review.md). Capture failed at observation 3/final/inventoryAfterFirstScanChanged; fifth transaction preserved, no reload/retry. Scoped local execution commit; no push. Next bounded inventory-change contract review; Gate A remains open. |

@@ -184,6 +184,64 @@ raise SystemExit(c.probe_main(clock=lambda: 1))'''
             self.assertEqual(caught.exception.stage, expected)
             self.assertNotIn('private', str(caught.exception))
 
+    def test_confirmed_disappearance_crosses_native_adapter_and_helper_boundary(self):
+        # Real ctypes identity/enumeration adapters, capture and subprocess wire;
+        # substitute only libproc calls. No real process inventory is queried.
+        directory = os.path.dirname(probe.__file__)
+        for mode, expected in (('absent', None),
+                               ('listed', 'inventoryAfterFirstScanChanged'),
+                               ('reappeared', 'inventoryAfterSecondScanChanged'),
+                               ('denied', 'processIdentityFirstScanReadDenied')):
+            source = f'''import ctypes as C, errno, os, sys
+sys.path.insert(0, {directory!r})
+import recovery_context as c
+import recovery_identity as identity
+caller = os.getpid()
+missing = caller + 1
+class Lib:
+    def __init__(self): self.inventories = 0; self.missing_reads = 0
+    def proc_listpids(self, kind, uid, buffer, capacity):
+        self.inventories += 1
+        values = [caller]
+        if self.inventories == 1 or {mode!r} == 'listed' or (
+                self.inventories == 3 and {mode!r} == 'reappeared'):
+            values.append(missing)
+        for index, pid in enumerate(values): buffer[index] = pid
+        return len(values) * C.sizeof(C.c_int)
+    def proc_pidinfo(self, pid, flavor, arg, target, size):
+        if pid == missing:
+            self.missing_reads += 1
+            C.set_errno(errno.EPERM if {mode!r} == 'denied' else errno.ESRCH)
+            return 0
+        info = C.cast(target, C.POINTER(identity._BSDInfo)).contents
+        info.pid, info.ppid = pid, 1
+        info.uid = info.ruid = info.svuid = os.geteuid()
+        info.seconds, info.micros = 123, 456
+        return C.sizeof(identity._BSDInfo)
+kernel = object.__new__(c._Kernel)
+kernel.lib = Lib()
+kernel.boot = lambda: '12345678-1234-1234-1234-123456789abc'
+kernel.session = lambda: (42, 16)
+kernel.path = lambda pid: '/usr/bin/python3'
+c._Kernel = lambda: kernel
+original = c.capture_context
+def checked(clock):
+    try: return original(clock=clock)
+    finally:
+        if kernel.lib.missing_reads != 1: raise c.ContextFailure('kernel')
+c.capture_context = checked
+raise SystemExit(c.probe_main(clock=lambda: 987654321))'''
+            with self.subTest(mode=mode):
+                if expected is None:
+                    result = self.run_source(source)
+                    self.assertTrue(result['inventory_complete'])
+                    self.assertEqual(result['executors'], [])
+                    self.assertEqual(result['checked_ns'], 987654321)
+                else:
+                    with self.assertRaises(probe.ProbeFailure) as caught:
+                        self.run_source(source)
+                    self.assertEqual(caught.exception.stage, expected)
+
     def test_untrusted_helper_diagnostic_is_not_echoed(self):
         for output in ('private/path', '{"schema":"contextFailure/v1","stage":"private/path"}',
                        '{"schema":"contextFailure/v1","stage":"processPath","extra":1}',

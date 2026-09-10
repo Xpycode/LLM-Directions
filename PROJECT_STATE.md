@@ -13,10 +13,10 @@
   [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
   [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
 - **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
-- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 blocked: native observation reports a missing process; recovery/Gate A incomplete.
-- **Next:** review the all-process inventory stability contract against the
-  [native ESRCH observation](verification/mac-control/identity-read-review.md#native-outcome).
-  Preserve all four failed transactions and the consumed diagnostic journal; no retry arranged.
+- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3 blocked: capture failed on inventory change after the revised native probe passed; recovery/Gate A incomplete.
+- **Next:** review a kernel-backed inventory snapshot contract against the
+  [latest capture failure](verification/mac-control/inventory-contract-review.md#capture-outcome-and-handoff).
+  Preserve all five failed transactions and both observation journals; no retry arranged.
   **Blocker:** runtime marker unresolved after the worker-crash experiment; no verified recovery or retry.
   Recovery, clipboard and broader intervention proof remain pending before task 1.3 can close.
   Scope is occasional UI-test interruption across projects; Conjoyn provides a shell/AppleScript example.
@@ -28,11 +28,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-10** — Added reviewed disappearance handling; 406 broad tests passed/one skip, 29 final focused passed. Native probe passed; capture failed on inventory change, no reload/retry.
 - **2026-09-10** — Fixed lost native read diagnostics; 397 tests passed/one skip, independent review passed. One observation reported a missing process; marker unchanged, no retry.
 - **2026-09-10** — Reviewed fresh caller then ran the authorized capture once; failed at observation 3's first identity read after retention. Journal preserved precise failure; no reload/retry.
 - **2026-09-10** — Added precise final-observation diagnostics and durable timeout reporting; 386 tests passed/one skip, independent review passed. No native retry; recovery gate remains open.
 - **2026-09-10** — Refined diagnostics and one native observation passed. Authorized capture then failed during final process-identity observation after baseline retention; evidence preserved, no reload/retry.
-- **2026-09-10** — Reviewed lean efficiency with Sol, Luna and official web sources; wrote the separate dependency/ownership/validation plan, preserving Mac-control work.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -50,6 +50,12 @@
   If Claude Code is also used, run its separate `redeploy.sh` flow.
 
 ## Resume
+- Latest [inventory contract and capture outcome](verification/mac-control/inventory-contract-review.md):
+  reviewed narrow disappearance rule passed one native observation; acquisition failed at
+  observation 3/final/inventoryAfterFirstScanChanged after retention. No reload/retry.
+  Preserve all five transactions and both consumed observation journals. Marker still unresolved;
+  review the inventory snapshot replacement contract next. No new native or foreground scope arranged.
+  Current code/handoff committed locally under execution authorization; no push.
 - Latest [identity-read review and native result](verification/mac-control/identity-read-review.md):
   diagnostic fix validated; single native observation failed with ESRCH, marker unchanged.
   Review the all-process stability/completeness contract next; no further capture is arranged.

@@ -1,0 +1,3 @@
+{"launch_eligible": false, "marker_unchanged": false, "native_recovery_verified": false, "observation_count": 0, "result": "prepared", "schema": "identityReadObservation/v1"}
+{"launch_eligible": false, "marker_unchanged": false, "native_recovery_verified": false, "observation_count": 1, "result": "started", "schema": "identityReadObservation/v1", "started_ns": 175190224814041}
+{"ended_ns": 175190452175416, "launch_eligible": false, "marker_unchanged": true, "native_recovery_verified": false, "observation_count": 1, "result": "observed", "sample": {"boot": "306b3572-d45a-4158-90a8-27e89bbd5f3d", "checked_ns": 175190443789791, "executors": [], "inventory_complete": true, "session": "100024"}, "schema": "identityReadObservation/v1", "started_ns": 175190224814041}

@@ -84,7 +84,9 @@ def capture_context(clock=time.monotonic_ns):
     """Return verifier context, or raise ValueError if the scan is unresolved.
 
 No report/configurable name filter can exclude a known worker. Every UID process
-must have a readable stable path and kernel incarnation, including non-candidates.
+that survives the first identity read must have a readable stable path and kernel
+incarnation, including non-candidates. A noncaller that is already missing at
+that first read is absent from both later inventories or the probe fails closed.
 Any candidate blocks the verifier regardless of code identity; a name/PID never
 grants authority. Candidate rows are diagnostic only and intentionally omit paths.
 The existing adapter accepts this callable explicitly; it is not installed as a
@@ -115,7 +117,7 @@ runtime default. Caller security-session identity is not a login-freshness proof
         stage = 'inventoryInitialMalformed'
         require(caller in pids)
 
-        def scan(identity_boundary):
+        def scan(scan_pids, identity_boundary, allow_initial_missing=False):
             nonlocal stage
             rows = {}
             def read_process(pid, boundary):
@@ -126,8 +128,13 @@ runtime default. Caller security-session identity is not a login-freshness proof
                 except ProcessIdentityFailure as error:
                     stage = boundary + error.kind
                     raise
-            for pid in pids:
-                row = read_process(pid, identity_boundary + 'Read')
+            for pid in scan_pids:
+                try:
+                    row = read_process(pid, identity_boundary + 'Read')
+                except ProcessIdentityFailure as error:
+                    if allow_initial_missing and error.kind == 'Missing' and pid != caller:
+                        continue
+                    raise
                 stage = identity_boundary + 'Malformed'
                 require(type(row) is tuple and len(row) == 7
                         and all(type(value) is int for value in row))
@@ -144,16 +151,21 @@ runtime default. Caller security-session identity is not a login-freshness proof
                 rows[pid] = row, path
             return rows
 
-        first = scan('processIdentityFirstScan')
+        first = scan(pids, 'processIdentityFirstScan', allow_initial_missing=True)
+        survivors = tuple(sorted(first))
+        # These K incarnations stay readable before and after the middle query.
+        # Darwin sizes that query internally to min(nprocs + 20, supplied
+        # capacity), so its capacity exceeds K; exact equality also rejects
+        # additions, omitted survivors, and accepted Missing PIDs still present.
         after_first = inventory('inventoryAfterFirstScan')
         stage = 'inventoryAfterFirstScanChanged'
-        require(after_first == pids)
-        second = scan('processIdentitySecondScan')
+        require(after_first == survivors)
+        second = scan(survivors, 'processIdentitySecondScan')
         stage = 'scanComparison'
         require(second == first)
         after_second = inventory('inventoryAfterSecondScan')
         stage = 'inventoryAfterSecondScanChanged'
-        require(after_second == pids)
+        require(after_second == survivors)
         stage = 'contextRecheck'
         require(kernel.boot() == boot and _session(kernel) == session
                 and os.getuid() == os.geteuid() == uid and os.getpid() == caller)

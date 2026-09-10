@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 import recovery_context as context
 from recovery_verifier import context_snapshot
@@ -126,6 +126,162 @@ class ContextTests(unittest.TestCase):
                     context.capture_context()
                 self.assertEqual(caught.exception.stage, boundary + kind)
                 self.assertEqual(self.kernel.process.call_count, len(before) + 1)
+
+    def test_first_read_missing_noncaller_is_accepted_only_when_both_inventories_confirm_absence(self):
+        self.rows[103] = (103, 1, 501, 501, 501, 123, 103)
+        self.paths[103] = '/Applications/Editor'
+        self.kernel.pids.side_effect = ((101, 102, 103), (101, 103), (101, 103))
+        reads = {}
+
+        def process(pid):
+            reads[pid] = reads.get(pid, 0) + 1
+            if pid == 102 and reads[pid] == 1:
+                raise context.ProcessIdentityFailure('Missing')
+            return self.rows[pid]
+
+        self.kernel.process.side_effect = process
+        result = context.capture_context()
+
+        self.assertEqual(result['executors'], [])
+        self.assertEqual(self.kernel.process.call_args_list,
+                         [call(101), call(101), call(102), call(103), call(103),
+                          call(101), call(101), call(103), call(103)])
+        self.assertEqual(self.kernel.path.call_args_list,
+                         [call(101), call(103), call(101), call(103)])
+
+    def test_multiple_first_read_missing_noncallers_are_omitted_from_both_later_scans(self):
+        for pid in (103, 104):
+            self.rows[pid] = (pid, 1, 501, 501, 501, 123, pid)
+            self.paths[pid] = '/Applications/Editor'
+        self.kernel.pids.side_effect = ((101, 102, 103, 104), (101, 103), (101, 103))
+        reads = {}
+
+        def process(pid):
+            reads[pid] = reads.get(pid, 0) + 1
+            if pid in (102, 104) and reads[pid] == 1:
+                raise context.ProcessIdentityFailure('Missing')
+            return self.rows[pid]
+
+        self.kernel.process.side_effect = process
+        context.capture_context()
+
+        self.assertEqual(self.kernel.process.call_args_list[:6],
+                         [call(101), call(101), call(102), call(103), call(103), call(104)])
+        self.assertNotIn(call(102), self.kernel.path.call_args_list)
+        self.assertNotIn(call(104), self.kernel.path.call_args_list)
+
+    def test_first_read_missing_must_be_absent_from_middle_inventory(self):
+        self.kernel.pids.side_effect = ((101, 102), (101, 102))
+        self.kernel.process.side_effect = (
+            self.rows[101], self.rows[101], context.ProcessIdentityFailure('Missing'))
+
+        with self.assertRaises(context.ContextFailure) as caught:
+            context.capture_context()
+
+        self.assertEqual(caught.exception.stage, 'inventoryAfterFirstScanChanged')
+        self.assertEqual(self.kernel.pids.call_count, 2)
+
+    def test_first_read_missing_cannot_reappear_or_be_replaced_after_second_scan(self):
+        self.rows[103] = (103, 1, 501, 501, 501, 123, 103)
+        self.paths[103] = '/Applications/Editor'
+        for final in ((101, 102, 103), (101, 103, 104)):
+            self.kernel.pids.reset_mock(side_effect=True)
+            self.kernel.process.reset_mock(side_effect=True)
+            self.kernel.path.reset_mock(side_effect=True)
+            self.kernel.pids.side_effect = ((101, 102, 103), (101, 103), final)
+            self.kernel.path.side_effect = lambda pid: self.paths[pid]
+            reads = {}
+
+            def process(pid):
+                reads[pid] = reads.get(pid, 0) + 1
+                if pid == 102 and reads[pid] == 1:
+                    raise context.ProcessIdentityFailure('Missing')
+                return self.rows[pid]
+
+            self.kernel.process.side_effect = process
+            with self.subTest(final=final), self.assertRaises(context.ContextFailure) as caught:
+                context.capture_context()
+            self.assertEqual(caught.exception.stage, 'inventoryAfterSecondScanChanged')
+            self.assertEqual(self.kernel.pids.call_count, 3)
+
+    def test_nonmissing_first_read_failure_of_noncaller_remains_fail_closed(self):
+        for kind in context.PROCESS_IDENTITY_FAILURE_KINDS - {'Missing'}:
+            self.kernel.process.reset_mock(side_effect=True)
+            self.kernel.process.side_effect = (
+                self.rows[101], self.rows[101], context.ProcessIdentityFailure(kind))
+            with self.subTest(kind=kind), self.assertRaises(context.ContextFailure) as caught:
+                context.capture_context()
+            self.assertEqual(caught.exception.stage, 'processIdentityFirstScanRead' + kind)
+            self.assertEqual(self.kernel.process.call_count, 3)
+
+    def test_missing_caller_recheck_and_second_scan_remain_fail_closed(self):
+        cases = (
+            ('processIdentityFirstScanReadMissing',
+             (context.ProcessIdentityFailure('Missing'),), 1),
+            ('processRecheckReadMissing',
+             (self.rows[101], context.ProcessIdentityFailure('Missing')), 2),
+            ('processIdentitySecondScanReadMissing',
+             (self.rows[101], self.rows[101], self.rows[102], self.rows[102],
+              context.ProcessIdentityFailure('Missing')), 5),
+        )
+        for expected, samples, calls in cases:
+            self.kernel.process.reset_mock(side_effect=True)
+            self.kernel.process.side_effect = samples
+            with self.subTest(expected=expected), self.assertRaises(context.ContextFailure) as caught:
+                context.capture_context()
+            self.assertEqual(caught.exception.stage, expected)
+            self.assertEqual(self.kernel.process.call_count, calls)
+
+    def test_missing_pid_does_not_hide_survivor_drift_or_known_candidate(self):
+        self.rows[103] = (103, 1, 501, 501, 501, 123, 103)
+        self.paths[102] = '/tmp/StopSpikeWorker'
+        self.paths[103] = '/Applications/Editor'
+        cases = (((101, 102, 103), (101,), 102),
+                 ((101, 102), (101,), None))
+        for initial, middle, missing in cases:
+            self.kernel.pids.reset_mock(side_effect=True)
+            self.kernel.process.reset_mock(side_effect=True)
+            self.kernel.path.reset_mock(side_effect=True)
+            self.kernel.pids.side_effect = (initial, middle)
+            self.kernel.path.side_effect = lambda pid: self.paths[pid]
+            reads = {}
+
+            def process(pid):
+                reads[pid] = reads.get(pid, 0) + 1
+                if pid == missing and reads[pid] == 1:
+                    raise context.ProcessIdentityFailure('Missing')
+                return self.rows[pid]
+
+            self.kernel.process.side_effect = process
+            with self.subTest(initial=initial, middle=middle, missing=missing), \
+                    self.assertRaises(context.ContextFailure) as caught:
+                context.capture_context()
+            self.assertEqual(caught.exception.stage, 'inventoryAfterFirstScanChanged')
+
+    def test_known_candidate_missing_on_second_scan_remains_fail_closed(self):
+        self.paths[102] = '/tmp/StopSpikeWorker'
+        self.kernel.pids.side_effect = ((101, 102), (101, 102))
+        self.kernel.process.side_effect = (
+            self.rows[101], self.rows[101], self.rows[102], self.rows[102],
+            self.rows[101], self.rows[101], context.ProcessIdentityFailure('Missing'))
+
+        with self.assertRaises(context.ContextFailure) as caught:
+            context.capture_context()
+
+        self.assertEqual(caught.exception.stage, 'processIdentitySecondScanReadMissing')
+        self.assertEqual(self.kernel.path.call_args_list,
+                         [call(101), call(102), call(101)])
+
+    def test_initial_omission_exposed_when_middle_inventory_adds_candidate(self):
+        self.paths[102] = '/tmp/StopSpikeWorker'
+        self.kernel.pids.side_effect = ((101,), (101, 102))
+
+        with self.assertRaises(context.ContextFailure) as caught:
+            context.capture_context()
+
+        self.assertEqual(caught.exception.stage, 'inventoryAfterFirstScanChanged')
+        self.assertNotIn(call(102), self.kernel.process.call_args_list)
+        self.assertNotIn(call(102), self.kernel.path.call_args_list)
 
     def test_pid_reuse_uid_parent_and_path_drift(self):
         original = self.rows[102]
