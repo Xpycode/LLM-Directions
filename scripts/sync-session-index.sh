@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sync-session-index.sh — verify docs/sessions/_index.md matches files on disk.
+# sync-session-index.sh — verify session indexes match files on disk.
 #
 # Usage:
 #   sync-session-index.sh                    # check the project at cwd (read-only)
@@ -12,8 +12,9 @@
 #   2  — error (no sessions dir, no _index.md, etc.)
 #
 # Behavior:
-#   - "Missing" = file on disk has no row in _index.md → can be auto-added with --fix.
-#   - "Orphan"  = row in _index.md points to a file that doesn't exist → never auto-removed
+#   - Coverage is the union of _index.md and optional _index-archive.md.
+#   - "Missing" = file on disk has no row in either index → can be auto-added to _index.md with --fix.
+#   - "Orphan"  = row in either index points to a file that doesn't exist → never auto-removed
 #                 (could be a typo, a moved file, or work-in-progress; investigate manually).
 
 set -euo pipefail
@@ -54,6 +55,12 @@ if [ ! -f "$index" ]; then
   exit 2
 fi
 
+index_files=("$index")
+archive_index="$sessions_dir/_index-archive.md"
+if [ -f "$archive_index" ]; then
+  index_files+=("$archive_index")
+fi
+
 # --- collect files on disk (basename without .md, sorted) ---
 # Match anything starting with a 4-digit year. Excludes _index.md.
 # NOTE: must handle paths with spaces (e.g. "Group Alarms") — avoid `xargs basename`
@@ -64,18 +71,23 @@ files=$(
     || true
 )
 
-# --- collect entries from _index.md ---
+# --- collect entries from the live + optional archive indexes ---
 # Two formats are common across consumer projects:
 #   (a) markdown link form:  `[2026-05-13](2026-05-13.md)` or `[2026-05-13](./2026-05-13.md)`
 #                            (the `./` prefix is canonical in some consumers, e.g. Group Alarms)
-#   (b) bare-date row form:  `| 2026-05-13 | Focus | Outcome |`
+#   (b) bare-date row form without a log link: `| 2026-05-13 | Focus | Outcome |`
 # We accept either. (`grep -oE` exits 1 on no matches → guard with `|| true`.)
 entries=$(
   {
-    grep -oE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*\.md\)' "$index" \
+    grep -h -oE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*\.md\)' "${index_files[@]}" \
       | sed -E 's|^\((\./)?||;s|\.md\)$||' \
       || true
-    grep -oE '^\| *20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*' "$index" \
+    # A linked row's target is authoritative. Its display date may carry a
+    # section suffix such as "(b)" or "-b" while several sections share one
+    # daily log, so do not also interpret that display value as a filename.
+    grep -h -E '^\| *20[0-9]{2}-[0-9]{2}-[0-9]{2}' "${index_files[@]}" \
+      | grep -vE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*\.md\)' \
+      | grep -oE '^\| *20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*' \
       | sed 's/^| *//;s/ *$//' \
       || true
   } | sort -u | grep -v '^$' || true
@@ -95,16 +107,19 @@ echo "== sync-session-index =="
 echo "  dir:       $sessions_dir"
 echo "  on disk:   $n_files"
 echo "  in index:  $n_entries"
+if [ -f "$archive_index" ]; then
+  echo "  coverage:  _index.md + _index-archive.md"
+fi
 
 if [ "$n_missing" -gt 0 ]; then
   echo
-  echo "MISSING from _index.md (file exists, no row):"
+  echo "MISSING from session indexes (file exists, no row):"
   printf '%s\n' "$missing_entries" | sed 's/^/  + /'
 fi
 
 if [ "$n_orphan" -gt 0 ]; then
   echo
-  echo "ORPHAN entries in _index.md (row exists, file missing):"
+  echo "ORPHAN entries in session indexes (row exists, file missing):"
   printf '%s\n' "$orphan_entries" | sed 's/^/  - /'
   echo "  (orphans are NOT auto-removed; investigate manually)"
 fi

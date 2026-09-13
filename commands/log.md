@@ -107,9 +107,12 @@ holds ~20 rows, move its oldest into `sessions/_index-archive.md` (create with a
 absent) to keep it capped.
 
 Then run the drift check (`scripts/sync-session-index.sh`, or `docs/scripts/…` in a consumer project):
-- **`✓ in sync`** — done. **`MISSING`** (older logs) — surface: "index missing N prior entries —
-  backfill, or just today's?". **`ORPHAN`** (row → no file) — flag, never auto-remove (typo / moved /
-  work-in-flight). Don't `--fix` today's row — a hand-written row beats the auto-stub.
+- The checker compares files against the **union** of the capped live `_index.md` and optional
+  `_index-archive.md`; archived rows must not be reported as missing merely because they left the
+  live table.
+- **`✓ in sync`** — done. **`MISSING`** (absent from both indexes) — surface: "index missing N prior
+  entries — backfill, or just today's?". **`ORPHAN`** (row → no file) — flag, never auto-remove
+  (typo / moved / work-in-flight). Don't `--fix` today's row — a hand-written row beats the auto-stub.
 
 ## 4 · Extract anything reusable  (silent-surface — only if something emerged)
 
