@@ -27,11 +27,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-09-17** — Kept the existing model setup after reviewing MultiVibe; integrated three unindexed logs, preserving original conflict snapshots.
 - **2026-09-10** — Native evidence capture and fresh-process reload passed; preserved the inventory library for restart and prepared retained-evidence inspection.
 - **2026-09-10** — Fixed shared runtime selection and reviewed opt-in kernel inventory; native read-only check passed with marker unchanged. Fresh acquisition prepared.
 - **2026-09-10** — Kernel-inventory prototype passed 19 tests and independent review; reproduced a shared-lock directory gap that blocks live integration.
 - **2026-09-10** — Added reviewed disappearance handling; 406 broad tests passed/one skip, 29 final focused passed. Native probe passed; capture failed on inventory change, no reload/retry.
-- **2026-09-10** — Fixed lost native read diagnostics; 397 tests passed/one skip, independent review passed. One observation reported a missing process; marker unchanged, no retry.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
 - **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
@@ -114,4 +114,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-09-10.*
+*Last updated: 2026-09-17.*

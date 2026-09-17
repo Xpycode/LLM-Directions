@@ -28,18 +28,15 @@
 - [ ] 7.1 Run the full acceptance matrix.
 - [ ] 7.2 Independent lifecycle and integration review.
 - [ ] 7.3 Pilot launch and Directions handoff.
-- [ ] Maintenance: make `scripts/sync-session-index.sh` archive-aware and handle suffixed dates;
-  review the unindexed `sessions/2026-02-18-vic-variant.md`. Confirmed by the 2026-09-05 log audit;
-  combined live/archive links have no missing targets. Outside the 25-task feature plan.
-  September 8 M4-Pro check also found prior ignored session logs absent locally; distinguish
-  cross-Mac log availability from index drift before repairing entries.
-  September 9 combined live/archive audit: no broken links; the existing February18 variant and
-  `sessions/2026-09-08.sync-conflict-20260908-223811-OLVB77F.md` are unindexed. Preserve the conflict
-  log (it contains the earlier full handoff) pending comparison with the canonical September8 log.
-  Lean review independently reproduced the archive false positive; see
+- [ ] Maintenance: validate session-index checker acceptance under
   [F01 / AC01](specs/directions-lean-efficiency.md) and LE02 in the linked lean-efficiency plan.
-  September 10 close: combined live/archive links still have no missing targets; also preserve
-  the unindexed `sessions/2026-09-09.sync-conflict-20260910-012344-OLVB77F.md` pending comparison.
+  Current source already reads both indexes and recognizes suffixed dates; this cleanup does
+  not establish the full LE02 acceptance matrix or change its execution status.
+  September 17: indexed the February 18 installation variant; integrated the September 8
+  intervention handoff and September 9 M1 Max completion into their canonical daily logs.
+  Original conflict bytes are retained under `sessions/reconciled-conflicts/` with provenance links.
+  Prior unindexed-log reconciliation is complete. Cross-Mac missing files must still be
+  distinguished from index drift. Outside the 25-task feature plan.
 - [ ] Implement the queued [Directions lean-efficiency plan](specs/directions-lean-efficiency-plan.md):
   review/planning completed with Sol, Luna and web sources on September 10; 14 tasks/eight waves plus
   host acceptance. LE01 freezes the baseline; LE03–LE14 cover F02–F11; F01 uses the maintenance item
