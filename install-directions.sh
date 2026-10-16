@@ -1,71 +1,20 @@
-#!/bin/bash
-#
-# Directions Plugin Installer
-# Installs Directions as a Claude Code plugin with hooks and commands
-#
-
-set -e
-
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Check for Python 3 (required for hooks)
-if ! command -v python3 &> /dev/null; then
-    echo "⚠️  Warning: Python 3 not found."
-    echo "   Some hooks (session-start, doc-suggester) require Python 3."
-    echo "   Install with: brew install python3"
-    echo ""
-    read -p "Continue anyway? [y/N] " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
-    fi
+#!/usr/bin/env bash
+# Retired compatibility entry point. Intentionally performs no writes.
+set -euo pipefail
+if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != '--help' ] && [ "$1" != '-h' ]; }; then
+  echo 'Unsupported argument. Use --help for supported deployment commands.' >&2
+  exit 2
 fi
-PLUGIN_DIR="$HOME/.claude/plugins/local/directions"
-COMMANDS_DIR="$HOME/.claude/commands"
-CLAUDE_MD="$HOME/.claude/CLAUDE.md"
-
-echo "Installing Directions plugin..."
-echo ""
-
-# Create directories
-mkdir -p "$(dirname "$PLUGIN_DIR")"
-mkdir -p "$COMMANDS_DIR"
-
-# Symlink plugin
-if [ -L "$PLUGIN_DIR" ]; then
-    echo "Updating existing plugin symlink..."
-    rm "$PLUGIN_DIR"
-elif [ -d "$PLUGIN_DIR" ]; then
-    echo "Warning: $PLUGIN_DIR exists as a directory. Backing up..."
-    mv "$PLUGIN_DIR" "$PLUGIN_DIR.backup.$(date +%Y%m%d)"
-fi
-
-ln -sf "$SCRIPT_DIR" "$PLUGIN_DIR"
-echo "✓ Plugin symlinked to $PLUGIN_DIR"
-
-# Copy commands
-cp "$SCRIPT_DIR/commands/"*.md "$COMMANDS_DIR/"
-echo "✓ Commands copied to $COMMANDS_DIR"
-
-# Handle CLAUDE.md
-if [ -f "$CLAUDE_MD" ]; then
-    echo ""
-    echo "Found existing ~/.claude/CLAUDE.md"
-    echo "You may want to manually merge changes from CLAUDE-GLOBAL-TEMPLATE.md"
-    echo "Template location: $SCRIPT_DIR/CLAUDE-GLOBAL-TEMPLATE.md"
-else
-    cp "$SCRIPT_DIR/CLAUDE-GLOBAL-TEMPLATE.md" "$CLAUDE_MD"
-    echo "✓ Created $CLAUDE_MD from template"
-    echo ""
-    echo "⚠️  Edit ~/.claude/CLAUDE.md to set your local paths:"
-    echo "   - Local master: $SCRIPT_DIR"
-fi
-
-echo ""
-echo "Installation complete!"
-echo ""
-echo "Next steps:"
-echo "1. Restart Claude Code for hooks to take effect"
-echo "2. Run /directions to see all available commands"
-echo ""
+INSTALL_MASTER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cat <<EOF
+install-directions.sh is retired; nothing was installed or changed.
+Codex preview: bash "$INSTALL_MASTER/deploy-codex.sh" --dry-run
+Claude preview: bash "$INSTALL_MASTER/redeploy.sh" --dry-run
+After reviewing the preview, invoke the chosen script without --dry-run to install.
+Claude redeploy replaces CLAUDE.md with a backed-up rendered template. Preserve personal
+instructions with --skip-claude-md; --skip-settings preserves existing settings.
+Codex refreshes its managed block; --skip-agents-md skips that block.
+This entry point exits 1 without arguments, 0 for help, 2 for invalid arguments.
+EOF
+if [ "$#" -eq 1 ]; then exit 0; fi
+exit 1

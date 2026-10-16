@@ -229,8 +229,10 @@ bash redeploy.sh --dry-run
 bash redeploy.sh
 ```
 
-`install-directions.sh` remains as the older Claude-only installer; `redeploy.sh` is the complete,
-idempotent path because it also prunes retired commands and refreshes hooks and settings.
+`install-directions.sh` is retired and performs no writes (exit 1; `--help` exits 0).
+Use the host-specific deployer above after reviewing its preview. Claude's `redeploy.sh` backs up
+and replaces `CLAUDE.md`; use `--skip-claude-md` to retain it and `--skip-settings` to retain settings.
+Codex preserves personal text outside its managed block; `--skip-agents-md` skips that block.
 
 ---
 
