@@ -73,8 +73,9 @@ fi
 # CLAUDE.md is an explicit whole-file replacement; existing files are backed up below.
 rendered=$(mktemp)
 preview_settings=$(mktemp)
+merged_settings=$(mktemp)
 rendered_perms=$(mktemp)
-trap 'rm -f "$rendered" "$preview_settings" "$rendered_perms"' EXIT
+trap 'rm -f "$rendered" "$preview_settings" "$merged_settings" "$rendered_perms"' EXIT
 python3 -I - "$TEMPLATE" "$REPO" "$rendered" <<'PY'
 from pathlib import Path
 import sys
@@ -111,10 +112,41 @@ rules = json.loads(Path(sys.argv[1]).read_text())
 assert isinstance(rules, list) and all(isinstance(rule, str) for rule in rules)
 Path(sys.argv[3]).write_text(json.dumps([rule.replace('[HOME]', sys.argv[2]) for rule in rules]))
 PY
-  jq -e -s '.[0] * .[1]' "$preview_settings" "$SETTINGS_TEMPLATE" >/dev/null
-  jq -e -s '((.[0].permissions.allow) // []) + (.[1] - ((.[0].permissions.allow) // []))' \
-    "$preview_settings" "$rendered_perms" >/dev/null
+  jq -e -s '.[0] * .[1]' "$preview_settings" "$SETTINGS_TEMPLATE" > "$merged_settings"
+  jq -e -s '
+    ((.[0].permissions.allow) // []) as $live |
+    .[0].permissions.allow = ($live + (.[1] - $live)) | .[0]
+  ' "$merged_settings" "$rendered_perms" > "$preview_settings"
 fi
+# Validate the settings that hooks/install.sh will actually consume AFTER both merges.
+# Check every event/group/hook, including independent events, before any live mutation.
+python3 -I - "$preview_settings" <<'PY'
+import json, sys
+from pathlib import Path
+data = json.loads(Path(sys.argv[1]).read_text())
+hooks = data.get('hooks')
+assert hooks is None or isinstance(hooks, dict), 'hooks must be an object or null'
+for event, groups in (hooks or {}).items():
+    assert groups is None or isinstance(groups, list), f'hooks.{event} must be an array or null'
+    for group in groups or []:
+        assert isinstance(group, dict), f'hooks.{event} groups must be objects'
+        entries = group.get('hooks')
+        assert entries is None or isinstance(entries, list), f'hooks.{event} group hooks must be an array or null'
+        assert all(isinstance(entry, dict) for entry in entries or []), f'hooks.{event} entries must be objects'
+status = data.get('statusLine')
+assert status is None or isinstance(status, dict), 'statusLine must be an object or null'
+PY
+# Exercise the real hook installer's lookup AND append expressions on the staged settings.
+for event in SessionStart Stop UserPromptSubmit PreToolUse; do
+  jq --arg ev "$event" --arg cmd '~/.claude/hooks/preflight.sh' '
+    [(.hooks[$ev] // [])[].hooks[]?.command] | index($cmd) != null
+  ' "$preview_settings" >/dev/null
+  jq -e --arg ev "$event" '
+    .hooks //= {} | .hooks[$ev] //= [] |
+    .hooks[$ev] += [{"hooks": [{"type": "command", "command": "preflight"}]}]
+  ' "$preview_settings" >/dev/null
+done
+jq '.statusLine.command // ""' "$preview_settings" >/dev/null
 if [ "$DRY_RUN" = 1 ] && [ ! -f "$SETTINGS" ]; then SETTINGS="$preview_settings"; fi
 
 # --- 1. Commands: install canonical, prune retired, keep independents -------------
@@ -265,6 +297,12 @@ else
       | select(($live | getpath($p)) != ($t | getpath($p)))
       | ($p | join(".")) ] | join(", ")
   ' "$SETTINGS" "$SETTINGS_TEMPLATE")
+  # Empty objects/arrays have no scalar leaf paths. Still apply their structural changes,
+  # so installation consumes exactly the recursively merged settings validated above.
+  if [ -z "$changed" ] && ! jq -e -s '((.[0] * .[1]) == .[0])' \
+      "$SETTINGS" "$SETTINGS_TEMPLATE" >/dev/null; then
+    changed='template object/array values'
+  fi
   if [ -z "$changed" ]; then
     say "  ✓ already matches template — nothing to do"
   elif [ "$DRY_RUN" = 1 ]; then

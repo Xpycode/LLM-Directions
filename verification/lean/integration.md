@@ -9,7 +9,7 @@ and initially dirty numbered guides match their frozen bytes; its task 1.3/Gate 
 
 `bash verification/lean/run-checks.sh` runs the final sources together: 85 baseline hashes,
 16 session-index cases, 50 generator invocations, 12 retirement cases, producer/process safety,
-eight task-state cases, 20 deployment invocations, 47 domains/60 cases/480 static routing rows,
+eight task-state cases, 40 deployment invocations, 47 domains/60 cases/480 static routing rows,
 final actual template routes/reference paths, preservation checks, shell syntax and diff whitespace.
 Deployment runs only in disposable masters/homes. Consumer inventory is read-only; the old website
 checker is replayed on disposable sessions. See deployment.md for the retained hashes and recipes.
@@ -20,6 +20,15 @@ bytes initially regressed by 26; redundant repository prose was shortened, prese
 and safety text. The task-state archival fixture now starts with an accepted plan, updates a real
 Markdown evidence link and the state/tracker pointers before retirement, and retains original bytes.
 The optional context reference's policy-pending sentence was reconciled with the accepted decision.
+
+LE14 then found and resolved two P2 issues: plain logging now has a valid current Resume target
+when pickup changes; Claude preflight validates effective merged hook settings before any install
+write. The hook correction also applies empty-container template changes consistently with its
+preview. The original aggregate suite passed with 20 deployment invocations; the affected expanded
+deployment suite then passed 40, plus eight task-state tests, final routing/reference preservation,
+shell syntax and whitespace. The independent reviewer replayed three malformed-setting cases,
+all rejected with unchanged disposable homes. No redundant whole-suite rerun is claimed.
+See final-review.md and final-source-manifest.json for dispositions and source provenance.
 
 ## Final byte accounting
 
@@ -43,17 +52,17 @@ extent is unknown. Standalone increases are explicit unresolved rollout tradeoff
 The following workflow subtotal includes command files, the mandatory task-state reference when
 progress changes, and triggered logging references, once each. It excludes project data, indexes,
 model/testing/multi-Mac guides and entry files from both sides; it is not total session context.
-Final log is 12706 bytes, execute 13208, task-state 3332, app reference 4225, Mac reference 3387,
+Final log is 12829 bytes, execute 13208, task-state 3332, app reference 4225, Mac reference 3387,
 Claude reference 1471. Frozen log/execute are 17024/11104.
 
 | Scenario subtotal | Frozen | Final | Difference |
 |---|---:|---:|---:|
-| Ordinary log, no progress change | 17024 | 12706 | -4318 |
-| Ordinary log with task-state update | 17024 | 16038 | -986 |
-| Codex execution ending, task progress, no app trigger | 28128 | 29246 | +1118 |
-| Claude execution ending, task progress, no app trigger | 28128 | 30717 | +2589 |
-| Codex Mac + recovery handoff, task progress | 17024 | 23650 | +6626 |
-| Claude Mac + recovery handoff, task progress | 17024 | 25121 | +8097 |
+| Ordinary log, no progress change | 17024 | 12829 | -4195 |
+| Ordinary log with task-state update | 17024 | 16161 | -863 |
+| Codex execution ending, task progress, no app trigger | 28128 | 29369 | +1241 |
+| Claude execution ending, task progress, no app trigger | 28128 | 30840 | +2712 |
+| Codex Mac + recovery handoff, task progress | 17024 | 23773 | +6749 |
+| Claude Mac + recovery handoff, task progress | 17024 | 25244 | +8220 |
 
 These increases include new authority, recovery and canonical-record safeguards. They are reported,
 not accepted on the user's behalf. Ordinary-path bytes improve; every-path efficiency is not claimed.

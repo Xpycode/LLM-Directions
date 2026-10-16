@@ -3,7 +3,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 python3 - "$ROOT" <<'PY'
-import hashlib, os, re, shutil, subprocess, sys, tempfile
+import hashlib, json, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 source = Path(sys.argv[1])
 checks = 0
@@ -112,6 +112,41 @@ with tempfile.TemporaryDirectory(prefix='directions deployment ') as temporary:
     saved = settings.read_bytes(); settings.write_text('{bad json')
     run('redeploy.sh', ok=False); settings.write_bytes(saved)
     prefs = master / 'CLAUDE-SETTINGS-TEMPLATE.json'
+    saved_settings, saved_prefs = settings.read_bytes(), prefs.read_bytes()
+    malformed = [
+        {'hooks': {event: 42}} for event in ('SessionStart', 'Stop', 'UserPromptSubmit', 'PreToolUse', 'IndependentEvent')
+    ] + [
+        {'hooks': {'SessionStart': [42]}},
+        {'hooks': {'Stop': [{'hooks': 42}]}},
+        {'hooks': {'PreToolUse': [{'hooks': [42]}]}},
+        {'statusLine': 42},
+    ]
+    for value in malformed:
+        # Live settings corruption and template-introduced corruption both fail before writes.
+        settings.write_text(json.dumps(value))
+        run('redeploy.sh', ok=False)
+        settings.write_bytes(saved_settings)
+        prefs.write_text(json.dumps(value))
+        run('redeploy.sh', ok=False)
+        prefs.write_bytes(saved_prefs)
+    # Even with preference merging disabled the hook installer still runs and must preflight.
+    settings.write_text('{"hooks":{"SessionStart":42}}')
+    run('redeploy.sh', '--skip-settings', ok=False)
+    settings.write_bytes(saved_settings)
+    # A template can repair an invalid event with an empty array. Structural changes have
+    # no scalar leaf paths, but the real merge must still match its validated preview.
+    repaired = json.loads(saved_settings)
+    repaired['hooks']['SessionStart'] = 42
+    repaired['hooks']['IndependentEvent'] = [{'hooks': [{'type': 'command', 'command': 'personal-hook'}]}]
+    settings.write_text(json.dumps(repaired))
+    template_repair = json.loads(saved_prefs)
+    template_repair['hooks'] = {'SessionStart': []}
+    prefs.write_text(json.dumps(template_repair))
+    run('redeploy.sh')
+    installed = json.loads(settings.read_text())
+    assert isinstance(installed['hooks']['SessionStart'], list)
+    assert installed['hooks']['IndependentEvent'] == repaired['hooks']['IndependentEvent']
+    settings.write_bytes(saved_settings); prefs.write_bytes(saved_prefs)
     saved = prefs.read_bytes(); prefs.write_text('{bad json')
     run('redeploy.sh', ok=False); prefs.write_bytes(saved)
     perms = master / 'CLAUDE-SETTINGS-PERMISSIONS.json'

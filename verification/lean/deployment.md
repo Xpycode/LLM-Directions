@@ -29,13 +29,23 @@ not observed host/model instruction-following; E1 remains open.
 - `bash verification/lean/test-guidance-index.sh`: 50 generator invocations pass,
   including both formats, canonical eligibility, contamination preservation,
   arguments, marker/bootstrap failures, outside-body bytes/mode and idempotence.
-- `bash verification/lean/test-deployment.sh`: 20 deployer invocations pass using
+- `bash verification/lean/test-deployment.sh`: 40 deployer invocations pass using
   copied masters and disposable homes, including actual Claude settings/hooks.
   Missing globals and dry runs, spaces, shared routes, contaminated input,
   missing commands, invalid template/outer markers, bad settings/templates,
   personal text, Claude replacement backups and stable output are covered.
   Failure cases assert the entire disposable home inventory remains unchanged;
   an outside consumer sentinel inventory is checked after each invocation.
+- LE14 reproduced a late hook failure for `{"hooks":{"SessionStart":42}}`.
+  Preflight now validates the actual staged result after recursive preferences
+  and permission union, checks every event/group/hook shape plus statusLine, and
+  exercises the hook installer's lookup/append expressions for all four managed
+  events before any write. Nineteen negative cases cover live/template corruption,
+  independent events, nested hook shapes, statusLine and `--skip-settings`.
+  One positive case repairs a malformed event with a template's empty array and
+  preserves an independent hook. Empty containers now trigger the real preference
+  merge even when the scalar-leaf change report is empty, keeping installation
+  consistent with the validated preview.
 - The same fixture compares the frozen old App-Websites checker with the current
   master on an archive-only session row: old exits 1, current exits 0, neither
   changes retained evidence. It verifies website routing to `24_web-gotchas.md`

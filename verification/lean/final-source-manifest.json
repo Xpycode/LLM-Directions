@@ -1,0 +1,158 @@
+{
+  "date": "2026-10-16",
+  "scope": "final source; excludes mutable state and reports",
+  "files": {
+    "00_base.md": {
+      "bytes": 19554,
+      "sha256": "b2fb911abc0e765c96d470303cb924947b36cd7ac0e7da1da7c7b5ac11acb85b"
+    },
+    "12_documentation-templates.md": {
+      "bytes": 12737,
+      "sha256": "d1b27a9f5d26bbffeb21fa514ceb668f61b62a454a9d91c2fe0a874df749826f"
+    },
+    "32_git-workflow.md": {
+      "bytes": 9998,
+      "sha256": "6e2869a9a8866dc6a8aec899530c1b5ed05a7c8edfc1299359ebdc00dc730b40"
+    },
+    "34_testing.md": {
+      "bytes": 25850,
+      "sha256": "3bef7ce6565afd611dad2d8716535a5dd6138933d2e9b2139eee4775ff96a235"
+    },
+    "37_multi-mac-discipline.md": {
+      "bytes": 44124,
+      "sha256": "412dfc9b200c6c2b0a0fcc4d7ad25bda6bf9e035769ed5be5e1252e06bcaf18f"
+    },
+    "52_context-management.md": {
+      "bytes": 7201,
+      "sha256": "3772735b3f104dcfc4eeba122c95ddc246a39774ef1d6e99ee080753f86532f7"
+    },
+    "55_spec-template.md": {
+      "bytes": 4732,
+      "sha256": "197dca9aceb16cb9430c889faa0e02edcd7f6182d3b5191ea8ad256bcd299552"
+    },
+    "60_model-selection.md": {
+      "bytes": 8261,
+      "sha256": "750830b13334321dd1a6edc0eeb296651debbb2894914520cf902a21e260b27c"
+    },
+    "AGENTS.md": {
+      "bytes": 4173,
+      "sha256": "95c5b1d7f00b0168465181c5e8204c46d2df45b386347460606f392faaf52df9"
+    },
+    "CLAUDE-GLOBAL-TEMPLATE.md": {
+      "bytes": 17760,
+      "sha256": "a5154425194707887f3d58e39265bf82fd84903b7efe66395857cad0f1aee32c"
+    },
+    "CLAUDE.md": {
+      "bytes": 1483,
+      "sha256": "5da31371e1ac2206eb02839c2d819c75a87bbdbab7477436af1cec647cdf3d4b"
+    },
+    "CODEX-GLOBAL-TEMPLATE.md": {
+      "bytes": 6781,
+      "sha256": "1b7da4ee51f943ab3552a3901f1ebbced16cbfb5e9d5a62358d86582fd4ed312"
+    },
+    "IMPLEMENTATION_PLAN-template.md": {
+      "bytes": 5282,
+      "sha256": "392a50f953c429ea045a225aa24b0089fbb61e2968415fdc8870e3d875dd3cbd"
+    },
+    "IMPLEMENTATION_PLAN.md": {
+      "bytes": 48343,
+      "sha256": "709bd87c5e4482ee3ddc7eeaf5bc4f111060f03bf695938582eb1587931fd9ae"
+    },
+    "codex/skills/directions/SKILL.md": {
+      "bytes": 5123,
+      "sha256": "050b2c87bb5b9adc3bc802302cd35e6467ad6d87602624cdbd94325769ba5e17"
+    },
+    "commands/check.md": {
+      "bytes": 8453,
+      "sha256": "063fadc09ac2718af1c9bedc513d83291b0a3f9c050d597f3023bdd9b3aedb63"
+    },
+    "commands/cookbook.md": {
+      "bytes": 3190,
+      "sha256": "1cb1df407ab3036defb4c61ae53c4afbffb4d1f0ab5784833c871bc585167b1e"
+    },
+    "commands/decide.md": {
+      "bytes": 1076,
+      "sha256": "d7fa035dba78627a135c1f9df6c0b03cfbe1c0eb32ad5f06a1bad6e92819a167"
+    },
+    "commands/directions.md": {
+      "bytes": 3754,
+      "sha256": "7618c50c11212222d99a60534db21576d7eeb3e35b8e3dba09101072adfb4b82"
+    },
+    "commands/execute.md": {
+      "bytes": 13208,
+      "sha256": "3e3d57ef79de3c80cdf18b387cf58f235cdad21ce2cf68e56716f621de0390f9"
+    },
+    "commands/learned.md": {
+      "bytes": 550,
+      "sha256": "c3faf5ba8e37a65a4e43aa3219262c473905dbdd4107ef640e5bd07a3a905d24"
+    },
+    "commands/log.md": {
+      "bytes": 12829,
+      "sha256": "657e29b1d59d34802199796384b0d65df507908a84e2cae6b9994f274dde179d"
+    },
+    "commands/make-plan.md": {
+      "bytes": 7854,
+      "sha256": "95ef01b97d2105fe7e4182f8b2c49da3b50b6db68572326b7c8ed4612adc3763"
+    },
+    "commands/setup.md": {
+      "bytes": 6008,
+      "sha256": "ed183c0c67406fddb6cf2c4e8f52fbe818432fc7fdf07c30b896df5815793453"
+    },
+    "commands/spec.md": {
+      "bytes": 6579,
+      "sha256": "49a0d12323b7a72a9f5f23419ab7b6d35800a7fde9e27201e4034e62e39b7ecf"
+    },
+    "commands/status.md": {
+      "bytes": 10149,
+      "sha256": "c430d7fe9d70b760641ab04d7b6c8b1a8ad371185bbb13a148afbfeeb54ba676"
+    },
+    "commands/test-app.md": {
+      "bytes": 4607,
+      "sha256": "636e0392b8e75f926135e7b76f95ee21a9fed7fcb5b2a79f4d6c2ab14d7117be"
+    },
+    "commands/worktree.md": {
+      "bytes": 5074,
+      "sha256": "41cd267f617f8f746a3c12032a4c321c1dc07a6e9880c62ba9ff5de26727d5c5"
+    },
+    "deploy-codex.sh": {
+      "bytes": 7868,
+      "sha256": "b6e69311fa521d692b01de91f236df8167974f9c03a4f5436cb34c65d4e47687"
+    },
+    "install-directions.sh": {
+      "bytes": 1010,
+      "sha256": "36a5a0096fdd66fe88c5894bbfe6c834c63d21090b9180879e56ed8fef273138"
+    },
+    "redeploy.sh": {
+      "bytes": 18990,
+      "sha256": "ad31e3ed020f2e3b60228d8852f7803f489107ce0d77363e30eb84535b485205"
+    },
+    "reference/context-examples.md": {
+      "bytes": 10287,
+      "sha256": "2d916026abdcd73dd45fe0e8bea1beb9bee2ed4b2e5fb59e30765af23c4ab3e6"
+    },
+    "reference/log/app-handoff.md": {
+      "bytes": 4225,
+      "sha256": "034a5e4d668b86a03cdad47c230197a9bb1a183280d3ccb5772685bdb39bcb65"
+    },
+    "reference/log/claude-integration.md": {
+      "bytes": 1471,
+      "sha256": "00e75aacec720ba6af32f917057832a4b7f3b1ef35f5bc4f15988b57fde813d6"
+    },
+    "reference/log/mac-handoff.md": {
+      "bytes": 3387,
+      "sha256": "9e56cc8b016509ea2072f4f1f0111a4383e637afad17383ba1f9530e3b3730bc"
+    },
+    "reference/task-state.md": {
+      "bytes": 3332,
+      "sha256": "878ec6461a54882dc8de55cdfaefedb0b62074671ee019f9ccae5971335dbbcc"
+    },
+    "scripts/gen-directions-index.sh": {
+      "bytes": 9780,
+      "sha256": "6b4cbb95b64a3300479f8edf2885d20a8d8066da0d6243ddcc62c9b2dcd3a62f"
+    },
+    "scripts/sync-session-index.sh": {
+      "bytes": 5864,
+      "sha256": "feb545ec43accb320f3d12895a5448f2410597dc886bcdc784a1062b1e5dcf2b"
+    }
+  }
+}

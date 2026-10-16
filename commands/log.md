@@ -63,7 +63,7 @@ Do NOT ask (see Golden rule).]
 - [Any architectural/design choices — significant ones also go to decisions.md, see §4]
 ## Next
 - [What to do next time]
-## Resume        ← pre-clear mode only: uncommitted work + exact pickup point + deferred counts + model fit
+## Resume        ← pre-clear: uncommitted work + pickup + deferred counts + model fit; plain: update pickup here only if it changed
 ## Sync          ← Mac-handoff mode only: unpushed commits, branch, what the other Mac pulls
 ```
 
@@ -80,7 +80,8 @@ and `sessions/_index.md`. Update only what the session evidence supports:
   verified and archived, remove the active execution line and set Next to the actual follow-up.
 - **Current handoff** — link one specific current session-log Resume anchor. Superseded blocks
   remain historical evidence; preserve their bytes and outstanding recovery. Refresh this pointer
-  when new facts change the pickup, rather than accumulating competing current instructions.
+  when new facts change the pickup. In plain mode, add/update a uniquely identified Resume with
+  the changed pickup and obligations; this does not trigger pre-clear-only model/sync ceremony.
 - **Blockers** — if one surfaced or cleared, update the one-liner. For a real blocker worth detail,
   use: `**What:** … · **Tried:** … · **Unblock:** …` (mark `✅ RESOLVED` + `**Resolution:**` when cleared).
 - **Recent** — prepend a **one-line, plain-language** entry (no SHAs, no jargon). Keep ~5; drop the oldest.
