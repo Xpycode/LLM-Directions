@@ -35,6 +35,7 @@ case('fix',['2026-01-01.md'],fix=True)
 case('fix preserves archive',['2026-01-01.md','2026-01-02.md'],archive='| 2026-01-01 | x |\n',fix=True)
 case('fix cannot erase orphan',['2026-01-02.md'],'| 2026-01-01 | x |\n',expected=1,fix=True)
 case('conflict surfaced',['2026-01-01.sync-conflict-abc.md'],expected=1,diagnostic='2026-01-01.sync-conflict-abc')
+case('conflict fix retains target',['2026-01-01.sync-conflict-abc.md'],fix=True)
 with tempfile.TemporaryDirectory() as tmp:
  d=pathlib.Path(tmp)
  assert subprocess.run(['bash',str(script),str(d)],capture_output=True).returncode==2

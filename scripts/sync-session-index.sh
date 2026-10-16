@@ -80,15 +80,15 @@ files=$(
 # We accept either. (`grep -oE` exits 1 on no matches → guard with `|| true`.)
 entries=$(
   {
-    grep -h -oE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*\.md\)' "${index_files[@]}" \
+    grep -h -oE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_.-]*\.md\)' "${index_files[@]}" \
       | sed -E 's|^\((\./)?||;s|\.md\)$||' \
       || true
     # A linked row's target is authoritative. Its display date may carry a
     # section suffix such as "(b)" or "-b" while several sections share one
     # daily log, so do not also interpret that display value as a filename.
     grep -h -E '^\| *20[0-9]{2}-[0-9]{2}-[0-9]{2}' "${index_files[@]}" \
-      | grep -vE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*\.md\)' \
-      | grep -oE '^\| *20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_-]*' \
+      | grep -vE '\((\./)?20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_.-]*\.md\)' \
+      | grep -oE '^\| *20[0-9]{2}-[0-9]{2}-[0-9]{2}[A-Za-z0-9_.-]*' \
       | sed 's/^| *//;s/ *$//' \
       || true
   } | sort -u | grep -v '^$' || true
