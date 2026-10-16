@@ -10,6 +10,7 @@ def case(name, files, rows='', archive=None, expected=0, fix=False, diagnostic=N
  with tempfile.TemporaryDirectory(prefix='lean sessions ') as tmp:
   d=pathlib.Path(tmp)
   index=d/'_index.md'; index.write_text('| Date | Log |\n|---|---|\n'+rows)
+  original_index=index.read_bytes()
   for file in files: (d/file).write_text('retained evidence\n')
   if archive is not None: (d/'_index-archive.md').write_text(archive)
   retained={p.name:p.read_bytes() for p in d.iterdir() if p != index}
@@ -18,9 +19,15 @@ def case(name, files, rows='', archive=None, expected=0, fix=False, diagnostic=N
   assert result.returncode==expected,(name,result.returncode,result.stdout,result.stderr)
   if diagnostic: assert diagnostic in result.stdout,(name,result.stdout)
   for file,data in retained.items(): assert (d/file).read_bytes()==data,name
-  if fix and expected==0:
+  if not fix:
+   assert index.read_bytes()==original_index,(name,'read-only index changed')
+  else:
+   # Existing rows, order and text must survive insertion, including orphan rows.
+   remaining=iter(index.read_bytes().splitlines(keepends=True))
+   assert all(any(line==candidate for candidate in remaining) for line in original_index.splitlines(keepends=True)),(name,'old rows changed')
+  if fix and expected in (0,1):
    first=index.read_bytes(); again=subprocess.run(args,capture_output=True,text=True)
-   assert again.returncode==0 and index.read_bytes()==first,(name,again.stdout)
+   assert again.returncode==expected and index.read_bytes()==first,(name,again.stdout)
   count+=1
 case('empty',[])
 case('no archive',['2026-01-01.md'],'| 2026-01-01 | x |\n')
