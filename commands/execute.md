@@ -141,7 +141,9 @@ project's documentation, update incoming links, then retire the active copy.
 ## Step 4 — Automatically prepare for clear
 
 At the end of an execution run, read the master `commands/log.md` completely and run its **pre-clear**
-workflow automatically, without asking the user to invoke `/log clear`. This applies when the whole
+workflow automatically, without asking the user to invoke `/log clear`. Resolve its canonical
+references from the absolute master as the core directs; load only branches whose actual triggers
+apply, including any outstanding recovery. This applies when the whole
 plan completes, a user-selected wave/task finishes, or execution ends at a genuine blocker/pause.
 Do not run session-close logging between waves while authorized ready work remains; continue instead.
 Respect an explicit request not to log or to stop immediately.

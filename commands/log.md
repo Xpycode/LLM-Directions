@@ -1,19 +1,26 @@
 # Session Log
 
-Wrap up the session: write the log, sync state, extract anything reusable, and — when you're
-clearing or switching Macs — commit + push. **`/log` is the single end-of-session command.** It
-replaces the old `/session-close`, `/depart`, `/handoff`, `/check-index`, `/phase`, `/compound`,
-and `/blockers`: run it once at the end and it does all of that, **inferring from context instead
-of interrogating you**.
+Read this core completely. `/log` is the single session-close workflow: save evidence, state,
+index and next action once. It replaces `/session-close`, `/depart`, `/handoff`, `/check-index`,
+`/phase`, `/compound` and `/blockers`. Infer from session evidence; do not invent work.
 
-> Measured: 69/69 `/log` invocations were session-enders, and the "what were we working on?"
-> question was inferred — never asked — every time. Treat it as a session close, not a mid-session note.
+## Resolve canonical procedures
+
+`<master>` means the **absolute Directions master directory**, never the project or installed
+command directory. Use the invoking Directions adapter's resolved master, otherwise the `Local
+master:` value in the host's managed global instructions. For a repository-only invocation, the
+real command source's repository root (the parent of `commands/`) is a candidate only if it contains `commands/log.md` and
+`reference/log/`. Validate the chosen root contains both. If unresolved, ask for the master location;
+do not guess relative to an installed `~/.claude/commands/log.md` or copy references into projects.
+Expand every `<master>/…` path to that absolute root before reading. Load conditional references
+only at their actual trigger below, not during initial core loading.
 
 ## Golden rule — infer and report, don't interrogate
 
 Run applicable steps below within the user's current authorization and **report the result**.
 Do **not** ask permission per step. Logging itself does not authorize app or desktop control;
-apply §7 before any lifecycle or recovery action. If control is unavailable, save the obligation
+apply §7 before any lifecycle or recovery action. Honor an explicit no-log or immediate-stop
+request; preserve no-commit/no-push independently. If control is unavailable, save the obligation
 and provide a user-operated handoff while completing the authorized logging work.
 Ask **at most one** question, and only when the session had no coherent thread (several unrelated
 tasks) *and* the arg gives no framing (e.g. "Frame the log around X, or list them separately?").
@@ -26,7 +33,7 @@ The argument is the **wrap-up mode**, not a goal. Detect it; don't ask which mod
 | Arg contains… | Mode | The log MUST… |
 |---|---|---|
 | "clear", "next session", "for next time" | **pre-clear** | end with a **Resume block**: uncommitted work, exact next pickup point, deferred-item counts, recommended model fit, and any half-done edit. The next session starts cold. (Replaces the old `/handoff` doc — no separate handoff file.) |
-| "switch Macs", "handoff", "other Mac", "depart" | **Mac-handoff** | run **§8 Leaving a Mac** — commit + push, stamped with this Mac; verify tree clean / pushed before declaring done. |
+| "switch Macs", "handoff", "other Mac", "depart" | **Mac-handoff** | use **§7 Mac handoff** within Git authorization; record branch/unpushed work, verify actual sync and recovery limits. |
 | (none, "log it", "just log") | **plain** | a normal log; no resume/sync ceremony, no commit. |
 
 Default to **plain** — don't ask. Detect path mode once: `docs/sessions/` exists → `docs/` paths;
@@ -37,7 +44,7 @@ use **pre-clear** mode even without an explicit `/log clear` message. Preserve t
 (whole plan complete, selected scope complete, or blocked/incomplete) and the next pickup point.
 Refresh today's existing entry rather than duplicating the execution history. Do not restart
 execution from the Resume instructions. Local execution-commit permission does not authorize a push;
-apply §8 only within the user's actual Git/handoff authorization. Respect explicit instructions to
+apply §7 Mac handoff only within the user's actual Git/handoff authorization. Respect explicit instructions to
 leave a fresh app running for user acceptance. This close saves context; it does not clear the session.
 
 ## 1 · Write the log
@@ -77,29 +84,17 @@ and `sessions/_index.md`. Update only what the session evidence supports:
 - **Now → completed work is transient.** `## Now` is **present tense only**. When a wave or phase
   closes, **replace** its bullet with the next one — never prepend and leave the old one behind. A
   `**Wave X — DONE**` bullet belongs in `Recent` as one line and in `decisions.md` in full; if it is
-  still sitting in `Now` next session, it is rot. This is the section that actually grows: `Recent`
-  has a cap and holds, everything uncapped climbs. Measured in one project — 86 → 241 lines over 46
-  days, roughly 90% of it retired-wave bullets, across *two* migrations that each landed above target
-  and were each undone within weeks.
+  still sitting in `Now` next session, replace it with current work.
 
 Report "Synced PROJECT_STATE." — don't ask "should I sync?".
 
 *Old-shape check:* if this file has a `## Active Decisions` section, or is **missing either `## Now`
 or `## Recent`**, or its **`## Now` exceeds ~30 lines**, or the whole file exceeds **~250 lines**
 (a loose backstop for bloat outside those sections), offer once to migrate it via
-`<directions-master>/MIGRATE-PROJECT-STATE.md`.
+`<master>/MIGRATE-PROJECT-STATE.md`.
 
-**Measure `Now`, not the file.** `Infrastructure`, `Backlog`, `Risks` and `Detail` are legitimately
-long and are not rot, so raw file length is the wrong signal: it fires on a correctly-migrated file,
-and a check that fires on correct output gets ignored — which is how the 46-day regrowth above went
-unnoticed. (Audited across 87 real `PROJECT_STATE.md` files: 11 healthy digests, `Now` ≤ 26 and
-`Recent` ≤ 5, were being nagged permanently by the old ~70-line trigger.)
-
-**An over-long `Recent` is a prune, not a migration.** If `Recent` holds more than ~5 entries, just
-drop the oldest here in step 2 — that is this step's own job, and it is what went un-run. Do **not**
-escalate it to a migration offer: the same audit found 7 files of 41–66 lines whose only fault was
-6–12 `Recent` entries, and proposing a full restructure for those is a remedy that does not match the
-disease. Only structural rot — retired waves piling up in `Now` — warrants the migration.
+**Measure `Now`, not the file.** Long Infrastructure/Backlog/Risks/Detail sections alone are not
+rot. An over-long `Recent` needs pruning to ~5 entries in this step, not a migration offer.
 
 ## 3 · Sync the session index
 
@@ -152,114 +147,21 @@ Re-check the Readiness table (Features/UI/Testing/Docs/Distribution). For a move
 require Features to be at least 🔶, and remind: "run `/check ship` before release." Skip this section
 entirely if the phase didn't change — don't prompt for it.
 
-## 7 · App handoff and outstanding recovery  (app projects only)
+## 7 · Conditional app and Mac handoff
 
-Apply when this session produced a runnable build, launched an app, or has an unresolved app/test
-recovery obligation. Otherwise skip. A successful build requires a handoff; it grants no control.
+Read only the applicable reference, completely, using the master resolution above:
 
-**Current explicit user scope governs every action.** A newer no-control restriction overrides
-older automatic quit/relaunch preferences. Without explicit permission for the specific target and
-actions, do not launch, quit, kill or relaunch apps, manipulate windows/Spaces, simulate input, or
-replace the clipboard or a live app profile. This includes indirect control through app-hosted
-tests, scripts or helpers. A timer expiring, a successful check, a log request or a Mac handoff
-never creates or extends permission. An explicit keep-running instruction prevents cleanup of
-that app; retain its identity and the instruction in the handoff.
+| Actual trigger | Procedure |
+|---|---|
+| Session produced a runnable build, launched an app, or retains unresolved app/test recovery (including from another session/Mac) | `<master>/reference/log/app-handoff.md` |
+| Mac-handoff mode or explicit request for a logging commit | `<master>/reference/log/mac-handoff.md` |
 
-Read-only identification remains available: match executable paths and session-owned process
-evidence to the exact app/build before proposing cleanup. A path-pattern match is only a candidate,
-not permission to terminate it. Do not act on unrelated processes or infer ownership from a shell
-wrapper that mentions the app path.
+Load both if both triggers apply; app/recovery status must inform the Mac handoff. A project being
+an app project alone is not a trigger. No-control or keep-running restrictions remain binding;
+record unresolved recovery even in plain mode. A timer, log or switch request cannot authorize
+control. Ordinary plain/pre-clear mode does not commit or push. No-commit and no-push always win.
 
-```bash
-# Match the EXECUTABLE path (ps comm), never the command line.
-ps -Ao pid,comm | grep -E "(DerivedData|\.build)/.*\.app/Contents/MacOS/"
-```
-
-⚠️ **Do not use `ps -Ao pid,command` here.** It matches any process whose *command line* merely
-mentions those paths — including the grep itself and the shell wrapper running it — so it reports a
-stray build on a clean machine. That false positive fired the first time this step ran (2026-08-06);
-`comm` is the executable path, so wrappers can't match it. And since this check normally passes,
-**prove it can fail** before trusting a clean result — pipe a fake DerivedData path through the same
-grep and confirm it fires ([[negative-checks-pass-vacuously]]).
-
-When control is explicitly authorized, perform only the agreed actions on the agreed target and
-Mac within the agreed scope. Prefer graceful termination so pending saves can finish; never bypass
-a save prompt or discard unsaved work. Confirm the old instance exited before an authorized
-replacement launch, then verify the running executable path against the exact artifact. Permission
-to quit a test build does not imply permission to launch the installed app. Report only verified
-actions and results. If scope expires or is withdrawn, stop control; recovery needs authority that
-still covers that exact recovery action. An unresolved obligation is not permission to perform it.
-
-For every successful runnable build, give the **full absolute containing-folder path** as visible,
-copyable text for Finder's Go to Folder, plus the exact artifact name and validation result. For
-example: folder `/Users/sim/Builds/Example/Release`, app `Example.app` (illustrative paths only;
-substitute the verified build location). Under no-control scope, provide user-operated launch/quit
-steps and say that the build was not launched. Never substitute a relative path, `~`, or a hidden
-link target for the visible absolute folder path.
-
-Record unresolved cleanup/recovery in the session handoff even in plain mode: originating Mac,
-exact app/build and owned process identity if known, affected data/profile/clipboard state,
-original authorization and current limit, intended recovery, evidence of what actually happened,
-and the next permitted or user-operated step. Preserve this obligation across clear/Mac handoff;
-do not claim restoration or a safe Mac switch while it remains unverified. Another Mac cannot
-satisfy an original-Mac recovery obligation merely by receiving the log.
-
-*Why this step exists:* an Aloft Debug build outlived its session by nine days, kept the
-Command+Shift+V hotkey, and broke auto-paste system-wide while reporting every paste as successful
-(2026-08-06). Nothing in git or the working tree can show you this — only `ps` can.
-
-## 8 · Leaving a Mac  (Mac-handoff mode, or pre-clear when you want it committed)
-
-Only in Mac-handoff mode (or when the user asks to commit). Plain mode does **not** commit.
-
-```bash
-MAC=$(cat ~/.config/directions/this-mac 2>/dev/null \
-  || cat ~/.claude/this-mac 2>/dev/null \
-  || scutil --get LocalHostName 2>/dev/null \
-  || hostname -s)
-```
-
-1. **Stage only what this session touched.** If `git status` shows unrelated in-flight code, name it
-   and ask whether to include it (default: only the docs/session files).
-2. **Commit, stamped with this Mac** — a `Handoff-from:` trailer lives in git history (immutable,
-   conflict-free); never write "pushed at HH:MM on MacN" into a tracked `.md` (that invites the
-   two-Macs-edit-the-same-line conflict). `/status arrive` reads the trailer back.
-   ```bash
-   git commit -m "session: $(date +%F) + sync state
-
-   Handoff-from: $MAC"
-   ```
-   ⚠️ **Keep every trailer in ONE final paragraph — no blank line between them.** Git parses only
-   the *last* paragraph as trailers, so a `Co-Authored-By:` (or any second trailer) separated by a
-   blank line silently demotes `Handoff-from:` to ordinary body text. It still *looks* right in
-   `git log`, but `%(trailers:key=Handoff-from,valueonly)` — what `/status arrive` actually reads —
-   returns empty, and the other Mac falls back to author/date with no Mac name. Correct shape:
-   ```
-   session: 2026-08-20 + sync state
-
-   <body…>
-
-   Handoff-from: M4-Pro
-   Co-Authored-By: …
-   ```
-   Verify before moving on — a stamp that doesn't parse is worse than none, because it reads as
-   present:
-   ```bash
-   git log -1 --format='%(trailers:key=Handoff-from,valueonly)'   # must print the Mac, not empty
-   ```
-   *(Recorded 2026-08-20, after `ed7eaec` shipped with exactly this defect — unfixable without
-   force-pushing already-pushed history, so it stands as the example.)*
-3. **Push** — an *unpushed* commit is as invisible to the other Mac as an uncommitted file.
-   - **No remote** → say so: the commit stays on this Mac; offer to add a remote.
-   - **Rejected ("fetch first")** → origin moved (other Mac pushed). **STOP, don't force.** Reconcile
-     via `37_multi-mac-discipline.md` Rule 1, then push.
-   - **Feature branch + git rules forbid pushing `main`** → push the branch; don't auto-merge.
-   - **Nothing to commit** → still push any unpushed local commits.
-4. **Confirm honestly.** On full success:
-   `✓ <Project> wrapped on <MAC> · log + state synced · committed · pushed — safe to switch; run /status arrive on the other Mac after Syncthing settles.`
-   If something didn't happen (no remote, nothing to push), **say that** — never claim "pushed" if it wasn't.
-
-## 9 · Next-session model-fit reminder  (pre-clear or Mac-handoff only)
+## 8 · Next-session model-fit reminder  (pre-clear or Mac-handoff only)
 
 Read the recorded next action and apply `60_model-selection.md` → **User-Facing Model-Fit Notice**.
 Add one line to the Resume/next-session block:
@@ -273,33 +175,10 @@ control. Otherwise say that the current setting is not reliably visible. This is
 reminder, not a gate and not a recurring prompt. The actual next action wins over a mechanical
 phase mapping.
 
-<!-- CLAUDE-ONLY:START — Codex skips this model-marker integration -->
-
-### Claude Code phase-marker integration
-
-Switching models re-reads the whole context (a cache miss); doing it right after `/clear` at an empty
-context is nearly free, mid-session at full context is the expensive moment. So the ritual is
-**clear → switch → start**, and this reminder makes the next session begin on the right tier:
-
-```bash
-SID=$(ls -t "$HOME"/.claude/.current-model-* 2>/dev/null | head -1 | sed "s:.*/.current-model-::")
-PHASE=$(cat "$HOME/.claude/.session-phase-$SID" 2>/dev/null)
-echo "this session phase: ${PHASE:-unknown}"
-rm -f "$HOME/.claude/.session-phase-$SID" 2>/dev/null   # consume it — fresh phase set next session
-```
-
-When it agrees with the actual next action, use the phase marker to add the exact Claude Code model
-command to the shared reminder (do not emit a second notice):
-
-| This session was | Show |
-|---|---|
-| `spec` | 🔴 **NEXT: PLANNING → `/model opus`** |
-| `plan` | 🔴 **NEXT: EXECUTING → `/model sonnet`** |
-| `execute` | 🔴 **More execution? STAY ON SONNET. Planning next? → `/model opus`** |
-| unknown / empty | skip — no phase recorded |
-
-Append: **"Clear FIRST, then `/model <X>`, then start."** This is a reminder, not an action.
-<!-- CLAUDE-ONLY:END -->
+Only in **Claude Code**, and only in pre-clear/Mac-handoff mode, read
+`<master>/reference/log/claude-integration.md` for the optional phase marker. Codex does not load
+it or touch Claude markers. Missing/unreliable markers do not block logging or replace the actual
+next action.
 
 ## What `/log` intentionally does NOT do
 
