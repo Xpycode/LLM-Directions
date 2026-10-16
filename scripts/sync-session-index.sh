@@ -10,6 +10,7 @@
 #   0  — index is in sync
 #   1  — drift detected (missing or orphan entries)
 #   2  — error (no sessions dir, no _index.md, etc.)
+#   3  — --fix cannot locate a table separator; index left unchanged
 #
 # Behavior:
 #   - Coverage is the union of _index.md and optional _index-archive.md.
@@ -121,7 +122,7 @@ if [ "$n_orphan" -gt 0 ]; then
   echo
   echo "ORPHAN entries in session indexes (row exists, file missing):"
   printf '%s\n' "$orphan_entries" | sed 's/^/  - /'
-  echo "  (orphans are NOT auto-removed; investigate manually)"
+  echo "  (targets unavailable locally; may be on another Mac; never auto-removed)"
 fi
 
 # --- apply --fix ---
@@ -130,7 +131,7 @@ if $fix_mode && [ "$n_missing" -gt 0 ]; then
   echo "applying --fix: adding $n_missing placeholder row(s)..."
 
   # Find the table-separator line `|---|...`
-  header_line=$(grep -nE '^\|[ -]*\|' "$index" | head -1 | cut -d: -f1)
+  header_line=$(grep -nE '^\|[ -]*\|' "$index" | head -1 | cut -d: -f1 || true)
   if [ -z "$header_line" ]; then
     echo "error: cannot find table separator line in $index — fix manually" >&2
     exit 3
