@@ -19,6 +19,22 @@ Do not ask again at ordinary task/wave boundaries.
 Planning approval alone is not an instruction to start implementation. Deployment, publication,
 pushes and production-data operations retain their own authorization boundaries.
 
+App/desktop control also requires current explicit permission for the exact target, actions and
+scope. Newer no-control restrictions override older automatic fresh-build quit/relaunch guidance.
+Do not bypass them with app-hosted tests, scripts/helpers, simulated input, window/Space changes,
+clipboard writes or live app-profile replacement. Read-only identification and building may proceed
+within task scope. Before tests, inspect startup effects and use `34_testing.md`; unknown effects
+must be resolved before running them. An elapsed timer never grants or extends authority. Honor
+explicit keep-running instructions, and stop control when its scope expires or is withdrawn.
+Preserve outstanding recovery on its originating Mac, including the exact target/state, original
+scope, evidence and remaining action; recovery itself requires still-valid authority.
+
+After a successful runnable build, hand off the verified artifact name and its full absolute
+containing-folder path as visible, copyable text for Finder's Go to Folder. Under no-control scope,
+provide user-operated steps and report that no launch was performed. Where control is explicitly
+authorized, act only within that permission and verify the resulting executable path; neither a
+build nor execution/cleanup authorization implies permission to launch a different installed copy.
+
 Before starting, apply `60_model-selection.md` → **User-Facing Model-Fit Notice**. Clear execution
 normally uses implementation capability with medium reasoning; keep deep capability when the plan
 contains subtle state, concurrency, security, destructive operations, or data-integrity work. Show
@@ -133,8 +149,9 @@ Respect an explicit request not to log or to stop immediately.
 Record the exact outcome: **plan complete**, **selected scope complete; plan continues**, or
 **blocked/incomplete**. Keep any incomplete plan active. Save the log, state, index and Resume with
 remaining gates, uncommitted/unpushed work and the next action. The logging command owns those steps;
-do not create a duplicate close procedure here. Honor explicit app-handoff instructions when retiring
-test builds, and preserve commit/push restrictions. Local execution-commit authorization alone does
+do not create a duplicate close procedure here. Apply the logging command's app-control authority
+check; retain keep-running instructions and unresolved original-Mac recovery without performing
+unauthorized cleanup. Preserve commit/push restrictions. Local execution-commit authorization alone does
 not authorize a push.
 
 After saving and checking the handoff, end with `Logged and ready to clear — <outcome>; next: <action>.`

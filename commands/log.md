@@ -11,7 +11,10 @@ of interrogating you**.
 
 ## Golden rule — infer and report, don't interrogate
 
-Run every step below automatically and **report the result**. Do **not** ask permission per step.
+Run applicable steps below within the user's current authorization and **report the result**.
+Do **not** ask permission per step. Logging itself does not authorize app or desktop control;
+apply §7 before any lifecycle or recovery action. If control is unavailable, save the obligation
+and provide a user-operated handoff while completing the authorized logging work.
 Ask **at most one** question, and only when the session had no coherent thread (several unrelated
 tasks) *and* the arg gives no framing (e.g. "Frame the log around X, or list them separately?").
 This is the deliberate reversal of the old checklist-style close — silent defaults, not prompts.
@@ -149,13 +152,23 @@ Re-check the Readiness table (Features/UI/Testing/Docs/Distribution). For a move
 require Features to be at least 🔶, and remind: "run `/check ship` before release." Skip this section
 entirely if the phase didn't change — don't prompt for it.
 
-## 7 · Retire stray test builds  (app projects only — skip if none were launched)
+## 7 · App handoff and outstanding recovery  (app projects only)
 
-If this session **built and launched** a local copy of the project's app (Xcode `DerivedData`, a
-`.build` product, a staged bundle), **quit it now** — a test build left running keeps answering the
-installed app's global hotkeys and sharing its data store, but is signed with a *different* identity,
-so macOS treats it as a different app and its TCC grants (Accessibility, Screen Recording, Automation)
-silently do not apply. The result looks like the shipped app misbehaving, not like a stale process.
+Apply when this session produced a runnable build, launched an app, or has an unresolved app/test
+recovery obligation. Otherwise skip. A successful build requires a handoff; it grants no control.
+
+**Current explicit user scope governs every action.** A newer no-control restriction overrides
+older automatic quit/relaunch preferences. Without explicit permission for the specific target and
+actions, do not launch, quit, kill or relaunch apps, manipulate windows/Spaces, simulate input, or
+replace the clipboard or a live app profile. This includes indirect control through app-hosted
+tests, scripts or helpers. A timer expiring, a successful check, a log request or a Mac handoff
+never creates or extends permission. An explicit keep-running instruction prevents cleanup of
+that app; retain its identity and the instruction in the handoff.
+
+Read-only identification remains available: match executable paths and session-owned process
+evidence to the exact app/build before proposing cleanup. A path-pattern match is only a candidate,
+not permission to terminate it. Do not act on unrelated processes or infer ownership from a shell
+wrapper that mentions the app path.
 
 ```bash
 # Match the EXECUTABLE path (ps comm), never the command line.
@@ -169,9 +182,27 @@ stray build on a clean machine. That false positive fired the first time this st
 **prove it can fail** before trusting a clean result — pipe a fake DerivedData path through the same
 grep and confirm it fires ([[negative-checks-pass-vacuously]]).
 
-Kill any match, then relaunch the installed one (`open -a /Applications/AppName.app`) if the user
-uses it daily. Report "Quit N test build(s); installed app relaunched" — or say nothing if there
-were none. Matches from **other** projects: name them, don't kill them silently.
+When control is explicitly authorized, perform only the agreed actions on the agreed target and
+Mac within the agreed scope. Prefer graceful termination so pending saves can finish; never bypass
+a save prompt or discard unsaved work. Confirm the old instance exited before an authorized
+replacement launch, then verify the running executable path against the exact artifact. Permission
+to quit a test build does not imply permission to launch the installed app. Report only verified
+actions and results. If scope expires or is withdrawn, stop control; recovery needs authority that
+still covers that exact recovery action. An unresolved obligation is not permission to perform it.
+
+For every successful runnable build, give the **full absolute containing-folder path** as visible,
+copyable text for Finder's Go to Folder, plus the exact artifact name and validation result. For
+example: folder `/Users/sim/Builds/Example/Release`, app `Example.app` (illustrative paths only;
+substitute the verified build location). Under no-control scope, provide user-operated launch/quit
+steps and say that the build was not launched. Never substitute a relative path, `~`, or a hidden
+link target for the visible absolute folder path.
+
+Record unresolved cleanup/recovery in the session handoff even in plain mode: originating Mac,
+exact app/build and owned process identity if known, affected data/profile/clipboard state,
+original authorization and current limit, intended recovery, evidence of what actually happened,
+and the next permitted or user-operated step. Preserve this obligation across clear/Mac handoff;
+do not claim restoration or a safe Mac switch while it remains unverified. Another Mac cannot
+satisfy an original-Mac recovery obligation merely by receiving the log.
 
 *Why this step exists:* an Aloft Debug build outlived its session by nine days, kept the
 Command+Shift+V hotkey, and broke auto-paste system-wide while reporting every paste as successful
