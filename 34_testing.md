@@ -44,6 +44,68 @@ Not everything needs tests. Focus testing effort where it matters most:
 
 ## Test Types
 
+### Execution effects come before test labels
+
+Before running, inspect the selected scheme/targets, build scripts, test setup/teardown and app
+startup. Record the exact command, effects class, data namespace, startup behavior, authorization,
+owned process and real result source. A name such as “unit test” does not establish safety.
+
+| Class | Actual effects | Boundary |
+|---|---|---|
+| Headless | No app launch or desktop interaction; may still write files or call services | Verify data/service scope |
+| App-hosted | Launches or loads the app, including via `TEST_HOST` or `xcodebuild test` | Requires authorization for launch and startup effects |
+| Interactive | Clicks, keys, windows, clipboard, profiles or other live UI state | Requires explicit target/action scope |
+
+Unknown effects require inspection first. Under no-control instructions, do not launch indirectly
+through tests, build hooks or discovery tools. Run an inspected headless subset when available;
+otherwise report blocked cases and provide a user-operated alternative. A build request is not
+launch permission. Keep verified project-specific safe/serial commands local. Examples below
+illustrate APIs, not permission to run them.
+
+### Isolated data and recovery
+
+Prefer a unique disposable namespace per run for files, defaults, Keychain, databases and service
+accounts. Inject it through every layer, including app startup; disable production updaters,
+migrations, sync and login helpers when testing does not need them. A temporary directory alone
+does not isolate the host app's defaults or Keychain. Inspect destructive setup/teardown and verify
+production data remains untouched; never run uncertain cleanup against live state to discover its effects.
+
+Any necessary temporary live-state change needs explicit authorization and an ending/recovery plan
+before the change. Record the originating Mac, exact app/artifact and affected paths/settings,
+original state/backup, authorized actions and expiry, restoration steps and verification evidence.
+Keep unresolved obligations in the current handoff with linked chronological evidence. Another Mac
+cannot verify local restoration. Expired scope or a timeout grants no new control permission:
+stop further actions, preserve the obligation, and arrange authorized or user-operated recovery on
+the originating Mac. Do not mark cleanup complete from intention or elapsed time. Respect an
+explicit keep-running exception.
+
+### Trustworthy execution and results
+
+Save the exact command, working directory, source/artifact identity, configuration, timestamps,
+raw progress log and structured results (for example `.xcresult`). Preserve the producer's exit
+status: a formatter or `tee` returning zero does not make a failed test pass. Use the actual shell's
+pipeline-status facility immediately, before another command overwrites it; in Bash capture
+`PIPESTATUS` with `set +e` around an expected failing pipeline, then evaluate every stage.
+`pipefail` detects a failed pipeline but alone need not preserve the producer's exact code.
+
+Track the directly spawned PID and identity/start time, plus explicitly owned descendants; do not
+select processes by broad name matches that could find a shell, formatter or unrelated wrapper.
+If a launcher delegates, obtain actual child identity from reliable runner evidence. Observe progress
+and wait for the real process and required teardown. A timeout, missing/stale result or unfinished
+child is incomplete/failed evidence, never a pass. Any termination stays within authorized ownership
+and control scope. Diagnose harness/environment failures before changing product code. Retain logs
+through failure; do not hide failures with `|| true`.
+
+### Finite user acceptance
+
+Verify expectations against integrated implementation and requirements, including the user's entry
+point. Reuse valid automated and prior manual evidence, naming source, artifact/configuration,
+covered behavior and limits. Give one finite remaining acceptance batch: case IDs, setup/data,
+actions, expected results, evidence to return and a clear completion condition. Separate passed,
+failed, blocked and not-run cases. A repeat needs a stated reason, such as changed code/artifact,
+invalidated configuration, missing evidence or an observed regression. Triage new findings against
+agreed scope rather than silently extending the batch. Unperformed user acceptance remains open.
+
 ### Unit Tests
 
 Test individual functions/methods in isolation.
@@ -548,7 +610,7 @@ Before shipping, verify:
 [ ] Parsers/transforms tested with valid, invalid, edge case inputs
 [ ] Error paths tested (not just happy paths)
 [ ] Async code properly awaited
-[ ] No flaky tests (run suite 3x)
+[ ] Suspected flaky behavior investigated with a justified repeat scope
 [ ] Tests clean up after themselves
 [ ] Tests don't depend on execution order
 ```
@@ -568,35 +630,12 @@ Before shipping, verify:
 
 ## AppProbe — Automated macOS UI Testing
 
-For testing complete user flows via accessibility APIs without writing XCUITest code.
-
-**Location:** `/Users/sim/ProgrammingProjects/9-TESTING/AppProbe/`
-
-**Quick start:**
-```bash
-# Trigger from Claude Code:
-/test-app MyAppName
-
-# Or manually:
-appprobe discover com.example.myapp -o discovery.json   # Inspect UI tree
-appprobe run plans/myapp.yaml --slow --overlay --verbose  # Run test plan
-```
-
-**How it works:**
-1. `/test-app` reads your source code + inspects the running app's accessibility tree
-2. Claude generates a comprehensive YAML test plan covering all user flows
-3. AppProbe executes it: launches app, clicks buttons, types text, navigates menus, takes screenshots
-4. Results: JSON report + failure screenshots for Claude to analyze
-
-**When to use:**
-- Before shipping — full UI regression test
-- After refactoring — verify nothing broke
-- New feature — test the user flow end-to-end
-- Bug report — reproduce and verify the fix
-
-**Supported actions:** click, type, menu navigation, keyboard shortcuts, drag-and-drop, scroll, window management, element state verification, screenshots.
-
-**Flags:** `--slow` (visible actions), `--overlay` (floating progress HUD), `--tag` (run subset)
+Use `/test-app MyAppName` and the canonical [test-app procedure](commands/test-app.md).
+AppProbe is optional: establish the actual backend's presence, version, supported commands and
+effects before invoking it. A remembered checkout path or command is not proof it is installed.
+If absent, use an inspected available backend within the same authorization, or provide a finite
+manual batch. Do not install a replacement or invent a working invocation. UI automation can
+launch apps and modify live state; apply the effects, isolation and recovery contract above.
 
 ## App-Hosted Tests Share the App's Real State (Keychain!)
 

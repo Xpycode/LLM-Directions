@@ -18,6 +18,17 @@ question. Pattern-matching finds candidates; **context decides if they're real**
 don't just grep. For deep contextual analysis on a large diff, use an available review subagent when
 delegation is authorized (it should filter by confidence and understand structure, not just patterns).
 
+Before executing tests, apply `34_testing.md`: classify headless/app-hosted/interactive effects,
+inspect unknown startup and setup/teardown, isolate data, and preserve real exit/process/results
+evidence. No-control scope excludes indirect app launches. Verify any AppProbe/backend is present;
+otherwise use an available authorized or manual route. An audit request grants no desktop control.
+Keep temporary live-state recovery attached to the originating Mac and current authorized scope.
+
+For user acceptance, verify expectations against the integrated artifact and reuse valid evidence
+with source/artifact/configuration provenance. Present one finite remaining batch with actions,
+expected results, evidence and a completion condition. Name why a passed check needs a repeat.
+Report blocked/not-run cases separately; a clean code review does not close manual gates.
+
 ---
 
 ## Mode: `code`  (default)
@@ -60,9 +71,10 @@ Production readiness + baseline features, as an audit — not a 40-question walk
 1. **Load** `30_production-checklist.md` (release prep), `33_app-minimums.md` (baseline: auto-update,
    version visibility, signing, icons, logging, prefs, error/empty/loading states, shortcuts, About,
    menu bar, window state), and `62_final-stretch-triage.md` (the *methodology*: capture-don't-fix).
-2. **Audit against them yourself** — walk the code/app, don't quiz the user. Verify that the release
+2. **Audit against them yourself** — inspect code and authorized app evidence, don't quiz the user. Verify that the release
    artifact was produced after the final source fix and test the actual signed/deployed artifact,
-   not a same-version Debug build or stale archive. Capture every gap; **do not fix mid-pass** (#62
+   not a same-version Debug build or stale archive, when test effects are authorized; otherwise
+   leave artifact acceptance open and supply the finite user-operated batch. Capture every gap; **do not fix mid-pass** (#62
    Rule 1).
 3. **Triage into three buckets** honestly (most "seems off" items are 2 or 3 wearing bucket-1 clothes):
    | Bucket | Definition | Default |

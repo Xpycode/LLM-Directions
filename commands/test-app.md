@@ -1,158 +1,67 @@
-# Test App — AppProbe UI Automation
+# Test App — scoped app verification
 
-Generate and run an automated UI test plan for a macOS app using AppProbe.
+Prepare and, within existing authorization, run a finite test batch for the named app. Read the
+master `34_testing.md` execution-effects, isolation, results and acceptance contract before running.
 
-## Step 1: Identify the App
+## 1. Identify the app and test boundary
 
-Ask: "Which app do you want to test?" if not provided as argument: $ARGUMENTS
+Use the argument and project context to identify the app, bundle identifier, absolute source path,
+scheme and exact artifact. Ask only if the target is ambiguous. Read relevant source, startup,
+scheme/test-host settings, scripts and setup/teardown before choosing tests. Classify each command
+as headless, app-hosted or interactive; record its data namespace, startup behavior, required
+authorization, owned process and result source. Unknown effects must be inspected first.
 
-Determine:
-- **App name** (display name)
-- **Bundle identifier** (from Info.plist or project settings)
-- **Project path** (source code location)
-- **Xcode scheme** (for building if needed)
+No-control scope excludes indirect launches through `xcodebuild test`, app-hosted tests, discovery
+or build hooks. Use an available inspected headless subset and report remaining gates. A successful
+build is not launch permission. For a user-operated handoff show the real full absolute containing
+folder path as copyable text and name the app to open there; never launch, quit or relaunch it by
+default. Respect newer user restrictions and a keep-running exception.
 
-If the user gives a project name, search `/Users/sim/ProgrammingProjects/1-macOS/` for it.
+## 2. Establish an available backend
 
-## Step 2: Build the App (if needed)
+Inspect project instructions and local files/tool inventory for AppProbe or another supported
+backend. Verify its actual path/version and documented CLI/schema; inspect unknown startup effects
+before even running a check/discovery command. Do not presume a particular AppProbe checkout,
+hardcode an unverified invocation, or claim optional tooling is present.
 
-Check if the app is already running:
-```bash
-swift run --package-path /Users/sim/ProgrammingProjects/9-TESTING/AppProbe appprobe check
-```
+If AppProbe is missing, use an actually available documented alternative within the same scope, or
+prepare manual steps. Record the missing backend and which automated cases cannot run. This is not
+authorization to install software or substitute a desktop-control tool. Discover an accessibility
+tree only with an available backend whose effects fit authorization; source inspection and a manual
+plan remain possible without it.
 
-If the app isn't running, offer to build and launch it:
-```bash
-xcodebuild -scheme "SchemeName" -destination "platform=macOS" build
-open /path/to/Build/Products/Debug/AppName.app
-```
+## 3. Prepare one finite batch
 
-Wait for it to launch, then proceed.
+Derive cases from requested behavior and integrated implementation: the primary journey, relevant
+menus/windows and error paths. Do not automatically expand a focused check to every UI element.
+Reuse valid evidence and state why any repeated case is necessary.
 
-## Step 3: Discover the UI
+For each case specify ID, setup/data, action, expected result and evidence. Include source and
+artifact identity, backend/version, exact command and working directory, results/log paths, owned
+process tracking, timeout/completion conditions and remaining manual gates. Verify expectations
+through the same entry point the user uses. Label service-only coverage accordingly.
 
-Run discovery to inspect the running app's accessibility tree:
-```bash
-swift run --package-path /Users/sim/ProgrammingProjects/9-TESTING/AppProbe appprobe discover <bundle-id> --output /tmp/appprobe-discovery.json
-```
+Use disposable namespaces across all layers and isolate startup from production sync/updaters,
+defaults, Keychain and support data. For unavoidable live changes, prepare the authorized ending
+and recovery plan described in `34_testing.md`, attached to the originating Mac. Cleanup is part
+of scope, not blanket permission to close windows, delete support data or terminate apps.
 
-Read the discovery JSON to understand what UI elements exist: windows, buttons, menus, text fields, etc.
+Save the plan/evidence in the project's established test location with unique run outputs, using
+the installed backend's verified schema. Present test count, effects, command and ending behavior.
+Existing explicit authorization for these exact actions is sufficient; do not ask again. If control
+permission is missing, finish the reviewable plan and safe checks first, then request only the
+specific missing scope or deliver the user-operated batch. Time elapsed is never permission.
 
-## Step 4: Read the Source Code
+## 4. Execute and report honestly
 
-Read the app's key source files to understand:
-- What the app does (purpose, features)
-- All user-facing views and their interactions
-- Menu items and keyboard shortcuts
-- User workflows (what sequences of actions a user would perform)
-- State changes (what should happen after each action)
+Run only authorized cases. Preserve raw progress logs and structured results, the producer's real
+exit code (not just a successful formatter), and actual owned-process identity. Wait for completion
+and required teardown; a timeout, orphan child or missing result cannot pass. Keep project-specific
+safe serial commands local. Diagnose harness/query/environment faults before changing product code.
 
-Use Serena's symbolic tools or file reads to efficiently scan the codebase. Focus on:
-- `*App.swift` — entry point, menu bar setup
-- `*View.swift`, `*ContentView.swift` — UI views
-- `*ViewModel.swift` — business logic
-- `Commands.swift` or menu setup files — keyboard shortcuts
-- Any `Settings`/`Preferences` views
-
-## Step 5: Generate the Test Plan
-
-Combine the discovery report + source code understanding to create a comprehensive YAML test plan.
-
-**Test plan structure:**
-
-```yaml
-app: "AppName"
-bundle_id: "com.example.appname"
-settings:
-  screenshot_on_every_step: false
-  screenshot_on_failure: true
-  default_timeout: 5.0
-  delay_between_steps: 0.5
-  output_dir: "./appprobe-results/AppName"
-tests:
-  # ... generated tests
-```
-
-**Test categories to cover (in this order):**
-
-### 1. Smoke Tests (tag: smoke)
-- App launches successfully
-- Main window appears with expected title
-- Menu bar is accessible
-- Window can be resized
-
-### 2. Menu Navigation (tag: menus)
-- Each top-level menu can be opened
-- Key menu items work (File > New, File > Open, Edit > Select All, etc.)
-- Keyboard shortcuts trigger the right actions
-
-### 3. Core Functionality (tag: core)
-- Primary user workflow end-to-end
-- Each interactive element (buttons, text fields, toggles) responds
-- Data entry and modification
-- State changes are visible (labels update, views change)
-
-### 4. Window Management (tag: windows)
-- Multiple windows (if supported)
-- Window close and reopen
-- Preferences/Settings window
-
-### 5. Edge Cases (tag: edge)
-- Empty states (no data loaded)
-- Rapid clicking / repeated actions
-- Keyboard navigation (Tab through elements)
-
-### 6. Cleanup (tag: cleanup)
-- Close all windows
-- Terminate app
-
-**Element query guidelines:**
-- Prefer `identifier` if available (most stable)
-- Use `role` + `title` for buttons and menu items
-- Use `role` + `label` for elements with accessibility labels
-- Use `titleContains` for dynamic titles
-- Add `description` to each step explaining what it verifies
-
-Save the test plan to: `/Users/sim/ProgrammingProjects/9-TESTING/AppProbe/plans/<app-name>.yaml`
-
-## Step 6: Ask Before Running
-
-Show the user:
-- Number of tests and steps generated
-- Summary of what will be tested
-- The command that will run
-
-Ask: "Ready to run? Options:"
-1. **Run with overlay** (recommended): `--slow --overlay --verbose`
-2. **Run fast**: `--verbose`
-3. **Run specific tag**: `--tag smoke`
-4. **Edit first**: Let me review/modify the plan
-
-## Step 7: Execute
-
-Run the chosen command:
-```bash
-swift run --package-path /Users/sim/ProgrammingProjects/9-TESTING/AppProbe appprobe run plans/<app-name>.yaml --slow --overlay --verbose --output ./appprobe-results/<app-name>
-```
-
-## Step 8: Review Results
-
-After execution:
-
-1. Read `appprobe-results/<app-name>/results.json`
-2. Read any failure screenshots
-3. Present a summary:
-   - Total pass/fail/skip
-   - Each failed test with the error and screenshot
-   - Suggestions for what might be wrong (code bug vs. test plan issue)
-
-If failures look like test plan issues (wrong element queries, timing), offer to fix the plan and re-run.
-If failures look like app bugs, describe the bug and suggest a fix.
-
-## Quick Usage
-
-```
-/test-app PointerActions
-/test-app "Menu Bar Overflow Manager"
-/test-app   (will ask which app)
-```
+Report passed/failed/blocked/not-run cases, evidence provenance, failure screenshots if available,
+and limits. Give one finite remaining user acceptance batch with integrated expected behavior and
+a completion condition. A repeat requires a concrete reason; preserve valid earlier evidence.
+Keep unresolved recovery in the current handoff: originating Mac, exact target and state, authorized
+scope/expiry, recovery steps and evidence still needed. If scope expired, do not infer authority to
+restore state on either Mac; arrange authorized or user-operated recovery and leave it open.
