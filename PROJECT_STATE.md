@@ -8,34 +8,35 @@
 - **Tags:** meta, framework, documentation, workflow, Codex, Claude Code · **Started:** 2024
 
 ## Now
-- **Phase:** compatibility spike — establish loss detection, input intervention and recovery behavior.
-- **Focus:** shared FIFO Mac-control queue with Yes/No/Wait, countdown, progress, and enforced stop.
-  [Spec](specs/mac-control-coordinator.md) · [plan](IMPLEMENTATION_PLAN.md) ·
-  [research](specs/mac-control-research.md). Runtime compatibility is the current focus.
-- **Gates:** task 1.3 must prove bounded input, stop and recovery from an actual session before the full UI.
-- **Execution:** [Mac-control plan](IMPLEMENTATION_PLAN.md), Wave 1 / task 1.3: capture/reload passed; later-boot inspection prepared. User deferred restart until a new session; recovery/Gate A incomplete.
-- **Next:** in a new session, coordinate the same-Mac restart with the user, then use the reviewed [later-boot caller](verification/mac-control/acquired-preflight-review.md). No restart this session.
-  Preserve the successful acquisition, all five failed transactions and three observation journals.
-  **Blocker:** runtime marker unresolved after the worker-crash experiment; no verified recovery or retry.
-  Recovery, clipboard and broader intervention proof remain pending before task 1.3 can close.
-  Scope is occasional UI-test interruption across projects; Conjoyn provides a shell/AppleScript example.
+- **Phase:** implementation — lean-efficiency execution authorized October 16.
+  <!-- Phase changed: 2026-10-16 -->
+- **Focus:** make Directions leaner while preserving useful planning, evidence and work-preservation rules.
+- **Next:** E1 matched host acceptance using isolated
+  authenticated test profiles; the isolated Claude probe reports Not logged in.
+- **Execution:** [lean-efficiency plan](specs/directions-lean-efficiency-plan.md), E1 blocked:
+  16/16 local tasks validated; isolated authenticated host replay and byte tradeoffs remain open.
+- **Current handoff:** [lean execution Resume](sessions/2026-10-16.md#resume--lean-efficiency-execution).
+- **Deferred Mac-control:** [plan](IMPLEMENTATION_PLAN.md) Wave 1 / task 1.3 and Gate A remain incomplete.
+  User set restart aside on October 16; do not resume restart/recovery work as the next-session default.
+  Preserve the unresolved marker, successful acquisition, failed transactions and observation journals.
 - **Continuing backlog:** exercise shared Codex workflows in consumer projects and refine the ten
   new entry points from real use; broader lifecycle-hook migration remains evidence-gated.
-- **Queued plan:** [Directions lean efficiency](specs/directions-lean-efficiency-plan.md), 14 tasks in
-  eight waves plus host acceptance; LE01 is prerequisite-ready, execution not requested. Define/plan
-  gate passed for staged work; policy/migration choices have named gates. Mac-control remains active.
+- **Acceptance:** [local integration](verification/lean/integration.md) and
+  [host gate](verification/lean/host-acceptance.md) separate verified fixtures from unobserved behavior.
+  Standalone/complex-path byte increases need an explicit tradeoff before rollout.
+  No live deployment, consumer migration, desktop control or push performed.
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-10-16** — Implemented lean routing, canonical task state, conditional logging and safer validation; local fixtures pass, host acceptance remains open.
 - **2026-09-17** — Kept the existing model setup after reviewing MultiVibe; integrated three unindexed logs, preserving original conflict snapshots.
 - **2026-09-10** — Native evidence capture and fresh-process reload passed; preserved the inventory library for restart and prepared retained-evidence inspection.
 - **2026-09-10** — Fixed shared runtime selection and reviewed opt-in kernel inventory; native read-only check passed with marker unchanged. Fresh acquisition prepared.
 - **2026-09-10** — Kernel-inventory prototype passed 19 tests and independent review; reproduced a shared-lock directory gap that blocks live integration.
-- **2026-09-10** — Added reviewed disappearance handling; 406 broad tests passed/one skip, 29 final focused passed. Native probe passed; capture failed on inventory change, no reload/retry.
 ## Progress
-- **Funnel:** Define ✅ · Plan ✅ · Build ⚪ — active feature; compatibility Gate A precedes implementation.
-- **Readiness:** Features ✅ · UI/Polish 🔶 · Testing ⚪ · Docs ✅ · Distribution ✅ (existing framework).
-- **Tracked progress:** 8/33 ≈ 24% overall; active Mac-control plan 2/25 = 8% (inventory/protocol only).
+- **Funnel:** Define ✅ · Plan ✅ · Build 🔶 — source implemented; acceptance incomplete.
+- **Readiness:** Features 🔶 · UI/Polish N/A · Testing 🔶 · Docs ✅ · Distribution ⚪ (lean changes not deployed).
+- **Tracked progress:** lean-efficiency 16/16 plus E1 pending; deferred Mac-control plan 2/25 = 8%.
 
 ## Detail (read only if needed)
 - **Why** → `decisions.md` · **history** → `sessions/_index.md` · **backlog** → `TASKS.md` (+ archive)
@@ -48,7 +49,20 @@
 - **Mac restore:** `git pull --ff-only`, then `bash deploy-codex.sh --dry-run && bash deploy-codex.sh`.
   If Claude Code is also used, run its separate `redeploy.sh` flow.
 
-## Resume
+## Historical planning pickup
+Superseded by Current handoff above; retained as prior planning evidence.
+- **Exact pickup:** [revised plan](specs/directions-lean-efficiency-plan.md), Wave 1 / LE01;
+  [planning review](verification/directions-lean-efficiency-planning.md#october-16-revision).
+- **Boundary:** execution not requested; no restart, Mac-control continuation or deployment follows
+  automatically. Preserve incomplete safety gates and all earlier evidence.
+- **Sprint:** LE01, LE15, LE16, LE03 (0/4); Mac-control tasks retained separately as deferred.
+- **Model fit:** deep capability + high reasoning for cross-command policy and migration planning;
+  current host setting not reliably visible.
+
+## Deferred Mac-control evidence
+These are historical checkpoint notes. Their restart/next-action suggestions are superseded by the
+October 16 planning direction above; retain them as evidence, not current execution instructions.
+
 - [Successful acquisition and later-boot preparation](verification/mac-control/acquired-preflight-review.md):
   kernel capture/reload passed once, marker unchanged. Successful transaction and all prior evidence
   preserved. Persistent byte-identical library staged; CLI/caller independently reviewed.
@@ -114,4 +128,4 @@
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-09-17.*
+*Last updated: 2026-10-16.*

@@ -1,7 +1,8 @@
 # Lean-efficiency planning review
 
-**Completed:** 2026-09-10. **Scope:** spec review and implementation planning only.
-**Deliverable:** [14-task plan](../specs/directions-lean-efficiency-plan.md).
+**Original review:** 2026-09-10. **Revised:** 2026-10-16. **Scope:** planning only.
+**Deliverable:** [16-task plan](../specs/directions-lean-efficiency-plan.md).
+September findings below are historical; the October section records current source and scheduling.
 
 ## Verdict
 
@@ -64,3 +65,45 @@ On explicit activation, update the execution pointer and select a focused set of
 The plan's policy/migration contract is an implementation prerequisite, not a reason to defer writing
 the plan or to block independent index fixes. Global deployment, real consumer migration and pushes
 remain separately scoped. Observed efficiency and host success remain unverified.
+
+## October 16 revision
+
+The owner requested a plan using agents and the web. The coordinator revised the existing plan
+against the [October evidence](directions-review-2026-10-16.md), preserving LE01–LE14 and the deferred
+Mac-control plan. Two fresh-context read-only agents independently checked source gaps and scheduling.
+Their findings agreed on existing archive-aware parsing, still-contaminated generation, base-guide
+contradictions, current app-control authority and one authoritative handoff.
+
+The coordinator retained eight waves and added two early, disjoint tasks: LE15 fixes authority in
+log/execute instructions; LE16 owns test effects, backend discovery, harness evidence and finite
+acceptance. This separates reviewable outcomes from LE08's later extraction. LE08 explicitly depends
+on both; LE13 includes them. LE05 owns the base guide before LE11's later policy edits. LE09 rehearses
+consumer inventory/cleanup only on disposable snapshots; no live migration was added.
+
+LE02 is verification/hardening of existing source, not a newly claimed implementation. The October
+review's 61-file/61-entry result is historical evidence, not a rerun or full fixture acceptance.
+AC12–AC13 capture the October authority/testing refinements. Broader journey, spike and proportionality
+proposals remain LE06 decision inputs. Release reproducibility tooling is outside this plan; repository
+identity is an LE12 case, and candidate provenance is recorded during E1.
+
+Primary pages opened and relevant sections inspected on October 16:
+
+- [OpenAI: Rethinking skills and prompts](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)
+  recommends narrow triggers, small routers and conditional references. This supports testing lean
+  routing; it does not override explicit user constraints or establish a Directions performance gain.
+- [OpenAI: Testing Agent Skills Systematically with Evals](https://developers.openai.com/blog/eval-skills)
+  separates outcome, process and efficiency goals and recommends focused checks. LE01/LE13/E1 use
+  these distinctions to avoid treating smaller files as proof of better task completion.
+- [Anthropic: Claude Code best practices](https://code.claude.com/docs/en/best-practices)
+  recommends concise persistent instructions and on-demand skills for occasional workflows.
+  This informs the paired routing comparison; actual host behavior remains E1.
+
+Planning changes affect Markdown only. Planned fixture commands are future artifacts; no application
+tests, desktop control, live install, consumer changes or deployment occurred. The first sprint now
+contains LE01, LE15, LE16 and LE03; only LE01 is prerequisite-ready. Mac-control's retained tasks and
+evidence are explicitly deferred. Existing unrelated dirty changes were preserved.
+
+Final independent schedule review found no dependency or ownership blocker. Its coverage corrections
+were applied: LE16 is an AC12 owner, LE11 checks its newly owned policy files, and prior checker work
+is distinguished from execution of this revised plan. Documentation whitespace and local link checks
+passed; none of those checks closes an implementation criterion or the host-acceptance gate.

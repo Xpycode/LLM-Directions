@@ -1,13 +1,18 @@
 # Directions Lean and Efficient Workflow Specification
 
-**Status:** Reviewed and planned — implementation not approved or started.
+**Status:** Locally implemented and validated; matched host acceptance E1 and rollout tradeoffs remain open.
 **Created:** 2026-09-09
-**Last Updated:** 2026-09-10
+**Last Updated:** 2026-10-16
 
 **Implementation plan:** [Directions lean efficiency](directions-lean-efficiency-plan.md).
 The [planning review](../verification/directions-lean-efficiency-planning.md) records the follow-up
 Sol/Luna review, official web sources and concrete decisions/validation gates. Policy proposals below
 remain proposals until their named plan decision is resolved.
+The [October review](../verification/directions-review-2026-10-16.md) adds cross-project evidence.
+Its authority and testing refinements are captured in AC12–AC13 below; broader workflow proposals
+were resolved under LE06's recorded decision. F01's archive/target parsing and preservation fixtures
+pass. September findings below describe the frozen baseline; final evidence is in
+[integration](../verification/lean/integration.md), with host limitations stated separately.
 
 ## Problem Statement
 
@@ -91,14 +96,14 @@ Suggested sequence, not an approved implementation plan:
 
 All boxes remain unchecked until implementation and verification supply evidence.
 
-- [ ] **AC01 / F01:** Given session records split between live and archived indexes, when the checker
+- [x] **AC01 / F01:** Given session records split between live and archived indexes, when the checker
   runs, then archived records are recognized, true missing/orphan records remain detectable, and
   no existing row or session file is removed. Verify suffixed-date records and absence of an archive;
   a row's explicit suffixed log target takes precedence over its unsuffixed displayed date.
-- [ ] **AC02 / F02:** Given canonical numbered docs plus conflict/backup copies and redirect stubs,
+- [x] **AC02 / F02:** Given canonical numbered docs plus conflict/backup copies and redirect stubs,
   when the index is generated, then only canonical eligible documents are routed, each once;
   excluded artifacts remain intact and the deployed preview contains no conflict filename.
-- [ ] **AC03 / F03:** Given a completed plan or session handoff, when current guidance is followed,
+- [x] **AC03 / F03:** Given a completed plan or session handoff, when current guidance is followed,
   then plan evidence is archived and the canonical Resume location is unambiguous; topic guides
   do not introduce conflicting lifecycle procedures.
 - [ ] **AC04 / F04,F10:** Given a representative routing matrix for both hosts, when lean entry points
@@ -120,13 +125,30 @@ All boxes remain unchecked until implementation and verification supply evidence
 - [ ] **AC09 / F09:** Given the agreed collision-check policy, when normal status or a risky
   shared-checkout transition occurs, then checks run at the specified boundary and warnings do not
   falsely imply Codex has an installed process detector.
-- [ ] **AC10 / F11:** Given the retained legacy installation entry point, when exercised in a temporary
+- [x] **AC10 / F11:** Given the retained legacy installation entry point, when exercised in a temporary
   home, then it delegates safely or gives an actionable retirement message; it never silently installs
   unresolved path placeholders or overwrites unrelated personal instructions.
 - [ ] **AC11 / all:** Given unchanged representative scenarios before and after simplification, when
   evaluated with the same host/model/effort, then the report records instruction bytes, tool calls,
   files updated, unnecessary questions and successful completion. Required safety/continuity checks
   all pass; observed efficiency improvements and any regressions are reported without invented gains.
+- [ ] **AC12 / October authority findings:** Given a current no-control instruction, when build,
+  logging or test guidance is followed, then no direct or indirect app launch/quit/relaunch,
+  desktop action or clipboard/profile replacement occurs without specific current authorization.
+  A user-operated handoff gives the full absolute containing-folder path and artifact name.
+  An expired test window preserves the originating-Mac recovery obligation without inventing
+  permission to act. Explicitly authorized control remains limited to its agreed target and scope.
+- [ ] **AC13 / October testing findings:** Given a proposed validation command, when it is selected,
+  then its headless/app-hosted/interactive effects, data namespace and startup behavior are checked.
+  Missing backends yield an available or manual route. Disposable harness fixtures preserve real
+  failure status and distinguish the owned process from unrelated wrappers. User acceptance uses a
+  finite batch with integrated expected behavior, evidence provenance and reasons for any repeats.
+
+October clarifications to AC03/AC06: one current handoff is authoritative; older Resume blocks remain
+linked historical evidence. AC11 includes Directions, macOS and website snapshots, with unsafe
+baseline actions simulated. Consumer-copy cleanup is only rehearsed on disposable snapshots.
+Journey/spike, granularity and delegation proposals require LE06 dispositions before policy edits;
+the review alone does not make all recommendations requirements.
 
 ## Technical Considerations and Validation
 

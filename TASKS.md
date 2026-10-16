@@ -1,7 +1,9 @@
 # Tasks
 
 > **Persistent task tracker.** Root path in the Directions master. Progress syncs to PROJECT_STATE.md.
-> Active plan: [Mac Control Coordinator](IMPLEMENTATION_PLAN.md). IDs match the plan.
+> Current priority: the revised [Directions efficiency plan](specs/directions-lean-efficiency-plan.md).
+> Whole-plan execution authorized October 16; task status/evidence lives in the linked plan.
+> Mac Control Coordinator tasks and evidence remain deferred below.
 
 ## Backlog
 <!-- Ideas and future work. Added by /spec deep, user input, or discovered during development. -->
@@ -28,24 +30,31 @@
 - [ ] 7.1 Run the full acceptance matrix.
 - [ ] 7.2 Independent lifecycle and integration review.
 - [ ] 7.3 Pilot launch and Directions handoff.
-- [ ] Maintenance: validate session-index checker acceptance under
-  [F01 / AC01](specs/directions-lean-efficiency.md) and LE02 in the linked lean-efficiency plan.
-  Current source already reads both indexes and recognizes suffixed dates; this cleanup does
-  not establish the full LE02 acceptance matrix or change its execution status.
+- [ ] Finish host acceptance E1 for the [Directions lean-efficiency plan](specs/directions-lean-efficiency-plan.md).
+  Local source tasks are implemented; status/evidence and open acceptance criteria belong to that
+  plan. Isolated Claude authentication and matched host replay remain pending. No rollout yet.
+
+## Retained maintenance evidence
+
+Session-index acceptance is complete under LE02/LE13, with 16 preservation/diagnostic fixtures.
+  [F01 / AC01](specs/directions-lean-efficiency.md) links the acceptance contract.
   September 17: indexed the February 18 installation variant; integrated the September 8
   intervention handoff and September 9 M1 Max completion into their canonical daily logs.
   Original conflict bytes are retained under `sessions/reconciled-conflicts/` with provenance links.
   Prior unindexed-log reconciliation is complete. Cross-Mac missing files must still be
   distinguished from index drift. Outside the 25-task feature plan.
-- [ ] Implement the queued [Directions lean-efficiency plan](specs/directions-lean-efficiency-plan.md):
-  review/planning completed with Sol, Luna and web sources on September 10; 14 tasks/eight waves plus
-  host acceptance. LE01 freezes the baseline; LE03–LE14 cover F02–F11; F01 uses the maintenance item
-  above via LE02. Awaiting explicit execution, with policy/migration gates in the plan. Keep the
-  Mac-control Current Sprint intact; no implementation or deployment performed by planning.
 
-## Current Sprint
-<!-- Active work. Populated by /make-plan or /execute. Keep focused (3-7 tasks). -->
-<!-- When done: /log moves to tasks-archive.md -->
+## Active plan
+
+[Lean-efficiency tasks and evidence](specs/directions-lean-efficiency-plan.md) own completion,
+dependencies and acceptance. The four former sprint mirrors were created during this planning
+session and are preserved in its frozen baseline; their status now comes from the selected plan.
+The unrelated historical Mac-control records below are retained without migration.
+
+## Deferred Mac-control tasks
+
+The two tasks below are retained outside the current sprint. Their historical next-action wording
+does not select restart or recovery work; the October 16 deferral remains current.
 
 - [ ] 1.3 Prove bounded input and stop in a disposable target —
   September 10: prepared kernel capture and separate-process reload now passed once; marker
@@ -153,22 +162,19 @@
 
 ## Progress Calculation
 
-```
-Sprint Progress = checked in Current Sprint / total in Current Sprint
-Overall Progress = (archived count + checked) / (backlog + current + archived)
-```
-
-Archived task count is read from `tasks-archive.md` header.
+Selected-plan progress = completed tasks / tasks in that plan, with external gates reported separately.
+Backlog, Inbox, unrelated plans and `tasks-archive.md` history never enter that denominator.
+The preserved Mac-control records remain legacy evidence until separately scoped reconciliation.
 
 ## Workflow Integration
 
 | Command | Action |
 |---------|--------|
 | `/spec deep` | Adds tasks to Backlog |
-| `/make-plan` | Moves Backlog → Current Sprint |
-| `/execute` | Checks off tasks as waves complete |
-| `/log` | Archives checked tasks, updates PROJECT_STATE.md progress bar |
-| `/status` | Reports progress from checkbox counts |
+| `/make-plan` | Creates selected plan and Active plan link |
+| `/execute` | Records validated task status/evidence in selected plan |
+| `/log` | Saves current handoff/state; archives only fully accepted plans with evidence |
+| `/status` | Derives selected-plan counts and reports open gates separately |
 | Any active workflow | Captures non-blocking issues in Backlog and unconfirmed observations in Inbox |
 
 ---
