@@ -506,14 +506,15 @@ Must reassign the parent property to trigger updates.
 
 - `AGENTS.md` is the Codex entry point; `CLAUDE.md` is the Claude Code entry point.
 - Keep stable project facts aligned, while keeping tool-specific behavior in its own entry point.
-- Keep changing state in `docs/PROJECT_STATE.md` and active work in `IMPLEMENTATION_PLAN.md`.
+- Keep task status/evidence in the selected plan; `docs/PROJECT_STATE.md` selects the plan and one
+  current session-log handoff. `docs/TASKS.md` holds backlog/inbox and an Active plan link.
 - Directions workflow procedures live in the master `commands/*.md`; do not copy or translate them.
 
 ## Directions Workflow
 
 - Use the globally installed `directions` skill for `status`, `log`, `spec`, `make-plan`, `execute`,
   `check`, `decide`, `cookbook`, `worktree`, and other Directions requests.
-- Current state: `docs/PROJECT_STATE.md`; active execution: `IMPLEMENTATION_PLAN.md`; detailed
+- Current state: `docs/PROJECT_STATE.md`; active execution: its selected plan; detailed
   history: `docs/sessions/`; durable choices: `docs/decisions.md`.
 - Read universal guidance from the Directions master on demand. Do not add copied universal docs to
   this repository.

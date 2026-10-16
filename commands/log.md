@@ -78,6 +78,9 @@ and `sessions/_index.md`. Update only what the session evidence supports:
 - **Now → Execution** — when a plan is active, keep one concise line with its link, current wave/task
   IDs and ready/blocked/awaiting-acceptance status. Preserve unresolved gates. Once the whole plan is
   verified and archived, remove the active execution line and set Next to the actual follow-up.
+- **Current handoff** — link one specific current session-log Resume anchor. Superseded blocks
+  remain historical evidence; preserve their bytes and outstanding recovery. Refresh this pointer
+  when new facts change the pickup, rather than accumulating competing current instructions.
 - **Blockers** — if one surfaced or cleared, update the one-liner. For a real blocker worth detail,
   use: `**What:** … · **Tried:** … · **Unblock:** …` (mark `✅ RESOLVED` + `**Resolution:**` when cleared).
 - **Recent** — prepend a **one-line, plain-language** entry (no SHAs, no jargon). Keep ~5; drop the oldest.
@@ -104,7 +107,8 @@ Goal, Outcome = Progress + Next (cap at ~300 chars, condense — don't ask). If 
 holds ~20 rows, move its oldest into `sessions/_index-archive.md` (create with a one-line header if
 absent) to keep it capped.
 
-Then run the drift check (`scripts/sync-session-index.sh`, or `docs/scripts/…` in a consumer project):
+Then run the master's `scripts/sync-session-index.sh` with the actual session directory. If a consumer
+invokes an older local checker, record its exact path/version before attributing drift to the master:
 - The checker compares files against the **union** of the capped live `_index.md` and optional
   `_index-archive.md`; archived rows must not be reported as missing merely because they left the
   live table.
@@ -132,12 +136,15 @@ Backlog; unconfirmed observations belong in its Inbox; current blockers belong i
 Do not leave an actionable deferred issue only in prose. In pre-clear/Mac-handoff mode, report the
 deferred counts in the Resume/next-session summary so the user knows they were not forgotten.
 
-## 5 · Archive completed tasks  (skip if no `TASKS.md` or nothing checked)
+## 5 · Record progress without mirroring task history
 
-Move `- [x]` items from `TASKS.md` Current Sprint → `tasks-archive.md` Completed (top), dated
-`(YYYY-MM-DD)`; bump "Total archived" + "Last updated"; remove them from Current Sprint. Recompute the
-PROJECT_STATE progress bar: `(archived + current_checked) / (backlog + current + archived) × 100`.
-Report "Archived N tasks. Progress: X%" only if something moved.
+When task status/progress needs updating, read `<master>/reference/task-state.md`. The selected plan
+owns task status/evidence; TASKS holds backlog/inbox and an Active plan link. Report completed/total
+plan tasks and separate open external gates. Never recompute a combined backlog/archive percentage.
+Keep incomplete plans active. On full acceptance, archive plan/evidence and update incoming links
+before retiring the active copy. Standalone completed TASKS items may move to tasks-archive, dated;
+their archive count is separate. Preserve legacy mirrors until scoped reconciliation validates
+their replacement; logging does not authorize a bulk migration or close a manual gate.
 
 ## 6 · Change phase  (only if the session actually shifted it)
 

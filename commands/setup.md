@@ -62,16 +62,27 @@ already-set-up project never receives new house-style — which is exactly the f
 `/setup` scaffolds **only project-specific files** (read the matching master template on demand):
 - `CLAUDE.md` — Claude Code project instructions, when Claude Code is in use; preserve an existing file
 - `AGENTS.md` — Codex project instructions, when Codex is in use; preserve an existing file
-- `docs/PROJECT_STATE.md` — the source-of-truth position digest (also the "is Directions set up?" sentinel); use the master's `PROJECT_STATE.md` as the structural template
+- `docs/PROJECT_STATE.md` — position digest and setup sentinel: Identity, Now (Focus/Next/Execution),
+  Recent, and a Current handoff link. Do not copy the master's live project history or deferred work.
 - `docs/sessions/_index.md` — session history index
 - `docs/decisions.md` — this project's decision log
 - `docs/glossary.md` — *project-specific* terms only (the personal glossary lives globally)
-- `docs/TASKS.md` — persistent Backlog + Inbox; use the master's `TASKS.md` as the structural template
+- `docs/TASKS.md` — Active plan link, Backlog and Inbox; no duplicate plan checkboxes or copied master tasks
+
+Use the master `reference/task-state.md` contract. The selected plan owns tasks/gates/evidence;
+state selects it and one current handoff. Existing projects keep legacy records until scoped
+preservation/reconciliation; setup is not permission to bulk-migrate other projects.
 
 Use the entry-point templates in `12_documentation-templates.md`. Keep stable project facts aligned
 between them, but keep tool-specific behavior separate. The live `commands/*.md` library remains the
 single workflow source: Claude Code invokes its deployed command adapter and Codex reaches the live
 files through the Directions skill. Do not copy or translate the command files into the project.
+Write the resolved **absolute** `Local master:` path into generated project entry points; never leave
+a placeholder or rely on global installation. Without globals, resolve natural/slashless commands
+to that master's `commands/<name>.md`; topical guidance uses the appropriate master
+`CODEX-GLOBAL-TEMPLATE.md` or `CLAUDE-GLOBAL-TEMPLATE.md` for routing only, without installing it.
+Resolve conditional `reference/…` paths from that same verified master, not the consumer directory.
+If the master is unavailable, report the missing guidance rather than using stale local mirrors.
 
 **Important:** For new projects, after scaffolding those files and running the interview, **always create the project folder structure** (read `13_folder-structure.md` from the master on demand). The actual code always lives in `01_Project/` (the one exception is framework web apps — code at repo root):
 - macOS/iOS: `01_Project/`, `02_Design/Exports/`, `03_Screenshots/`, `04_Exports/`

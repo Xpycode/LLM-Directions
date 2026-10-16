@@ -67,6 +67,8 @@ Read project state, its linked active plan, task tracker and Git status. Prefer 
 otherwise check root and `docs/IMPLEMENTATION_PLAN.md`. Preserve overlapping uncommitted work;
 use `37_multi-mac-discipline.md` when cross-Mac reconciliation is needed. Do not commit unrelated
 work merely because it is dirty.
+Apply the master's `reference/task-state.md` for selection, status, progress and legacy records.
+The selected plan is authoritative; equal IDs in another plan are different tasks.
 
 If no usable plan exists, use `commands/make-plan.md` and the shared plan template. Infer the goal
 from the request and existing spec; ask only for missing requirements that affect the work.
@@ -103,8 +105,8 @@ Repeat within the authorized scope:
 5. **Record the outcome.** Mark a task complete only when all its required criteria pass. Record
    implemented-but-unverified work separately and leave its completion box unchecked. Make scoped
    atomic commits for validated work under `32_git-workflow.md`, unless the user restricted commits
-   or Git is unavailable; record the exception. Update the plan, matching tracker items and concise
-   project state. Record task IDs, actual assignments/serial reason, validation evidence, commit or
+   or Git is unavailable; record the exception. Update status/evidence in the plan, keep the tracker
+   as a backlog/inbox plus plan link, and refresh concise project state. Record task IDs, actual assignments/serial reason, validation evidence, commit or
    exception, remaining gates and next action in the plan's execution log; link longer evidence.
    Keep one `Now → Execution` line in project state: active plan link, current wave/task IDs and
    ready/blocked/awaiting-acceptance status with its reason. Replace the line as work advances;

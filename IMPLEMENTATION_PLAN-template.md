@@ -2,6 +2,12 @@
 
 > **Persists across sessions.** Execute using the shared `commands/execute.md` procedure.
 > Repair scheduling errors while preserving task IDs, completed evidence and approved scope.
+> Task state/evidence is authoritative here; TASKS links here and holds backlog/inbox.
+> Follow the master's `reference/task-state.md` for legacy reconciliation and archival.
+
+**Progress:** [complete task count]/[total tasks]; external acceptance: [named open gates].
+**Task states:** unchecked = pending / implemented-unverified / blocked (name gate);
+checked = complete with required evidence. Task identity includes this plan path plus ID.
 
 ## Goal
 [One sentence describing what we're building]

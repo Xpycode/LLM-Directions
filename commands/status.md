@@ -24,7 +24,8 @@ Don't read full session logs or `tasks-archive.md` unless asked.
 
 **Report — aim for ≤8 lines, plain English. Skip any line with nothing to say.**
 - **Phase / focus** — one sentence: where we are + what's active.
-- **Tasks** — `N/M sprint · X% overall`, only if `TASKS.md` exists.
+- **Tasks** — completed/total in the selected plan plus open external gates. Without a plan, report
+  standalone TASKS status; do not combine backlog/archive totals into plan progress.
 - **Deferred** — `N confirmed · M awaiting reproduction`, only when Backlog or Inbox is non-empty.
 - **Blockers** — name them, or `none`.
 - **Last session** — one sentence, translated out of jargon (no SHAs).
@@ -48,6 +49,9 @@ If readiness cannot be established from available records, say so and suggest re
 do not invent a wave number or imply that a missing gate passed. Keep the lean report within its
 normal budget by replacing the generic Next line, not appending a second checklist. This is read-only:
 showing `/execute` never starts work, grants authorization or runs `/log`.
+If counts, plan selection or legacy mirrors disagree, read the master's `reference/task-state.md`;
+report uncertainty without migrating during read-only status. Follow the Current handoff pointer
+instead of treating all historical Resume headings as current.
 
 **Style:** translate technobabble ("moved the sentinel" → "changed which file marks a project as set
 up"). No hashes / path-soup / codenames unless the user used them first. Empty field → two words

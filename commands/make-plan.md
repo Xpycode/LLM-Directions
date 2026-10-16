@@ -97,6 +97,7 @@ parallel work exists, say why. “Six waves” alone is not a validated executio
 
 Read `IMPLEMENTATION_PLAN-template.md` from the Directions master. Write the project-specific plan
 at the project's established path; do not copy the shared procedural library into the project.
+Apply the master's `reference/task-state.md`: this plan owns its task status and evidence.
 
 Include for each task:
 - Description
@@ -139,28 +140,14 @@ silently replacing approved work. Routine scheduling repairs do not need renewed
 
 ---
 
-## TASKS.md Integration
+## Task tracker integration
 
-After creating IMPLEMENTATION_PLAN.md, sync with the task tracker (`docs/TASKS.md` in an installed
-project; root `TASKS.md` in the Directions master):
-
-1. **If tasks exist in Backlog:** Move relevant tasks to Current Sprint
-2. **If new tasks:** Add them to Current Sprint (they weren't in Backlog)
-3. Keep Current Sprint focused: 3-7 tasks max per sprint
-
-```markdown
-## Current Sprint
-- [ ] Task 1.1: [from Wave 1]
-- [ ] Task 1.2: [from Wave 1]
-- [ ] Task 2.1: [from Wave 2]
-```
-
-**Mapping:** IMPLEMENTATION_PLAN.md tasks → TASKS.md Current Sprint
-- Wave tasks become sprint tasks
-- IMPLEMENTATION_PLAN.md has execution details (files, backpressure)
-- TASKS.md has checkbox tracking for progress
-
-> "Moved [N] tasks to Current Sprint. Run `/execute` to begin."
+Link the selected plan from TASKS under **Active plan**, naming the first ready IDs without copying
+their completion boxes. Keep unrelated Backlog/Inbox items. When backlog work becomes plan tasks,
+retain a mapping/link so it remains discoverable; the plan owns status and evidence.
+Update PROJECT_STATE's Execution pointer and distinguish ready from execution requested.
+For conflicting legacy mirrors, use the master `reference/task-state.md` preservation/reconciliation
+procedure before retiring anything. A planning request does not authorize bulk consumer migration.
 
 ---
 *80% of time on planning, 20% on execution. This is the 80%.*
