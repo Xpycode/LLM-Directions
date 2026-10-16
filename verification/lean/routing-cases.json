@@ -1,0 +1,547 @@
+{
+  "schema": 1,
+  "hosts": [
+    "codex",
+    "claude"
+  ],
+  "scope": "Static path/byte oracle, not a keyword classifier or host run",
+  "cases": [
+    {
+      "id": "domain-00",
+      "input": "Explain the Directions development system.",
+      "expected": [
+        "00_base.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-01",
+      "input": "Show the daily command cheatsheet.",
+      "expected": [
+        "01_quick-reference.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-02",
+      "input": "Help me spot red flags when validating AI code.",
+      "expected": [
+        "02_mental-model.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-04",
+      "input": "Choose an architecture for this project.",
+      "expected": [
+        "04_architecture-decisions.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-10",
+      "input": "Set up a new project.",
+      "expected": [
+        "10_new-project.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-12",
+      "input": "Draft the README and changelog.",
+      "expected": [
+        "12_documentation-templates.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-13",
+      "input": "Where should the source folders go?",
+      "expected": [
+        "13_folder-structure.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-14",
+      "input": "Choose the project identifier and signing conventions.",
+      "expected": [
+        "14_project-identity.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-20",
+      "input": "The SwiftUI view does not refresh after state changes.",
+      "expected": [
+        "20_swiftui-gotchas.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-21",
+      "input": "The cropped image is offset by ten pixels.",
+      "expected": [
+        "21_coordinate-systems.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-22",
+      "input": "Persist a macOS sandbox bookmark.",
+      "expected": [
+        "22_macos-platform.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-23",
+      "input": "Configure Claude Code hooks.",
+      "expected": [
+        "23_claude-code-cli.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-24",
+      "input": "Fix this website's responsive CSS.",
+      "expected": [
+        "24_web-gotchas.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-25",
+      "input": "Diagnose a frozen application.",
+      "expected": [
+        "25_troubleshooting.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-26",
+      "input": "Evaluate an add-on for development.",
+      "expected": [
+        "26_ecosystem.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-27",
+      "input": "MCP indexing consumes all CPU at the umbrella root.",
+      "expected": [
+        "27_mcp-gotchas.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-28",
+      "input": "Fix the missing signing certificate in Xcode.",
+      "expected": [
+        "28_xcode-signing-and-sourcekit.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-29",
+      "input": "Deploy this site to Strato.",
+      "expected": [
+        "29_web-strato-hosting.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-30",
+      "input": "Prepare the app for release.",
+      "expected": [
+        "30_production-checklist.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-32",
+      "input": "Commit these changes.",
+      "expected": [
+        "32_git-workflow.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-33",
+      "input": "Review essential baseline app features.",
+      "expected": [
+        "33_app-minimums.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-34",
+      "input": "Design safe unit tests.",
+      "expected": [
+        "34_testing.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-35",
+      "input": "Review generated code complexity.",
+      "expected": [
+        "35_ai-code-quality.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-36",
+      "input": "Add a toggle to the preferences UI.",
+      "expected": [
+        "36_ui-changes-protocol.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-37",
+      "input": "Recover this checkout on my other Mac.",
+      "expected": [
+        "37_multi-mac-discipline.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-38",
+      "input": "Explain the correct AppStorage ownership.",
+      "expected": [
+        "38_ios-swiftui-state.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-39",
+      "input": "Fix Turso sync after db.push.",
+      "expected": [
+        "39_libsql-turso-sync.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-40",
+      "input": "Adjust font tracking and leading.",
+      "expected": [
+        "40_typography.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-41",
+      "input": "What is this Apple UI component called?",
+      "expected": [
+        "41_ui-vocabulary.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-42",
+      "input": "Define the accent palette and design tokens.",
+      "expected": [
+        "42_design-system.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-43",
+      "input": "Choose a dictionary or tree for lookup.",
+      "expected": [
+        "43_data-structures.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-44",
+      "input": "Explain terms in my technology glossary.",
+      "expected": [
+        "44_my-glossary.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-45",
+      "input": "Extract reusable code into an SPM package.",
+      "expected": [
+        "45_packages.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-46",
+      "input": "Add a macOS main menu command.",
+      "expected": [
+        "46_main-menu.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-47",
+      "input": "Use NavigationSplitView with AppKit controls.",
+      "expected": [
+        "47_project-ui-conventions.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-52",
+      "input": "Reduce the bloated context instructions.",
+      "expected": [
+        "52_context-management.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-53",
+      "input": "Review possible LLM failure modes.",
+      "expected": [
+        "53_llm-failure-modes.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-54",
+      "input": "Store authentication credentials securely.",
+      "expected": [
+        "54_security-rules.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-55",
+      "input": "Write a feature specification.",
+      "expected": [
+        "55_spec-template.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-56",
+      "input": "Turn requirements into acceptance criteria.",
+      "expected": [
+        "56_acceptance-criteria.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-57",
+      "input": "Create a safe checkpoint before this phase.",
+      "expected": [
+        "57_checkpoint-discipline.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-59",
+      "input": "Explore edge cases with example mapping.",
+      "expected": [
+        "59_example-mapping.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-60",
+      "input": "Choose a model and reasoning effort.",
+      "expected": [
+        "60_model-selection.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-61",
+      "input": "Notarize the Developer ID application.",
+      "expected": [
+        "61_distribution-notarization.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-62",
+      "input": "Triage the final stretch before shipping.",
+      "expected": [
+        "62_final-stretch-triage.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-63",
+      "input": "Perform an OWASP security audit.",
+      "expected": [
+        "63_security-audit.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "domain-64",
+      "input": "Configure Codex instructions and skills.",
+      "expected": [
+        "64_codex.md"
+      ],
+      "kind": "domain",
+      "disposition": "static reachable; host intent recognition pending E1"
+    },
+    {
+      "id": "slashless-status",
+      "input": "status arrive",
+      "expected": [
+        "commands/status.md"
+      ],
+      "kind": "ordinary",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "slashless-log",
+      "input": "log clear",
+      "expected": [
+        "commands/log.md"
+      ],
+      "kind": "ordinary",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "continue",
+      "input": "Continue implementation of the approved plan.",
+      "expected": [
+        "commands/execute.md"
+      ],
+      "kind": "ordinary",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "next-wave",
+      "input": "Next wave, no agents and no commits.",
+      "expected": [
+        "commands/execute.md"
+      ],
+      "kind": "limits",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "incidental",
+      "input": "Correct spelling in a quoted sentence containing secrets, Git and SwiftUI.",
+      "expected": [],
+      "kind": "incidental",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "small-fix",
+      "input": "Correct a typo in this documentation.",
+      "expected": [],
+      "kind": "ordinary",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "secrets",
+      "input": "Remove an accidentally exposed credential without printing it.",
+      "expected": [
+        "54_security-rules.md"
+      ],
+      "kind": "safety",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "dirty",
+      "input": "Preserve my dirty changes while committing.",
+      "expected": [
+        "32_git-workflow.md"
+      ],
+      "kind": "safety",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "multi-mac",
+      "input": "My other Mac has no .git and local changes.",
+      "expected": [
+        "37_multi-mac-discipline.md"
+      ],
+      "kind": "safety",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "ui",
+      "input": "Place a new control using the project's AppKit constraints.",
+      "expected": [
+        "36_ui-changes-protocol.md",
+        "47_project-ui-conventions.md"
+      ],
+      "kind": "safety",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "no-control",
+      "input": "Build only; do not launch or remotely control the app.",
+      "expected": [
+        "34_testing.md"
+      ],
+      "kind": "safety",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "no-global",
+      "input": "With no globals, continue the approved plan.",
+      "expected": [
+        "commands/execute.md"
+      ],
+      "kind": "no-global",
+      "disposition": "static reachable; host behavior pending E1"
+    },
+    {
+      "id": "no-global-web",
+      "input": "With no globals, fix responsive website layout.",
+      "expected": [
+        "24_web-gotchas.md"
+      ],
+      "kind": "no-global",
+      "disposition": "static reachable; host behavior pending E1"
+    }
+  ]
+}

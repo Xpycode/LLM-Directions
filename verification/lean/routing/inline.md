@@ -1,0 +1,50 @@
+Read relevant master guidance on demand; match the task's intent, not incidental quoted keywords. Resolve paths under `[LOCAL_DIRECTIONS_PATH]`; never use copied consumer guides. If routing is ambiguous, inspect the master's canonical numbered filenames and TRIGGERS headers before acting. Preserve dirty work; never expose secrets. Before multi-Mac recovery read `37_multi-mac-discipline.md`; before UI changes read `36_ui-changes-protocol.md` and `47_project-ui-conventions.md`; for credentials read `54_security-rules.md`. Current user limits, including no desktop control, prevail.
+Directions commands, with or without a slash, read `commands/<name>.md` completely. Plan continuation and “next wave” read `commands/execute.md`; preserve no-agent/no-commit and other explicit limits.
+
+- Directions: AI-Assisted Development System: `00_base.md`
+- cheatsheet, quick lookup, shortcuts: `01_quick-reference.md`
+- philosophy, mindset, how to think: `02_mental-model.md`
+- architecture, tech stack, what technology: `04_architecture-decisions.md`
+- new project, starting project, project setup: `10_new-project.md`
+- README template, CHANGELOG template, SECURITY: `12_documentation-templates.md`
+- new project setup, folder structure, "where should I put": `13_folder-structure.md`
+- Project Identity & Signing Conventions: `14_project-identity.md`
+- UI not updating, @Observable, @State: `20_swiftui-gotchas.md`
+- image, crop, position wrong: `21_coordinate-systems.md`
+- macOS, sandbox, entitlements: `22_macos-platform.md`
+- claude command, CLI, MCP: `23_claude-code-cli.md`
+- web, website, HTML: `24_web-gotchas.md`
+- stuck, broken, error: `25_troubleshooting.md`
+- plugin, add-on, superpowers: `26_ecosystem.md`
+- codebase-memory-mcp, runaway CPU, MCP indexing: `27_mcp-gotchas.md`
+- code signing, signing certificate, "no signing certificate found": `28_xcode-signing-and-sourcekit.md`
+- strato, strato.hosting, lftp: `29_web-strato-hosting.md`
+- ship, release, production ready: `30_production-checklist.md`
+- git, commit, branch: `32_git-workflow.md`
+- minimums, baseline features, must have: `33_app-minimums.md`
+- test, testing, unit test: `34_testing.md`
+- vibe code, AI code, generated code: `35_ai-code-quality.md`
+- add a toggle, add a button, add a menu item: `36_ui-changes-protocol.md`
+- cross-mac, multi-mac, M1 Max: `37_multi-mac-discipline.md`
+- @AppStorage, AppStorage, @SceneStorage: `38_ios-swiftui-state.md`
+- libsql, @libsql/client, turso: `39_libsql-turso-sync.md`
+- font, typography, tracking: `40_typography.md`
+- UI element, component name, what is this called: `41_ui-vocabulary.md`
+- design system, design tokens, palette: `42_design-system.md`
+- data structure, array, dictionary: `43_data-structures.md`
+- My Tech Glossary: `44_my-glossary.md`
+- package, SPM, reusable: `45_packages.md`
+- main menu, menu bar, NSMenu: `46_main-menu.md`
+- NavigationSplitView, HSplitView, AppKit controls: `47_project-ui-conventions.md`
+- context, token limit, context too big: `52_context-management.md`
+- LLM Failure Modes: `53_llm-failure-modes.md`
+- security, secrets, credentials: `54_security-rules.md`
+- spec, specification, requirements: `55_spec-template.md`
+- acceptance criteria, given when then, gherkin: `56_acceptance-criteria.md`
+- checkpoint, git snapshot, rollback: `57_checkpoint-discipline.md`
+- example mapping, discovery, requirements: `59_example-mapping.md`
+- model, model selection, capability: `60_model-selection.md`
+- notarization, notarytool, "Developer ID": `61_distribution-notarization.md`
+- final stretch, last 10%, last 1%: `62_final-stretch-triage.md`
+- Security Audit Checklist (OWASP / VibeSec): `63_security-audit.md`
+- Codex, AGENTS.md, CODEX_HOME: `64_codex.md`
