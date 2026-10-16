@@ -6,7 +6,8 @@
 # own TRIGGERS: headers means the table can never drift from the docs.
 #
 # Usage:
-#   gen-directions-index.sh                      # print the full section to stdout (preview)
+#   gen-directions-index.sh                      # print compact inline routing (preview)
+#   gen-directions-index.sh --format detailed    # preview the full trigger table
 #   gen-directions-index.sh --base '[LOCAL_DIRECTIONS_PATH]'   # use a placeholder base path
 #   gen-directions-index.sh --write FILE         # splice the body between the markers in FILE
 #   gen-directions-index.sh --write FILE --base '[LOCAL_DIRECTIONS_PATH]'
@@ -32,6 +33,8 @@ export LC_ALL=C
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 BASE="$REPO"
 MAX_KW=6
+FORMAT=inline
+SEEN_FORMAT=0
 WRITE=""
 SEEN_BASE=0
 SEEN_WRITE=0
@@ -40,10 +43,14 @@ fail() { echo "gen-directions-index.sh: $*" >&2; exit 2; }
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --base|--write)
+    --base|--write|--format)
       [ "$#" -ge 2 ] && [ -n "$2" ] && [[ "$2" != -* ]] || fail "$1 requires a nonempty value"
       [[ "$2" != *$'\n'* && "$2" != *$'\r'* ]] || fail "$1 value must be one line"
-      if [ "$1" = --base ]; then
+      if [ "$1" = --format ]; then
+        [ "$SEEN_FORMAT" -eq 0 ] || fail "duplicate --format"
+        case "$2" in inline|detailed) FORMAT="$2" ;; *) fail "unknown format: $2" ;; esac
+        SEEN_FORMAT=1
+      elif [ "$1" = --base ]; then
         [ "$SEEN_BASE" -eq 0 ] || fail "duplicate --base"
         BASE="$2"; SEEN_BASE=1
       else
@@ -56,6 +63,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 [ "$HELP" -eq 0 ] || { sed -n '2,/^set -/p' "$0" | sed '$d'; exit 0; }
+[ "$FORMAT" != inline ] || MAX_KW=3
 
 # --- extract a one-line description for a doc -------------------------------------------------
 describe() {
@@ -75,7 +83,7 @@ describe() {
       [ -z "$t" ] && continue
       out="$out${out:+, }$t"
     done
-    [ "$n" -gt "$MAX_KW" ] && out="$out …"
+    if [ "$FORMAT" = detailed ] && [ "$n" -gt "$MAX_KW" ]; then out="$out …"; fi
     printf '%s' "$out"
   else
     title=$(grep -m1 '^# ' "$f" | sed -E 's/^#+[[:space:]]*//' || true)
@@ -87,11 +95,16 @@ describe() {
 # --- build the body (intro + table + why) ----------------------------------------------------
 build_body() {
   local f desc count=0
+  if [ "$FORMAT" = inline ]; then
+    printf 'Read relevant master guidance on demand; match the task\047s intent, not incidental quoted keywords. Resolve paths under `%s`; never use copied consumer guides. If routing is ambiguous, inspect the master\047s canonical numbered filenames and TRIGGERS headers before acting. Preserve dirty work; never expose secrets. Before multi-Mac recovery read `37_multi-mac-discipline.md`; before UI changes read `36_ui-changes-protocol.md` and `47_project-ui-conventions.md`; for credentials read `54_security-rules.md`. Current user limits, including no desktop control, prevail.\n' "$BASE"
+    printf 'Directions commands, with or without a slash, read `commands/<name>.md` completely. Plan continuation and “next wave” read `commands/execute.md`; preserve no-agent/no-commit and other explicit limits.\n\n'
+  else
   printf 'The Directions guidance docs are the **single source of truth** in the master repo. Do **not**\n'
   printf 'rely on a copy inside the current project — copies drift and never receive new house-style. When a\n'
   printf 'task matches a trigger below, **read the master doc on demand** from `%s/`:\n\n' "$BASE"
   printf '| When the task involves… | Read |\n'
   printf '|---|---|\n'
+  fi
   for f in "$REPO"/[0-9][0-9]_*.md; do
     [ -f "$f" ] && [ ! -L "$f" ] || continue
     local name="${f##*/}"
@@ -102,13 +115,18 @@ build_body() {
     grep -qiE '^[[:space:]]*LOAD:[[:space:]]*redirect' "$f" && continue
     desc=$(describe "$f")
     desc=${desc//|/\/}                              # never let a pipe break the table
-    printf '| %s | `%s` |\n' "$desc" "$(basename "$f")"
+    if [ "$FORMAT" = inline ]; then
+      printf -- '- %s: `%s`\n' "$desc" "$(basename "$f")"
+    else
+      printf '| %s | `%s` |\n' "$desc" "$(basename "$f")"
+    fi
     count=$((count+1))
   done
   if [ "$count" -eq 0 ]; then
     echo "gen-directions-index.sh: no numbered docs found in $REPO" >&2
     exit 2
   fi
+  [ "$FORMAT" = detailed ] || return 0
   printf '\n**Why read-on-demand:** Universal docs used to be copied into each project at `/setup`, so updates\n'
   printf 'never reached already-set-up projects (N copies silently drift). This Index lets a running project —\n'
   printf 'which reads global + project instructions — pull the *current* master doc instead.\n'

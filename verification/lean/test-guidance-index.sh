@@ -57,7 +57,11 @@ with tempfile.TemporaryDirectory(prefix='directions-guidance-') as scratch:
     preview = run()
     for name in list(docs)[:5]:
         assert preview.count(f'`{name}`'.encode()) == 1, name
-    assert b'alpha, beta, gamma, delta, epsilon, zeta \xe2\x80\xa6' in preview, preview
+    assert b'alpha, beta, gamma: `00_base.md`' in preview, preview
+    assert b'delta' not in preview
+    detailed = run('--format', 'detailed')
+    assert b'alpha, beta, gamma, delta, epsilon, zeta \xe2\x80\xa6' in detailed
+    assert run('--format', 'inline') == preview
     assert b'literal *, a/b' in preview, preview
     assert b'Title fallback' in preview and b'04_no-title' in preview
     for name in list(docs)[5:]:
@@ -69,7 +73,7 @@ with tempfile.TemporaryDirectory(prefix='directions-guidance-') as scratch:
     other.mkdir()
     (other / '99_wrong-source.md').write_text('# Wrong source\n')
     rendered = run('--base', str(other))
-    assert f'`{other}/`'.encode() in rendered and b'99_wrong-source.md' not in rendered
+    assert f'`{other}`'.encode() in rendered and b'99_wrong-source.md' not in rendered
     assert b'00_base.md' in rendered
     for newline in [b'\n', b'\r\n']:
         prefix = b'prefix\x00\n' + start
@@ -103,6 +107,8 @@ with tempfile.TemporaryDirectory(prefix='directions-guidance-') as scratch:
         run('--write', str(destination), expected=2)
     destination.write_bytes(start + b'original\n' + end)
     bad_args = [
+        ['--format'], ['--format', ''], ['--format', 'router'],
+        ['--format', 'inline', '--format', 'detailed'],
         ['--base'], ['--write'], ['--base', ''], ['--write', ''],
         ['--base', '--write'], ['--write', '--base'], ['--unknown'],
         ['--base', 'a', '--base', 'b'], ['--write', str(destination), '--write', str(destination)],

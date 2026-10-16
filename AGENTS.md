@@ -50,6 +50,13 @@ Do not claim a build or test passed unless this repository actually provides and
 
 ## Known Gotchas
 
+- Without global instructions, resolve this repository's root as the Directions master. Read
+  `commands/<name>.md` completely for slashless/slash commands and `commands/execute.md` for plan
+  continuation. For topical guidance use `CODEX-GLOBAL-TEMPLATE.md`'s routing section only.
+  Resolve shared `reference/...` links from this master root, not a consumer directory.
+  Missing master guidance must be reported; never substitute copied consumer guides. Explicit
+  scope/no-agent/no-commit limits and the user's no-desktop-control preference still apply.
+
 - `CLAUDE-GLOBAL-TEMPLATE.md` is rendered and deployed to a machine-local Claude configuration; edit the template, not the deployed copy.
 - `CODEX-GLOBAL-TEMPLATE.md` is rendered into a marked block in machine-local
   `$CODEX_HOME/AGENTS.md` (default `~/.codex/AGENTS.md`); edit the template, not the deployed block.

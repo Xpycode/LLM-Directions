@@ -30,6 +30,13 @@ For a supported command, read the corresponding Markdown file completely before 
 
 Supported command files are discovered from that directory; do not assume this list is permanently exhaustive.
 
+Resolve relative `reference/...`, guide and command links in shared procedures from the
+resolved master root, never the consumer working directory or installed skill symlink.
+Keep that absolute master path in generated project instructions so commands also work without
+global instructions. Without globals, topical discovery may read the master's
+`CODEX-GLOBAL-TEMPLATE.md` for its routing section only; do not install or apply unrelated
+template behavior. If the master is unavailable, report it rather than using copied guides.
+
 ## Codex adaptation
 
 - Preserve the command's outcome, safety rules, read/write behavior, and reporting style.

@@ -45,10 +45,7 @@ done
 
 # Resolve repo root from this script's location — works on any Mac, any clone path.
 REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-# How the repo path is written INTO the deployed CLAUDE.md. Tilde-shortened when the repo
-# lives under $HOME, so the installed file reads the way the docs do (and stays legible on a
-# Mac with a different short user name); falls back to the absolute path otherwise.
-REPO_DISPLAY="${REPO/#$HOME/~}"
+REPO_DISPLAY="$REPO"
 CLAUDE_DIR="$HOME/.claude"
 COMMANDS_DIR="$CLAUDE_DIR/commands"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
@@ -71,6 +68,54 @@ if ! git -C "$REPO" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   say "  If .git was Syncthing-stripped, invoke the git-bootstrap skill first."
   exit 1
 fi
+
+# Render and validate BEFORE commands, skills, settings or any installation write.
+# CLAUDE.md is an explicit whole-file replacement; existing files are backed up below.
+rendered=$(mktemp)
+preview_settings=$(mktemp)
+rendered_perms=$(mktemp)
+trap 'rm -f "$rendered" "$preview_settings" "$rendered_perms"' EXIT
+python3 -I - "$TEMPLATE" "$REPO" "$rendered" <<'PY'
+from pathlib import Path
+import sys
+Path(sys.argv[3]).write_text(Path(sys.argv[1]).read_text().replace('[LOCAL_DIRECTIONS_PATH]', sys.argv[2]))
+PY
+"$REPO/scripts/gen-directions-index.sh" --format inline --write "$rendered" --base "$REPO" >/dev/null
+python3 -I - "$rendered" "$REPO" "$SETTINGS" "$SKIP_SETTINGS" <<'PY'
+from pathlib import Path
+import json, re, sys
+text = Path(sys.argv[1]).read_text()
+root = Path(sys.argv[2])
+assert root.is_absolute() and (root / 'commands/execute.md').is_file()
+assert '[LOCAL_DIRECTIONS_PATH]' not in text
+for name in re.findall(r'`((?:commands/)?[0-9a-z][0-9a-z_-]*\.md)`', text):
+    assert (root / name).is_file(), f'unresolved master reference: {name}'
+if sys.argv[4] == '0':
+    assert isinstance(json.loads((root / 'CLAUDE-SETTINGS-TEMPLATE.json').read_text()), dict)
+    assert isinstance(json.loads((root / 'CLAUDE-SETTINGS-PERMISSIONS.json').read_text()), list)
+settings = Path(sys.argv[3])
+if settings.exists():
+    data = json.loads(settings.read_text())
+    assert isinstance(data, dict), 'settings must be an object'
+    assert isinstance(data.get('permissions', {}), dict), 'permissions must be an object'
+    assert isinstance(data.get('permissions', {}).get('allow', []), list), 'allow must be an array'
+    assert isinstance(data.get('hooks', {}), dict), 'hooks must be an object'
+PY
+command -v jq >/dev/null 2>&1 || { say '✗ jq is required for settings and hooks; no installation changed.'; exit 1; }
+if [ -f "$SETTINGS" ]; then cp "$SETTINGS" "$preview_settings"; else printf '{}\n' > "$preview_settings"; fi
+if [ "$SKIP_SETTINGS" = 0 ]; then
+  python3 -I - "$REPO/CLAUDE-SETTINGS-PERMISSIONS.json" "$HOME" "$rendered_perms" <<'PY'
+import json, sys
+from pathlib import Path
+rules = json.loads(Path(sys.argv[1]).read_text())
+assert isinstance(rules, list) and all(isinstance(rule, str) for rule in rules)
+Path(sys.argv[3]).write_text(json.dumps([rule.replace('[HOME]', sys.argv[2]) for rule in rules]))
+PY
+  jq -e -s '.[0] * .[1]' "$preview_settings" "$SETTINGS_TEMPLATE" >/dev/null
+  jq -e -s '((.[0].permissions.allow) // []) + (.[1] - ((.[0].permissions.allow) // []))' \
+    "$preview_settings" "$rendered_perms" >/dev/null
+fi
+if [ "$DRY_RUN" = 1 ] && [ ! -f "$SETTINGS" ]; then SETTINGS="$preview_settings"; fi
 
 # --- 1. Commands: install canonical, prune retired, keep independents -------------
 say "Commands:"
@@ -146,7 +191,7 @@ fi
 if [ "$SKIP_CLAUDE_MD" = 1 ]; then
   say "CLAUDE.md: skipped (--skip-claude-md)"
 else
-  say "CLAUDE.md:"
+  say "CLAUDE.md (whole-file replacement; existing file backed up):"
   if [ ! -f "$TEMPLATE" ]; then
     say "  ✗ template missing: $TEMPLATE"; exit 1
   fi
@@ -155,8 +200,6 @@ else
   if [ -z "$REPO_DISPLAY" ]; then
     say "  ✗ REPO_DISPLAY is empty — refusing to render CLAUDE.md."; exit 1
   fi
-  rendered=$(mktemp)
-  sed "s|\[LOCAL_DIRECTIONS_PATH\]|$REPO_DISPLAY|g" "$TEMPLATE" > "$rendered"
   # Never install a half-rendered file: if substitution failed for any reason (empty
   # REPO_DISPLAY, a path containing the sed delimiter), the placeholder survives and would be
   # baked into the live file — the exact breakage this step exists to prevent. Fail loudly.
@@ -260,8 +303,6 @@ elif ! command -v jq >/dev/null 2>&1; then
   say "permissions.allow: ⚠ jq not found — skipping union-merge"
 else
   say "permissions.allow (house rules, union-merge — add-only):"
-  rendered_perms=$(mktemp)
-  sed "s|\[HOME\]|$HOME|g" "$PERMS_TEMPLATE" > "$rendered_perms"
   if ! jq -e 'type == "array"' "$rendered_perms" >/dev/null 2>&1; then
     rm -f "$rendered_perms"
     say "  ✗ $PERMS_TEMPLATE is not a JSON array — refusing to merge."; exit 1
@@ -300,7 +341,11 @@ say
 # --- 3. Hooks: per-Mac wiring (idempotent) ---------------------------------------
 say "Hooks (via hooks/install.sh):"
 if [ "$DRY_RUN" = 1 ]; then
-  bash "$REPO/hooks/install.sh" --dry-run | sed 's/^/  /'
+  if [ -f "$CLAUDE_DIR/settings.json" ]; then
+    bash "$REPO/hooks/install.sh" --dry-run | sed 's/^/  /'
+  else
+    say '  [dry-run] would create settings and register hooks via hooks/install.sh'
+  fi
 else
   bash "$REPO/hooks/install.sh" | sed 's/^/  /'
 fi

@@ -51,21 +51,48 @@ cleanup() {
 trap cleanup EXIT
 
 # Prepare and validate the complete AGENTS.md result before changing either live artifact.
-if [ "$skip_agents" = 0 ]; then
+{
   [ ! -L "$agents_file" ] || [ -e "$agents_file" ] || {
     say "✗ $agents_file is a broken symlink; fix it before deployment"
     exit 1
   }
   rendered=$(mktemp)
   merged=$(mktemp)
-  sed "s|\[LOCAL_DIRECTIONS_PATH\]|$repo|g" "$template" > "$rendered"
-  "$repo/scripts/gen-directions-index.sh" --write "$rendered" --base "$repo" >/dev/null
+  python3 -I - "$template" "$repo" "$rendered" <<'PY'
+from pathlib import Path
+import sys
+Path(sys.argv[3]).write_text(Path(sys.argv[1]).read_text().replace('[LOCAL_DIRECTIONS_PATH]', sys.argv[2]))
+PY
+  "$repo/scripts/gen-directions-index.sh" --format inline --write "$rendered" --base "$repo" >/dev/null
+  python3 -I - "$rendered" "$repo" <<'PY'
+from pathlib import Path
+import re, sys
+text = Path(sys.argv[1]).read_text()
+root = Path(sys.argv[2])
+assert root.is_absolute() and (root / 'commands/execute.md').is_file()
+for name in re.findall(r'`((?:commands/)?[0-9a-z][0-9a-z_-]*\.md)`', text):
+    assert (root / name).is_file(), f'unresolved master reference: {name}'
+assert len(re.findall(r'^<!-- DIRECTIONS-CODEX:START .* -->$', text, re.M)) == 1
+assert text.count('DIRECTIONS-CODEX:START') == text.count('DIRECTIONS-CODEX:END') == 1
+assert text.endswith('<!-- DIRECTIONS-CODEX:END -->\n')
+PY
   if grep -q '\[LOCAL_DIRECTIONS_PATH\]' "$rendered"; then
     say "  ✗ unresolved [LOCAL_DIRECTIONS_PATH]; refusing to install"
     exit 1
   fi
 
   if [ -f "$agents_file" ]; then
+    python3 -I - "$agents_file" <<'PY'
+from pathlib import Path
+import re, sys
+text = Path(sys.argv[1]).read_text()
+starts = [m.start() for m in re.finditer('DIRECTIONS-CODEX:START', text)]
+ends = [m.start() for m in re.finditer('DIRECTIONS-CODEX:END', text)]
+assert (not starts and not ends) or (len(starts) == len(ends) == 1 and starts[0] < ends[0]), 'invalid managed markers'
+if starts:
+    assert len(re.findall(r'^<!-- DIRECTIONS-CODEX:START .* -->$', text, re.M)) == 1, 'invalid START line'
+    assert len(re.findall(r'^<!-- DIRECTIONS-CODEX:END -->$', text, re.M)) == 1, 'invalid END line'
+PY
     start_count=$(grep -c 'DIRECTIONS-CODEX:START' "$agents_file" || true)
     end_count=$(grep -c 'DIRECTIONS-CODEX:END' "$agents_file" || true)
     if [ "$start_count" -ne "$end_count" ]; then
@@ -78,12 +105,15 @@ if [ "$skip_agents" = 0 ]; then
     fi
 
     if [ "$start_count" -eq 1 ]; then
-      awk -v block="$rendered" '
-        BEGIN { while ((getline line < block) > 0) replacement = replacement line "\n" }
-        /DIRECTIONS-CODEX:START/ { printf "%s", replacement; skip=1; next }
-        /DIRECTIONS-CODEX:END/ { skip=0; next }
-        !skip { print }
-      ' "$agents_file" > "$merged"
+      python3 -I - "$agents_file" "$rendered" "$merged" <<'PY'
+from pathlib import Path
+import sys
+original, replacement = [Path(p).read_bytes() for p in sys.argv[1:3]]
+start = original.rfind(b'\n', 0, original.index(b'DIRECTIONS-CODEX:START')) + 1
+end = original.find(b'\n', original.index(b'DIRECTIONS-CODEX:END'))
+end = len(original) if end < 0 else end + 1
+Path(sys.argv[3]).write_bytes(original[:start] + replacement + original[end:])
+PY
     else
       cp "$agents_file" "$merged"
       [ ! -s "$merged" ] || printf '\n' >> "$merged"
@@ -92,7 +122,7 @@ if [ "$skip_agents" = 0 ]; then
   else
     cp "$rendered" "$merged"
   fi
-fi
+}
 
 [ "$dry_run" = 1 ] && say "— DRY RUN: no files will change —"
 say "Repo:   $repo"
