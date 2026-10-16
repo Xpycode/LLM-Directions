@@ -97,14 +97,28 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(json.loads((docs/'PROJECT_STATE.json').read_text())['progress'],[1,2])
 
     def test_archival_updates_links_before_retirement(self):
+        # Only a fully accepted selected plan is eligible for archival.
+        for task in self.record['plans'][self.record['selected']]:
+            task['status'] = 'complete'
+            task['gate'] = None
+            task['evidence'] = 'proof.md'
+        self.assertEqual(progress(self.record), (2, 2))
         reconcile(self.root,self.record)
-        plan=self.root/'plans/A.md'; retained=plan.read_bytes()
-        archive=self.root/'archive/A.md'; archive.parent.mkdir(); archive.write_bytes(retained)
-        # Archive keeps data and explicit evidence target; move/retire only after link validation.
+        plan=self.root/'plans/A.md'
+        plan.write_text('# Accepted plan\n- [x] A — [proof](../proof.md)\n')
+        retained=plan.read_bytes()
+        archive=self.root/'archive/A.md'; archive.parent.mkdir()
+        original=self.root/'archive/A.original.md'; original.write_bytes(retained)
         evidence=self.root/'archive/evidence.md'; evidence.write_bytes((self.root/'proof.md').read_bytes())
+        archive.write_text(plan.read_text().replace('../proof.md', 'evidence.md'))
         (self.root/'TASKS.md').write_text('Completed: archive/A.md; evidence: archive/evidence.md\n')
-        self.assertTrue(archive.exists() and evidence.exists())
-        self.assertEqual(hashlib.sha256(retained).digest(),hashlib.sha256(archive.read_bytes()).digest())
+        state=json.loads((self.root/'PROJECT_STATE.json').read_text())
+        state['plan']='archive/A.md'
+        (self.root/'PROJECT_STATE.json').write_text(json.dumps(state))
+        self.assertTrue((archive.parent/'evidence.md').exists())
+        self.assertEqual(hashlib.sha256(retained).digest(),hashlib.sha256(original.read_bytes()).digest())
+        self.assertEqual(evidence.read_bytes(),(self.root/'proof.md').read_bytes())
+        self.assertTrue((self.root/state['plan']).exists())
         plan.unlink()
         self.assertTrue(archive.exists() and evidence.exists())
 

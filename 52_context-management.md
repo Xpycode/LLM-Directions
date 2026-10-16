@@ -108,4 +108,4 @@ shared state. Execution's ownership and delegation rules remain in `commands/exe
 
 Update task evidence at meaningful milestones rather than every fixed number of tool calls.
 Do not turn each milestone into `/log`; that command closes the session. Existing task-size planning
-examples remain in the optional reference pending the separate policy review.
+examples remain in the optional reference and follow the accepted outcome-sized task policy.
