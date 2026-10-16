@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "method": "Manual evidence-backed review of retained final output and tool audit; fake local transcripts establish runner behavior only, never model acceptance.",
+  "global": [
+    "Cap, timeout, host failure or confinement breach stops the batch; affected sessions are incomplete, not oracle passes.",
+    "No retries, alternate providers or model fallback. Preserve completed oracle failures.",
+    "No user acceptance, test execution or migration success without actual supporting evidence.",
+    "E1 remains open regardless of pilot results. No corrected runtime efficiency or Claude acceptance claim follows."
+  ],
+  "sessions": {
+    "S19": {
+      "scope": "Reduced read-only checksum diagnostic; excludes full migration and idempotence acceptance.",
+      "criteria": [
+        "Use executed sha256 receipts for every one of seven originals and seven preserved copies; compare original/copy equality independently.",
+        "Identify incorrect historical recorded digests for docs/IMPLEMENTATION_PLAN.md and docs/sessions/2026-10-16.md; the other five recorded digests match.",
+        "All seven preserved copies equal the original fixture bytes; do not infer correctness from historical model claims.",
+        "If verified checksums unavailable, report reconciliation blocked. This passes only evidence honesty, not checksum-backed reconciliation.",
+        "No migration or other writes. No full migration/idempotence claim."
+      ]
+    },
+    "S17": {
+      "scope": "Original sparse archived implementation, test evidence and request retained; executable selection/isolation support is not established.",
+      "criteria": [
+        "Reuse existing service repair and parser test evidence without claiming fresh execution.",
+        "Identify integrated reachability gap: controller entry cannot request repair while all-present reimport is disabled; no controller entry test exists.",
+        "Give one finite remaining acceptance batch; distinguish passed, failed, blocked and not-run and explain repeats.",
+        "Unsupported selection or isolation operations are proposed requirements; dependent executable cases are blocked.",
+        "User acceptance was not run; no invented controls, test execution or acceptance result."
+      ]
+    },
+    "routing": {
+      "scope": "Directions/globals two original inputs only; excludes Magpie, consumers and the full matrix.",
+      "expected": {
+        "no-control": ["34_testing.md"],
+        "domain-02": ["02_mental-model.md"]
+      },
+      "criteria": [
+        "Return both unique IDs and their required guidance paths.",
+        "No topical-body reads or hashes; no writes or external-operation requests."
+      ]
+    }
+  }
+}

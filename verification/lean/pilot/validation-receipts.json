@@ -1,0 +1,124 @@
+{
+  "scope": "Local fake-host validation only; E1 open. No provider requests or model oracle observations.",
+  "date": "2026-10-16",
+  "frozen_path": "/private/tmp/directions-pilot-local-2026-10-16-hl50v46l/frozen-v3",
+  "candidate_source_files": 93,
+  "historical_source_files": 91,
+  "historical_rendered_files": 91,
+  "manifest": {
+    "bytes": 138383,
+    "sha256": "6a003ba68edebee2967179bbb9d5e11a6501249dc0892c5833432088494789c2"
+  },
+  "tests": {
+    "runner": 19,
+    "preparation": 9,
+    "integration": 3,
+    "total": 31,
+    "note": "28-test run passed; affected preparation9 and added integration3 passed after final integration fixes; no redundant broad rerun."
+  },
+  "integration": {
+    "status": "complete",
+    "calls": 24,
+    "requested_calls": 24,
+    "returned_bytes": 18418,
+    "sessions": [
+      {
+        "id": "S19",
+        "calls": 16,
+        "requested_calls": 16,
+        "returned_bytes": 4510,
+        "status": "complete",
+        "process_launched": true,
+        "exit_code": 0,
+        "termination_grace_seconds": 1,
+        "final": "Inert local replay complete; no model or oracle observation.",
+        "termination_requested": false,
+        "elapsed_seconds": 0.040065750014036894
+      },
+      {
+        "id": "S17",
+        "calls": 4,
+        "requested_calls": 4,
+        "returned_bytes": 1335,
+        "status": "complete",
+        "process_launched": true,
+        "exit_code": 0,
+        "termination_grace_seconds": 1,
+        "final": "Inert local replay complete; no model or oracle observation.",
+        "termination_requested": false,
+        "elapsed_seconds": 0.03374241600977257
+      },
+      {
+        "id": "routing",
+        "calls": 4,
+        "requested_calls": 4,
+        "returned_bytes": 12573,
+        "status": "complete",
+        "process_launched": true,
+        "exit_code": 0,
+        "termination_grace_seconds": 1,
+        "final": "Inert local replay complete; no model or oracle observation.",
+        "termination_requested": false,
+        "elapsed_seconds": 0.03380691597703844
+      }
+    ],
+    "independent_checksum_receipts": 14,
+    "equal_original_copy_pairs": 7,
+    "snapshot_unchanged_before_and_after": true
+  },
+  "configured_sizes": {
+    "S19": {
+      "entry": 11325,
+      "prompt": 597,
+      "fixture_metadata": 1181,
+      "fixture_evidence": 3278,
+      "physical_file_inventory": 1001803,
+      "tool_readable_file_bytes": 1001803
+    },
+    "S17": {
+      "entry": 11325,
+      "prompt": 308,
+      "fixture_metadata": 2692,
+      "fixture_evidence": 1254,
+      "physical_file_inventory": 1001001,
+      "tool_readable_file_bytes": 1001001
+    },
+    "routing": {
+      "entry": 11337,
+      "prompt": 354,
+      "fixture_metadata": 298,
+      "fixture_evidence": 0,
+      "physical_file_inventory": 993338,
+      "tool_readable_file_bytes": 24309
+    }
+  },
+  "preserved_unchanged_sha256": {
+    "verification/lean/final-source-manifest.json": "0506fca87deb89b9bd66b06cc8c9dbd60fd3fff6c574fc08ddef4c648a609b3a",
+    "verification/lean/host-replay-2026-10-16/evidence-manifest.json": "826881185e120dee16c0a755d0ad6f914fa5a503068f38c71b8aa7754f0b111e",
+    "verification/lean/host-replay-2026-10-16/runs.json": "e1beee1fbe93e8633ee68f069d003e1ad91b4064d6f1b167ca6abe8a3c4b53d0",
+    "verification/lean/codex-followup-receipts.json": "dddb48909b9c1d7e9b184e2b68f9d86e69c7fbd8cc4644ce707717d8bc01b0d9",
+    "IMPLEMENTATION_PLAN.md": "709bd87c5e4482ee3ddc7eeaf5bc4f111060f03bf695938582eb1587931fd9ae"
+  },
+  "current_tool_sha256": {
+    "fake_host.py": "1cf4e9b73fe69e2dbf8e1dcfcfdd4d09c92731ebba1ed5dc920c7d47a7c5df71",
+    "prepare.py": "135018e107c4b37833aad7e134c4d03af95743d04dbc0a859d46e06041458cc9",
+    "runner.py": "2b9ca9461fa3fae628ff883f796d2ba07a0b8c5de3bbb1d8d3fda4583a03e1e0",
+    "scoring.json": "6f7891ce629cf8733647f891c40285e395c8687969b6f656bbc5b0fb41ddbded",
+    "test_prepare.py": "c82cb777cadf5c90740f9296c352068e4f71d1406e4456785d5024cd87778c55",
+    "test_runner.py": "7cd57a7370a14912f0b587f1d84e22edf554a7f2456531c1c6948d7b50fe6ce3",
+    "test_validate.py": "905ba527ce6f58512b8a2f18c6ab6df95e45e71813067ad496b1f1236c384d97",
+    "validate.py": "f58e595f717fdd61aa56e9101ec8b6057a8c3ce76875b9e1433c51a39b1a17d2"
+  },
+  "archive": {
+    "path": "/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/.archive/pilot-local-2026-10-16/frozen-v3-and-local-validation.zip",
+    "bytes": 2627279,
+    "sha256": "e5c1746c9cc6fa96bc6522f6bc806ac0f4855894c08ed1f2f0ecfaa9ca623ba8",
+    "crc_pass": true,
+    "scope": "Machine-local ignored archive; final v3 freeze and local validation only. v1 preparation was unlaunched; v2 smoke superseded only for explicit readable-vs-physical byte metadata correction. Earlier artifacts retained locally; no model runs occurred."
+  },
+  "remaining_gates": [
+    "Live Codex adapter and actual discovery/envelope parity unimplemented/unverified",
+    "No model pilot authorized or scheduled; manual scoring unobserved",
+    "Historical findings, Claude deferral and byte tradeoffs remain open"
+  ]
+}
