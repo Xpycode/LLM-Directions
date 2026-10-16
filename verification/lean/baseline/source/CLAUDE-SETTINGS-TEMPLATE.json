@@ -1,0 +1,30 @@
+{
+  "effortLevel": "high",
+  "alwaysThinkingEnabled": true,
+  "autoCompactEnabled": false,
+  "tui": "fullscreen",
+  "theme": "dark-daltonized",
+  "extraKnownMarketplaces": {
+    "claude-code-warp": {
+      "source": {
+        "source": "github",
+        "repo": "warpdotdev/claude-code-warp"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "clangd-lsp@claude-plugins-official": false,
+    "code-review@claude-plugins-official": false,
+    "commit-commands@claude-plugins-official": false,
+    "context7@claude-plugins-official": true,
+    "explanatory-output-style@claude-plugins-official": false,
+    "feature-dev@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "greptile@claude-plugins-official": false,
+    "learning-output-style@claude-plugins-official": false,
+    "security-guidance@claude-plugins-official": true,
+    "serena@claude-plugins-official": false,
+    "swift-lsp@claude-plugins-official": true,
+    "warp@claude-code-warp": true
+  }
+}

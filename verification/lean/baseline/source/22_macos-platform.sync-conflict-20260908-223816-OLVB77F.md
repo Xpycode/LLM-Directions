@@ -1,0 +1,605 @@
+<!--
+TRIGGERS: macOS, sandbox, entitlements, bookmark, Keychain, notarization, menu bar app, accessibility, ScreenCaptureKit, screen recording, SCShareableContent, SCContentSharingPicker
+PHASE: implementation
+LOAD: sections
+-->
+
+# macOS Platform Specifics
+
+*Platform-specific patterns, gotchas, and requirements for macOS development.*
+
+---
+
+## Security-Scoped Bookmarks
+
+### When You Need Them
+
+- Accessing files outside your sandbox
+- Persisting access to user-selected files across app launches
+- Any file access that should survive app restart
+
+### Implementation Pattern
+
+```swift
+// SAVING a bookmark (after user selects file)
+func saveBookmark(for url: URL) throws {
+    let bookmarkData = try url.bookmarkData(
+        options: .withSecurityScope,
+        includingResourceValuesForKeys: nil,
+        relativeTo: nil
+    )
+    UserDefaults.standard.set(bookmarkData, forKey: "savedBookmark_\(url.lastPathComponent)")
+}
+
+// RESTORING a bookmark (on app launch)
+func restoreBookmark(key: String) -> URL? {
+    guard let bookmarkData = UserDefaults.standard.data(forKey: key) else {
+        return nil
+    }
+
+    var isStale = false
+    do {
+        let url = try URL(
+            resolvingBookmarkData: bookmarkData,
+            options: .withSecurityScope,
+            relativeTo: nil,
+            bookmarkDataIsStale: &isStale
+        )
+
+        if isStale {
+            // Re-save the bookmark
+            try saveBookmark(for: url)
+        }
+
+        return url
+    } catch {
+        print("Failed to restore bookmark: \(error)")
+        return nil
+    }
+}
+
+// USING a security-scoped resource
+func useSecurityScopedResource(at url: URL, operation: (URL) throws -> Void) throws {
+    guard url.startAccessingSecurityScopedResource() else {
+        throw SecurityError.accessDenied
+    }
+    defer {
+        url.stopAccessingSecurityScopedResource()
+    }
+    try operation(url)
+}
+```
+
+### Critical Rules
+
+1. **Always balance start/stop** — Use `defer` to ensure `stopAccessingSecurityScopedResource()` is called
+2. **Check return value** — `startAccessingSecurityScopedResource()` can return `false`
+3. **Handle stale bookmarks** — Re-create them when `isStale` is true
+4. **Store bookmark data, not URLs** — URLs don't persist permissions
+
+---
+
+## Keychain Operations
+
+### Performance Warning
+
+```swift
+// WARNING: Keychain can be SLOW (50-200ms)
+// Don't call on main thread during UI operations
+
+// WRONG: Blocking main thread
+func viewDidLoad() {
+    let apiKey = Keychain.get("apiKey")  // Could block 200ms!
+}
+
+// RIGHT: Load async, cache result
+@MainActor
+class APIManager {
+    private var cachedKey: String?
+
+    func getAPIKey() async -> String? {
+        if let cached = cachedKey {
+            return cached
+        }
+
+        return await Task.detached {
+            let key = Keychain.get("apiKey")
+            await MainActor.run {
+                self.cachedKey = key
+            }
+            return key
+        }.value
+    }
+}
+```
+
+### Keychain Wrapper Pattern
+
+```swift
+enum Keychain {
+    static func set(_ value: String, for key: String) -> Bool {
+        let data = value.data(using: .utf8)!
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: data
+        ]
+
+        SecItemDelete(query as CFDictionary)  // Remove existing
+        return SecItemAdd(query as CFDictionary, nil) == errSecSuccess
+    }
+
+    static func get(_ key: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: true
+        ]
+
+        var result: AnyObject?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+              let data = result as? Data else {
+            return nil
+        }
+
+        return String(data: data, encoding: .utf8)
+    }
+}
+```
+
+---
+
+## URLSession Default Timeout
+
+### The Problem
+
+```swift
+// DEFAULT: 60 second timeout
+// This is often too long for user-facing operations
+let task = URLSession.shared.dataTask(with: url)
+```
+
+### The Fix
+
+```swift
+// Custom configuration with appropriate timeout
+let config = URLSessionConfiguration.default
+config.timeoutIntervalForRequest = 10  // 10 seconds
+config.timeoutIntervalForResource = 30  // 30 seconds total
+
+let session = URLSession(configuration: config)
+```
+
+---
+
+## File Not in project.pbxproj (AI-Generated Files)
+
+### The Problem
+
+Claude/AI generates a file, but Xcode doesn't see it. Build fails with "file not found."
+
+### Why It Happens
+
+AI tools create files on disk but don't update Xcode's project file (`.pbxproj`).
+
+### The Fix
+
+**Option 1: Manual Add**
+1. In Xcode, right-click the folder
+2. "Add Files to [Project]..."
+3. Select the new file(s)
+
+**Option 2: Check After AI Generates Files**
+```
+After generating files, always tell Claude:
+"Verify the new files are in the Xcode project.
+Run: grep 'NewFileName' *.xcodeproj/project.pbxproj"
+```
+
+**Option 3: Use Swift Package Manager**
+Files in SPM packages are auto-discovered (no pbxproj needed).
+
+---
+
+## Sandbox Considerations
+
+### What Sandbox Restricts
+
+| Operation | Sandboxed | Non-Sandboxed |
+|-----------|-----------|---------------|
+| Access ~/Documents | Via bookmark | Direct |
+| Access /Applications | No | Yes |
+| Network access | With entitlement | Yes |
+| Keychain (full) | Limited | Full |
+| System preferences | No | Yes |
+| Apple Events | With entitlement | Yes |
+
+### Entitlements File
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "...">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+</dict>
+</plist>
+```
+
+### Sandbox + Sparkle Auto-Update
+
+If your app uses Sparkle and is sandboxed, you **must** include `com.apple.security.network.client` in your entitlements. Without it, the sandbox blocks all outgoing HTTP — Sparkle can't fetch `appcast.xml` and shows a generic "Update Error" with no useful diagnostic.
+
+Note that `ENABLE_APP_SANDBOX = YES` in Xcode build settings injects the sandbox at build time **even if the `.entitlements` file is empty**. Always verify the build setting, not just the entitlements file.
+
+### When to Go Non-Sandboxed
+
+- System-level audio routing (HAL drivers)
+- Window management across apps (Accessibility API)
+- Full filesystem access requirements
+- Distributing outside Mac App Store anyway
+
+**Trade-off:** Non-sandboxed apps cannot be distributed via Mac App Store.
+
+---
+
+## Menu Bar Apps
+
+### Basic Structure
+
+```swift
+@main
+struct MenuBarApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
+    var body: some Scene {
+        MenuBarExtra("My App", systemImage: "star") {
+            MenuBarView()
+        }
+        .menuBarExtraStyle(.window)  // or .menu for simple menu
+
+        Settings {
+            SettingsView()
+        }
+    }
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // Hide dock icon for menu-bar-only apps
+        NSApp.setActivationPolicy(.accessory)
+    }
+}
+```
+
+### Dual Interface Pattern
+
+```swift
+// Menu bar + main window
+@main
+struct DualInterfaceApp: App {
+    @State private var showMainWindow = false
+
+    var body: some Scene {
+        MenuBarExtra("App", systemImage: "star") {
+            Button("Show Main Window") {
+                showMainWindow = true
+                NSApp.setActivationPolicy(.regular)
+                NSApp.activate(ignoringOtherApps: true)
+            }
+            Divider()
+            Button("Quit") { NSApp.terminate(nil) }
+        }
+
+        Window("Main", id: "main") {
+            MainView()
+        }
+        .defaultVisibility(showMainWindow ? .visible : .hidden)
+    }
+}
+```
+
+---
+
+## Accessibility API (Window Management)
+
+### Permissions
+
+```swift
+// Check accessibility permissions
+func checkAccessibilityPermissions() -> Bool {
+    let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+    return AXIsProcessTrustedWithOptions(options as CFDictionary)
+}
+```
+
+### Getting Window Information
+
+```swift
+func getWindowsForApp(pid: pid_t) -> [[String: Any]]? {
+    let app = AXUIElementCreateApplication(pid)
+
+    var windowsRef: CFTypeRef?
+    let result = AXUIElementCopyAttributeValue(app, kAXWindowsAttribute as CFString, &windowsRef)
+
+    guard result == .success, let windows = windowsRef as? [AXUIElement] else {
+        return nil
+    }
+
+    return windows.map { window in
+        var title: CFTypeRef?
+        var position: CFTypeRef?
+        var size: CFTypeRef?
+
+        AXUIElementCopyAttributeValue(window, kAXTitleAttribute as CFString, &title)
+        AXUIElementCopyAttributeValue(window, kAXPositionAttribute as CFString, &position)
+        AXUIElementCopyAttributeValue(window, kAXSizeAttribute as CFString, &size)
+
+        return [
+            "title": (title as? String) ?? "",
+            "position": position,
+            "size": size
+        ]
+    }
+}
+```
+
+---
+
+## Screen Recording Permission (ScreenCaptureKit)
+
+### The periodic "bypass system private window picker" dialog
+
+**Symptom:** macOS shows "*[App] is requesting to bypass the system private window picker and
+directly access your screen and audio*" — with Allow / Open System Settings buttons — even
+though Screen Recording permission was already granted and the app worked fine before.
+
+**Cause:** macOS Sequoia+ re-prompts roughly **monthly** (previously weekly, tightened then
+relaxed by Apple) for any app that calls `SCShareableContent`/`excludingDesktopWindows(...)`
+directly instead of going through Apple's own `SCContentSharingPicker` UI. This is expected
+system behavior, not app-specific and not a regression — confirmed identical dialog text
+reported for Snagit, Dropshare, and Zight/CloudApp, none of which are related codebases.
+
+**Not a bug to "fix" reactively.** The only way to eliminate it is to adopt
+`SCContentSharingPicker`, which replaces your own capture-region/window-picker UI with Apple's
+system picker — a real UX tradeoff, not a permission-plumbing fix. Worth doing only if the
+app's design is fine ceding selection UI to the system picker (e.g. simple screen-share tools);
+**not** worth it for apps whose custom selection overlay is the product's differentiator (e.g.
+a screenshot tool with its own drag-to-select region — see QuickScreenShot's decisions.md
+2026-07-11 for the actual tradeoff writeup).
+
+**Verifying Login Items / SMAppService registration independently of app self-report:**
+`SMAppService.mainApp.status` can be trusted, but for a paranoia check (or in a test/verify
+script) cross-reference the OS's own Background Task Management registry instead of taking the
+API's word for it:
+
+```bash
+sfltool dumpbtm | grep -i -A 10 "<AppName>"
+# Look for: Disposition: [enabled, allowed, notified]
+```
+
+---
+
+## Quarantine and Gatekeeper
+
+### Checking Quarantine Status
+
+```bash
+# Check if file is quarantined
+xattr -l /path/to/app.app
+
+# Remove quarantine (for development)
+xattr -dr com.apple.quarantine /path/to/app.app
+```
+
+### Common Issues
+
+**Problem:** App won't launch, says "damaged"
+**Cause:** Quarantine flag + missing signature
+**Fix:** `xattr -cr /path/to/app.app` (clears all extended attributes)
+
+---
+
+## Notarization for Distribution
+
+### Process
+
+1. **Archive:** Xcode → Product → Archive
+2. **Export:** Distribute App → Developer ID
+3. **Notarize:** Automatically submitted to Apple
+4. **Staple:** `xcrun stapler staple MyApp.app`
+
+### DMG Distribution
+
+```bash
+# Create DMG
+hdiutil create -volname "MyApp" -srcfolder ./MyApp.app -ov -format UDZO MyApp.dmg
+
+# Notarize DMG
+xcrun notarytool submit MyApp.dmg --apple-id "email" --team-id "TEAM" --password "app-specific-password" --wait
+
+# Staple
+xcrun stapler staple MyApp.dmg
+```
+
+---
+
+## Disk Free Space on APFS — your number won't match Finder
+
+**Symptom:** your app reports free disk space; a user compares it to Finder and says you're wrong by
+tens of GB. Both are "correct" — they're different questions, and APFS **purgeable space** is the gap.
+
+Measured on one M4 Pro (994.66 GB volume), all APIs on the same volume at the same moment:
+
+| API | Value | Who else shows this |
+|---|---|---|
+| `statfs().f_bavail × f_bsize` | 600.62 GB | `df`, **Disk Utility** |
+| `URLResourceKey.volumeAvailableCapacityKey` | 600.62 GB | (same number) |
+| `FileManager.attributesOfFileSystem(.systemFreeSize)` | 600.62 GB | (same number) |
+| **`.volumeAvailableCapacityForImportantUsageKey`** | **617.24 GB** | **Finder** — sidebar, Get Info, About This Mac |
+| `.volumeAvailableCapacityForOpportunisticUsageKey` | 596.46 GB | nothing — see below |
+| `CSDiskSpaceGetRecoveryEstimate()` (purgeable) | 16.62 GB | the delta itself |
+
+`600.62 + 16.62 = 617.24` — the gap **is** the purgeable estimate (iCloud-evictable files, caches,
+snapshots, large fonts). Finder was cross-checked with `osascript -e 'tell app "Finder" to get free
+space of startup disk'` and matched to within 82 KB.
+
+**Decide which question you're answering, then say so:**
+
+- **"Match Finder"** (what most users expect from a consumer-facing readout) → use
+  `.volumeAvailableCapacityForImportantUsageKey`, or `statfs` + `CSDiskSpaceGetRecoveryEstimate()`.
+- **"Match Disk Utility / `df`"** (what's free *right now* without eviction) → plain `statfs`.
+
+iStat Menus ships this as a **user setting** ("hide purgeable space") rather than picking for you —
+a reasonable move when both answers are defensible.
+
+**Gotchas:**
+
+- **Never display `…ForOpportunisticUsage`.** It is *smaller* than plain available (596 < 600) because
+  it reserves headroom. It answers "may I speculatively download this?", not "how full is the disk?"
+- **`…ForImportantUsageKey` is a required-reason API** — needs declaring in `PrivacyInfo.xcprivacy`
+  if you ship one. `statfs` carries no such requirement. Relevant for App Store; not for
+  direct/notarized distribution today.
+- **`CSDiskSpaceGetRecoveryEstimate(_ url: NSURL) -> UInt64`** (`import CoreServices`) is **undocumented
+  SPI**. It compiles and runs with no extra linking, but weigh it like any private API. Cache it —
+  it's not cheap; exelban/stats caches for 30 s.
+- **On APFS, `/` and `/System/Volumes/Data` report identical *free* space** — the container is shared.
+  But `df` shows wildly different **Used** per mountpoint (e.g. 12 Gi for the sealed read-only System
+  volume vs 340 Gi for Data). So derive used as **`total − free`**; never read a per-volume "used" and
+  assume it means the machine.
+
+```swift
+let url = URL(fileURLWithPath: "/")
+let v = try url.resourceValues(forKeys: [
+    .volumeTotalCapacityKey,
+    .volumeAvailableCapacityForImportantUsageKey,   // the Finder number
+])
+let total = Int64(v.volumeTotalCapacity ?? 0)
+let free  = v.volumeAvailableCapacityForImportantUsage ?? 0
+let used  = total - free                            // NOT a per-volume "used" reading
+```
+
+---
+
+## Debugging Tools
+
+### Disposable AppKit input targets and process identity
+
+Observed in the [Directions Stop spike](verification/mac-control/stop-spike.md), macOS 27.0:
+
+- Distinct test bundles can still collapse to the first process in System Events when they share
+  one `CFBundleExecutable` name. OtherSpaces launched four ad hoc signed apps with distinct bundle
+  IDs and PIDs, but System Events queries by process name and literal Unix ID repeatedly returned
+  the first instance until each bundle received a distinct executable name. For multi-app fixtures,
+  make `CFBundleExecutable` unique per role and verify `pid` plus `comm`; do not treat a System
+  Events process reference as exact-instance evidence merely because the bundle IDs differ.
+- `NSTextView(frame:textContainer:)` does **not** build the text system for a nil container. A
+  view can receive key events while its string stays empty. Supply retained `NSTextStorage`,
+  `NSLayoutManager` and `NSTextContainer`, or use the initializer that constructs the text system.
+  Check actual insertion as well as event delivery. See Apple's
+  [initializer contract](https://developer.apple.com/documentation/appkit/nstextview/init%28frame%3Atextcontainer%3A%29).
+- A directly spawned AppKit executable may lack `NSRunningApplication.launchDate`. For an owned
+  worker/target boundary, obtain kernel start seconds/microseconds via `proc_pidinfo`, and verify
+  UID, expected parent and the full executable path. Recheck before use; PID alone is insufficient.
+- Foundation path standardization rewrote `/private/var` to `/var` while Python's `Path.resolve()`
+  retained `/private/var`. Mixed-language identity checks must agree on normalization; the spike
+  uses `proc_pidpath` plus POSIX `realpath` and compares full paths. Never repair this by matching
+  only a basename. Swift may not import expression macros such as `PROC_PIDPATHINFO_MAXSIZE`;
+  use the installed SDK's equivalent expression (`4 * MAXPATHLEN`).
+- Check permissions in the **actual executable and execution context**. This worker's nonprompting
+  checks were false in the agent shell sandbox and true in approved outside-sandbox execution,
+  with no TCC changes. One probe does not describe another executable's grants. Respect host
+  approval requirements; do not change permissions merely to hide a sandbox/context mismatch.
+
+### Owned Space markers: registration can report transient membership
+
+Observed in OtherSpaces on macOS 27.0 (2026-09-07), in a session involving fullscreen
+playback and a display change: newly ordered marker windows reported `isOnActiveSpace == true`,
+then false about 48–173 ms later, without intervening `activeSpaceDidChangeNotification` events.
+An immediate post-registration read is therefore insufficient evidence of stable Desktop context.
+Track membership changes as well as notifications, label registration/order changes as unsettled,
+and invalidate registration when display topology changes. A settling delay is a diagnostic guard,
+not proof that the correct native Desktop has been identified. Ordinary-Desktop behavior and
+multiple displays still require independent live validation; do not generalize this observation
+into a working public-API Desktop identity mechanism.
+
+### General tools
+
+| Tool | Purpose | Command |
+|------|---------|---------|
+| Console.app | System logs | GUI app |
+| `log stream` | Live logs | `log stream --predicate 'processImagePath contains "MyApp"'` |
+| `otool -L` | Check linked libraries | `otool -L MyApp.app/Contents/MacOS/MyApp` |
+| `codesign -dv` | Verify signature | `codesign -dv --verbose=4 MyApp.app` |
+| `xattr` | Extended attributes | `xattr -l file` |
+| `mdls` | Spotlight metadata | `mdls file` |
+| `qlmanage` | Quick Look preview | `qlmanage -p file` |
+
+**Unified-log gotchas (cost a whole debugging round on ColorX, 2026-07-08):** empty results
+usually mean a broken *query*, not missing logs. (1) In zsh, `log` is a **shell builtin** (login
+watcher) that shadows `/usr/bin/log` — scripted/pipelined calls fail with "too many arguments",
+and `2>/dev/null` turns that into a fake empty result. Always call **`/usr/bin/log`** by full
+path in scripts. (2) `Logger.info`/`.debug` messages are **filtered out by default** — pass
+`--info` (or `--debug`) to *both* `log show` and `log stream`, or you'll see only default/error
+levels and conclude your instrumentation never ran.
+
+**`applicationShouldTerminateAfterLastWindowClosed` is a polled policy query, not a close event
+(cost two sessions on QuickScreenShot, 2026-07-12):** AppKit calls it from a repeating
+"check for terminate" timer whenever window state changes — many times per second while an app
+sits windowless. Side effects there are a trap; *creating a window-backed object* (an
+`NSStatusItem` is one) re-arms the very check that called you → infinite feedback loop: main
+thread pegged (~68% CPU), hotkeys dead, and the status item destroyed/re-created too fast for
+Control Center to ever composite it — which perfectly mimics an "icon doesn't render in
+accessory mode" OS bug. Diagnosis rules that fell out: (1) before theorizing about rendering,
+check the process is *idle* — `ps -o state,%cpu`, then `sample <pid> 3` for the hot stack;
+(2) `CGWindowList` window counts are NOT an icon-visibility proxy (churning items really have
+windows, momentarily). Keep the callback cheap and idempotent: guarded `setActivationPolicy`
+at most, `return false`.
+
+---
+
+## State Restoration & Relaunch (windows reappearing / zombie windows)
+
+Hard-won facts (PlayPlayPlay, 2026-07-12 — SwiftUI `WindowGroup(for:)` viewer):
+
+- **`ApplePersistenceIgnoreState YES` (per-app defaults) suppresses *restoring* only — saving
+  continues.** State silently accumulates behind the mask; the first launch after deleting the key
+  replays every stale window once. Never treat the flag as "restoration is off" — it's "restoration
+  is hidden".
+- **`NSWindow.isRestorable = false` acts at *save* time, not launch time.** It keeps the window out
+  of the *next* state snapshot; already-saved state still restores once, until the first clean quit
+  rewrites it. Expect exactly one "legacy drain" launch after shipping the flag.
+- **SwiftUI value-based windows (`WindowGroup(for: Value.self)`) can restore with a late or missing
+  value** → zombie empty windows. If the value implies *file access* (a URL), reliable restore also
+  drags in security-scoped bookmarks + offline-volume grace — often the right v1 call is opting those
+  windows out (`isRestorable = false` in the window-configure hook) and letting a welcome/front-door
+  window + Open Recent cover relaunch.
+- **Testing restoration headlessly:** `killall` bypasses the state-save path — only a graceful quit
+  exercises it. `osascript -e 'tell application "X" to quit'` goes through (quit needs no Automation
+  grant; window *queries* via AppleScript are TCC-blocked). Count/identify windows without any TCC
+  via `CGWindowListCopyWindowInfo` — owner name + bounds are free; window *titles* need Screen
+  Recording. Window frames by size (welcome vs player default) is usually enough.
+- Window **frame** memory (`NSWindow Frame <autosave-name>` in the app's defaults) is independent of
+  state restoration and survives `isRestorable = false`.
+
+---
+
+## Quick Reference
+
+| Task | Pattern |
+|------|---------|
+| Persist file access | Security-scoped bookmarks |
+| Store secrets | Keychain (async, cached) |
+| Menu bar app | MenuBarExtra + .accessory policy |
+| Window management | Accessibility API + permissions |
+| Distribution | Notarized DMG |
+| Debug crashes | Console.app + log stream |
+
+---
+
+*Keep this reference updated as you encounter platform-specific issues.*

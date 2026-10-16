@@ -1,0 +1,438 @@
+<!--
+TRIGGERS: cheatsheet, quick lookup, shortcuts, daily reference, Codex controls, Claude Code commands,
+          prompts, checklist
+PHASE: any
+LOAD: full
+-->
+
+# Quick Reference Card
+
+*Print this. Keep it visible.*
+
+Directions works in Codex and Claude Code. Workflow commands below are shared; host controls are
+labelled explicitly. In Codex, prefer slashless Directions commands when a built-in slash command
+uses the same name.
+
+---
+
+## The Workflow (Every Feature)
+
+```
+SPEC → PLAN → IMPLEMENT → REVIEW → VERIFY → COMMIT
+```
+
+| Step | Action | Time |
+|------|--------|------|
+| **Spec** | Interview until clear | 10-30 min |
+| **Package?** | Before building: already a zPackages package, in another app, or mature OSS? (`45_packages.md`) | 2 min |
+| **Plan** | Break into 30-min phases | 5-10 min |
+| **Implement** | One phase at a time | <30 min each |
+| **Review** | Adversarial, 2-3 passes | 5-10 min |
+| **Verify** | Test actual user flow | 5 min |
+| **Commit** | Clear message, move on | 2 min |
+
+---
+
+## Essential Prompts
+
+### Spec Interview
+```
+Read SPEC.md and interview me in detail about
+technical implementation, UI/UX, concerns, tradeoffs.
+Keep asking until complete, then write the spec.
+```
+
+### Adversarial Review
+```
+Do a git diff and pretend you're a senior dev who
+HATES this. What would you criticize? What edge cases?
+```
+
+### Debugging
+```
+This isn't working: [symptom]
+Add diagnostic logging to trace what's happening.
+```
+
+### Architecture Check
+```
+Is this thread-safe? Should any classes be actors?
+```
+
+---
+
+## Codex Daily Controls
+
+| Command | Purpose |
+|---|---|
+| `/usage` | Account usage activity and available resets |
+| `/status` | Current session model, permissions, token use, and context |
+| `/model` | Choose model and reasoning effort |
+| `/permissions` | Change what Codex may do without asking |
+| `/statusline` | Configure persistent footer information |
+| `/plan` | Enter Codex planning mode |
+| `/review` | Review the working tree |
+| `/compact` | Compress a long conversation |
+| `/new` or `/clear` | Start a fresh conversation |
+| `/fork` | Branch the current conversation |
+| `/side` | Ask an ephemeral side question |
+| `/skills` | Browse and invoke skills |
+| `/mcp` | Inspect configured MCP tools |
+
+Codex `/status` is not Directions `status`. Use `status`, `status arrive`, or `$directions /status`
+for project state. See `64_codex.md` for the full distinction and current model mapping.
+
+---
+
+## Claude Code Keyboard Shortcuts
+
+| Action | Shortcut |
+|--------|----------|
+| Cancel operation | `Ctrl+C` |
+| Exit session | `Ctrl+D` |
+| Clear screen | `Ctrl+L` |
+| Plan mode | `Shift+Tab` (twice) |
+| Multiline input | `Option+Enter` (macOS) |
+| Command history | `Up/Down` arrows |
+| Escape line break | `\` + `Enter` |
+| Rewind changes | `Esc` + `Esc` (double-tap) |
+| Toggle thinking | `Option+T` (macOS) / `Alt+T` |
+| Switch model | `Option+P` (macOS) / `Alt+P` |
+| Paste image | `Ctrl+V` / `Cmd+V` (iTerm2) |
+| Open in editor | `Ctrl+G` |
+| Verbose output | `Ctrl+O` |
+| Background task | `Ctrl+B` |
+| Toggle task list | `Ctrl+T` |
+
+---
+
+## Claude Code Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/clear` | Reset conversation |
+| `claude -c` | Resume last session (CLI flag, not a slash command) |
+| `/compact` | Compress context |
+| `/config` | Settings wizard |
+| `/model` | Switch models |
+| `/cost` | Token usage |
+| `/doctor` | Diagnostics |
+| `/plan` | Enter plan mode |
+| `/status full` | Token usage breakdown |
+| `/status` | Version, model, account info |
+| `/stats` | Usage patterns (Pro/Max) |
+| `/rewind` | Undo to previous checkpoint |
+| `/rename <name>` | Name current session |
+| `/resume [session]` | Resume named session |
+| `/export` | Export conversation |
+| `/mcp` | Manage MCP servers |
+| `/terminal-setup` | Install terminal bindings |
+| `/vim` | Enable vim editing mode |
+
+---
+
+## Claude Code Skills Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/skill-name` | Invoke any installed skill |
+| `/plugin marketplace add <source>` | Add a skill marketplace |
+| `/plugin install <name>@<source>` | Install a skill from marketplace |
+
+**Creating skills:** Place `SKILL.md` in `.claude/skills/<name>/` (project) or `~/.claude/skills/<name>/` (personal).
+
+**See:** `23_claude-code-cli.md` for full skills documentation.
+
+---
+
+## Context Management
+
+| Situation | Codex | Claude Code |
+|---|---|---|
+| Starting a session | `/status` | `/status full` |
+| Context 50-70% | Prepare to compact | Prepare to compact |
+| Context 70-85% | `/compact` with focus | `/compact` with focus |
+| Context 85%+ | Finish the current unit, record a handoff, then compact or start fresh | Finish the current unit, record a handoff, then compact or start fresh |
+| Switching topics | `/new` or `/clear` | `/rename`, then `/clear` |
+| Resuming later | `/resume` | `/resume [session]` |
+
+**Quick compaction:** `/compact Focus on [what matters most]`
+
+*The percentages are heuristics, not product guarantees. See `52_context-management.md` for the
+canonical context guidance.*
+
+**The correction spiral fix:** After 2 failed corrections, `/clear` and rewrite your initial prompt.
+
+---
+
+## Plan Mode
+
+| Host | Enter planning mode |
+|---|---|
+| Codex | `/plan` or cycle collaboration mode with `Shift+Tab`; use `/permissions` separately for authority |
+| Claude Code | `/plan` or `Shift+Tab` twice with the standard mode order |
+
+**Note:** `/plan` is the host's planning mode. Directions' `make-plan` writes
+`IMPLEMENTATION_PLAN.md`; it is a different workflow. In Codex, `/permissions` controls authority
+separately from the planning approach.
+
+**Use for:**
+- New features
+- Comparing approaches
+- Before any significant change
+
+**Always ask:**
+- Is each phase <30 min?
+- Is each phase testable?
+- Does each phase leave code working?
+
+---
+
+## Red Flags in Code
+
+| See This | Ask This |
+|----------|----------|
+| `try?` | "Are we ignoring errors?" |
+| `!` (force unwrap) | "What if this is nil?" |
+| `@unchecked Sendable` | "Is this actually safe?" |
+| 500+ line file | "Should this be split up?" |
+| Class with shared state | "Should this be an actor?" |
+| No error handling | "What happens on failure?" |
+
+---
+
+## AI Code Quality Thresholds
+
+| Metric | Healthy | Caution | Stop & Review |
+|--------|---------|---------|---------------|
+| Total LOC | < 10k | 10k-30k | > 30k |
+| Largest file | < 300 | 300-500 | > 500 |
+| Features | ≤ 7 | 8-10 | > 10 |
+| Change size | < 200 LOC | 200-500 | > 500 |
+
+**Weekly check:** `/check code` — run codebase health audit
+
+**AI-typical issues:**
+- Happy-path bias (error paths untested)
+- Edge case gaps (empty, nil, max values)
+- Verbose solutions (ask: "can this be simpler?")
+- Confident wrongness (always verify)
+
+---
+
+## Top 5 Bug Categories
+
+| Bug | Symptom | Ask |
+|-----|---------|-----|
+| **Coordinates** | Wrong position/size | "Points or pixels?" |
+| **UI not updating** | Changes don't show | "Is @Observable detecting this?" |
+| **Race condition** | Intermittent crash | "Is this thread-safe?" |
+| **Silent failure** | Feature doesn't work | "Are errors being swallowed?" |
+| **Persistence** | Data lost on restart | "Is save actually happening?" |
+
+---
+
+## Project Files
+
+```
+project/
+├── AGENTS.md           ← Codex project instructions
+├── CLAUDE.md           ← Claude Code project instructions (when used)
+├── IMPLEMENTATION_PLAN.md ← Active execution only
+├── README.md           ← What it does
+└── docs/
+    ├── PROJECT_STATE.md ← Lean current state
+    ├── decisions.md     ← Durable choices
+    └── sessions/        ← Detailed history
+```
+
+---
+
+## Project Entry-Point Essentials
+
+```markdown
+# Project Name
+
+## Tech Stack
+- SwiftUI, async/await, JSON persistence
+
+## Rules
+- ViewModels: @MainActor
+- Shared state: actors (not classes)
+- Errors: handle explicitly (no try?)
+
+## Critical (learned hard way)
+- [Add bugs that took hours to find]
+```
+
+---
+
+## NOW/NEXT/LATER
+
+```markdown
+## NOW (1-5 items max)
+- [ ] The thing I'm doing today
+
+## NEXT (after NOW)
+- [ ] The thing after that
+
+## LATER (ideas, not promises)
+- Maybe someday
+```
+
+**Rule:** If NOW has >5 items, you're not prioritizing.
+
+---
+
+## Commit Checklist
+
+Before committing:
+- [ ] Adversarial review done (2-3 passes)
+- [ ] Real bugs fixed (nitpicks ignored)
+- [ ] Actually tested the user flow
+- [ ] Build succeeds
+- [ ] Clear commit message
+
+---
+
+## When Things Break
+
+1. **Describe precisely** — not "broken," but exact symptom
+2. **Add logging** — trace the actual execution
+3. **Share logs** — let the coding agent analyse the evidence
+4. **Document fix** — add comment if tricky
+
+---
+
+## Multi-Model Validation
+
+**Use when:**
+- Critical code (money, data, security)
+- Architecture decisions
+- Something feels off
+
+**How:**
+1. The primary agent reviews first
+2. Ask another model family for an independent review when the risk justifies it
+3. Compare findings
+4. Investigate disagreements; agreement alone is not proof
+
+---
+
+## Review Focus
+
+**Fix these:**
+- Crashes (nil, empty array, missing handling)
+- Security (unsanitized input, exposed secrets)
+- Logic errors (wrong conditions, off-by-one)
+- Threading (shared state, race conditions)
+
+**Ignore these:**
+- Style preferences
+- Variable naming
+- "Could be refactored"
+- Over-engineering suggestions
+
+---
+
+## The Golden Rules
+
+1. **Interview before coding** — specs prevent rework
+2. **30-minute phases** — always be close to working
+3. **Adversarial review** — coding agents can be confidently wrong
+4. **Verify actual usage** — build success ≠ feature works
+5. **Document the WHY** — prevent "fix it back to broken"
+
+---
+
+## Architecture Quick Picks
+
+| Need | Use |
+|------|-----|
+| Thread-safe shared state | Actor |
+| UI state | @MainActor ViewModel |
+| Data storage | JSON files |
+| Async operations | async/await |
+| UI framework | SwiftUI |
+
+---
+
+## Debugging Questions
+
+Ask these in order:
+1. What exactly should happen?
+2. What exactly does happen?
+3. Where in the code does it go wrong?
+4. What's the state at that point?
+5. Why is the state wrong?
+
+---
+
+## Emergency Fixes
+
+**Build won't succeed:**
+```
+Show me the exact error. Don't explain, just fix it.
+```
+
+**Feature stopped working:**
+```
+Do a git diff from last working commit.
+What changed that could cause this?
+```
+
+**AI is confused:**
+```
+Let's start fresh. Here's what I need: [one sentence]
+```
+
+---
+
+## Weekly Maintenance
+
+- [ ] Review NOW list — still accurate?
+- [ ] Move completed to DONE with dates
+- [ ] Promote from NEXT if ready
+- [ ] Remove LATER items you'll never do
+- [ ] Update `AGENTS.md` and/or `CLAUDE.md` only with durable project guidance
+
+---
+
+## Memory Files
+
+| Level | File | Scope |
+|-------|------|-------|
+| Codex user | `$CODEX_HOME/AGENTS.md` | Personal guidance across Codex projects |
+| Codex project | `./AGENTS.md` | Repository or subtree guidance |
+| Claude user | `~/.claude/CLAUDE.md` | Personal guidance across Claude Code projects |
+| Claude project | `./CLAUDE.md` | Repository guidance |
+| Claude local | `./CLAUDE.local.md` | Personal, uncommitted guidance |
+
+---
+
+## Related Guides
+
+| Need | Guide |
+|------|-------|
+| AI code quality | 35_ai-code-quality.md |
+| Testing | 34_testing.md |
+| TDD workflow | 34_testing.md (TDD section) |
+| Step-by-step curriculum | Directions-CURRICULUM.md |
+| Model and reasoning selection | 60_model-selection.md |
+| Codex CLI and integration | 64_codex.md |
+| Claude Code CLI | 23_claude-code-cli.md |
+| Large project context | 52_context-management.md (Part 1) |
+| SwiftUI bugs | 20_swiftui-gotchas.md |
+| Coordinates | 21_coordinate-systems.md |
+| macOS specifics | 22_macos-platform.md |
+| Troubleshooting | 25_troubleshooting.md |
+| Add-on ecosystem | 26_ecosystem.md |
+| Context management (all aspects) | 52_context-management.md |
+| Multi-Mac coordination (sync-conflicts, divergent commits, per-machine state) | 37_multi-mac-discipline.md |
+| Pre-release | 30_production-checklist.md |
+| App minimums | 33_app-minimums.md |
+| Doc templates | 12_documentation-templates.md |
+
+---
+
+*When in doubt: Spec → Plan → Small phases → Review → Verify*

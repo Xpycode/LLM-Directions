@@ -1,0 +1,347 @@
+{
+  "date": "2026-10-16",
+  "head": "00ad1870fad98c491a2108ee74451e06dcea0339",
+  "dirty_status": " M 20_swiftui-gotchas.md\n M 22_macos-platform.md\n M 29_web-strato-hosting.md\n M 44_my-glossary.md\n M MACHINES.md\n M PROJECT_STATE.md\n M TASKS.md\n M sessions/_index-archive.md\n M sessions/_index.md\n M specs/directions-lean-efficiency-plan.md\n M specs/directions-lean-efficiency.md\n M verification/directions-lean-efficiency-planning.md\n?? verification/directions-review-2026-10-16.md\n?? verification/lean/\n",
+  "files": {
+    "00_base.md": {
+      "bytes": 17483,
+      "sha256": "164349d903fccf78a6753e5ef72da571c66ba49f7c80eb900eae99744156bc4f"
+    },
+    "01_quick-reference.md": {
+      "bytes": 12159,
+      "sha256": "b3dea4e1de757424cb92369aa4eb954d24fbd4223bcfbe510c5b7b6faad53a34"
+    },
+    "02_mental-model.md": {
+      "bytes": 6890,
+      "sha256": "009f23d8818cf87bd4b9dcf414c998ba8541485df8b5bb13fbbed22121f4f26c"
+    },
+    "04_architecture-decisions.md": {
+      "bytes": 10174,
+      "sha256": "b101c865da0b7758c684500ed1eb7bb49a94c169ec3dd61effb5376e27ffe05c"
+    },
+    "10_new-project.md": {
+      "bytes": 10981,
+      "sha256": "ef068c8df0baa20be4e1b6ef537f6ef6c9faf993f09dc755c11456a8a772dde9"
+    },
+    "12_documentation-templates.md": {
+      "bytes": 12647,
+      "sha256": "dcaa366ec1d4e69f583e20a5b9dcb6ce1d595d7d47f983ec4b313ff56bffb1f0"
+    },
+    "13_folder-structure.md": {
+      "bytes": 26222,
+      "sha256": "f968c52d30de1d141fee86d6f86339288bb642450db0a4c5388a465bec3cb1f1"
+    },
+    "14_project-identity.md": {
+      "bytes": 4576,
+      "sha256": "bb8203d2473d5b31fc9d07dc818c41d84e00ba195c45637f48a624eb36dca52b"
+    },
+    "20_swiftui-gotchas.md": {
+      "bytes": 31934,
+      "sha256": "06e09bd770812ffc02da9ebea9b0d9f09b9fcde4f74cb2ae27ccb4afb15ab984"
+    },
+    "21_coordinate-systems.md": {
+      "bytes": 8125,
+      "sha256": "4329d3426195b7e378ffb99754e0ce80e82ad11f707ba31152e0a53d83bbe22e"
+    },
+    "22_macos-platform.md": {
+      "bytes": 24564,
+      "sha256": "37b02be04a6011323b15f7c8ba27e1c3d89060961ead313018b959cd3fdf8ce2"
+    },
+    "22_macos-platform.sync-conflict-20260908-223816-OLVB77F.md": {
+      "bytes": 22895,
+      "sha256": "13591ad85660422db1f65505bf4fae20b4822ac1e12f8e0e7f651eb321d08f62"
+    },
+    "23_claude-code-cli.md": {
+      "bytes": 14272,
+      "sha256": "09339c8c6b896bc8c9999922b091f0f8d873548a6de5a83133ffeb971a8b3a18"
+    },
+    "24_web-gotchas.md": {
+      "bytes": 13740,
+      "sha256": "61cfa569c060c49b9c6b510ae611c511c7a5eb88149c7c64f8c22c80b8d744fa"
+    },
+    "25_troubleshooting.md": {
+      "bytes": 10022,
+      "sha256": "e7d89e253159b990b452b0411713e6a77f1d3aa91a4bffc50b8fb720fea2a8fa"
+    },
+    "26_ecosystem.md": {
+      "bytes": 14065,
+      "sha256": "5c654dfb2cf889f33ab2c0cfba44ea3477bcc49d29007f5afd21fe7d3364c02a"
+    },
+    "27_mcp-gotchas.md": {
+      "bytes": 6560,
+      "sha256": "54915d4eb9ea59242e6a11a10c4a2649ba40f037f1ca76df3928c0bbbb8f40ae"
+    },
+    "28_xcode-signing-and-sourcekit.md": {
+      "bytes": 11501,
+      "sha256": "9545f15143a6137c5f250a1d70d018fddfae13df6358729b1c71781a1e8ea9d3"
+    },
+    "29_web-strato-hosting.md": {
+      "bytes": 17026,
+      "sha256": "ff22c0e59ffff7bfb3b31da13816229f6e4c263f6ed0e7d4a09ae1083264b774"
+    },
+    "30_production-checklist.md": {
+      "bytes": 9177,
+      "sha256": "8b83622208e534d5632e19f0d65ed37792489aa950e67dca878845c7d901e1fa"
+    },
+    "32_git-workflow.md": {
+      "bytes": 9283,
+      "sha256": "a70b1e9df9d5cdd0cdbdec0f113a0fd015fe96c42036af2c2327204811b9f703"
+    },
+    "33_app-minimums.md": {
+      "bytes": 24833,
+      "sha256": "f7468bb2b2266f6fbf1c931ad066f2ba38ea3208566a0f95e1c32a59f36024f8"
+    },
+    "34_testing.md": {
+      "bytes": 22037,
+      "sha256": "4f89dcdf15eee989b909d807ef654ac85ff9af85091a1b7b21d5729cb504bb19"
+    },
+    "35_ai-code-quality.md": {
+      "bytes": 8303,
+      "sha256": "a485afdb19246f5477ef8f4f1685c8adba1660e5f566dd2f5addbb8d07f6979b"
+    },
+    "36_ui-changes-protocol.md": {
+      "bytes": 4940,
+      "sha256": "8f51bd9ea5c53b82af608c1769d62adf12d34ad86c65157e97895330d85b6307"
+    },
+    "37_multi-mac-discipline.md": {
+      "bytes": 42094,
+      "sha256": "3fb42b1cd08840280ee3d2477f1004d89cfdd370e4fc2555ccc1e49ad0acf71e"
+    },
+    "38_ios-swiftui-state.md": {
+      "bytes": 13336,
+      "sha256": "9bff9b4a0c96f3230425413e39004dbc2981b8ae4e8ab09218bbd3c4ff0a38dc"
+    },
+    "39_libsql-turso-sync.md": {
+      "bytes": 9215,
+      "sha256": "a322eb726109d30697aec40ef7b73418fe46cc6f4fed38d152e4ce61b1b1ada8"
+    },
+    "40_typography.md": {
+      "bytes": 4328,
+      "sha256": "c28bac83bcf3c5a2300a8e70b714a70b7d4f929d6becc1dccb82b9f09a4214e1"
+    },
+    "41_ui-vocabulary.md": {
+      "bytes": 16399,
+      "sha256": "5a8a5bfcd9cea960f685d675ef38b9075ad09991bdbbb4750c130147bcb76fe5"
+    },
+    "42_design-system.md": {
+      "bytes": 9359,
+      "sha256": "bbb5ba60c5385bf2f0c519773d0965515a43a4af481a356c9e8d5a1d0b5758df"
+    },
+    "43_data-structures.md": {
+      "bytes": 10446,
+      "sha256": "0e2d9a1dd7592986127dfc6224a1e8c81728db2a97cd71b6e679380b8477a925"
+    },
+    "44_my-glossary.md": {
+      "bytes": 1441,
+      "sha256": "8c3dfe39b33ffe6a92ced4522e63d9fc7249c4a32a37df297e69fb91239876a3"
+    },
+    "45_packages.md": {
+      "bytes": 4864,
+      "sha256": "dbc34949a15e7b97ba344f83eeb61cd12c51652c89d5e2a4ae163eb359aaa2ff"
+    },
+    "46_main-menu.md": {
+      "bytes": 3969,
+      "sha256": "d8cfc034593c4d8ab8add1239f57d9aaf1774b9c5b493915206a5ac251aff266"
+    },
+    "47_project-ui-conventions.md": {
+      "bytes": 13373,
+      "sha256": "a77a5e943bb8ddf4b623cf8a43acf48c647ae8158daeb4e55dbdc86fe42efe98"
+    },
+    "50_progressive-context.md": {
+      "bytes": 1095,
+      "sha256": "4820cbe965a37e0a0ccb4a6d56aa2f3c6a3610eb173e6ce5737df68f3696ef5d"
+    },
+    "51_planning-patterns.md": {
+      "bytes": 905,
+      "sha256": "db09a7a5df9fd351f81f847af24aea164321aabad208324a97983d74c9dce681"
+    },
+    "52_context-management.md": {
+      "bytes": 33813,
+      "sha256": "ff8ebd0a1122254ed0fd5788266928cac65624165146c128da104fc5b1926024"
+    },
+    "53_llm-failure-modes.md": {
+      "bytes": 7953,
+      "sha256": "4ee18916f0e3428c874e235509f6a10a1ed9645dbe38b2db589b948c243a937e"
+    },
+    "54_security-rules.md": {
+      "bytes": 6858,
+      "sha256": "90905bea407201f7fccef1684d8226e4feb0dc4b3474f8af317e9d8dd6c0ac85"
+    },
+    "55_spec-template.md": {
+      "bytes": 4292,
+      "sha256": "ca38a2d2ca0c69717375dab6d3210b9b6e62fca8527647705baa07959e6a3721"
+    },
+    "56_acceptance-criteria.md": {
+      "bytes": 6665,
+      "sha256": "6324035133116e442034497388adfee8fd0d8dc9707602937270e42bcf9e700e"
+    },
+    "57_checkpoint-discipline.md": {
+      "bytes": 5821,
+      "sha256": "a1efebf80c651d27b55e154f875eac79ede38bee17600897bcfa983b7308bb62"
+    },
+    "58_context-engineering.md": {
+      "bytes": 1166,
+      "sha256": "9be123331567f5e646fd1a5f0bf939b51c83147b318574dea556e12d1e289e6e"
+    },
+    "59_example-mapping.md": {
+      "bytes": 8540,
+      "sha256": "07a5bdc0937c3299f332b21e9146144e438143159f555cf51500515b5691d7ca"
+    },
+    "60_model-selection.md": {
+      "bytes": 7551,
+      "sha256": "11f86ce8bdcbeba5fa01dfdd426310b6ab0b37dd6a38ef56b3a1c344c051fdda"
+    },
+    "61_distribution-notarization.md": {
+      "bytes": 7821,
+      "sha256": "c07e06ce85705c68ba58720c09980ef96b27fc3e35199957e7edcb882a4deecf"
+    },
+    "62_final-stretch-triage.md": {
+      "bytes": 5179,
+      "sha256": "730157a8f4274c336ecba3b2028e4ffb80a2976e6de4099223eb20a4c44b914e"
+    },
+    "63_security-audit.md": {
+      "bytes": 8270,
+      "sha256": "9439770f9f624e1ef67565ad85e3452175b602ab9489ea9446271ab11c28e176"
+    },
+    "64_codex.md": {
+      "bytes": 10853,
+      "sha256": "b6c0ce5d4f07ffa5272d8f54e615268f17a5e68e40e441e2f4563f4727fe8e04"
+    },
+    "AGENTS.md": {
+      "bytes": 3615,
+      "sha256": "acf426922f4599fdff5630b42d6dc1c0c86fad8be766c307c8c1a43e129593c7"
+    },
+    "CLAUDE-GLOBAL-TEMPLATE.md": {
+      "bytes": 19385,
+      "sha256": "50970f883e2e63f07f296c39b0e22318413c035bf96b6df3c65f970e1af05e90"
+    },
+    "CLAUDE-SETTINGS-TEMPLATE.json": {
+      "bytes": 991,
+      "sha256": "8aaddf626bfb61122e073d3ecb3bec5d526fdf9e3558f339d58bb590e2edf1a6"
+    },
+    "CLAUDE-SETTINGS-TEMPLATE.md": {
+      "bytes": 3998,
+      "sha256": "325ecfe80ebb74339770ad00bd39bd2b8e3f03a8dfdfbee54c8c78737d11af1a"
+    },
+    "CODEX-GLOBAL-TEMPLATE.md": {
+      "bytes": 8406,
+      "sha256": "0c9b5b4469ec9e74c94acf7fc1e77f2e3edc91314c0a98f84b2ac91f6d617663"
+    },
+    "IMPLEMENTATION_PLAN-template.md": {
+      "bytes": 4457,
+      "sha256": "d7c012b0716952f106e872cc15479f5bd025348094fc3ba766ae0f5df8467a21"
+    },
+    "IMPLEMENTATION_PLAN.md": {
+      "bytes": 48343,
+      "sha256": "709bd87c5e4482ee3ddc7eeaf5bc4f111060f03bf695938582eb1587931fd9ae"
+    },
+    "PROJECT_STATE.md": {
+      "bytes": 10852,
+      "sha256": "3ef2984423378e5b638700de0b0a83143559560cffc0c02da9de22870031921d"
+    },
+    "README.md": {
+      "bytes": 9951,
+      "sha256": "d6d4238b672002c94dba1d8854b4fe1ab0cd69c5b638b99eee5b4a497e5dcaca"
+    },
+    "TASKS.md": {
+      "bytes": 13620,
+      "sha256": "43ef77346f96b352814c72cb7faed9d7a46d654fb51b4d96277f413fc43d0c0b"
+    },
+    "codex/skills/directions/SKILL.md": {
+      "bytes": 4591,
+      "sha256": "5bfbb4b36580fa331c1440786d513fd16da1ec20673ff7e4ab2c89e474245689"
+    },
+    "commands/check.md": {
+      "bytes": 7439,
+      "sha256": "dab14c27472d5e87043af7f35d8315d75862a28f5312463048d86094f2d6aa6b"
+    },
+    "commands/cookbook.md": {
+      "bytes": 3190,
+      "sha256": "1cb1df407ab3036defb4c61ae53c4afbffb4d1f0ab5784833c871bc585167b1e"
+    },
+    "commands/decide.md": {
+      "bytes": 1076,
+      "sha256": "d7fa035dba78627a135c1f9df6c0b03cfbe1c0eb32ad5f06a1bad6e92819a167"
+    },
+    "commands/directions.md": {
+      "bytes": 3754,
+      "sha256": "7618c50c11212222d99a60534db21576d7eeb3e35b8e3dba09101072adfb4b82"
+    },
+    "commands/execute.md": {
+      "bytes": 11104,
+      "sha256": "d12d7cf2bd68319611b5b9fee969e95b03b625e12240d2bb298a781deb3dae2d"
+    },
+    "commands/learned.md": {
+      "bytes": 550,
+      "sha256": "c3faf5ba8e37a65a4e43aa3219262c473905dbdd4107ef640e5bd07a3a905d24"
+    },
+    "commands/log.md": {
+      "bytes": 17024,
+      "sha256": "3e877df9671b52010cc6f9ce9846c15531a276eebf63505a93022a0440f04f27"
+    },
+    "commands/make-plan.md": {
+      "bytes": 7051,
+      "sha256": "08c7fc375d34ab9382fb796b9d875d9e2ffcd5b107a0f318f6d5638103de3f2b"
+    },
+    "commands/setup.md": {
+      "bytes": 5113,
+      "sha256": "cb2b668f6eaa152b3bc7691b6b0ed6d4f513aeb1d1f68465c52005dd29cb2b90"
+    },
+    "commands/spec.md": {
+      "bytes": 5656,
+      "sha256": "4b7b1a4570e868c4dc28402f2bf8f459469c7880eabeade4bfca93e9cfe202df"
+    },
+    "commands/status.md": {
+      "bytes": 8212,
+      "sha256": "91dd2a3909ff6a6adee5650954be2f003b524c5c254e152f7fe1d07a5b63af57"
+    },
+    "commands/test-app.md": {
+      "bytes": 4874,
+      "sha256": "c6c2f003b69a81d11d8390cc2ed6768634e1e1f81c44657b520ec1dfe112e698"
+    },
+    "commands/worktree.md": {
+      "bytes": 4111,
+      "sha256": "e0cc118cdc8af3ec43584570fc5a2c6b38fe89ebb1d12e5c8d04e385606e3c99"
+    },
+    "decisions.md": {
+      "bytes": 50367,
+      "sha256": "51f2a9c04b18bc131f9571ccda4c094ce28cb498524b5f45319352b2b5aac02e"
+    },
+    "deploy-codex.sh": {
+      "bytes": 6421,
+      "sha256": "d268adc82fc695c9a6266ba750f5d6423ac84ab9d73790564a06745550e6d4be"
+    },
+    "docs.sh": {
+      "bytes": 417,
+      "sha256": "697ad01d6e7951e063ed1394c6b584da1b2fced22694ccec8be52618b7913f9a"
+    },
+    "install-directions.sh": {
+      "bytes": 2023,
+      "sha256": "4d701287af94a149c89b8cd069d5d76a6b75c1c09289b4c83be4af4663957081"
+    },
+    "redeploy.sh": {
+      "bytes": 14563,
+      "sha256": "fa08937fbd0faedebe0068c3c32460b182cb07efa3ec55db7e910800a9ac12b3"
+    },
+    "scripts/gen-directions-index.sh": {
+      "bytes": 6336,
+      "sha256": "c32b8a5b08c892bf1b4e25b0926c880cfbfb39b3bed5ecb1b2180dd3e9132f2c"
+    },
+    "scripts/install-skills.sh": {
+      "bytes": 1263,
+      "sha256": "21922767151b3d0a3080b34b83262673d962beba48902f8c6737294eb5bd68c3"
+    },
+    "scripts/sync-session-index.sh": {
+      "bytes": 5762,
+      "sha256": "127aceb3187c7113564774fa491473f2e59aa2def73d2d1bc189c1e7c7506dbe"
+    },
+    "specs/directions-lean-efficiency-plan.md": {
+      "bytes": 32591,
+      "sha256": "7c28d3348768a7bd821c4574d265e5629377ba01399e812c9b85aaf270482c3c"
+    },
+    "specs/directions-lean-efficiency.md": {
+      "bytes": 19407,
+      "sha256": "d07c8816c3e3a24e87539d79b2a7d336c911fab07f0224fb1e5bd6c810b3a95e"
+    }
+  }
+}

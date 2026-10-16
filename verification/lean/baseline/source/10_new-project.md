@@ -1,0 +1,387 @@
+<!--
+TRIGGERS: new project, starting project, project setup, init, create project
+PHASE: discovery
+LOAD: full
+-->
+
+# New Project Checklist
+
+*Everything you need to set up a new Swift/SwiftUI project for AI-assisted development.*
+
+---
+
+## Phase 1: Project Creation
+
+### Xcode Setup
+
+- [ ] Create new Xcode project (App or Package)
+- [ ] Set minimum deployment target — per-app, see `14_project-identity.md`
+- [ ] Set Swift version — per-app, see `14_project-identity.md` (Swift 6.0 baseline)
+- [ ] Configure bundle identifier
+- [ ] Set up code signing (Development / Distribution)
+
+### Directory Structure
+
+The code goes in `01_Project/` per the universal rule in `13_folder-structure.md`. Inside the Xcode project, organize sources like this:
+
+```
+ProjectName/                 # ← project root (git repo lives HERE, at this level)
+├── 01_Project/              # ← ALL Xcode/code (see 13_folder-structure.md)
+│   ├── ProjectName/
+│   │   ├── Models/          # Pure data structs (Codable, Sendable)
+│   │   ├── Services/        # Business logic (actors)
+│   │   ├── ViewModels/      # UI state (@MainActor, @Observable)
+│   │   ├── Views/           # SwiftUI components
+│   │   └── Resources/       # Assets, configs
+│   ├── ProjectName.xcodeproj/
+│   └── ProjectNameTests/    # Unit tests
+├── 02_Design/  03_Screenshots/  04_Exports/
+├── docs/                    # Directions
+├── CLAUDE.md                # Claude Code instructions (when used)
+├── AGENTS.md                # Codex instructions (when used)
+├── README.md                # Project overview
+├── .gitignore               # Git ignore patterns
+└── .git/                    # ← repo root, NOT inside 01_Project/
+```
+
+- [ ] Create the numbered folder structure (`01_Project/`, `02_Design/`, …) per `13_folder-structure.md`
+- [ ] Create the Xcode project inside `01_Project/`
+- [ ] Create `.gitignore` (template in `13_folder-structure.md`)
+- [ ] **Initialize git at the project root** — `git init` from `ProjectName/`, *not* from inside `01_Project/` (see `32_git-workflow.md`)
+
+---
+
+## Phase 2: AI Context Files
+
+### CLAUDE.md (Required for Claude Code)
+
+Create `CLAUDE.md` in project root with:
+
+- [ ] Project name and purpose
+- [ ] Build commands
+- [ ] Tech stack (Swift version, UI framework, min deployment)
+- [ ] Project structure overview
+- [ ] Threading rules (ViewModels = @MainActor, Services = actor)
+- [ ] Error handling rules (no `try?` swallowing)
+- [ ] State management rules (@Observable patterns)
+- [ ] Known issues / gotchas section
+
+Use the CLAUDE.md Template in `12_documentation-templates.md` as the starting point — don't
+copy a separate version here.
+
+### AGENTS.md (Required for Codex)
+
+Create `AGENTS.md` in the project root from the template in `12_documentation-templates.md`.
+Keep stable project facts (purpose, stack, build/test/lint commands, and safety constraints)
+aligned with `CLAUDE.md`, while keeping Codex-specific workflow and sandbox behavior here.
+Do not copy the Directions command library; Codex reaches the live `commands/*.md` files through
+the thin `directions` skill adapter.
+
+---
+
+## Phase 3: Documentation Files
+
+### README.md
+
+- [ ] Project name and one-line description
+- [ ] Badges (platform, Swift version, license)
+- [ ] Why this tool exists (problem it solves)
+- [ ] Features list
+- [ ] Screenshots placeholder
+- [ ] Quick start / installation
+- [ ] Requirements
+- [ ] Usage instructions
+- [ ] Architecture overview
+- [ ] Troubleshooting section
+- [ ] License
+
+### CHANGELOG.md
+
+- [ ] Create with Keep a Changelog format
+- [ ] Add `## [Unreleased]` section
+- [ ] Plan for Added/Changed/Fixed/Removed sections
+
+### Optional Documentation
+
+- [ ] SECURITY.md (if public repo)
+- [ ] PRIVACY.md (if user-facing app)
+- [ ] THREAT_MODEL.md (if handling sensitive data)
+- [ ] SESSION-LOG.md (for tracking AI sessions)
+
+All templates above live in `12_documentation-templates.md` — copy from there, don't recreate.
+
+---
+
+## Phase 4: Code Architecture
+
+### Threading Setup
+
+- [ ] ViewModels marked `@MainActor @Observable`
+- [ ] Services declared as `actor`
+- [ ] No shared mutable state in classes
+- [ ] Use `async/await`, not completion handlers
+
+```swift
+// ViewModel Pattern
+@MainActor
+@Observable
+final class ContentViewModel {
+    var items: [Item] = []
+    var isLoading = false
+    var error: Error?
+
+    private let service: DataService
+
+    func loadItems() async {
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            items = try await service.getItems()
+        } catch {
+            self.error = error
+        }
+    }
+}
+
+// Service Pattern
+actor DataService {
+    private var cache: [String: Data] = [:]
+
+    func getData(for key: String) async throws -> Data {
+        if let cached = cache[key] { return cached }
+        let data = try await fetchFromNetwork(key)
+        cache[key] = data
+        return data
+    }
+}
+```
+
+### State Management
+
+- [ ] Use `@Observable` for view models
+- [ ] Use `@State` only for view-local state
+- [ ] Document nested mutation workarounds
+- [ ] Use `@AppStorage` only for simple preferences
+
+### Error Handling
+
+- [ ] Create app-specific error types
+- [ ] Plan for user-facing error display
+- [ ] Set up logging with context
+- [ ] No `try?` swallowing errors
+
+### Persistence
+
+- [ ] Choose storage method (JSON files / UserDefaults / Core Data)
+- [ ] Create data directory: `~/Library/Application Support/[AppName]/`
+- [ ] Plan for data migration
+- [ ] Use Keychain for secrets (not UserDefaults)
+
+---
+
+## Phase 5: macOS-Specific Setup
+
+### Entitlements
+
+- [ ] Create entitlements file if needed
+- [ ] Add required capabilities:
+  - [ ] `com.apple.security.app-sandbox` (if sandboxed)
+  - [ ] `com.apple.security.files.user-selected.read-write` (file access)
+  - [ ] `com.apple.security.network.client` (network access)
+
+### Security-Scoped Bookmarks
+
+If persisting file access:
+- [ ] Implement bookmark save function
+- [ ] Implement bookmark restore function
+- [ ] Use `startAccessingSecurityScopedResource()` with `defer` cleanup
+- [ ] Handle stale bookmarks
+
+### App Type Setup
+
+**Standard App:**
+- [ ] Configure main window scene
+
+**Menu Bar App:**
+- [ ] Use `MenuBarExtra` in App struct
+- [ ] Set `.accessory` activation policy
+- [ ] Add quit command
+
+**Document-Based App:**
+- [ ] Set up document types in Info.plist
+- [ ] Implement document model
+
+---
+
+## Phase 6: Build Configuration
+
+### Schemes
+
+- [ ] Debug scheme configured
+- [ ] Release scheme configured
+- [ ] Test scheme configured (if separate)
+
+### Build Settings
+
+- [ ] Optimizations enabled for Release
+- [ ] Debug code uses `#if DEBUG`
+- [ ] No hardcoded development URLs/keys
+- [ ] Warning settings appropriate
+
+### Info.plist
+
+- [ ] Bundle display name
+- [ ] Bundle identifier
+- [ ] Version and build numbers
+- [ ] Minimum deployment target
+- [ ] Required device capabilities (if iOS)
+- [ ] Privacy usage descriptions (if needed)
+
+---
+
+## Phase 7: Development Workflow
+
+### Git Setup
+
+- [ ] Initialize repository
+- [ ] Create `.gitignore`
+- [ ] Make initial commit
+- [ ] Set up remote (GitHub/GitLab)
+- [ ] Create develop branch (if using git-flow)
+
+### AI Tool Integration
+
+- [ ] Test `claude` command in project directory
+- [ ] Verify CLAUDE.md is being read
+- [ ] Set up any custom slash commands (`.claude/commands/`)
+- [ ] Configure permissions if needed (`.claude/settings.json`)
+- [ ] Open Codex in the project directory and verify `AGENTS.md` is being applied
+- [ ] Verify the Codex `directions` skill can route to the live Directions command files
+
+### Workflow Process
+
+1. **Spec:** Interview about requirements
+2. **Plan:** Break into <30 min phases
+3. **Implement:** One phase at a time
+4. **Review:** Adversarial review (2-3 passes)
+5. **Verify:** Test actual user flow
+6. **Commit:** Clear message
+
+---
+
+## Phase 8: Quality Checklist
+
+### Code Quality
+
+- [ ] No `try?` swallowing errors silently
+- [ ] No `@unchecked Sendable` without justification
+- [ ] No force unwraps (`!`) without nil guards
+- [ ] Files under 500 lines
+- [ ] `defer` used for cleanup
+
+### Thread Safety
+
+- [ ] Services are actors (not classes with locks)
+- [ ] ViewModels are `@MainActor`
+- [ ] No plain Bool/Dictionary across threads
+- [ ] `@Published` updates on main thread
+
+### Security
+
+- [ ] Input validated
+- [ ] Secrets in Keychain
+- [ ] Path traversal prevented
+- [ ] Sensitive data not logged
+- [ ] Security-scoped resources balanced
+
+---
+
+## Phase 9: App Minimums Check
+
+Before shipping, verify baseline features are in place. See **33_app-minimums.md** for the full checklist.
+
+### Quick Check
+- [ ] Auto-update mechanism (Sparkle / App Store)
+- [ ] Version visible in UI (About window)
+- [ ] Diagnostic logging set up
+- [ ] Preferences system (@AppStorage)
+- [ ] Empty states designed
+- [ ] Loading/error states implemented
+- [ ] Keyboard shortcuts documented
+
+---
+
+## Phase 10: Pre-Release Prep
+
+### Distribution Setup
+
+- [ ] Developer ID certificate (macOS)
+- [ ] Provisioning profile (iOS)
+- [ ] App Store Connect setup (if applicable)
+
+### Notarization (macOS)
+
+- [ ] Code signing configured
+- [ ] Notarization credentials set up
+- [ ] Stapler workflow tested
+
+### Release Checklist
+
+- [ ] Version number updated
+- [ ] CHANGELOG updated
+- [ ] README current
+- [ ] Build succeeds (Release configuration)
+- [ ] No warnings
+- [ ] Tested on clean install
+- [ ] Code signed and notarized
+
+---
+
+## Quick Reference Tables
+
+### Essential Files
+
+| File | Purpose | Required |
+|------|---------|----------|
+| `CLAUDE.md` | Claude Code project instructions | When using Claude Code |
+| `AGENTS.md` | Codex project instructions | When using Codex |
+| `README.md` | Project documentation | Yes |
+| `.gitignore` | Git ignore patterns | Yes |
+| `CHANGELOG.md` | Version history | Recommended |
+
+### Architecture Patterns
+
+| Component | Pattern |
+|-----------|---------|
+| ViewModels | `@MainActor @Observable` class |
+| Services | `actor` |
+| Models | `struct` (Codable, Sendable) |
+| Views | SwiftUI structs |
+| Data storage | JSON files in App Support |
+| Secrets | Keychain |
+
+### Red Flags to Avoid
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| `try?` | Errors ignored | Use `do/catch` |
+| `!` force unwrap | Crash on nil | Use `guard let` |
+| `@unchecked Sendable` | Thread unsafety | Use proper actors |
+| 500+ line file | Unmaintainable | Split into modules |
+| Class with shared state | Race conditions | Convert to actor |
+
+---
+
+## First Day Workflow
+
+1. **Create project** with this checklist open
+2. **Set up CLAUDE.md and/or AGENTS.md** for the coding tools you use
+3. **Create directory structure**
+4. **Make initial commit** ("Initial project structure")
+5. **Start spec interview** for first feature
+6. **Plan in phases** (<30 min each)
+7. **Implement, review, verify, commit**
+
+---
+
+*Use this checklist for every new project. Update it as you discover new patterns.*

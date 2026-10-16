@@ -1,0 +1,712 @@
+<!--
+TRIGGERS: test, testing, unit test, XCTest, TDD, mock, stub, coverage, XCUITest
+PHASE: implementation, shipping
+LOAD: full
+-->
+
+# Testing Guide
+
+*What to test, how to test it, and when tests are worth writing.*
+
+---
+
+## Testing Strategy
+
+### The Pragmatic Approach
+
+Not everything needs tests. Focus testing effort where it matters most:
+
+| Priority | What to Test | Why |
+|----------|--------------|-----|
+| **High** | Parsers, data transforms | Complex logic, easy to break |
+| **High** | Business rules, calculations | Core correctness matters |
+| **High** | State machines | Many edge cases |
+| **Medium** | API request/response handling | Integration points break |
+| **Medium** | Error paths | Often untested, often broken |
+| **Low** | Simple CRUD | Low complexity |
+| **Skip** | UI layout, colors | Better verified visually |
+| **Skip** | Third-party library wrappers | Not your code |
+
+### When to Write Tests
+
+**Write tests when:**
+- Logic is complex (multiple branches, edge cases)
+- Bugs would be expensive (data corruption, security)
+- You keep breaking the same thing
+- You need confidence to refactor
+
+**Skip tests when:**
+- Code is trivial (simple getters, direct pass-through)
+- Manual testing is faster and sufficient
+- The feature is experimental and likely to change
+
+---
+
+## Test Types
+
+### Unit Tests
+
+Test individual functions/methods in isolation.
+
+```swift
+// What you're testing
+func calculateDiscount(price: Double, tier: CustomerTier) -> Double {
+    switch tier {
+    case .standard: return price * 0.0
+    case .silver: return price * 0.1
+    case .gold: return price * 0.2
+    }
+}
+
+// The test
+func testGoldCustomerGets20PercentDiscount() {
+    let discount = calculateDiscount(price: 100, tier: .gold)
+    XCTAssertEqual(discount, 20.0)
+}
+```
+
+### Integration Tests
+
+Test multiple components working together.
+
+```swift
+func testSaveAndLoadProject() async throws {
+    let store = ProjectStore()
+    let project = Project(name: "Test")
+
+    try await store.save(project)
+    let loaded = try await store.load(project.id)
+
+    XCTAssertEqual(loaded.name, "Test")
+}
+```
+
+### UI Tests (XCUITest)
+
+Test actual user flows through the interface.
+
+```swift
+func testUserCanCreateNewDocument() {
+    let app = XCUIApplication()
+    app.launch()
+
+    app.menuBars.menuItems["File"].click()
+    app.menuBars.menuItems["New"].click()
+
+    XCTAssertTrue(app.windows["Untitled"].exists)
+}
+```
+
+---
+
+## XCTest Basics
+
+### Test Structure
+
+```swift
+import XCTest
+@testable import YourApp
+
+final class ParserTests: XCTestCase {
+
+    // Runs before each test
+    override func setUp() {
+        super.setUp()
+        // Reset state
+    }
+
+    // Runs after each test
+    override func tearDown() {
+        // Cleanup
+        super.tearDown()
+    }
+
+    func testParseValidInput() {
+        // Arrange
+        let input = "valid data"
+        let parser = Parser()
+
+        // Act
+        let result = parser.parse(input)
+
+        // Assert
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.count, 3)
+    }
+
+    func testParseInvalidInputThrows() {
+        let parser = Parser()
+
+        XCTAssertThrowsError(try parser.parse("invalid")) { error in
+            XCTAssertEqual(error as? ParseError, .invalidFormat)
+        }
+    }
+}
+```
+
+### Common Assertions
+
+```swift
+// Equality
+XCTAssertEqual(actual, expected)
+XCTAssertNotEqual(actual, expected)
+
+// Boolean
+XCTAssertTrue(condition)
+XCTAssertFalse(condition)
+
+// Nil
+XCTAssertNil(value)
+XCTAssertNotNil(value)
+
+// Errors
+XCTAssertThrowsError(try riskyOperation())
+XCTAssertNoThrow(try safeOperation())
+
+// Floating point (with tolerance)
+XCTAssertEqual(1.0, 1.0001, accuracy: 0.01)
+
+// Fail explicitly
+XCTFail("This should not happen")
+```
+
+### Async Testing
+
+```swift
+func testAsyncOperation() async throws {
+    let service = DataService()
+    let result = try await service.fetchData()
+    XCTAssertFalse(result.isEmpty)
+}
+
+// Or with expectations (older style)
+func testAsyncWithExpectation() {
+    let expectation = expectation(description: "Data loaded")
+
+    service.loadData { result in
+        XCTAssertNotNil(result)
+        expectation.fulfill()
+    }
+
+    wait(for: [expectation], timeout: 5.0)
+}
+```
+
+---
+
+## Swift Testing Framework (Swift 6+)
+
+The newer `Testing` framework offers cleaner syntax:
+
+```swift
+import Testing
+@testable import YourApp
+
+@Suite("Parser Tests")
+struct ParserTests {
+
+    @Test("Parses valid input correctly")
+    func parseValidInput() {
+        let result = Parser().parse("valid")
+        #expect(result != nil)
+        #expect(result?.count == 3)
+    }
+
+    @Test("Throws on invalid input")
+    func parseInvalidInput() throws {
+        #expect(throws: ParseError.invalidFormat) {
+            try Parser().parse("invalid")
+        }
+    }
+
+    @Test("Handles edge cases", arguments: ["", " ", "\n"])
+    func parseEdgeCases(input: String) {
+        let result = Parser().parse(input)
+        #expect(result == nil)
+    }
+}
+```
+
+### Key Differences from XCTest
+
+| XCTest | Swift Testing |
+|--------|---------------|
+| `XCTAssertEqual(a, b)` | `#expect(a == b)` |
+| `XCTAssertTrue(x)` | `#expect(x)` |
+| `XCTAssertNil(x)` | `#expect(x == nil)` |
+| `XCTAssertThrowsError` | `#expect(throws:)` |
+| `class XCTestCase` | `@Suite struct` |
+| `func test...()` | `@Test func ...()` |
+
+---
+
+## Mocking and Stubbing
+
+### Protocol-Based Mocking
+
+```swift
+// Define protocol for the dependency
+protocol DataFetching {
+    func fetch(id: String) async throws -> Data
+}
+
+// Real implementation
+class NetworkDataFetcher: DataFetching {
+    func fetch(id: String) async throws -> Data {
+        // Real network call
+    }
+}
+
+// Mock for testing
+class MockDataFetcher: DataFetching {
+    var mockData: Data?
+    var shouldThrow = false
+    var fetchCallCount = 0
+
+    func fetch(id: String) async throws -> Data {
+        fetchCallCount += 1
+        if shouldThrow { throw TestError.simulated }
+        return mockData ?? Data()
+    }
+}
+
+// In tests
+func testViewModelLoadsData() async {
+    let mock = MockDataFetcher()
+    mock.mockData = testData
+
+    let viewModel = ViewModel(fetcher: mock)
+    await viewModel.load()
+
+    XCTAssertEqual(mock.fetchCallCount, 1)
+    XCTAssertNotNil(viewModel.data)
+}
+```
+
+### Dependency Injection Patterns
+
+```swift
+// Constructor injection (preferred)
+class ViewModel {
+    private let fetcher: DataFetching
+
+    init(fetcher: DataFetching = NetworkDataFetcher()) {
+        self.fetcher = fetcher
+    }
+}
+
+// Property injection (for optional dependencies)
+class ViewModel {
+    var logger: Logging = DefaultLogger()
+}
+
+// Environment-based (SwiftUI)
+struct ContentView: View {
+    @Environment(\.dataFetcher) var fetcher
+}
+```
+
+---
+
+## Test Organization
+
+### File Structure
+
+```
+Tests/
+├── YourAppTests/
+│   ├── Models/
+│   │   ├── ProjectTests.swift
+│   │   └── UserTests.swift
+│   ├── Services/
+│   │   ├── ParserTests.swift
+│   │   └── NetworkServiceTests.swift
+│   ├── ViewModels/
+│   │   └── MainViewModelTests.swift
+│   ├── Mocks/
+│   │   ├── MockDataFetcher.swift
+│   │   └── MockStorage.swift
+│   └── Helpers/
+│       └── TestData.swift
+└── YourAppUITests/
+    └── UserFlowTests.swift
+```
+
+### Naming Conventions
+
+```swift
+// Test class: [Subject]Tests
+class ParserTests: XCTestCase { }
+
+// Test method: test_[scenario]_[expectedResult]
+func test_parseEmptyString_returnsNil() { }
+func test_parseValidJSON_returnsModel() { }
+func test_parseInvalidJSON_throwsError() { }
+
+// Or: test[Action][Condition][ExpectedResult]
+func testParseReturnsNilForEmptyString() { }
+```
+
+---
+
+## Common Testing Gotchas
+
+### 1. Testing Async Code on Main Thread
+
+**Problem:** SwiftUI ViewModels are `@MainActor`, tests run on background.
+
+```swift
+// Wrong - may crash or behave unexpectedly
+func testViewModel() async {
+    let vm = ViewModel()  // @MainActor
+    await vm.load()
+}
+
+// Right - explicitly run on MainActor
+@MainActor
+func testViewModel() async {
+    let vm = ViewModel()
+    await vm.load()
+    XCTAssertNotNil(vm.data)
+}
+```
+
+### 2. Flaky Tests Due to Timing
+
+**Problem:** Tests pass sometimes, fail others.
+
+```swift
+// Wrong - race condition
+func testNotification() {
+    NotificationCenter.default.post(name: .dataLoaded, object: nil)
+    XCTAssertTrue(viewModel.hasData)  // May not have processed yet
+}
+
+// Right - use expectations
+func testNotification() {
+    let exp = expectation(for: NSPredicate { _, _ in
+        self.viewModel.hasData
+    }, evaluatedWith: nil)
+
+    NotificationCenter.default.post(name: .dataLoaded, object: nil)
+    wait(for: [exp], timeout: 1.0)
+}
+```
+
+### 3. Testing File System
+
+**Problem:** Tests leave files behind or depend on file locations.
+
+```swift
+// Right - use temporary directory
+func testFileSave() throws {
+    let tempDir = FileManager.default.temporaryDirectory
+        .appendingPathComponent(UUID().uuidString)
+    try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+
+    defer {
+        try? FileManager.default.removeItem(at: tempDir)
+    }
+
+    let store = FileStore(directory: tempDir)
+    try store.save(testData)
+
+    XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("data.json").path))
+}
+```
+
+### 4. Not Testing Error Paths
+
+**Problem:** Only testing happy paths, errors untested.
+
+```swift
+// Add error case tests
+func testLoadHandlesMissingFile() async {
+    let store = FileStore(directory: nonExistentPath)
+
+    do {
+        _ = try await store.load()
+        XCTFail("Should have thrown")
+    } catch {
+        XCTAssertEqual(error as? StoreError, .fileNotFound)
+    }
+}
+```
+
+### 5. Over-Mocking
+
+**Problem:** Mocking so much that tests don't catch real bugs.
+
+```swift
+// Too much mocking - test proves nothing
+func testBadExample() {
+    let mockParser = MockParser()
+    mockParser.mockResult = expectedResult
+
+    let result = mockParser.parse(input)  // Just returns mock
+    XCTAssertEqual(result, expectedResult)  // Always passes!
+}
+
+// Better - test real logic, mock only external dependencies
+func testGoodExample() {
+    let realParser = Parser()
+    let result = realParser.parse(input)  // Tests actual code
+    XCTAssertEqual(result, expectedResult)
+}
+```
+
+---
+
+## Asking Claude to Write Tests
+
+### Generate Tests for Existing Code
+
+```
+Write unit tests for this function. Cover:
+1. Normal inputs
+2. Edge cases (empty, nil, max values)
+3. Error conditions
+
+[paste function]
+```
+
+### Test-Driven Development
+
+```
+I need a function that [description].
+
+Write the tests first, then implement the function to pass them.
+Include edge cases.
+```
+
+### Add Tests for Bug Fix
+
+```
+I fixed this bug: [description]
+
+Write a regression test that would have caught it.
+The test should fail before the fix and pass after.
+```
+
+### Generate Mock Objects
+
+```
+Create a mock for this protocol for testing:
+
+[paste protocol]
+
+Include:
+- Properties to control return values
+- Call counting
+- Ability to simulate errors
+```
+
+---
+
+## Test Coverage Guidelines
+
+### What Coverage Means
+
+- **Line coverage:** Was this line executed during tests?
+- **Branch coverage:** Was each if/else path taken?
+- **100% coverage ≠ bug-free:** Tests can execute code without verifying behavior
+
+### Practical Targets
+
+| Code Type | Target Coverage | Notes |
+|-----------|-----------------|-------|
+| Parsers, transforms | 90%+ | High value, test thoroughly |
+| Business logic | 80%+ | Core correctness |
+| ViewModels | 60-80% | Test logic, not UI binding |
+| UI code | 20-40% | Focus on critical flows |
+| Utilities | 80%+ | Usually easy to test |
+
+### Viewing Coverage in Xcode
+
+1. Edit Scheme → Test → Options → Code Coverage ✓
+2. Run tests (⌘U)
+3. View: Editor → Show Code Coverage
+
+## TDD in wave execution (RED → GREEN → REFACTOR)
+
+Write the failing test first (it MUST fail — a passing test before implementation is a wrong test),
+then the minimal code to pass, then refactor with tests green. It maps cleanly onto `/execute` waves:
+**Wave 1** writes the tests (`*Tests.swift`), **Wave 2** implements against them, **Wave 3** refactors
+while tests stay green. Reserve 100% targets for auth / billing / data-handling; test behavior, not
+private methods. (Skip the XCTest syntax tutorial — that's training data; see the coverage targets above.)
+
+---
+
+## Quick Reference
+
+### Test Checklist
+
+Before shipping, verify:
+
+```
+[ ] Critical paths have tests
+[ ] Parsers/transforms tested with valid, invalid, edge case inputs
+[ ] Error paths tested (not just happy paths)
+[ ] Async code properly awaited
+[ ] No flaky tests (run suite 3x)
+[ ] Tests clean up after themselves
+[ ] Tests don't depend on execution order
+```
+
+### When Tests Fail in CI
+
+1. **Run locally first** — same configuration
+2. **Check for timing issues** — add explicit waits
+3. **Check for order dependence** — run single test in isolation
+4. **Check for environment differences** — file paths, permissions
+
+---
+
+*Add tests as you build. Retrofitting tests to untested code is painful—writing them alongside is natural.*
+
+---
+
+## AppProbe — Automated macOS UI Testing
+
+For testing complete user flows via accessibility APIs without writing XCUITest code.
+
+**Location:** `/Users/sim/ProgrammingProjects/9-TESTING/AppProbe/`
+
+**Quick start:**
+```bash
+# Trigger from Claude Code:
+/test-app MyAppName
+
+# Or manually:
+appprobe discover com.example.myapp -o discovery.json   # Inspect UI tree
+appprobe run plans/myapp.yaml --slow --overlay --verbose  # Run test plan
+```
+
+**How it works:**
+1. `/test-app` reads your source code + inspects the running app's accessibility tree
+2. Claude generates a comprehensive YAML test plan covering all user flows
+3. AppProbe executes it: launches app, clicks buttons, types text, navigates menus, takes screenshots
+4. Results: JSON report + failure screenshots for Claude to analyze
+
+**When to use:**
+- Before shipping — full UI regression test
+- After refactoring — verify nothing broke
+- New feature — test the user flow end-to-end
+- Bug report — reproduce and verify the fix
+
+**Supported actions:** click, type, menu navigation, keyboard shortcuts, drag-and-drop, scroll, window management, element state verification, screenshots.
+
+**Flags:** `--slow` (visible actions), `--overlay` (floating progress HUD), `--tag` (run subset)
+
+## App-Hosted Tests Share the App's Real State (Keychain!)
+
+A test target with `TEST_HOST` set to the real app runs **as** that app: same bundle id, same
+UserDefaults, same **Keychain service**, same Application Support. Any test that "cleans up"
+shared state cleans up the PRODUCTION state on the dev machine.
+
+**Real casualty (Aloft s77):** `KeychainStoreTests` called `deleteAll()` in setUp/tearDown
+against the store's default service (= the app's bundle id). Every full test run silently
+deleted the developer's own live license from the login keychain — the app fell back to Free
+and the cause was invisible for days (the suite was green the whole time).
+
+**Rule:** integration tests that touch real system stores (Keychain, defaults, files) must run
+on an injected, test-only namespace — e.g. `KeychainStore(service: "com.example.MyApp.tests")`,
+a `UserDefaults(suiteName:)`, a temp directory — never the shared singleton. The test keeps its
+integration value (real SecItem calls); it just becomes incapable of reaching production items.
+
+## A Test That Bypasses the Suspect Layer Proves the Wrong Thing
+
+An integration test is only integrating the layers it actually goes through. When it reaches
+**past** a layer to construct its input directly, that layer is untested — and the test's
+confidence makes the hole invisible, because the feature demonstrably works.
+
+**Real casualty (MediaIngest, D27):** a "re-ingest repairs a forgotten geotag" feature had a
+full end-to-end integration test — real files, real subprocess, real bytes on disk, asserting
+the repaired file gained GPS. It passed for three weeks. The test called:
+
+```swift
+let plan = try await engine.buildPlan(cardDirectory: cardDir, profile: profile).items
+let events = engine.run(plan: plan, profile: profile, track: track)   // ← the whole plan
+```
+
+The app never does that. It runs `model.selectedItems` — the user's tick boxes. And every
+selection gate keyed on "does this unit have a file that will be *created*", which is false for
+every unit on a card that was already fully imported. So nothing was tickable, the Start button
+stayed disabled, and the one case the feature existed for was the one case that could not be
+run. The engine could repair; the user could not ask it to.
+
+**Why it's hard to see:** nothing is wrong with the test. It tests what it claims. The gap is
+that "does the feature work?" quietly became "does the engine work?", and no one re-read the
+call to notice the substitution.
+
+**Rules:**
+- For any user-facing capability, one test must enter through the **same door the user does** —
+  the view model / controller / CLI parser, not the service beneath it. Assert *reachability*
+  (can this state even be requested?), not just correctness once requested.
+- When a test constructs input a layer would normally produce, say so in a comment and name what
+  is therefore **not** covered. That comment is where the next person finds the hole.
+- Suspect this specifically when a bug report sounds like "the feature does nothing" while the
+  feature's own test is green. The test is probably starting downstream of the break.
+
+## Measure the Required Interval and Include Teardown in the Verdict
+
+Detection delay, time since the last heartbeat, input drain and process exit measure different
+things. A fast stop after detection cannot establish that detection itself was timely. Record the
+actual fault operation and detection on a shared monotonic clock. If an operation cannot have one
+atomic timestamp, bracket it before/after and use the conservative upper bound for a deadline pass.
+Test just below, at, and just beyond the boundary; reject absent, reversed or future timestamps.
+
+A timestamp taken when `poll()` or `wait()` notices process exit is only an upper bound on the
+actual exit. A receipt before that timestamp may still have arrived after the process died.
+Test delayed observation explicitly. To prove a completed boundary preceded exit, collect its
+receipts/checkpoints and then independently observe the owned process still alive before binding
+the result. Continue reading through EOF so later or duplicate events cannot disappear from the
+verdict. This false acceptance was reproduced and fixed in the
+[recovery evidence adapter](verification/mac-control/recovery-adapter.md).
+
+Keep instrumentation from changing the fault path: a new control message can refresh liveness or
+delay the fault. Buffer diagnostic evidence and persist it after active control ends when disk I/O
+would distort the measurement. State clearly what an interrupted run cannot prove.
+
+An early successful result can also outlive a later teardown failure. In particular, a Python return
+value chosen before `finally` is not changed merely by setting a failure flag inside `finally`.
+Evaluate the final verdict after required teardown and evidence persistence, or make the caller
+explicitly combine those outcomes. Test the case where the main assertion passes but a child stays
+open, exits unsuccessfully, or the evidence cannot be saved.
+
+Observed and regression-tested in the [Directions loss-timing spike](verification/mac-control/loss-instrumentation.md).
+
+## Isolate Competing Stop Triggers
+
+Recovery tests must compare actual event semantics and multiplicity, not just matching IDs.
+Converting receipts to a set of tags can hide duplicate postings or accept a keyDown where the
+reserved keyUp was required. Preserve observed kinds and reject duplicates before resolving a
+durable boundary; never construct completion evidence from the planned actions alone.
+Also inject lifecycle messages before their prerequisites: an early `bound` acknowledgement must
+not start input before identity setup and durable admission are ready. Both bugs were reproduced
+and fixed in the [durable admission tests](verification/mac-control/recovery-admission.md).
+
+For timestamp-based cancellation, a callback in the current tick may record a stop time **after**
+the tick's cached clock reading. Subtracting the new stop time from that older `UInt64` sample
+underflows and can crash after otherwise successful cancellation. Resample the clock before
+computing elapsed time for a newly created transition. Confirm normal process exit as well as
+the earlier stop acknowledgement; the [focus-loss test](verification/mac-control/focus-loss-live.md)
+caught this exact shutdown failure.
+
+An observation interval also needs a stream boundary: waiting two seconds does not prove all
+child records emitted during that interval have been read. Request a terminal observation
+acknowledgement on each owned stream and consume through it before evaluating. Continuous-focus
+claims require bounded sampling gaps, not merely a fresh final sample. These finite observations
+do not establish that macOS cannot deliver an event indefinitely late.
+
+When several monitors can stop the same operation, a stopped result alone does not prove the
+intended monitor worked. For example, clicking away or pressing Command-Tab to test focus loss
+can trigger physical-input cancellation before the focus check runs.
+
+Inject the intended fault independently, record its origin and the specific stop cause, and keep
+the other safeguards enabled. For focus loss, use an owned disposable focus transition with a
+second event recorder. If a general reason such as `readinessLost` has multiple causes, require
+cause-specific evidence. Do not broaden accepted reasons merely to make the test pass.
+
+Identified while [preparing the Directions intervention tests](verification/mac-control/prepared-intervention-window.md#separate-focus-loss-experiment);
+the independent focus-loss fixture is still pending.
