@@ -20,6 +20,35 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
+### 2026-10-16 - Lean workflow authority and proportionality contracts (LE06)
+
+**Context:** The approved efficiency plan needs one task-state authority and consistent lifecycle
+rules without migrating live consumers or discarding old evidence.
+**Options:** keep mirrored checkboxes; derive state from the selected plan; automate a new database.
+**Decision:** The selected plan owns task IDs, status, prerequisites, gates and evidence. TASKS owns
+backlog/inbox and links to active work. PROJECT_STATE owns the selected-plan pointer and points to
+one current handoff. A session log's earlier Resume blocks remain historical after a newer pointer.
+No-plan work remains in TASKS; ambiguous multiple plans require selection, not guessed aggregation.
+Migration preserves original copies, reports conflicting evidence, resumes idempotently and never
+promotes an unchecked/manual gate from a stale mirror. New plans use this contract; legacy consumers
+use explicit reconciliation before their mirrors are retired.
+
+Coherent validated commits may cover related tasks, with task-to-commit evidence. Tasks are bounded
+by independently verifiable outcomes, not an arbitrary duration. Preserve existing fresh-context
+delegation for independent work: no new bypass exception is adopted. Coupled work stays serial.
+Risk-based review reruns follow concrete changes/findings; no fixed number of passes. Documentation
+repositories retain their existing direct-commit exception. Before substantial workflow work,
+establish one concrete user journey; spikes name an observable result, agreed limit and stop/replan
+condition. A new subsystem requires a scoped decision, not silent expansion.
+
+Collision detection is relevant at arrival, before checkout/branch/worktree mutations and known
+concurrency, not ordinary read-only status. Preserve the existing SessionStart guard and report
+Codex detector limitations honestly. Verify repository identity before remote-state claims.
+**Rationale:** These choices implement the approved plan's defaults using existing Markdown records,
+with explicit examples in `verification/lean/policy-and-migration.md`.
+**Limits:** No measured dispatch speedup, AC08 efficiency claim, live migration, deployment or
+Mac-control acceptance follows. Host observations remain E1; workflow edits follow in LE10–LE12.
+
 ### 2026-09-10 - Pin the existing spike runtime root independently of temporary-directory lookup
 
 **Context:** A private-lock counterexample showed that successful Darwin temporary-directory

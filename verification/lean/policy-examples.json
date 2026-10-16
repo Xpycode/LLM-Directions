@@ -1,0 +1,12 @@
+{
+  "selected": "plans/A.md",
+  "plans": {
+    "plans/A.md": [{"id": "1", "status": "complete", "evidence": "proof.md"}, {"id": "2", "status": "implemented-unverified", "gate": "device"}],
+    "plans/B.md": [{"id": "1", "status": "pending"}]
+  },
+  "legacy_mirrors": [{"plan": "plans/A.md", "id": "1", "checked": false}, {"plan": "plans/A.md", "id": "2", "checked": true}],
+  "current_handoff": "sessions/new.md#resume",
+  "historical_handoffs": ["sessions/old.md#resume"],
+  "expected_progress": [1, 2],
+  "expected_discrepancies": ["1", "2"]
+}
