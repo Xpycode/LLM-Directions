@@ -104,8 +104,10 @@ Repeat within the authorized scope:
    manual acceptance, real-provider behavior or device checks.
 5. **Record the outcome.** Mark a task complete only when all its required criteria pass. Record
    implemented-but-unverified work separately and leave its completion box unchecked. Make scoped
-   atomic commits for validated work under `32_git-workflow.md`, unless the user restricted commits
-   or Git is unavailable; record the exception. Update status/evidence in the plan, keep the tracker
+   coherent commits for validated work under `32_git-workflow.md`, unless the user restricted commits
+   or Git is unavailable; record the exception. Related tasks may share a commit when they form one
+   reviewable, reversible outcome; record every task-to-commit mapping and its validation. This does
+   not change fresh-context delegation or exclusive ownership. Update status/evidence in the plan, keep the tracker
    as a backlog/inbox plus plan link, and refresh concise project state. Record task IDs, actual assignments/serial reason, validation evidence, commit or
    exception, remaining gates and next action in the plan's execution log; link longer evidence.
    Keep one `Now → Execution` line in project state: active plan link, current wave/task IDs and
@@ -182,5 +184,5 @@ When you want one task at a time with full context instead of parallel waves:
 1. **Orchestrator stays light** — keep task detail in files and fresh task contexts; do not invent
    context percentages when the host does not expose them.
 2. **Fresh context per task** — each subagent starts clean with only task-specific info.
-3. **Atomic commits** — one task = one commit, easy to revert.
+3. **Coherent validated commits** — a reviewable outcome, easy to revert, with task-to-commit evidence.
 4. **State lives in files** — `IMPLEMENTATION_PLAN.md` + `PROJECT_STATE.md` are the source of truth.

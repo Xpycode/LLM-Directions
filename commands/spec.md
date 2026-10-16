@@ -31,6 +31,16 @@ If `MODEL` is Sonnet/Haiku, **nudge once then continue** (don't gate — a mis-t
 Already Opus/Fable → say nothing.
 <!-- CLAUDE-ONLY:END -->
 
+## Workflow journey and feasibility (all modes)
+
+Before substantial workflow implementation, establish one concrete user journey: source/input →
+user action → destination/output → observable success. Example: the user selects an existing CSV,
+imports it into a named collection, then exports that collection to a chosen CSV path; success means
+the exported rows match the accepted fixture and the user can locate the file. Resolve missing
+destinations or success conditions before broad implementation. Use existing answers where available.
+If feasibility is unknown, specify a spike's observable result, agreed limit and stop/replan condition;
+new subsystems require a scoped decision. See `commands/make-plan.md` for a bounded example.
+
 ## Mode: mini-PRD  (default)
 
 Ask in three short rounds (one question at a time; "I don't know" is valid — note it as an open question):
@@ -72,7 +82,9 @@ Multi-phase discovery with triangulation. One question at a time; don't solve du
 5. **Validate** — read back a 3-point summary + the acceptance criteria; correct and re-triangulate if needed.
 6. **TASKS.md** — extract actionable tasks from the acceptance criteria into the task tracker's
    Backlog (`docs/TASKS.md` in an installed project; root `TASKS.md` in the Directions master). Create
-   it from the master template if absent. Report "Added N tasks. Run `/make-plan` to move them to Current Sprint."
+   it from the master template if absent. Report "Added N backlog items. Run `/make-plan` to create the
+   selected plan and link it under Active plan." The plan owns task status/evidence; retain backlog
+   mappings without mirrored checkboxes, following the master `reference/task-state.md`.
 
 ## Mode: examples  (adds the old `/example-map`)
 

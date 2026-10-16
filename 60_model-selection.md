@@ -145,6 +145,11 @@ Do not delegate merely to imitate a provider-specific model slogan. A capable ma
 directly; delegation is valuable when it reduces context pollution, shortens independent research, or
 adds a genuinely independent review perspective.
 
+For approved-plan execution, `commands/execute.md` requires fresh-context delegation of independent
+tasks when supported and permitted. The general guidance above is not an exception for small tasks:
+coupled work stays serial, and no-agent or selected-scope limits prevail. A shared coherent commit
+does not merge task ownership or remove independent validation.
+
 ---
 
 ## Independent Validation
@@ -158,6 +163,10 @@ high-stakes architecture:
 4. Verify with tests, builds, logs, or real user flows.
 
 Cross-model agreement is not proof of correctness. Its value is independent fault-finding.
+Choose review scope from risk and acceptance criteria, not a fixed pass count. Resolve concrete
+findings and rerun affected checks; repeat broader review only for material changes or unresolved
+risks. If independent review is unavailable or prohibited, report that gate as unverified rather
+than substituting self-review and claiming completion.
 
 ---
 

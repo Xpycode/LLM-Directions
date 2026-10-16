@@ -90,6 +90,10 @@ Do this with **no other session/agent active in that app** and a clean working t
 
 ## Branch Strategy
 
+Before branch creation, switch/checkout, merge/rebase or worktree mutations, apply
+`37_multi-mac-discipline.md` → **Rule 5** for the repository-identity and concurrency preflight.
+This precondition also applies to recovery recipes in this guide.
+
 ### Creating Branches
 
 ```bash
@@ -153,6 +157,11 @@ git commit -m "Changed color to blue"  # Why blue?
 
 - **Do commit:** Working increments, completed thoughts
 - **Don't commit:** Broken code, debug prints left in, "WIP" without context
+
+A commit represents a coherent validated outcome, not a fixed task count. Related small tasks may
+share a commit when the result can be reviewed and reverted together; map each task ID to the commit
+and its validation in the selected plan. Keep unrelated outcomes separate. This does not relax task
+dependencies, fresh-agent ownership or required checks. Explicit no-commit limits always prevail.
 
 ---
 
@@ -317,9 +326,9 @@ git log --oneline -10
 Tell Claude about your git workflow:
 
 ```
-Before implementing, create a feature branch.
+Before implementing application code, create a feature branch.
 After changes are working, commit with a message explaining WHY.
-Don't commit to main directly.
+Documentation repositories and doc-only changes normally commit directly to main.
 ```
 
 Add to your CLAUDE.md:

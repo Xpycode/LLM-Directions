@@ -62,10 +62,16 @@ Create `specs/[feature-name].md` with this structure:
 3. [Capability 3]
 
 ### User Flow
-1. User opens [X]
-2. User does [Y]
-3. System responds with [Z]
-4. User sees [result]
+1. Source/input: [Concrete starting data and location]
+2. User action: [What the user does]
+3. Destination/output: [Where the result goes]
+4. Observable outcome: [What proves success to the user]
+
+### Feasibility Spike (when needed)
+- Observable result: [Evidence that resolves the uncertainty]
+- Agreed limit: [Scope/resources authorized for this experiment]
+- Stop/replan: [Failure or expansion condition; decide continue, simplify or park]
+- New subsystems: [Require a scoped decision before expansion]
 
 ---
 
@@ -183,4 +189,4 @@ Before moving to `/make-plan`:
 
 ---
 
-*Spec first, code second. The 20% upfront prevents the 80% rework.*
+*Resolve uncertainty and define observable success before substantial implementation.*

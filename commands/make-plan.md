@@ -59,10 +59,12 @@ Compare the goal against existing code:
 
 ### Step 3: Create Task List
 
-Break the delta into atomic tasks:
+Break the delta into independently verifiable outcomes. Size by coupling, risk and validation,
+not elapsed time. Keep a cohesive outcome together; split when a separate result or interface can
+be validated independently. Planning depth follows uncertainty, not a planning/execution ratio.
 
 **Good tasks:**
-- Completable in <30 minutes
+- Bounded outcome with named scope and dependencies
 - One logical change per task
 - Has clear "done" criteria
 - Has backpressure (test/lint/build that validates)
@@ -71,6 +73,13 @@ Break the delta into atomic tasks:
 - "Build the feature" (too big)
 - "Set up architecture" (no validation)
 - "Various fixes" (not atomic)
+
+Before substantial workflow implementation, establish the concrete source → action → destination →
+observable outcome journey using `commands/spec.md`. For uncertain feasibility, plan a bounded spike:
+name its observable result, agreed scope/resource limit, and stop/replan condition. For example,
+use a disposable CSV fixture to prove one import/export round trip within the agreed single-adapter
+scope; retain the output or failure evidence, then continue, simplify or park. If success requires a
+new sync subsystem, stop that expansion and obtain a scoped decision before adding it.
 
 ### Step 4: Organize into Waves
 
@@ -150,4 +159,4 @@ For conflicting legacy mirrors, use the master `reference/task-state.md` preserv
 procedure before retiring anything. A planning request does not authorize bulk consumer migration.
 
 ---
-*80% of time on planning, 20% on execution. This is the 80%.*
+*Plan enough to expose dependencies, uncertainty and verifiable outcomes before execution.*

@@ -12,6 +12,10 @@ checked = complete with required evidence. Task identity includes this plan path
 ## Goal
 [One sentence describing what we're building]
 
+<!-- For substantial workflow work, link a concrete source/action/destination/outcome journey.
+     For feasibility spikes, name the observable result, agreed limit and stop/replan condition.
+     Tasks are independently verifiable outcomes, not fixed-duration slices. -->
+
 ## Acceptance Criteria
 <!-- Derived during Define phase. Tests must satisfy these. -->
 - [ ] [User can do X]
@@ -38,7 +42,8 @@ checked = complete with required evidence. Task identity includes this plan path
 ## Tasks
 
 ### Wave 1 (parallel - no dependencies)
-<!-- These can run simultaneously. Each task = one atomic commit. -->
+<!-- These can run simultaneously with fresh task contexts and exclusive ownership.
+     Related validated tasks may share a coherent commit; record task-to-commit mappings. -->
 
 - [ ] **1.1**: [Task description] -> `Model.swift`
   - Depends on / external gates: none

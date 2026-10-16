@@ -33,7 +33,7 @@ Codex currently uses repository evidence when no equivalent hook exists.
 You are working with someone who directs AI to build software but doesn't code themselves. Your job is to:
 
 1. **Define thoroughly** - Interview to understand what they want, create specs with acceptance criteria
-2. **Plan atomically** - Break work into <30 min tasks with validation (backpressure)
+2. **Plan by outcome** - Bound independently verifiable tasks with validation (backpressure)
 3. **Build with fresh context** - Use subagents, keep orchestrator light
 4. **Validate rigorously** - Adversarial review, multi-perspective, backpressure
 5. **Compound learnings** - Extract patterns after each session
@@ -51,7 +51,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 | Funnel | Purpose | Key Command | Gate |
 |--------|---------|-------------|------|
 | **Define** | Understand scope | `/spec deep` | Spec reviewed, edge cases clear |
-| **Plan** | Atomic tasks | `/make-plan` | Tasks <30min, backpressure defined |
+| **Plan** | Verifiable tasks | `/make-plan` | Bounded outcomes, dependencies and backpressure defined |
 | **Build** | Implement | `/execute` | Tests pass, review done |
 
 **Principle:** Clarify requirements and dependencies before building.
@@ -186,10 +186,12 @@ swift test        # Tests pass?
 
 **The Solution:** Atomic tasks with backpressure (see `/make-plan`)
 
-> "Never be more than 30 minutes from working code."
-
-Each task must: be completable in <30 minutes, have clear "done" criteria, have a validation
-command (test/lint/build), and not break what already works.
+Each task must have a bounded, independently verifiable outcome, clear "done" criteria, a validation
+command (test/lint/build or a relevant documentation check), and preserve existing behavior.
+Choose scope from coupling and risk, not a duration or planning ratio. Before substantial workflow
+work, establish a concrete source → action → destination → outcome journey (`commands/spec.md`).
+Uncertain feasibility calls for a spike with an observable result, agreed limit and stop/replan
+condition (`commands/make-plan.md`); new subsystems require a scoped decision before expansion.
 
 **Output:** `IMPLEMENTATION_PLAN.md` with waves, grouped by dependencies, backpressure defined per task.
 
@@ -206,7 +208,7 @@ For each wave:
 1. Spawn parallel subagents for independent tasks
 2. Each subagent gets fresh context + task-specific info
 3. Validate with backpressure after each task
-4. Commit atomically: one task = one commit
+4. Commit coherent validated outcomes; map related task IDs to their commit and evidence
 5. Main agent stays light (orchestrator only)
 ```
 
@@ -238,15 +240,17 @@ and you HATE this implementation. What would you criticize?
 | Style nitpick | Ignore |
 | Over-engineering suggestion | Ignore |
 
-**Rule:** 2-3 review passes. More wastes time.
+**Rule:** Review proportionally to risk. Resolve concrete findings, rerun affected checks, and repeat
+broader review only for material changes or unresolved risk; no fixed number of passes.
 
-### Phase 5: Multi-Model Validation (Build Funnel — Optional)
+### Phase 5: Independent Validation (Build Funnel — Risk-Based)
 
 **The Problem:** Different AI models catch different bugs. Evidence: "Claude missed ID stability
 bug; Gemini caught it."
 
-**When to use:** code that handles money or sensitive data, core architecture decisions,
-anything that "just feels off."
+**When required:** concurrency, data integrity, destructive operations, migrations, security-sensitive
+code and high-stakes architecture, under `60_model-selection.md`. Report unavailable independent
+review as an open gate. Additional model perspectives are useful when they address a concrete risk.
 
 **Options:** copy code to Gemini for review, or ask a different Claude session (fresh context).
 
@@ -332,14 +336,14 @@ explicit no-commit, no-push and no-control limits; a saved handoff does not auth
 ### Before Each Commit
 
 - [ ] Backpressure passes (build, lint, test)
-- [ ] Task is atomic (one logical change)
+- [ ] Commit is one coherent validated outcome with task-to-commit evidence
 - [ ] No debug print statements
 - [ ] No force unwraps without nil checks
 
 ### Before Shipping
 
 - [ ] All acceptance criteria verified
-- [ ] Adversarial review done (2-3 passes)
+- [ ] Risk-appropriate review done; concrete findings resolved and affected checks passed
 - [ ] Manual user flow tested
 - [ ] CHANGELOG updated
 - [ ] README current
@@ -400,13 +404,14 @@ This table is the curated subset worth memorizing; that one is the exhaustive, s
 - **Update PROJECT_STATE.md** after phase transitions
 - **Log decisions** to `decisions.md` when architectural choices are made
 - **Run `/log`** at session end to extract learnings
-- **Create feature branches** - never work directly on main
+- **Create feature branches for application code** - documentation repositories and doc-only changes
+  normally commit directly to main (`32_git-workflow.md`); honor explicit no-commit limits
 
 ### Key Prompting Patterns
 
 | Say This | Not This | Why |
 |----------|----------|-----|
-| "Study the file" | "Read the file" | Triggers deeper comprehension |
+| "Inspect this behavior and its evidence" | An unexplained instruction to read more | Names what the inspection must establish |
 | "Don't assume not implemented" | - | Prevents duplicate work |
 | "Using parallel subagents" | - | Enables fan-out |
 | "Only 1 subagent for builds" | - | Serializes validation |

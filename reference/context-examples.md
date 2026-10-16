@@ -230,14 +230,14 @@ When user types `/project:study frontend`:
 
 ## Planning Level by Task Size
 
-These existing planning examples are retained for the separate policy review; they do not override
-current command procedures or explicit user limits (including no commits or no delegation).
+Choose depth by uncertainty, coupling and verification needs, not elapsed-time estimates. Follow
+current commands and explicit limits, including no commits or no delegation.
 
 | Task Type | Planning Level |
 |-----------|---------------|
-| Quick fix (< 30 min) | Just do it, commit |
-| Single feature (< 2 hours) | Light notes in session log |
-| Multi-session feature | Full planning discipline |
+| Clear isolated fix | Inspect, change and validate directly; commit only within authorization |
+| Bounded feature with known behavior | Record acceptance and dependencies at matching depth |
+| Coupled feature with unresolved requirements | Spec and dependency-aware plan before broad implementation |
 | Architecture changes | Full planning + decisions.md |
 | New project | Full setup of all files |
 
