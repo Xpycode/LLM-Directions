@@ -12,6 +12,12 @@ LOAD: when working from more than one Mac on the same project, debugging "this w
 
 # Multi-Mac Discipline
 
+**Precondition for every Git recipe in this guide:** verify the intended absolute working directory
+and repository toplevel before remote-state claims. A failed `cd` leaves the old directory active;
+stop and resolve identity instead of inspecting or changing the wrong repository. Before any
+checkout, branch or worktree mutation below, apply Rule 5's mutation preflight. This includes all
+recovery tables and cheatsheets, not just the explicit worktree example.
+
 *State on disk is per-machine by default. Cross-machine sync (git, Syncthing) is opt-in, partial, and surfaces divergence at integration moments — push, pull, "is this still here?" Three sessions in two weeks yielded three distinct collision patterns, all rooted in the same blind spot: **assuming the machine you're on is the machine where the work was done**.*
 
 ---
@@ -614,16 +620,32 @@ cd ../<repo>-<name>                             # point the 2nd session here
 git worktree remove ../<repo>-<name>
 ```
 
-Two sessions in **different worktrees** are safe — they don't share a HEAD. The `/worktree` command
-automates this; `/status` and the session-start hook both surface the collision so you catch it before
-a stray checkout.
+Two sessions in **different worktrees** don't share a HEAD. They still share branch refs and
+worktree administration. The `/worktree` command guides isolation; `/status arrive`, checks for known
+concurrency and the existing session-start hook surface supported collision warnings.
 
 ### The discipline
 
-- **Detection is wired.** `hooks/session-guard.sh` (run from `SessionStart` and `/status`) lists running
+- **Detection is wired for Claude CLI.** `hooks/session-guard.sh` (run from existing `SessionStart`,
+  `/status arrive`, known concurrency and before mutations) lists running
   `claude` sessions, resolves each to its worktree toplevel, and warns — warn-only — when 2+ share one.
   It's worktree-aware, so the safe split-across-worktrees pattern never false-positives. Pure local
   process inspection (no lock files), so nothing goes stale and it never touches git.
+- **Ordinary read-only status/full skips detection.** The startup hook remains unchanged. See
+  `commands/status.md` for the trigger table, Claude invocation and Codex fallback. Silence is not
+  proof of no collision: missing tools or process visibility can suppress output. Codex has no
+  reliable Directions detector; report that limitation at arrival/mutation and use known session
+  information, never an invented scan or a “no collision” claim.
+- **Mutation preflight (all entry paths).** Before `checkout` (including path restore), `switch`,
+  branch create/rename/delete, `merge`, `rebase` (including continue/abort), `pull`, `reset`,
+  `cherry-pick`, stash apply/pop/push, or worktree add/remove/move/prune/repair: verify the intended
+  absolute checkout path and `git rev-parse --show-toplevel`, then check concurrency using the
+  supported detector in `commands/status.md` plus known sessions. Apply this before recovery recipes
+  in Rules 1/1a/1b/1c, Rule 3's Git recipe and the pre-flight/cheatsheets too. Check the target worktree
+  for worktree operations. If identity changed or `cd` failed, stop and establish identity again.
+  Surface warnings before acting; coordinate one Git driver or isolate sessions. Do not remove a
+  worktree in use. Missing detection does not itself invent a permission gate, but unresolved known
+  overlap must be coordinated before mutation. Existing operation authorization still applies.
 - **One git driver.** If you *do* keep two sessions in one folder, run all `git checkout` / branch ops in
   exactly **one** of them; let the other only read or edit files.
 - **Worktrees are single-Mac, short-lived (don't cross Rule 1a with this).** A worktree's internal `.git`

@@ -95,7 +95,11 @@ Syncthing settle. The per-project, human-readable version of the session-start g
    `~/.config/directions/this-mac` is the tool-neutral one-line per-machine label (e.g. `M1 Max`),
    kept **outside** Syncthing so it never travels — same path, different content per Mac. The old
    Claude path remains a compatibility fallback. Missing → the Mac's own name is used.
-2. **git + remote?** `git rev-parse --is-inside-work-tree` and `git remote get-url origin`.
+2. **Verify the intended repository, then git + remote.** Confirm the absolute working directory
+   and `git rev-parse --show-toplevel` match the requested checkout before inspecting its remote.
+   After a failed `cd`, stop: the previous directory is not evidence about the intended project.
+   Do not fetch or make remote-state claims until identity is established. Then run
+   `git rev-parse --is-inside-work-tree` and `git remote get-url origin`.
    - No git → "files travel by Syncthing only; nothing to compare." Skip to 4.
    - git but no remote → "history has no GitHub remote, so I can't see the other Mac's work — add one?" Skip to 4.
 3. **Fetch and read the other Mac's last work (read-only):**
@@ -107,17 +111,27 @@ Syncthing settle. The per-project, human-readable version of the session-start g
    `Handoff-from:` is the Mac `/log` stamped in (immutable, conflict-free). Empty → predates it; report author/date.
    **Plain verdict (no SHAs):**
    - **up to date** → "✓ Up to date. Last: <Mac>, <when> — \"<subject>\". Good to start."
-   - **behind N** → "⚠ <Mac> pushed <when> — you're N behind. Pull first?" Offer `git pull --ff-only`; pull only on **yes**.
+   - **behind N** → "⚠ <Mac> pushed <when> — you're N behind. Pull first?" Offer `git pull --ff-only`; pull only on **yes**, after the Rule 5 mutation preflight in `37_multi-mac-discipline.md`.
    - **ahead M** → "M commits here not pushed (prior session on this Mac). Fine to keep working — `/log` before you leave."
    - **diverged (ahead+behind)** → "⚠ Both Macs have unpushed work — diverged. Don't pull blindly." → `37_multi-mac-discipline.md` Rule 1. No auto-pull/reset.
 4. **Where did I leave off?** Read `PROJECT_STATE.md`; show **Now → Focus** and **Next** (one line
    each), applying the execution reminder above when a plan is active.
 5. **Collision check** (light) — see §Same-folder below.
 
-## Same-folder session collision check  (all modes)
+## Same-folder session collision check  (triggered)
 
 Two agent sessions in the **same folder** share one git checkout (one HEAD) — if either runs
-`git checkout`, it switches the branch for **both**. Run the detector and surface the result:
+`git checkout`, it switches the branch for **both**. Use this trigger table:
+
+| Entry | Collision check |
+|---|---|
+| Ordinary read-only status or full, no known concurrency | Skip the detector; omit collision status. |
+| Arrive, including its aliases | Check with the supported detector; report limitations if unavailable. |
+| Known concurrent sessions, in any mode | Check and surface the known risk even if the detector is silent. |
+| Before branch, checkout or worktree mutation | Apply `37_multi-mac-discipline.md` Rule 5 mutation preflight, including merge/rebase/pull and recovery operations. |
+| Existing SessionStart hook | Unchanged; narrowing status does not disable startup checks. |
+
+For a triggered check, verify the intended checkout first, then use the host's supported detector:
 
 <!-- CLAUDE-ONLY:START — this process detector currently recognizes Claude Code CLI sessions -->
 ```bash
@@ -125,14 +139,19 @@ bash ~/.claude/hooks/session-guard.sh 2>/dev/null \
   || bash /Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/hooks/session-guard.sh 2>/dev/null
 ```
 
-- **No output** → no collision; say nothing (don't pad the report).
+- **No output** → no warning was detected; this is not proof of no collision (missing tools or
+  uninspectable processes can also be silent). Preserve known concurrency and report unavailable
+  detection when relevant to arrival or a mutation.
 - **A warning block** → show it plainly: *another agent session shares this checkout; coordinate git
-  in one session, or split off with `/worktree`.* Two sessions in **different worktrees** are safe.
+  in one session, or split off with `/worktree`.* Different worktrees have distinct HEADs; shared
+  branch refs and worktree administration still require coordination.
 <!-- CLAUDE-ONLY:END -->
 
 **Codex fallback:** no Directions process detector is installed yet. Do not run the Claude detector
-or claim there is no collision. If the user mentions another live session in this checkout, warn and
-offer `/worktree`; otherwise omit collision status.
+or claim there is no collision. At arrival or before a mutation, state that automatic detection is
+unavailable and use known session/worktree information under Rule 5. If another live session shares
+this checkout, warn and coordinate one Git driver or offer `/worktree`. Ordinary status/full with
+no known concurrency omits collision status.
 
 Read-only — it inspects running processes, never touches git.
 

@@ -11,13 +11,19 @@ for **both**, and a commit from one can land on the branch the other just moved 
 cross-commit incident). A worktree gives the second session its **own directory with its own HEAD**,
 so the two can sit on different branches at the same time, sharing the same repo history underneath.
 
-`/status` and the session-start hook detect the collision; **`/worktree` is the fix.**
+`/status arrive`, known-concurrency checks and the existing session-start hook surface supported
+collision warnings; ordinary read-only status skips detection. **`/worktree` provides isolation.**
 
 ## What this command does (confirmed, never silent)
 
 Run this *with* the user — confirm before creating anything.
 
 ### Step 1 — Establish context
+
+Apply `37_multi-mac-discipline.md` Rule 5 mutation preflight: verify the intended absolute checkout
+path, inspect known concurrency and use the supported host detector. A failed `cd` stops the workflow
+before any repository claim. Codex has no reliable Directions detector; report that limitation and
+coordinate known sessions without claiming a clean scan.
 
 ```bash
 git rev-parse --show-toplevel        # repo root (must be inside a git repo)
@@ -48,6 +54,9 @@ git worktree add ../<repo>-<name> <existing>     # existing branch
 
 ### Step 3 — Create it and hand off
 
+Immediately before creating it, recheck identity/concurrency if context changed since Step 1.
+Coordinate shared branch refs and worktree administration with other sessions.
+
 After `git worktree add` succeeds:
 
 ```bash
@@ -66,6 +75,10 @@ This session's working tree is untouched — `git worktree add` never changes th
 
 When the parallel work is merged/finished:
 
+Apply the same Rule 5 mutation preflight to the repository and target worktree before each cleanup
+operation; confirm no session still uses the directory to remove. Merge/rebase before cleanup also
+requires that preflight. The commands below remain instructions, not automatic cleanup.
+
 ```bash
 git worktree remove ../<repo>-<name>     # remove the dir (must be clean)
 git branch -d <name>                     # delete the branch if fully merged
@@ -83,7 +96,7 @@ file-by-file.
 
 ## When to invoke
 
-- `/status` or the session-start hook warned that two sessions share this folder.
+- `/status arrive`, a known-concurrency check or the session-start hook warned that two sessions share this folder.
 - You knowingly want two sessions on two branches at once (e.g. one building a feature, one fixing a
   bug) without the checkout tug-of-war.
 
