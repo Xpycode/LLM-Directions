@@ -54,7 +54,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 | **Plan** | Atomic tasks | `/make-plan` | Tasks <30min, backpressure defined |
 | **Build** | Implement | `/execute` | Tests pass, review done |
 
-**Principle:** 80% on Define + Plan, 20% on Build.
+**Principle:** Clarify requirements and dependencies before building.
 
 ---
 
@@ -79,7 +79,7 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 
 1. **Read this file** (quick refresh)
 2. **Run `/status`** - current phase, focus, blockers
-3. **Check for RESUME.md** - any mid-task state?
+3. **Read the current session-log Resume block** and selected active plan for the pickup point
 4. **Run `/execute next`** - what's the next task?
 5. **Continue from where we left off**
 
@@ -98,9 +98,12 @@ text—especially `/status`. Use the slashless form (`status`, `status arrive`) 
 | `/execute` | Ready to build | Wave-based execution; delegates independent work when authorised |
 | `/execute next` | During build | Pick next task with context |
 | `/check code` | After work | Multi-perspective review |
-| `/log` | End of session | Extract reusable learnings |
+| `/log` | End of session | Save log/state and extract reusable learnings once |
 | `/status` | Anytime | Current state summary |
-| `/log` | Significant progress | Update session log |
+
+The shared [execution command](commands/execute.md) owns continuation and plan completion.
+It automatically invokes [logging](commands/log.md) in pre-clear mode when an execution run ends;
+do not add a second close. These commands are authoritative for lifecycle details.
 
 ---
 
@@ -208,7 +211,7 @@ For each wave:
 ```
 
 **Key patterns:** subagent context is disposable, garbage collected after task; plan persists on
-disk, survives session boundaries; orchestrator never exceeds 40% context usage.
+disk, survives session boundaries; keep the orchestrator focused without inventing usage percentages.
 
 ### Phase 4: Adversarial Review (Build Funnel)
 
@@ -275,7 +278,7 @@ session log entry with verification notes.
 2. /make-plan - Break into atomic tasks with waves
 3. /execute - Implement wave by wave
 4. /check code - Adversarial review
-5. /log - Extract learnings
+5. /log - Close once if execution has not already prepared the handoff
 6. Commit when stable
 ```
 
@@ -306,11 +309,14 @@ session log entry with verification notes.
 
 ```
 1. /check code - Check for issues
-2. /log - Extract learnings
-3. /log - Update session log
-4. Commit any uncommitted work
-5. Note resume point in RESUME.md if mid-task
+2. /log - Save the session and extract learnings once; use /log clear before a context reset
+3. Follow commands/log.md for state, index, Resume block and authorized Git/handoff steps
 ```
+
+If execution already saved its automatic pre-clear handoff, refresh it only for new evidence.
+Keep incomplete or blocked plans active. After all required acceptance passes, execution archives
+the plan and its evidence and updates incoming links before retiring the active copy. Preserve
+explicit no-commit, no-push and no-control limits; a saved handoff does not authorize a new action.
 
 ---
 
@@ -407,10 +413,9 @@ This table is the curated subset worth memorizing; that one is the exhaustive, s
 
 ### Regeneration Philosophy
 
-Plans are disposable:
-- If trajectory diverges, regenerate the plan
-- Costs one planning loop
-- Ensures accuracy over patching
+Plans can be revised when the trajectory diverges. Preserve task identity, completed evidence,
+open gates and approved scope during revision. On verified completion, archive the plan and its
+evidence under the execution command; do not discard the history to make the active view smaller.
 
 ---
 
@@ -419,9 +424,8 @@ Plans are disposable:
 ```
 /project-root
 ├── CLAUDE.md                     ← Claude Code project instructions
-├── IMPLEMENTATION_PLAN.md        ← Active task list (delete when done)
+├── IMPLEMENTATION_PLAN.md        ← Active task list (archive after verified completion)
 ├── AGENTS.md                     ← Codex project instructions
-├── RESUME.md                     ← Mid-task checkpoint (if exists)
 │
 ├── specs/                        ← Feature specifications
 │   └── [feature].md
@@ -430,7 +434,7 @@ Plans are disposable:
     ├── PROJECT_STATE.md          ← Current funnel position (the sentinel)
     ├── sessions/                 ← Session logs
     │   ├── _index.md
-    │   └── YYYY-MM-DD.md
+    │   └── YYYY-MM-DD.md         ← Session evidence and current Resume block
     ├── decisions.md              ← Why we chose X over Y
     ├── glossary.md               ← Project-specific terms
     └── TASKS.md                  ← Backlog + unconfirmed-observation Inbox
@@ -471,10 +475,10 @@ master repo and are read on demand — they are NOT copied here.
 2. /make-plan            → Break into atomic tasks
 3. /execute         → Implement wave by wave
 4. /check code      → Adversarial review
-5. /log             → Extract learnings
+5. /log             → Close once if execution has not already saved the handoff
 6. Commit
 ```
 
 ---
 
-*This system evolves. Run /log when you learn something the hard way.*
+*This system evolves. Preserve useful learnings in the session close through /log.*
