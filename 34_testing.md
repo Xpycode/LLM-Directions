@@ -105,6 +105,10 @@ actions, expected results, evidence to return and a clear completion condition. 
 failed, blocked and not-run cases. A repeat needs a stated reason, such as changed code/artifact,
 invalidated configuration, missing evidence or an observed regression. Triage new findings against
 agreed scope rather than silently extending the batch. Unperformed user acceptance remains open.
+Only prescribe controls, commands, data setup and isolation mechanisms supported by inspected
+implementation/configuration or verified documentation. When those are missing, label desired
+behavior as a proposed requirement and the executable case blocked on inspection; do not invent
+a selectable UI item, namespace-injection capability or runnable setup to make the batch concrete.
 
 ### Unit Tests
 

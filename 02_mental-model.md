@@ -1,5 +1,5 @@
 <!--
-TRIGGERS: philosophy, mindset, how to think, validate code, spot bugs, red flags, prompt developer
+TRIGGERS: philosophy, mindset, code validation and red flags, how to think, spot bugs, prompt developer
 PHASE: any
 LOAD: full
 -->

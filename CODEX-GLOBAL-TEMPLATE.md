@@ -49,9 +49,11 @@ These instructions apply to Codex sessions using this Codex home. This file is d
 Read relevant master guidance on demand; match the task's intent, not incidental quoted keywords. Resolve paths under `[LOCAL_DIRECTIONS_PATH]`; never use copied consumer guides. If routing is ambiguous, inspect the master's canonical numbered filenames and TRIGGERS headers before acting. Preserve dirty work; never expose secrets. Before multi-Mac recovery read `37_multi-mac-discipline.md`; before UI changes read `36_ui-changes-protocol.md` and `47_project-ui-conventions.md`; for credentials read `54_security-rules.md`. Current user limits, including no desktop control, prevail.
 Directions commands, with or without a slash, read `commands/<name>.md` completely. Plan continuation and “next wave” read `commands/execute.md`; preserve no-agent/no-commit and other explicit limits.
 
+Before builds or tests, read `34_testing.md` for startup effects and no-control limits. For path-selection-only requests, return paths without reading topical bodies.
+
 - Directions: AI-Assisted Development System: `00_base.md`
 - cheatsheet, quick lookup, shortcuts: `01_quick-reference.md`
-- philosophy, mindset, how to think: `02_mental-model.md`
+- philosophy, mindset, code validation and red flags: `02_mental-model.md`
 - architecture, tech stack, what technology: `04_architecture-decisions.md`
 - new project, starting project, project setup: `10_new-project.md`
 - README template, CHANGELOG template, SECURITY: `12_documentation-templates.md`

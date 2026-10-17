@@ -27,6 +27,10 @@ pointer when facts change without requiring a full pre-clear ceremony.
 
 1. Preserve exact originals and record their hashes/locations before edits. Never overwrite the
    original backup on a rerun. If it already exists with different content, stop and investigate.
+   Obtain hashes from an executed standard checksum tool/library or a trusted receipt identifying
+   the exact bytes; never invent a digest or claim a computation that did not run. If unavailable,
+   retain the originals and mark hash verification unavailable; reconciliation remains blocked.
+   Verify every recorded digest against its retained file before claiming all hashes match.
 2. Inventory all plans, mirrored checkboxes, evidence/gates and incoming links. Record discrepancies;
    do not promote a task from a checked tracker alone. Resolve against actual evidence or leave open.
 3. Write the selected plan's reconciled statuses and evidence, then validate counts, links and gates.

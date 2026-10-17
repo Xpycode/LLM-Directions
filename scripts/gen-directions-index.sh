@@ -98,6 +98,7 @@ build_body() {
   if [ "$FORMAT" = inline ]; then
     printf 'Read relevant master guidance on demand; match the task\047s intent, not incidental quoted keywords. Resolve paths under `%s`; never use copied consumer guides. If routing is ambiguous, inspect the master\047s canonical numbered filenames and TRIGGERS headers before acting. Preserve dirty work; never expose secrets. Before multi-Mac recovery read `37_multi-mac-discipline.md`; before UI changes read `36_ui-changes-protocol.md` and `47_project-ui-conventions.md`; for credentials read `54_security-rules.md`. Current user limits, including no desktop control, prevail.\n' "$BASE"
     printf 'Directions commands, with or without a slash, read `commands/<name>.md` completely. Plan continuation and “next wave” read `commands/execute.md`; preserve no-agent/no-commit and other explicit limits.\n\n'
+    printf 'Before builds or tests, read `34_testing.md` for startup effects and no-control limits. For path-selection-only requests, return paths without reading topical bodies.\n\n'
   else
   printf 'The Directions guidance docs are the **single source of truth** in the master repo. Do **not**\n'
   printf 'rely on a copy inside the current project — copies drift and never receive new house-style. When a\n'
