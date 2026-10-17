@@ -24,12 +24,19 @@ for name in ('CODEX-GLOBAL-TEMPLATE.md', 'CLAUDE-GLOBAL-TEMPLATE.md'):
     body = re.search(r'<!-- DIRECTIONS-INDEX:START[^\n]*\n(.*?)<!-- DIRECTIONS-INDEX:END -->', source, re.S)[1]
     assert set(re.findall(r'`([0-9][0-9]_[a-z0-9-]+\.md)`', body)) == set(routes), name
 paths = set()
-for name in ('commands/log.md', 'commands/execute.md', 'commands/status.md', 'commands/setup.md',
-             'commands/make-plan.md', 'reference/log/app-handoff.md'):
+pending = list(('commands/log.md', 'commands/execute.md', 'commands/status.md', 'commands/setup.md',
+                'commands/make-plan.md', 'reference/log/app-handoff.md'))
+checked = set()
+while pending:
+    name = pending.pop()
+    if name in checked:
+        continue
+    checked.add(name)
     source = (root / name).read_text()
     for path in re.findall(r'(?:<master>/)?(reference/[a-z/-]+\.md)', source):
         assert (root / path).is_file(), (name, path)
         paths.add(path)
+        pending.append(path)
 assert {'reference/task-state.md', 'reference/log/app-handoff.md',
         'reference/log/mac-handoff.md', 'reference/log/claude-integration.md'} <= paths
-print('PASS: 47 final routes, shared task/log references, unchanged Mac plan and reviewed guide bytes')
+print('PASS: 47 final routes, recursive shared references, unchanged Mac plan and reviewed guide bytes')

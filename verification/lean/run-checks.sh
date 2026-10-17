@@ -9,6 +9,7 @@ bash verification/lean/test-guidance-index.sh
 bash verification/lean/test-legacy-install.sh
 bash verification/lean/test-safety/check.sh
 python3 verification/lean/test-task-state.py
+python3 verification/lean/test-status-references.py
 bash verification/lean/test-deployment.sh
 python3 verification/lean/measure.py --routing
 python3 verification/lean/test-integration.py
