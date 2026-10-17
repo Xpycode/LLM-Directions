@@ -15,6 +15,11 @@ do not guess relative to an installed `~/.claude/commands/log.md` or copy refere
 Expand every `<master>/…` path to that absolute root before reading. Load conditional references
 only at their actual trigger below, not during initial core loading.
 
+Read each required procedure completely on first use. Within the same task/context, reuse its
+retained complete content while its canonical identity and contents are unchanged. Reread if either
+changes or retained context is incomplete, compacted or uncertain; fresh agents perform their own
+required reads. Reuse does not carry forward authorization: apply current scope and recovery triggers.
+
 ## Golden rule — infer and report, don't interrogate
 
 Run applicable steps below within the user's current authorization and **report the result**.
@@ -46,6 +51,12 @@ Refresh today's existing entry rather than duplicating the execution history. Do
 execution from the Resume instructions. Local execution-commit permission does not authorize a push;
 apply §7 Mac handoff only within the user's actual Git/handoff authorization. Respect explicit instructions to
 leave a fresh app running for user acceptance. This close saves context; it does not clear the session.
+
+Batch known closeout record updates, reusing record content only under the same retained-content
+conditions above. Then read back the final changed records and verify their links before
+claiming the handoff is ready. Preserve archive/link verification before retiring active records
+(§5). Required post-edit source acceptance still runs; later documentation-only edits do not require
+repeating still-valid source checks. If a record changes again, verify that changed record again.
 
 ## 1 · Write the log
 

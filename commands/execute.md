@@ -144,8 +144,9 @@ project's documentation, update incoming links, then retire the active copy.
 
 ## Step 4 — Automatically prepare for clear
 
-At the end of an execution run, read the master `commands/log.md` completely and run its **pre-clear**
-workflow automatically, without asking the user to invoke `/log clear`. Resolve its canonical
+At the end of an execution run, run the master `commands/log.md` **pre-clear** workflow automatically,
+without asking the user to invoke `/log clear`. Read it completely on first use; retained complete
+unchanged content may be reused under its **Resolve canonical procedures** rules. Resolve its canonical
 references from the absolute master as the core directs; load only branches whose actual triggers
 apply, including any outstanding recovery. This applies when the whole
 plan completes, a user-selected wave/task finishes, or execution ends at a genuine blocker/pause.
