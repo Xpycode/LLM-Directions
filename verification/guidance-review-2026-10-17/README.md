@@ -14,7 +14,7 @@ retained the incoming diff and computed receipts before checkpointing.
 | `22_macos-platform.md`: helper registration | DiskVerdict September 12 corrects the previous day's `.notFound` diagnosis with captured `.requiresApproval`, a Code=1 error and successful operation after user approval. Removed the unproven pre-registration/XPC-persistence timing explanation, universal signing/process assertions and automatic live-reproduction recipe. Retained exact observed outcomes and added explicit authorization boundaries. |
 | `29_web-strato-hosting.md` | App-Websites publication receipt records 27 equal-size cache-reference files explicitly uploaded after mirror skipped them, final HTTPS checks and PHP source readback. Official lftp manual distinguishes ignore-time from transfer-all. Retained the observation and linked that manual. |
 | `44_my-glossary.md` | Penumbra October 12 session records Home/End scrolling without selection changes and accepted queue Up/Down navigation. Retained context-specific wording; removed an unnecessary exact keyboard-layout assertion. |
-| `MACHINES.md` | ChargeMap location/destination evidence identifies M4 Pro, macOS 27.0 (26A5425a), Xcode 26.6 (17F113), isolated simulator results and device provisioning retry. Updated the previously unknown table fields as dated observations. XcodeGen 2.46.0 and the general sandbox diagnosis were not corroborated by the inspected task evidence; omitted from accepted inventory, preserved in incoming.patch. No current machine inspection claimed. |
+| `MACHINES.md` | ChargeMap location/destination evidence identifies M4 Pro, macOS 27.0 (26A5425a), Xcode 26.6 (17F113), isolated simulator results and device provisioning retry. Updated the previously unknown table fields as dated observations. XcodeGen 2.46.0 and the general sandbox diagnosis were not corroborated by the inspected task evidence; omitted from accepted inventory, preserved in the compressed incoming patch. No current machine inspection claimed. |
 
 ## Local evidence inspected
 
@@ -42,10 +42,14 @@ failed; no enum-specific guarantee is inferred from that attempt.
 
 ## Preservation and validation
 
-[Incoming patch](incoming.patch) retains all five original uncommitted additions, including
+[Compressed incoming patch](incoming.patch.gz) retains all five original uncommitted additions, including
 wording narrowed during review. [Computed receipts](receipts.json) identify its bytes, the reviewed
 source versions and the local evidence by executed SHA-256 and byte count. Historical lean
 baseline/source receipts and replay outputs remain unchanged.
+
+Gzip expansion reproduces the original patch exactly; its uncompressed digest is retained too.
+Compression prevents mandatory blank-context spaces in a diff from becoming repository whitespace
+warnings. Apply only to a disposable copy of the pre-checkpoint source when reconstructing originals.
 
 The integration byte guard now uses these explicit reviewed versions for the five intentionally
 reviewed guides/profile; its original baseline remains frozen and the Mac-control plan remains

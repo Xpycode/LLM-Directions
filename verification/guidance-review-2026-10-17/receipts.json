@@ -1,9 +1,14 @@
 {
   "date": "2026-10-17",
-  "method": "Executed Python hashlib.sha256 and byte counts. Incoming source reconstructed from local HEAD plus retained patch in a disposable directory; git apply --check passed. Evidence files inspected read-only, not rerun.",
+  "method": "Executed Python hashlib.sha256 and byte counts. Incoming source reconstructed from local HEAD plus retained patch in a disposable directory; git apply --check passed. Evidence files inspected read-only, not rerun. Preservation patch subsequently gzip-compressed with mtime=0; decompressed bytes verified identical to the recorded original patch.",
   "incoming_patch": {
-    "bytes": 8352,
-    "sha256": "2933d242039124b18c32c2ff421636f6ced68979112649291bbae3e566a02aca"
+    "path": "incoming.patch.gz",
+    "bytes": 4229,
+    "sha256": "60e5170e924801e4958b20314e96299968ac5aaa191bf926be4d0cd6fb339146",
+    "uncompressed": {
+      "bytes": 8352,
+      "sha256": "2933d242039124b18c32c2ff421636f6ced68979112649291bbae3e566a02aca"
+    }
   },
   "incoming_sources": {
     "20_swiftui-gotchas.md": {
