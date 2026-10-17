@@ -276,3 +276,13 @@ Strato keeps half the config (domain mapping, subdomain binding, directory prote
 ---
 
 *Related: `24_web-gotchas.md` (browser/cache patterns more broadly), `32_git-workflow.md` (deploy hygiene), `54_security-rules.md` (auth + secrets).*
+
+
+### Equal-size cache-version edits can be skipped by mirror
+
+`lftp mirror --ignore-time` does not force a content comparison or upload: equal-size files can still be skipped. Replacing a fixed-length CSS query hash leaves HTML size unchanged, so a successful mirror can leave old references live. For a reviewed scoped manifest, explicitly `put` these changed files with atomic temporary-file replacement, then compare HTTPS SHA-256 against staged bytes. Verify PHP source by SFTP readback as well as its rendered response.
+
+Observed: App-Websites, 2026-10-15 — 27 cache-version pages skipped by the mirror, uploaded explicitly and verified afterward.
+
+The [lftp manual](https://lftp.yar.ru/lftp-man.html) defines `--ignore-time` as ignoring timestamps;
+`--transfer-all` is the separate option for transferring files that appear unchanged.

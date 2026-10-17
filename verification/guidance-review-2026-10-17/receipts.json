@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-17",
+  "method": "Executed Python hashlib.sha256 and byte counts. Incoming source reconstructed from local HEAD plus retained patch in a disposable directory; git apply --check passed. Evidence files inspected read-only, not rerun.",
+  "incoming_patch": {
+    "bytes": 8352,
+    "sha256": "2933d242039124b18c32c2ff421636f6ced68979112649291bbae3e566a02aca"
+  },
+  "incoming_sources": {
+    "20_swiftui-gotchas.md": {
+      "bytes": 31934,
+      "sha256": "06e09bd770812ffc02da9ebea9b0d9f09b9fcde4f74cb2ae27ccb4afb15ab984"
+    },
+    "22_macos-platform.md": {
+      "bytes": 24564,
+      "sha256": "37b02be04a6011323b15f7c8ba27e1c3d89060961ead313018b959cd3fdf8ce2"
+    },
+    "29_web-strato-hosting.md": {
+      "bytes": 17026,
+      "sha256": "ff22c0e59ffff7bfb3b31da13816229f6e4c263f6ed0e7d4a09ae1083264b774"
+    },
+    "44_my-glossary.md": {
+      "bytes": 1441,
+      "sha256": "8c3dfe39b33ffe6a92ced4522e63d9fc7249c4a32a37df297e69fb91239876a3"
+    },
+    "MACHINES.md": {
+      "bytes": 4534,
+      "sha256": "9c6292f366d8e0aa6cad8fdb50e156d5bb31dd671587742cef6e3fc6e6aa247f"
+    }
+  },
+  "sources": {
+    "20_swiftui-gotchas.md": {
+      "bytes": 31934,
+      "sha256": "06e09bd770812ffc02da9ebea9b0d9f09b9fcde4f74cb2ae27ccb4afb15ab984"
+    },
+    "22_macos-platform.md": {
+      "bytes": 23484,
+      "sha256": "3d2cbe147baa8d02e4fa23cd892a84191ec2400e898c43f278e94d8d54d2a2df"
+    },
+    "29_web-strato-hosting.md": {
+      "bytes": 17214,
+      "sha256": "5aa7c2854d7ff2b6b149c903277130f3a3331b94578a5532de326653047928ef"
+    },
+    "44_my-glossary.md": {
+      "bytes": 1331,
+      "sha256": "873977e60d8dc906ec06502dff131dac141112ab817e31d4407e2106bf7389a6"
+    },
+    "MACHINES.md": {
+      "bytes": 4719,
+      "sha256": "48c661295c1b903819c6d34366c208b8229869b9c78047953a77934113e43c14"
+    }
+  },
+  "local_evidence": {
+    "/Users/sim/ProgrammingProjects/1-macOS/Penumbra/docs/reviews/evidence/viewer-workflow-polish/apply-enabled-repair-2026-10-12/README.md": {
+      "bytes": 3346,
+      "sha256": "d86e1b56a497241cd8e3c284d87c51d278bd1835f80b4c4f386ba4fcca512299"
+    },
+    "/Users/sim/ProgrammingProjects/1-macOS/Penumbra/docs/reviews/evidence/viewer-workflow-polish/apply-enabled-repair-2026-10-12/diagnostic-trace.log": {
+      "bytes": 25771,
+      "sha256": "766ea1fd19b805b4bb6be15a19381477d73666f281f6d769d6d20b9a7447dea3"
+    },
+    "/Users/sim/ProgrammingProjects/1-macOS/Penumbra/docs/reviews/evidence/viewer-workflow-polish/apply-enabled-repair-2026-10-12/red-test-summary.txt": {
+      "bytes": 2757,
+      "sha256": "bc0210ca219bbce4429583eaa5cf7993203e8098bbc84db24309272578a750b4"
+    },
+    "/Users/sim/ProgrammingProjects/1-macOS/Penumbra/docs/reviews/evidence/viewer-workflow-polish/apply-enabled-repair-2026-10-12/green-test-summary.txt": {
+      "bytes": 1334,
+      "sha256": "ef1da09067be60f68fdcb91614538108d8728f150a9618efb348ef9f4cd08bb7"
+    },
+    "/Users/sim/ProgrammingProjects/1-macOS/Penumbra/docs/sessions/2026-10-12.md": {
+      "bytes": 98184,
+      "sha256": "ef4eb68eedcd751168b89838743c063215e0c7bfb61bfd465b27a21f26d16382"
+    },
+    "/Users/sim/ProgrammingProjects/1-macOS/MousePlus/docs/sessions/2026-09-13.md": {
+      "bytes": 7377,
+      "sha256": "bab08b55bf9a448776886f42ed50ee3f6751399ada6382509d28da96eb51b410"
+    },
+    "/Users/sim/ProgrammingProjects/1-macOS/DiskVerdict/docs/sessions/2026-09-11.md": {
+      "bytes": 23775,
+      "sha256": "25632cc5a4c8c5068307878ab76da969d1c798480bd7f34620126000451c033c"
+    },
+    "/Users/sim/ProgrammingProjects/1-macOS/DiskVerdict/docs/sessions/2026-09-12.md": {
+      "bytes": 26194,
+      "sha256": "e3f2acc546b505c1f3a3b442fa95ab8772c26ecd987db51f2b249807fae80d92"
+    },
+    "/Users/sim/ProgrammingProjects/2-iOS/ChargeMap/docs/verification/location-destination.md": {
+      "bytes": 7642,
+      "sha256": "9a6af19d2c72f8290cf2d643dbf5cdd551c8ea1f1e20e44ba704c509c2f0371d"
+    },
+    "/Users/sim/ProgrammingProjects/2-iOS/ChargeMap/docs/sessions/2026-09-11.md": {
+      "bytes": 5083,
+      "sha256": "1e9b3b7f601a752768769fae339908ca6bb5460ee3a8759e57a59ecdce053606"
+    },
+    "/Users/sim/ProgrammingProjects/3-Websites/App-Websites/docs/sessions/2026-10-15.md": {
+      "bytes": 30094,
+      "sha256": "b88fe34b332b310477bf3f00d580725cc59153b96188e9044cc25026103a41e9"
+    },
+    "/Users/sim/ProgrammingProjects/3-Websites/App-Websites/docs/reviews/2026-10-15-site-consistency-publication.json": {
+      "bytes": 14759,
+      "sha256": "4620646d3f300ca21c014451b184233e16a5489ee14cac56f521bef271739a22"
+    }
+  }
+}

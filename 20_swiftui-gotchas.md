@@ -790,3 +790,28 @@ ScrollView {
 
 Same trap vertically with horizontal `ScrollView`s. Cheap tell: resize the pane — if the gap grows
 on *both* sides of the content, it's this.
+
+
+## SwiftUI environment adoption can overwrite a native control's disabled state
+
+**Observed:** Penumbra, macOS 27.2, October 12, 2026. A manual timecode editor showed
+its invalid-input warning while its NSButton remained enabled. Instrumentation proved
+`updateNSView` set `isEnabled = false`, then SwiftUI's
+`NSView.adoptEnvironment(_:hostedSubview:)` set the same button back to true.
+Reassigning the native property during update was insufficient.
+
+**Fix:** expose the wrapper as a SwiftUI View, apply `.disabled(!enabled)` to its
+private NSViewRepresentable, and map `context.environment.isEnabled` into the native
+control and its action guard. This composes local eligibility with inherited disabling.
+Do not force `.environment(\.isEnabled, enabled)`, which can override ancestor policy.
+Retain domain validation in the commit action as a separate safeguard.
+
+**Regression:** mount the real wrapper in NSHostingView/NSWindow; change another
+inherited environment value while locally disabled, toggle ancestor disabling, verify
+native enabled state and action suppression, then re-enable. An isolated state-only
+probe may miss the later environment adoption. Penumbra's two hosted regressions failed
+before repair (including native enabled assertions) and passed afterward; user accepted
+invalid-disabled and valid-enabled behavior in the signed app.
+
+Apple: [Use SwiftUI with AppKit](https://developer.apple.com/videos/play/wwdc2022/10075/).
+Evidence: Penumbra `docs/reviews/evidence/viewer-workflow-polish/apply-enabled-repair-2026-10-12/`.

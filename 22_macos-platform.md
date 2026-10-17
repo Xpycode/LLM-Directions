@@ -306,6 +306,15 @@ struct DualInterfaceApp: App {
 
 ---
 
+## Reduce Motion location in macOS 27
+
+In macOS 27, use **System Settings → Accessibility → Motion → Reduce motion**.
+Motion has its own Accessibility panel; do not direct users to Display for this setting on
+macOS 27. The user's screenshots confirmed the panel and toggle location during MousePlus
+live acceptance on 2026-09-13. This records the setting's location, not a passed app behavior test.
+
+---
+
 ## Accessibility API (Window Management)
 
 ### Permissions
@@ -382,6 +391,20 @@ API's word for it:
 sfltool dumpbtm | grep -i -A 10 "<AppName>"
 # Look for: Disposition: [enabled, allowed, notified]
 ```
+
+**`SMAppService.daemon(plistName:).status == .notFound` — don't assume it's a bundle/signing bug.**
+DiskVerdict's September 11, 2026 record reported `.notFound`. September 12 instrumentation
+instead captured `.requiresApproval` before and after registration, with
+`SMAppServiceErrorDomain Code=1 "Operation not permitted"`. Bundle/signature checks had passed;
+after the user approved the helper in System Settings, the daemon and XPC connection worked.
+This establishes an approval gate in that case, not a general timing explanation for `.notFound`.
+
+Keep the exact artifact, observed status and thrown error together when diagnosing registration.
+[SMAppService](https://developer.apple.com/documentation/servicemanagement/smappservice?language=objc)
+registers helpers subject to user approval. Registration changes system state: any diagnostic
+launch, registration attempt or Settings interaction needs explicit target/action authorization.
+Inspect existing logs and bundle evidence first; retain temporary instrumentation and restoration
+obligations under `34_testing.md` and `reference/log/app-handoff.md` if a live diagnostic is authorized.
 
 ---
 

@@ -1,0 +1,142 @@
+diff --git a/20_swiftui-gotchas.md b/20_swiftui-gotchas.md
+index db15f4d..7f440c3 100644
+--- a/20_swiftui-gotchas.md
++++ b/20_swiftui-gotchas.md
+@@ -790,3 +790,28 @@ ScrollView {
+ 
+ Same trap vertically with horizontal `ScrollView`s. Cheap tell: resize the pane — if the gap grows
+ on *both* sides of the content, it's this.
++
++
++## SwiftUI environment adoption can overwrite a native control's disabled state
++
++**Observed:** Penumbra, macOS 27.2, October 12, 2026. A manual timecode editor showed
++its invalid-input warning while its NSButton remained enabled. Instrumentation proved
++`updateNSView` set `isEnabled = false`, then SwiftUI's
++`NSView.adoptEnvironment(_:hostedSubview:)` set the same button back to true.
++Reassigning the native property during update was insufficient.
++
++**Fix:** expose the wrapper as a SwiftUI View, apply `.disabled(!enabled)` to its
++private NSViewRepresentable, and map `context.environment.isEnabled` into the native
++control and its action guard. This composes local eligibility with inherited disabling.
++Do not force `.environment(\.isEnabled, enabled)`, which can override ancestor policy.
++Retain domain validation in the commit action as a separate safeguard.
++
++**Regression:** mount the real wrapper in NSHostingView/NSWindow; change another
++inherited environment value while locally disabled, toggle ancestor disabling, verify
++native enabled state and action suppression, then re-enable. An isolated state-only
++probe may miss the later environment adoption. Penumbra's two hosted regressions failed
++before repair (including native enabled assertions) and passed afterward; user accepted
++invalid-disabled and valid-enabled behavior in the signed app.
++
++Apple: [Use SwiftUI with AppKit](https://developer.apple.com/videos/play/wwdc2022/10075/).
++Evidence: Penumbra `docs/reviews/evidence/viewer-workflow-polish/apply-enabled-repair-2026-10-12/`.
+diff --git a/22_macos-platform.md b/22_macos-platform.md
+index b6a8351..0c4e05b 100644
+--- a/22_macos-platform.md
++++ b/22_macos-platform.md
+@@ -306,6 +306,15 @@ struct DualInterfaceApp: App {
+ 
+ ---
+ 
++## Reduce Motion location in macOS 27
++
++In macOS 27, use **System Settings → Accessibility → Motion → Reduce motion**.
++Motion has its own Accessibility panel; do not direct users to Display for this setting on
++macOS 27. The user's screenshots confirmed the panel and toggle location during MousePlus
++live acceptance on 2026-09-13. This records the setting's location, not a passed app behavior test.
++
++---
++
+ ## Accessibility API (Window Management)
+ 
+ ### Permissions
+@@ -383,6 +392,31 @@ sfltool dumpbtm | grep -i -A 10 "<AppName>"
+ # Look for: Disposition: [enabled, allowed, notified]
+ ```
+ 
++**`SMAppService.daemon(plistName:).status == .notFound` — don't assume it's a bundle/signing bug.**
++DiskVerdict (2026-09-11/12) spent a full session chasing `.notFound` as if the daemon plist,
++`BundleProgram` path, or Team ID matching were wrong — all of which were already correct (plist
++sealed at `Contents/Library/LaunchDaemons/<label>.plist`, matching Team ID on app + helper, hardened
++runtime, notarized). Live instrumentation (temporary `.task` printing `service.status` /
++`register()`'s thrown error to stderr, run via `nohup <binary> &` — not `open`, so stderr is
++capturable — see cookbook pattern below) showed the *real* status was `.requiresApproval`, and
++`register()` was throwing the documented `SMAppServiceErrorDomain Code=1 "Operation not permitted"`
++for that state — a normal "needs a human click in System Settings → Login Items & Extensions" gate,
++not a validation failure. **`.notFound` can be the transient pre-registration status before BTM has
++ever recorded an attempt** (e.g., the very first `register()` call on a machine, or a process that
++quit before the XPC round-trip to `backgroundtaskmanagementd` finished persisting) — it is not
++reliably distinguishable from "bundle genuinely invalid" without actually calling `register()` and
++reading the thrown error, or re-checking `.status` on a subsequent launch. Don't diagnose from static
++files (plist/entitlements/codesign) alone when `.notFound` is reported — reproduce live first.
++
++**Reproducing `register()` output live, safely:** add a temporary `.task { print status before/after
++register() }` to the relevant SwiftUI view, force that view to render (e.g., default the app's tab/
++mode to it), build with the SAME signing identity as production (`DEVELOPMENT_TEAM=<team>
++CODE_SIGN_IDENTITY="Developer ID Application"` — ad-hoc signing has no stable Team ID and
++`SMAppService` will never validate it), run the built binary directly via `nohup <path> &` (a plain
++backgrounded `&` inside a tool call gets reaped when the tool call returns; `open` detaches cleanly
++but discards stdout/stderr since `FileHandle.standardError.write` bypasses os_log and won't show up
++in `log stream` either). Revert the instrumentation before committing.
++
+ ---
+ 
+ ## Quarantine and Gatekeeper
+diff --git a/29_web-strato-hosting.md b/29_web-strato-hosting.md
+index 49461fd..c247047 100644
+--- a/29_web-strato-hosting.md
++++ b/29_web-strato-hosting.md
+@@ -276,3 +276,10 @@ Strato keeps half the config (domain mapping, subdomain binding, directory prote
+ ---
+ 
+ *Related: `24_web-gotchas.md` (browser/cache patterns more broadly), `32_git-workflow.md` (deploy hygiene), `54_security-rules.md` (auth + secrets).*
++
++
++### Equal-size cache-version edits can be skipped by mirror
++
++`lftp mirror --ignore-time` does not force a content comparison or upload: equal-size files can still be skipped. Replacing a fixed-length CSS query hash leaves HTML size unchanged, so a successful mirror can leave old references live. For a reviewed scoped manifest, explicitly `put` these changed files with atomic temporary-file replacement, then compare HTTPS SHA-256 against staged bytes. Verify PHP source by SFTP readback as well as its rendered response.
++
++Observed: App-Websites, 2026-10-15 — 27 cache-version pages skipped by the mirror, uploaded explicitly and verified afterward.
+diff --git a/44_my-glossary.md b/44_my-glossary.md
+index b775581..741d3df 100644
+--- a/44_my-glossary.md
++++ b/44_my-glossary.md
+@@ -13,6 +13,17 @@ The smallest version of your product that delivers core value to users. Not a pr
+ 
+ ---
+ 
++## Scrolling, Selection, and Modifier Keys
++*Asked: 2026-10-12 during Penumbra keyboard acceptance*
++
++Scrolling changes which part of a list is visible. Selection identifies the row an action will operate on. In the tested Penumbra lists, Home/End scroll to the beginning/end without changing selection; Up/Down moves selection. This behavior is context-dependent, not a universal promise for every control.
++
++A modifier key changes another input’s meaning: Shift, Control, Option and Command are examples. Home/End are navigation keys, not modifiers. The right-hand pair in the Magic Keyboard’s six-key navigation block is Page Up/Page Down, distinct from the ordinary arrow keys.
++
++**Why it matters:** A list moving does not mean another clip was selected or loaded.
++
++---
++
+ <!--
+ Template for new entries:
+ 
+diff --git a/MACHINES.md b/MACHINES.md
+index 24d1c8a..12e0027 100644
+--- a/MACHINES.md
++++ b/MACHINES.md
+@@ -64,6 +64,15 @@ See [inventory and limitations](verification/mac-control/environment.md).
+ | AppProbe (UI automation) | ? (FSKit/system-extension spikes happened here — see `37` Rule 2 sources) |
+ | jq | ? |
+ 
++**Targeted recheck 2026-09-11 (ChargeMap acceptance):** macOS 27.0 (26A5425a),
++Xcode 26.6 (17F113), XcodeGen 2.46.0. iOS 26.5 simulator build and focused UI
++automation work from Codex when CoreSimulator access is escalated outside the
++workspace sandbox; a sandboxed probe falsely reports service connection failure.
++Signed physical-iPhone Release build works with `-allowProvisioningUpdates` after
++the first build reported a missing development profile. Device installation and
++launch succeeded. ChargeMap map tiles and live Apple destination search work in a
++fresh isolated simulator; earlier M4 map-resource failure did not reproduce.
++
+ **To fill this in:** on the M4 Pro, run each as its own command —
+ `security find-identity -v -p codesigning` (record *type + team only*, not the name),
+ `xcodebuild -version`, `sw_vers`, `ls /Applications/AppProbe.app`, `command -v jq` —

@@ -52,17 +52,26 @@ See [inventory and limitations](verification/mac-control/environment.md).
 
 ## M4 Pro
 
-**Verified:** *(never — fill in on that Mac)*
+**Verified:** partial observation 2026-09-11 (ChargeMap); remaining inventory not checked.
 
 | Fact | State |
 |---|---|
 | Hardware | Mac mini(?), Apple M4 Pro |
-| macOS | ? |
-| Xcode | ? |
+| macOS | Observed 2026-09-11: 27.0 (26A5425a); not rechecked today |
+| Xcode | Observed 2026-09-11: 26.6 (17F113); not rechecked today |
 | Signing: Developer ID Application | ? |
 | Signing: Apple Development ("Mac Development") | ? |
 | AppProbe (UI automation) | ? (FSKit/system-extension spikes happened here — see `37` Rule 2 sources) |
 | jq | ? |
+
+**Observed 2026-09-11 (ChargeMap acceptance):** iOS 26.5 isolated-simulator UI checks,
+map tiles and actual Apple destination search passed; the prior M4 blank-map issue did not
+reproduce. A signed physical-iPhone Release build, installation and launch succeeded after
+retrying a missing-profile failure with `-allowProvisioningUpdates`. These are dated outcomes,
+not current signing/tool inventory or permission for another launch/test.
+Evidence: ChargeMap `docs/verification/location-destination.md` and `docs/sessions/2026-09-11.md`;
+absolute source paths and review limits are recorded in
+[the provenance review](verification/guidance-review-2026-10-17/README.md).
 
 **To fill this in:** on the M4 Pro, run each as its own command —
 `security find-identity -v -p codesigning` (record *type + team only*, not the name),
