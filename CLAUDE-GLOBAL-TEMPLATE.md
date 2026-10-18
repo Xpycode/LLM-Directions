@@ -16,6 +16,15 @@ implementation” or “next wave”) use the master `commands/execute.md` proce
 dependency, fresh-context delegation and validation rules; continue ready work within the user's
 authorized scope without renewed task/wave permission. Explicit user limits prevail.
 
+**Fresh-build launch authorization (October 18, 2026):** after successfully producing a fresh
+runnable app build for user testing, automatically launch the exact fresh artifact. The user
+excludes this launch from desktop control; this supersedes older wording that prohibited
+automatic fresh-build launches. Quitting or relaunching existing instances, clicks, keystrokes,
+window/Space manipulation, clipboard changes and live app-profile replacement still require
+explicit permission. Do not launch failed builds or intermediate test-runner builds. If an
+existing instance prevents launching the fresh artifact, report that and provide user-operated
+steps. Report the full artifact path and actual launch result. Newer explicit limits prevail.
+
 ---
 
 ## Session Start: Auto-Detect and Resume

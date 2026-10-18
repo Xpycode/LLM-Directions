@@ -59,7 +59,9 @@ owned process and real result source. A name such as “unit test” does not es
 Unknown effects require inspection first. Under no-control instructions, do not launch indirectly
 through tests, build hooks or discovery tools. Run an inspected headless subset when available;
 otherwise report blocked cases and provide a user-operated alternative. A build request is not
-launch permission. Keep verified project-specific safe/serial commands local. Examples below
+launch permission unless the user has granted standing authorization for fresh-build launches.
+That authorization does not extend to app-hosted tests, intermediate test-runner builds or other
+desktop control. Keep verified project-specific safe/serial commands local. Examples below
 illustrate APIs, not permission to run them.
 
 ### Isolated data and recovery

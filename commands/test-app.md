@@ -13,9 +13,11 @@ authorization, owned process and result source. Unknown effects must be inspecte
 
 No-control scope excludes indirect launches through `xcodebuild test`, app-hosted tests, discovery
 or build hooks. Use an available inspected headless subset and report remaining gates. A successful
-build is not launch permission. For a user-operated handoff show the real full absolute containing
+build is not launch permission unless standing user authorization covers that fresh-build launch;
+this does not authorize app-hosted tests, intermediate test-runner builds or other desktop control.
+For a user-operated handoff show the real full absolute containing
 folder path as copyable text and name the app to open there; never launch, quit or relaunch it by
-default. Respect newer user restrictions and a keep-running exception.
+default unless the action is already authorized. Respect newer user restrictions and a keep-running exception.
 
 ## 2. Establish an available backend
 

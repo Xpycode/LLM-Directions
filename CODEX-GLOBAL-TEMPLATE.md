@@ -34,6 +34,14 @@ These instructions apply to Codex sessions using this Codex home. This file is d
 
 ## Working defaults
 
+- **Fresh-build launch authorization (October 18, 2026):** after successfully producing a fresh
+  runnable app build for user testing, automatically launch the exact fresh artifact. The user
+  excludes this launch from desktop control; this supersedes older wording that prohibited
+  automatic fresh-build launches. Quitting or relaunching existing instances, clicks, keystrokes,
+  window/Space manipulation, clipboard changes and live app-profile replacement still require
+  explicit permission. Do not launch failed builds or intermediate test-runner builds. If an
+  existing instance prevents launching the fresh artifact, report that and provide user-operated
+  steps. Report the full artifact path and actual launch result. Newer explicit limits prevail.
 - Inspect relevant files and current behavior before proposing or implementing a change.
 - Preserve dirty-worktree changes and compare overlapping diffs before editing.
 - Match validation to the files touched; do not claim a check passed unless it actually ran.
