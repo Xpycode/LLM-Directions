@@ -1,6 +1,6 @@
 # Directions Lean Efficiency — Implementation Plan
 
-**Status:** 16/16 local tasks complete; E1 blocked on isolated host authentication/replay. Overall acceptance open. **Updated:** 2026-10-16.
+**Status:** 16/16 local tasks complete; listed source-size increases accepted, both tools deployed locally and 110 consumer roots migrated to shared-master routing under explicit user authorization. E1 remains partial; corrected-host behavior, thirty deferred Claude observations and other tradeoffs remain open. Pilot/upstream parked. **Updated:** 2026-10-17.
 **Spec:** [Directions lean efficiency](directions-lean-efficiency.md).
 **Review:** [Planning review and sources](../verification/directions-lean-efficiency-planning.md).
 **October evidence:** [Cross-project review](../verification/directions-review-2026-10-16.md).
@@ -356,7 +356,51 @@ are complete. See `verification/lean/host-acceptance.md` for exact missing obser
 
 ## External acceptance and rollout
 
+**Latest rollout direction, October 17:** user explicitly requested deployment and migration.
+Both local tool installations are refreshed and 110 consumer roots now route to master procedures;
+[rollout evidence](../verification/lean/rollout-2026-10-17/README.md) records 261 instruction changes,
+verified originals and unchanged legacy guides/state/history. This supersedes earlier no-rollout
+scope for this Mac only; E1 remains unchecked and no provider test or other-Mac action follows.
+
+**October 17 scoped acceptance, latest:** user accepted standalone Codex +558 / Claude +1,483
+bytes, arrival load set +1,909 bytes, and execution/log reuse guidance +989 bytes. See the
+[decision](../decisions.md#2026-10-17---accept-the-reviewed-instruction-size-increases).
+This supersedes earlier unaccepted wording only for those source-size items. Runtime regressions,
+corrected-host evidence, other unlisted tradeoffs and E1 remain open; no deployment or consumer
+migration was requested. Parked test scopes remain parked.
+
+**October 16 user direction:** defer Claude; Codex is the primary host. A quota reset is not a
+resume instruction. Preserve existing evidence and the thirty missing Claude rows without new
+requests. Local review and source corrections are recorded in
+[the follow-up](../verification/lean/codex-followup.md); corrected host behavior is unobserved.
+The proposal has been reviewed and revised with explicit call/byte caps and narrower S19 diagnostic
+coverage; [local runner preparation/validation](../verification/lean/pilot/validation.md) now passes
+with an inert fake host. **October 17 user constraint:** live transport validation must pass before
+any pilot; use every remaining gate in the linked validation report. Fake-host results and protocol
+inspection cannot close this gate. No pilot/provider request is authorized by this prerequisite.
+Current rendered entry deltas are -882 Codex / -1,062 Claude bytes versus baseline; both
+global-plus-repository entry checks pass locally. Standalone/complex-path tradeoffs and observed
+runtime regressions remain unaccepted. Pilot/registry work and the unsent upstream draft are
+parked under the later October 17 local-maintenance direction. Do not automatically rerun benchmarks.
+Claude deferral does not close E1 or waive the remaining Codex findings or byte tradeoffs.
+
+Historical October 16 corrective scope: trusted hash reporting, evidence-based acceptance steps, build-only
+routing and path-only read limits implemented locally. Keep E1 unchecked; the original 16/16 task
+count and historical replay manifest do not imply acceptance of these later corrections. Executed
+local receipts distinguish intact backups from the two false model-recorded hashes. No new model
+sessions, independent review, rollout or push occurred in that pass. Its source changes were later
+committed in `dc9ce95`; shared acceptance/state evidence remains uncommitted. The reviewed guidance
+checkpoints are separate (`3407355`, `b9c2a89`). Neither checkpoint closes E1.
+
 - [ ] **E1 — Observe fresh Codex and Claude Code sessions.** Depends on: LE13 and LE14.
+  Transport prerequisite (October 17): **blocked/incomplete**. One actual isolated Codex CLI
+  request to a loopback rejection server shows extra advertised Code Mode/collaboration tools and
+  broker tools behind disabled Code Mode. No tool dispatch/model behavior was tested. Establish
+  usable broker-only host configuration before adapter integration; the
+  [adopted broker-only-v1 policy](../verification/lean/pilot/host-policy.md) requires four exact direct
+  functions and no extra paths. No live host is admitted. Retained evidence and six original regression
+  tests: [transport diagnostic](../verification/lean/pilot/transport-validation.md). Coordinator
+  implemented serially; fresh capability/evidence reviewer checked the result. No pilot authorized.
   Requires: both hosts available in isolated test projects/profiles; model/effort recorded. Foreground
   app tests, real Mac handoff, global installation and consumer migration require their own actual
   authorization; ordinary fixtures do not grant it. Use isolated repositories/remotes for handoff tests.
@@ -396,6 +440,147 @@ regression occurs. Never restore a whole dirty checkout or remove conflicts/hist
 | LE09 | Fresh task agent; coordinator integrated | 50 generator checks; 40 final disposable deploy invocations and consumer inventory; deployment.md | ef2676c, 1436fbb | No live deploy/migration |
 | LE13 | Coordinator; exclusive integration ownership | run-checks.sh passes; integration.md distinguishes final bytes from candidate experiment; Mac plan hash unchanged | a414cc7 | E1 missing isolated authentication and host replay |
 | LE14 | Fresh independent reviewer; fixes returned to coordinator/LE09 owner | final-review.md: plain-log Resume and malformed-hook preflight corrected; independent negative repros pass | 1436fbb | E1 remains open; no rollout recommendation |
+| E1 authentication preparation | Coordinator; serial shared acceptance record | Private launcher checks pass; 85 baseline hashes verified, 38 final hashes unchanged; host-acceptance.md | Uncommitted preparation checkpoint; E1 not complete | User-operated subscription sign-ins, connectivity, matched replay and byte tradeoffs remain open |
+| E1 authenticated continuation | Coordinator; fresh independent harness/criteria reviewer | Both isolated logins and no-tool connectivity pass; local broker containment checks pass; host-acceptance.md | Uncommitted evidence checkpoint; no push | Automatic review rejected external instruction payload; explicit OpenAI/Anthropic payload approval requested. No paired run started; replay and byte tradeoffs open |
+| E1 approved matched replay | Coordinator owns source/profile phases, integration and records; bounded independent fixture workers; fresh independent harness/workflow/extra reviewers | 244 active attempts: 188 pass, 35 qualified, 11 routing-oracle failures, 10 provider-blocked; 20 not run. Twelve invalid routing fixtures superseded after independent staging review; corrected v3 included. All 256 rows reviewed; 85 baseline/38 current-final/91 snapshot hashes, six confinement checks, Python syntax and raw archive CRC pass. [Full evidence](../verification/lean/host-acceptance.md) | No implementation commit: partial acceptance evidence checkpoint; earlier dirty work retained; no push/deploy | E1 unchecked. Claude reports reset October 17 01:40 Europe/Berlin; fresh retry S19–S23 pairs and run 20 missing assays. Resolve routing/provenance/manual-batch findings and observed/static byte increases before acceptance; reuse valid evidence |
+| E1 local runner preparation | Fresh independent runner/preparation owners; coordinator integration and state; independent reviewer | [31 tests, frozen fake-host replay and receipts](../verification/lean/pilot/validation.md): 24 calls / 18,418 returned bytes, 14 executed checksums, seven equal pairs, unchanged freeze. Complete 91+91 historical snapshots and 93 corrected candidate inputs retained. No model request | 651068e (new runner/tools/tests/evidence only); overlapping prior source/state/evidence left uncommitted; no push | Selected local scope complete; E1 unchecked. Live Codex transport/host parity, corrected behavior, Claude deferral and byte tradeoffs remain open. No pilot scheduled |
+| E1 transport diagnostic, October 17 | Coordinator serial implementation; fresh independent capability/evidence reviewer | [Actual isolated CLI/loopback evidence](../verification/lean/pilot/transport-validation.md), six no-network regression tests, retained evidence hashes, Python syntax and diff whitespace pass; index 63/63 | Uncommitted diagnostic checkpoint: host-policy/adapter acceptance blocked; overlapping prior source/state preserved; no push | Tested config advertises extra tools and wraps broker tools behind disabled Code Mode. No dispatch/provider/model acceptance. Establish supported host policy; E1 and pilot prerequisite remain open |
+| E1 broker-only policy, October 17 | Coordinator serial coupled policy/diagnostic edits; fresh read-only independent reviewer | [Policy and local checks](../verification/lean/pilot/host-policy.md); schema/multiplicity checks and malformed-inventory diagnostics | Uncommitted checkpoint: diagnostic source and shared records overlap earlier uncommitted work; preserved without a mixed commit; no push | Policy established; no live host admitted. Find supported registry control, then prove actual dispatch/isolation and remaining transport gates. E1 unchecked; no model pilot |
+
+## October 17 local maintenance follow-up
+
+User's local-cleanup direction supersedes registry/upstream pickup. One coupled template edit ran
+serially: consolidated project detection, recognized root state in the master, and replaced the
+unconditional Xcode app-control recipe with canonical testing/handoff references. Removed another
+914 source bytes (848 rendered); Claude entry is 18,686 bytes, 1,062 below baseline. The 47-route
+integration check, 50 generator cases, generator syntax and diff whitespace pass; routing unchanged.
+See [current measurements](../verification/lean/codex-followup.md#reviewed-byte-tradeoffs--current-candidate).
+No additional task or E1 completion claimed. No commit: this template and shared records overlap
+retained uncommitted work; a mixed checkpoint was avoided pending source-diff review. No deployment,
+push, live model request or desktop control. Next: review remaining source changes for a coherent
+local checkpoint; pilot/upstream and Mac-control remain parked.
+
+Subsequent local review completed that checkpoint as `dc9ce95`: the six corrective sources plus
+[review](../verification/lean/local-cleanup-review.md), with no unrelated notes or acceptance evidence
+staged. Exact generated bodies and five historical corrective-source hashes match; Claude's older
+receipt predates cleanup. Additional checks: eight disposable record tests, three headless safety
+demonstrations, 85 frozen files and 40 disposable deployment invocations pass. Fetched origin after
+identity verification; branch was ahead only, not already merged. No pull/switch/merge/push.
+E1 remains open. Next local work: verify provenance of retained cross-project guidance additions
+before a separate documentation checkpoint. Historical source/acceptance records remain preserved.
+
+Guidance follow-up: `3407355` checkpoints five cross-project notes, a provenance report/receipts,
+retained incoming diff and the adjusted integration guard; `b9c2a89` stores that exact incoming diff
+compressed after its required context spaces triggered staged-whitespace warnings. Both packed and
+unpacked hashes and reconstruction of all five originals pass. No baseline manifest was changed:
+the integration guard now pins intentionally reviewed guides/profile to their new computed receipts
+while retaining the original Mac-plan pin. Twelve sibling-project evidence files were inspected
+read-only. Narrowed speculative helper-registration explanations and uncorroborated machine claims;
+dated observed behavior remains. Routing/reference, 85 frozen-file, receipt/template checks and
+final staged/worktree whitespace pass. Single serial provenance checkpoint; no independent review,
+live acceptance, desktop control, deployment or push. Next: reconcile remaining lean acceptance
+summaries with the source checkpoints, keeping E1 and historical results separate.
 
 Planning evidence lives in the linked review. On completion archive this plan with its evidence and update incoming links; while any
 required gate is open, retain the plan and its unchecked tasks.
+
+### Acceptance-summary reconciliation — October 17
+
+Selected local scope complete: integration, corrective follow-up and host-acceptance summaries now
+distinguish the committed source/guidance checkpoints from historical replay and intermediate byte
+totals. Current entries are 11,238/18,686 bytes versus 12,120/19,748 frozen bytes; both host entry
+checks pass locally. Historical integration tables and source manifests are unchanged. E1 stays
+unchecked; corrected-host behavior, thirty deferred Claude observations, standalone/complex-path
+tradeoffs and live transport admission remain open. Pilot/upstream and Mac-control stay parked.
+
+One coordinator edited the coupled summaries and shared records serially. A fresh-context,
+read-only reviewer independently checked accounting, receipts and scope; dated two older receipt
+statements and replaced the stale final pickup identified by that review. Validation: 47 routes
+and shared references/reviewed guide pins pass; 85 frozen file hashes/byte counts pass; five
+historical corrective-source receipts still match, with Claude's template correctly historical;
+unchanged manifests/integration tables and summary links pass; diff whitespace passes.
+No model CLI request, live test, deployment, desktop control or push. Commit exception: the edited
+acceptance/state files overlap retained uncommitted replay/transport history, and the follow-up and
+its receipts are still untracked; no mixed acceptance checkpoint was staged.
+
+**Next local step:** attribute saved Codex S01/S04/S05 status/closeout/continuation reads to required
+work versus avoidable retrieval using existing evidence only. This supersedes the older pickup
+sentences above; it does not authorize another host batch or accept the byte tradeoffs.
+
+### Saved-read attribution — October 17
+
+Selected local analysis complete in `d493514`: [report, analyzer and computed receipts](../verification/lean/read-attribution-2026-10-17/README.md).
+Eighteen retained Codex S01/S04/S05 root runs reconcile exactly to the published medians. Status
+retrieval grows 3,021 bytes entirely through required instructions; 1,559 bytes of command growth
+are conditional arrival/collision material. Execution adds 3,038 one-pass instruction bytes and
+variable record verification; unchanged procedure/log rereads are separately identified. No
+counterfactual savings, causal median decomposition, corrected-host behavior or new acceptance.
+
+Fresh-context status and execution analysts worked independently read-only; coordinator owned
+accounting, report, integration and Git. A separate fresh reviewer reproduced receipts and verified
+the claims. Its optimized-Python finding was fixed and confirmed: disabled assertions now cause
+an explicit refusal before claims. Archive SHA-256/CRC, ninety manifested artifacts, audited
+response hashes/bytes, eighteen per-run totals and six group medians pass. Normal receipt output
+is deterministic; optimized execution fails with empty stdout. Staged/worktree whitespace passed.
+Only three new attribution artifacts were committed; shared records and retained earlier
+acceptance/replay/transport work remain uncommitted. No E1 host request, deployment or push.
+
+**Next local step:** factor conditional arrival/collision detail out of ordinary status loading;
+preserve the command entry and all identity/concurrency/safety boundaries, then validate local
+references and disposable mode fixtures. This supersedes earlier pickup sentences. LE01–LE16 stay
+16/16 and E1 stays unchecked; pilot/upstream, thirty Claude observations and Mac-control remain
+parked. Prospective optimization is not an accepted byte tradeoff or live-host improvement.
+
+### Conditional status factoring — October 17
+
+Selected local maintenance scope complete in `77a673d`: [source accounting and validation](../verification/lean/status-factoring.md).
+The complete command entry now routes arrival/collision procedures to canonical master references
+only when triggered. Original section anchors, aliases, identity/authority/concurrency boundaries,
+host-specific detector limits and startup behavior are preserved. Core source is 6,958 versus
+10,149 bytes (-3,191 / 31.4%); core plus collision is 9,209, while arrival plus collision totals
+12,058 (+1,909). These are source subtotals, not observed host improvements; the larger arrival
+path remains an unaccepted tradeoff. Frozen evidence and LE01–LE16/E1 status are unchanged.
+
+One fresh-context task owner implemented the coupled core/references/fixtures. Coordinator owned
+recursive integration checks, runner wiring, report, shared records and Git. A separate fresh
+read-only reviewer compared the parent command with the extracted procedures and found no issues;
+independently reran five status tests, integration, shell syntax and scoped whitespace checks.
+Coordinator also verified 85 frozen files and full staged/worktree whitespace. Fixtures model
+documented routing and source contracts only; real host loading/detection was not tested.
+
+The seven-file source/test/report commit excludes prior overlapping state, acceptance, replay and
+transport changes; those remain uncommitted. Session/state/index refreshed separately under the
+automatic pre-clear workflow. No push, deployment, host request, consumer edit or desktop control.
+
+**Next local follow-up:** review saved execution-read findings for narrowly reusing unchanged
+procedure/log content while preserving task acceptance, changed-record verification and recovery.
+This supersedes earlier pickup sentences. Selected scope complete; plan continues at 16/16 plus
+E1 open. Pilot/upstream, thirty Claude observations and Mac-control remain parked.
+
+### Execution/log read reuse — October 17
+
+Selected local review/guidance scope complete in `f125e42`: [evidence and validation](../verification/lean/execution-read-reuse.md).
+Log owns complete-first-read and retained-content rules; execute Step 4 references them. Reuse
+requires unchanged canonical identity/content and complete retained task/context; changed,
+uncertain or compacted context requires rereading, and fresh agents perform their own reads.
+Records inherit the same safeguards. Batch known closeout amendments, then verify final changed
+records/links; further changes require verification again. Actual source acceptance, archive
+ordering, current authorization/recovery triggers and automatic close boundaries remain intact.
+
+One fresh-context owner edited the coupled commands; coordinator clarified record conditions and
+owned integration/report/records/Git. A separate fresh read-only reviewer identified the record
+reuse ambiguity and confirmed it resolved, with no remaining findings. Integration (47 routes,
+recursive references, reviewed guide pins/unchanged Mac plan) and staged/worktree whitespace pass.
+Semantic source review covers stale/fresh/changed contexts and required acceptance/recovery checks.
+No prose-mirroring test or unrelated baseline/deployment suite rerun. Source adds 989 bytes
+(execute +109, log +880); actual host savings/net runtime effect remain unmeasured. Frozen
+replay/manifests/receipts and E1 status unchanged.
+
+The three-file command/report commit excludes overlapping earlier state/acceptance/replay work.
+Pre-clear handoff saved separately; earlier dirty work preserved. No new host/provider request,
+network test, desktop control, deployment, consumer migration or push.
+
+**Next:** review remaining E1 host-evidence gaps and byte tradeoffs before selecting acceptance
+work. The identified narrow status/reuse source follow-ups are locally complete; no additional
+local optimization or host batch is scheduled. This supersedes earlier pickup sentences.
+Plan remains 16/16 plus E1 open; pilot/upstream, thirty Claude observations and Mac-control parked.

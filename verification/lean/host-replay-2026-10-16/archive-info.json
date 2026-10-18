@@ -1,0 +1,7 @@
+{
+  "archive_path": "/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/.archive/e1-2026-10-16-q0geNh/raw-evidence.zip",
+  "bytes": 17273808,
+  "sha256": "0e9f37857a9ba97dd90257b7213a59f9abbeea121f96064b306f8e605230e74b",
+  "file_count": 5604,
+  "scope": "Run inputs/outputs, actual fixture files, raw/rendered frozen sources, harness/review files and local broker checks. Isolated authentication profiles and credentials excluded. Machine-local ignored archive; no cross-Mac availability claim."
+}

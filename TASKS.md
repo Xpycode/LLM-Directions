@@ -32,7 +32,28 @@
 - [ ] 7.3 Pilot launch and Directions handoff.
 - [ ] Finish host acceptance E1 for the [Directions lean-efficiency plan](specs/directions-lean-efficiency-plan.md).
   Local source tasks are implemented; status/evidence and open acceptance criteria belong to that
-  plan. Isolated Claude authentication and matched host replay remain pending. No rollout yet.
+  plan. Codex matrix complete with open findings. User deferred ten Claude workflow retries and
+  twenty assays after quota exhaustion; no automatic resume at reset. Local corrective guidance
+  and computed receipts are in [the follow-up](verification/lean/codex-followup.md). Corrected host
+  behavior is unobserved; [local runner validation](verification/lean/pilot/validation.md) passes.
+  Pilot/registry work is parked following the October 17 clarification to focus on local cleanup.
+  Transport validation still precedes any future pilot. Current Codex/Claude entries are 882/1,062
+  bytes below baseline; acceptance summaries distinguish committed local changes from historical
+  replay. [Saved-read attribution](verification/lean/read-attribution-2026-10-17/README.md) is complete:
+  status growth comes from required instructions; execution has some unchanged procedure/log
+  rereads. [Conditional status factoring](verification/lean/status-factoring.md) is committed and
+  locally validated; [execution/log reuse guidance](verification/lean/execution-read-reuse.md)
+  is also committed and reviewed. Next: review E1 evidence gaps and byte tradeoffs before acceptance work.
+  User accepted the presented standalone/arrival/reuse-guidance size increases and authorized
+  [local rollout](verification/lean/rollout-2026-10-17/README.md): both tools refreshed, 110 consumer
+  roots routed to master. E1, runtime regressions and unlisted tradeoffs remain open; no host batch.
+
+## Inbox
+
+- [ ] 2026-10-16 — Investigate one Claude E1 `status full` response that read master decisions
+  when fixture decisions were absent. Codex reported “Not found” correctly; preserve the isolated
+  observation before changing guidance. Evidence: `claude-final-S15-root-v2-r1` in
+  [host acceptance](verification/lean/host-acceptance.md).
 
 ## Retained maintenance evidence
 

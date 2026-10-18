@@ -28,3 +28,13 @@ inputs. None of these checks closes historical consumer or Claude findings.
 
 Validation results, exact invocation paths and remaining limitations are recorded in
 [validation.md](validation.md).
+
+The separate [October 17 actual-CLI probe](transport-validation.md) found a configuration blocker:
+broker tools are wrapped behind disabled Code Mode and extra tool surfaces remain advertised.
+`probe_codex.py` uses an isolated host and loopback rejection endpoint; it is not a live adapter
+or acceptance runner. It never supplies model output. E1 and the live transport gate remain open.
+
+[Supported host policy](host-policy.md) defines `directions-broker-only-v1`: four exact direct
+functions, no extra paths or wrappers, schema/multiplicity checks and separate dispatch/isolation
+admission evidence. No live host is admitted. `host_policy.py` checks advertisement only and is
+used by the diagnostic; it does not turn an inventory pass into transport acceptance.

@@ -1,0 +1,402 @@
+[
+  {
+    "sent": {
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "clientInfo": {
+          "name": "directions_transport_probe",
+          "version": "1"
+        },
+        "capabilities": {
+          "experimentalApi": true
+        }
+      }
+    }
+  },
+  {
+    "received": {
+      "id": 1,
+      "result": {
+        "userAgent": "directions_transport_probe/0.163.0 (Mac OS 27.2.0; arm64) unknown (directions_transport_probe; 1)",
+        "codexHome": "/private/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-codex-probe-d9_3eo84/home",
+        "platformFamily": "unix",
+        "platformOs": "macos"
+      }
+    }
+  },
+  {
+    "sent": {
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "sent": {
+      "id": 2,
+      "method": "thread/start",
+      "params": {
+        "model": "gpt-6.1-sol",
+        "modelProvider": "local_probe",
+        "cwd": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-codex-probe-d9_3eo84/work",
+        "ephemeral": true,
+        "approvalPolicy": "never",
+        "sandbox": "read-only",
+        "allowProviderModelFallback": false,
+        "environments": [],
+        "baseInstructions": "Local protocol probe. No model output is supplied.",
+        "dynamicTools": [
+          {
+            "name": "discover",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": false
+            },
+            "description": "Confined local broker probe tool"
+          },
+          {
+            "name": "list_files",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Confined local broker probe tool"
+          },
+          {
+            "name": "read_file",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Confined local broker probe tool"
+          },
+          {
+            "name": "sha256",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Confined local broker probe tool"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "received": {
+      "method": "remoteControl/status/changed",
+      "params": {
+        "status": "disabled",
+        "serverName": "M1-Max.local",
+        "installationId": "d1020141-a532-4ba5-8c38-03225909c52d",
+        "environmentId": null
+      },
+      "emittedAtMs": 1792189045122
+    }
+  },
+  {
+    "received": {
+      "id": 2,
+      "result": {
+        "thread": {
+          "id": "01a146ca-9985-7e40-82e7-1db1743458c3",
+          "environments": [],
+          "extra": null,
+          "sessionId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": true,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "local_probe",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "medium",
+          "createdAt": 1792189045,
+          "updatedAt": 1792189045,
+          "recencyAt": 1792189045,
+          "status": {
+            "type": "idle"
+          },
+          "path": null,
+          "cwd": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-codex-probe-d9_3eo84/work",
+          "cliVersion": "0.163.0",
+          "originator": "directions_transport_probe",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "local_probe",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-codex-probe-d9_3eo84/work",
+        "runtimeWorkspaceRoots": [],
+        "instructionSources": [],
+        "approvalPolicy": "never",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "medium",
+        "multiAgentMode": "explicitRequestOnly"
+      }
+    }
+  },
+  {
+    "sent": {
+      "id": 3,
+      "method": "turn/start",
+      "params": {
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "input": [
+          {
+            "type": "text",
+            "text": "Local rejection probe; no model is running."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "received": {
+      "method": "thread/started",
+      "params": {
+        "thread": {
+          "id": "01a146ca-9985-7e40-82e7-1db1743458c3",
+          "environments": [],
+          "extra": null,
+          "sessionId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": true,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "local_probe",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "medium",
+          "createdAt": 1792189045,
+          "updatedAt": 1792189045,
+          "recencyAt": 1792189045,
+          "status": {
+            "type": "idle"
+          },
+          "path": null,
+          "cwd": "/var/folders/ly/b2sk443n0hq1_z9mgf4q8f4w0000gn/T/directions-codex-probe-d9_3eo84/work",
+          "cliVersion": "0.163.0",
+          "originator": "directions_transport_probe",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        }
+      },
+      "emittedAtMs": 1792189045131
+    }
+  },
+  {
+    "received": {
+      "method": "warning",
+      "params": {
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "message": "Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."
+      },
+      "emittedAtMs": 1792189045133
+    }
+  },
+  {
+    "received": {
+      "id": 3,
+      "result": {
+        "turn": {
+          "id": "01a146ca-998c-7261-a6a2-5717eed540a5",
+          "rootTurnId": "01a146ca-998c-7261-a6a2-5717eed540a5",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": null,
+          "completedAt": null,
+          "durationMs": null
+        }
+      }
+    }
+  },
+  {
+    "received": {
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "status": {
+          "type": "active",
+          "activeFlags": []
+        }
+      },
+      "emittedAtMs": 1792189045135
+    }
+  },
+  {
+    "received": {
+      "method": "turn/started",
+      "params": {
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "turn": {
+          "id": "01a146ca-998c-7261-a6a2-5717eed540a5",
+          "rootTurnId": "01a146ca-998c-7261-a6a2-5717eed540a5",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "inProgress",
+          "error": null,
+          "startedAt": 1792189045,
+          "completedAt": null,
+          "durationMs": null
+        }
+      },
+      "emittedAtMs": 1792189045135
+    }
+  },
+  {
+    "received": {
+      "method": "item/started",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a146ca-998f-7593-88ac-8ac58f1a30ad",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Local rejection probe; no model is running.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "turnId": "01a146ca-998c-7261-a6a2-5717eed540a5",
+        "startedAtMs": 1792189045136
+      },
+      "emittedAtMs": 1792189045136
+    }
+  },
+  {
+    "received": {
+      "method": "item/completed",
+      "params": {
+        "item": {
+          "type": "userMessage",
+          "id": "01a146ca-998f-7593-88ac-8ac58f1a30ad",
+          "clientId": null,
+          "content": [
+            {
+              "type": "text",
+              "text": "Local rejection probe; no model is running.",
+              "text_elements": []
+            }
+          ]
+        },
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "turnId": "01a146ca-998c-7261-a6a2-5717eed540a5",
+        "completedAtMs": 1792189045136
+      },
+      "emittedAtMs": 1792189045136
+    }
+  },
+  {
+    "received": {
+      "method": "thread/status/changed",
+      "params": {
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "status": {
+          "type": "systemError"
+        }
+      },
+      "emittedAtMs": 1792189045139
+    }
+  },
+  {
+    "received": {
+      "method": "error",
+      "params": {
+        "error": {
+          "message": "{\"error\":{\"message\":\"local transport probe: intentional rejection\",\"type\":\"invalid_request_error\",\"code\":\"probe_stop\"}}",
+          "codexErrorInfo": "other",
+          "additionalDetails": null,
+          "misalignment": null
+        },
+        "willRetry": false,
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "turnId": "01a146ca-998c-7261-a6a2-5717eed540a5"
+      },
+      "emittedAtMs": 1792189045139
+    }
+  },
+  {
+    "received": {
+      "method": "turn/completed",
+      "params": {
+        "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+        "turn": {
+          "id": "01a146ca-998c-7261-a6a2-5717eed540a5",
+          "rootTurnId": "01a146ca-998c-7261-a6a2-5717eed540a5",
+          "items": [],
+          "itemsView": "notLoaded",
+          "status": "failed",
+          "error": {
+            "message": "{\"error\":{\"message\":\"local transport probe: intentional rejection\",\"type\":\"invalid_request_error\",\"code\":\"probe_stop\"}}",
+            "codexErrorInfo": "other",
+            "additionalDetails": null,
+            "misalignment": null
+          },
+          "startedAt": 1792189045,
+          "completedAt": 1792189045,
+          "durationMs": 6
+        }
+      },
+      "emittedAtMs": 1792189045139
+    }
+  }
+]

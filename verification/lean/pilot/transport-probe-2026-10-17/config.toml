@@ -1,0 +1,33 @@
+model = "gpt-6.1-sol"
+model_provider = "local_probe"
+model_reasoning_effort = "medium"
+approval_policy = "never"
+sandbox_mode = "read-only"
+web_search = "disabled"
+[model_providers.local_probe]
+name = "Loopback rejection only"
+wire_api = "responses"
+requires_openai_auth = false
+request_max_retries = 0
+stream_max_retries = 0
+base_url = "http://127.0.0.1:54710/v1"
+[features]
+shell_tool = false
+shell_snapshot = false
+apps = false
+hooks = false
+multi_agent = false
+computer_use = false
+browser_use = false
+in_app_browser = false
+image_generation = false
+view_image = false
+code_mode = false
+code_mode_host = false
+skill_search = false
+api_key_model_discovery = false
+unbounded_connection_retries = false
+[analytics]
+enabled = false
+[feedback]
+enabled = false

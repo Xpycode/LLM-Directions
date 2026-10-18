@@ -1,9 +1,30 @@
 # LE13 — final local integration
 
+**October 18 checkpoint:** [cleanup verification](cleanup-2026-10-18.md) records current source
+sizes and checks. October 17 “current” measurements below remain dated historical snapshots.
+
 October 16, 2026. Local source/fixture acceptance only; E1 remains open. The coordinator integrated
 fresh agents' owned changes; no live deployment, consumer migration, desktop control or push.
-Source snapshots and their SHA-256 manifest remain unchanged. The unrelated Mac-control plan
-and initially dirty numbered guides match their frozen bytes; its task 1.3/Gate A remain open.
+Source snapshots and their SHA-256 manifest remain unchanged. At this integration checkpoint,
+the unrelated Mac-control plan and initially dirty numbered guides matched their frozen bytes;
+its task 1.3/Gate A remain open.
+
+## Current checkpoint boundary — October 17
+
+Latest scope update: user accepted the listed source-size increases and authorized
+[local deployment and instruction routing migration](rollout-2026-10-17/README.md). Both tools and
+110 consumer roots are refreshed. Earlier rollout-pending wording below describes the preceding
+checkpoint; E1, historical runtime regressions and corrected-host behavior remain unverified.
+
+Local corrective sources are committed in `dc9ce95`; reviewed guidance is committed in
+`3407355` and `b9c2a89`. See the [cleanup review](local-cleanup-review.md) and
+[guidance provenance](../guidance-review-2026-10-17/README.md). The integration guard now uses
+explicit reviewed receipts for five intentionally changed guides/profile; the Mac-control plan
+still matches its frozen pin. Historical manifests and the tables below remain unchanged.
+Current rendered entries are **11,238 Codex / 18,686 Claude bytes**, versus **12,120 / 19,748**
+frozen bytes. See [current accounting](codex-followup.md#reviewed-byte-tradeoffs--current-candidate).
+The partial [host replay](host-acceptance.md) observes the older source; corrected-host behavior,
+E1 acceptance and rollout remain open. Pilot/upstream work is parked.
 
 ## Validation
 
@@ -31,6 +52,12 @@ all rejected with unchanged disposable homes. No redundant whole-suite rerun is 
 See final-review.md and final-source-manifest.json for dispositions and source provenance.
 
 ## Final byte accounting
+
+Historical integrated candidate, before the October 16 corrective follow-up. See
+[current candidate accounting](codex-followup.md#reviewed-byte-tradeoffs--current-candidate):
+the first corrective pass added 185 bytes per host; later Claude cleanup reduced its entry.
+The task-state reference remains 385 bytes above this historical version.
+The following tables remain unchanged as historical evidence.
 
 UTF-8 source bytes, not tokens, elapsed time or observed host reads. Render global placeholders
 with this checkout's absolute master path. Initial totals include the host's repository entry file.
@@ -66,8 +93,10 @@ Claude reference 1471. Frozen log/execute are 17024/11104.
 
 These increases include new authority, recovery and canonical-record safeguards. They are reported,
 not accepted on the user's behalf. Ordinary-path bytes improve; every-path efficiency is not claimed.
-Runtime tool calls, files written, unnecessary questions, repeated validations, model recall,
-constraint loss and speed remain **unavailable** until E1. Fixture writes are confined to scratch
+At this checkpoint, runtime tool calls, files written, unnecessary questions, repeated validations,
+model recall, constraint loss and speed were **unavailable**. Later partial observations are in
+[host acceptance](host-acceptance.md); they do not measure the corrected candidate or close E1.
+Fixture writes are confined to scratch
 paths and deterministic fixture call counts are not substituted for those runtime metrics.
 
 ## Complete frozen scenario disposition

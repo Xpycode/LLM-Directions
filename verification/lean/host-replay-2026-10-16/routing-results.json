@@ -1,0 +1,8046 @@
+[
+  {
+    "run": "codex-baseline-routing-App-Websites-globals-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 55,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "commands/setup.md",
+          "10_new-project.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "commands/spec.md",
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md",
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md",
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      }
+    ]
+  },
+  {
+    "run": "codex-baseline-routing-App-Websites-repo-only-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 52,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "commands/setup.md",
+          "10_new-project.md",
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md",
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "commands/spec.md",
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md",
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md",
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md",
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      }
+    ]
+  },
+  {
+    "run": "codex-baseline-routing-Directions-globals-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 53,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md",
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "commands/setup.md",
+          "10_new-project.md",
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "46_main-menu.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "commands/spec.md",
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "30_production-checklist.md",
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "54_security-rules.md",
+          "63_security-audit.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      }
+    ]
+  },
+  {
+    "run": "codex-baseline-routing-Directions-repo-only-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 54,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "commands/setup.md",
+          "10_new-project.md",
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "commands/spec.md",
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md",
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md",
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      }
+    ]
+  },
+  {
+    "run": "codex-baseline-routing-Magpie-globals-v3",
+    "parsed": true,
+    "covered": 58,
+    "exact": 51,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "10_new-project.md",
+          "commands/setup.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "55_spec-template.md",
+          "commands/spec.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md",
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md",
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md",
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md",
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      }
+    ]
+  },
+  {
+    "run": "codex-baseline-routing-Magpie-repo-only-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 55,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "10_new-project.md",
+          "commands/setup.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "55_spec-template.md",
+          "commands/spec.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md",
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      }
+    ]
+  },
+  {
+    "run": "codex-final-routing-App-Websites-globals-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 50,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md",
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "commands/setup.md",
+          "10_new-project.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "commands/spec.md",
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      }
+    ]
+  },
+  {
+    "run": "codex-final-routing-App-Websites-repo-only-v3",
+    "parsed": true,
+    "covered": 60,
+    "exact": 52,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md",
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "10_new-project.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md",
+          "24_web-gotchas.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      }
+    ]
+  },
+  {
+    "run": "codex-final-routing-Directions-globals-v3",
+    "parsed": true,
+    "covered": 58,
+    "exact": 50,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "commands/setup.md",
+          "10_new-project.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "commands/spec.md",
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      }
+    ]
+  },
+  {
+    "run": "codex-final-routing-Directions-repo-only-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 49,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md",
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "10_new-project.md",
+          "commands/setup.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "55_spec-template.md",
+          "commands/spec.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md",
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      }
+    ]
+  },
+  {
+    "run": "codex-final-routing-Magpie-globals-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 50,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md",
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "10_new-project.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md",
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "CODEX-GLOBAL-TEMPLATE.md",
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "CODEX-GLOBAL-TEMPLATE.md",
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      }
+    ]
+  },
+  {
+    "run": "codex-final-routing-Magpie-repo-only-v3",
+    "parsed": true,
+    "covered": 59,
+    "exact": 52,
+    "total": 60,
+    "cases": [
+      {
+        "id": "domain-00",
+        "expected": [
+          "00_base.md"
+        ],
+        "observed": [
+          "00_base.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-01",
+        "expected": [
+          "01_quick-reference.md"
+        ],
+        "observed": [
+          "01_quick-reference.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-02",
+        "expected": [
+          "02_mental-model.md"
+        ],
+        "observed": [
+          "02_mental-model.md",
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-04",
+        "expected": [
+          "04_architecture-decisions.md"
+        ],
+        "observed": [
+          "04_architecture-decisions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-10",
+        "expected": [
+          "10_new-project.md"
+        ],
+        "observed": [
+          "10_new-project.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-12",
+        "expected": [
+          "12_documentation-templates.md"
+        ],
+        "observed": [
+          "12_documentation-templates.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-13",
+        "expected": [
+          "13_folder-structure.md"
+        ],
+        "observed": [
+          "13_folder-structure.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-14",
+        "expected": [
+          "14_project-identity.md"
+        ],
+        "observed": [
+          "14_project-identity.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-20",
+        "expected": [
+          "20_swiftui-gotchas.md"
+        ],
+        "observed": [
+          "20_swiftui-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-21",
+        "expected": [
+          "21_coordinate-systems.md"
+        ],
+        "observed": [
+          "21_coordinate-systems.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-22",
+        "expected": [
+          "22_macos-platform.md"
+        ],
+        "observed": [
+          "22_macos-platform.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-23",
+        "expected": [
+          "23_claude-code-cli.md"
+        ],
+        "observed": [
+          "23_claude-code-cli.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-24",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-25",
+        "expected": [
+          "25_troubleshooting.md"
+        ],
+        "observed": [
+          "25_troubleshooting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-26",
+        "expected": [
+          "26_ecosystem.md"
+        ],
+        "observed": [
+          "26_ecosystem.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-27",
+        "expected": [
+          "27_mcp-gotchas.md"
+        ],
+        "observed": [
+          "27_mcp-gotchas.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-28",
+        "expected": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "observed": [
+          "28_xcode-signing-and-sourcekit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-29",
+        "expected": [
+          "29_web-strato-hosting.md"
+        ],
+        "observed": [
+          "29_web-strato-hosting.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-30",
+        "expected": [
+          "30_production-checklist.md"
+        ],
+        "observed": [
+          "30_production-checklist.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-32",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-33",
+        "expected": [
+          "33_app-minimums.md"
+        ],
+        "observed": [
+          "33_app-minimums.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-34",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [
+          "34_testing.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-35",
+        "expected": [
+          "35_ai-code-quality.md"
+        ],
+        "observed": [
+          "35_ai-code-quality.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-36",
+        "expected": [
+          "36_ui-changes-protocol.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-37",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-38",
+        "expected": [
+          "38_ios-swiftui-state.md"
+        ],
+        "observed": [
+          "38_ios-swiftui-state.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-39",
+        "expected": [
+          "39_libsql-turso-sync.md"
+        ],
+        "observed": [
+          "39_libsql-turso-sync.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-40",
+        "expected": [
+          "40_typography.md"
+        ],
+        "observed": [
+          "40_typography.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-41",
+        "expected": [
+          "41_ui-vocabulary.md"
+        ],
+        "observed": [
+          "41_ui-vocabulary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-42",
+        "expected": [
+          "42_design-system.md"
+        ],
+        "observed": [
+          "42_design-system.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-43",
+        "expected": [
+          "43_data-structures.md"
+        ],
+        "observed": [
+          "43_data-structures.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-44",
+        "expected": [
+          "44_my-glossary.md"
+        ],
+        "observed": [
+          "44_my-glossary.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-45",
+        "expected": [
+          "45_packages.md"
+        ],
+        "observed": [
+          "45_packages.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-46",
+        "expected": [
+          "46_main-menu.md"
+        ],
+        "observed": [
+          "46_main-menu.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-47",
+        "expected": [
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "47_project-ui-conventions.md",
+          "36_ui-changes-protocol.md"
+        ],
+        "covered": true,
+        "exact": false
+      },
+      {
+        "id": "domain-52",
+        "expected": [
+          "52_context-management.md"
+        ],
+        "observed": [
+          "52_context-management.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-53",
+        "expected": [
+          "53_llm-failure-modes.md"
+        ],
+        "observed": [
+          "53_llm-failure-modes.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-54",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-55",
+        "expected": [
+          "55_spec-template.md"
+        ],
+        "observed": [
+          "55_spec-template.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-56",
+        "expected": [
+          "56_acceptance-criteria.md"
+        ],
+        "observed": [
+          "56_acceptance-criteria.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-57",
+        "expected": [
+          "57_checkpoint-discipline.md"
+        ],
+        "observed": [
+          "57_checkpoint-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-59",
+        "expected": [
+          "59_example-mapping.md"
+        ],
+        "observed": [
+          "59_example-mapping.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-60",
+        "expected": [
+          "60_model-selection.md"
+        ],
+        "observed": [
+          "60_model-selection.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-61",
+        "expected": [
+          "61_distribution-notarization.md"
+        ],
+        "observed": [
+          "61_distribution-notarization.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-62",
+        "expected": [
+          "62_final-stretch-triage.md"
+        ],
+        "observed": [
+          "62_final-stretch-triage.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-63",
+        "expected": [
+          "63_security-audit.md"
+        ],
+        "observed": [
+          "63_security-audit.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "domain-64",
+        "expected": [
+          "64_codex.md"
+        ],
+        "observed": [
+          "64_codex.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-status",
+        "expected": [
+          "commands/status.md"
+        ],
+        "observed": [
+          "commands/status.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "slashless-log",
+        "expected": [
+          "commands/log.md"
+        ],
+        "observed": [
+          "commands/log.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "continue",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "next-wave",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "incidental",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "small-fix",
+        "expected": [],
+        "observed": [],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "secrets",
+        "expected": [
+          "54_security-rules.md"
+        ],
+        "observed": [
+          "54_security-rules.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "dirty",
+        "expected": [
+          "32_git-workflow.md"
+        ],
+        "observed": [
+          "32_git-workflow.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "multi-mac",
+        "expected": [
+          "37_multi-mac-discipline.md"
+        ],
+        "observed": [
+          "37_multi-mac-discipline.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "ui",
+        "expected": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "observed": [
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-control",
+        "expected": [
+          "34_testing.md"
+        ],
+        "observed": [],
+        "covered": false,
+        "exact": false
+      },
+      {
+        "id": "no-global",
+        "expected": [
+          "commands/execute.md"
+        ],
+        "observed": [
+          "commands/execute.md"
+        ],
+        "covered": true,
+        "exact": true
+      },
+      {
+        "id": "no-global-web",
+        "expected": [
+          "24_web-gotchas.md"
+        ],
+        "observed": [
+          "24_web-gotchas.md",
+          "36_ui-changes-protocol.md",
+          "47_project-ui-conventions.md"
+        ],
+        "covered": true,
+        "exact": false
+      }
+    ]
+  }
+]

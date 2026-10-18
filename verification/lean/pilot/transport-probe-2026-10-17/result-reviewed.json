@@ -1,0 +1,69 @@
+{
+  "executable": "/Users/sim/.codex/packages/standalone/releases/0.163.0-aarch64-apple-darwin/bin/codex",
+  "version": "codex-cli 0.163.0",
+  "executable_sha256": "8813367285524ac798dd96d1b071aea30d58708c7226fd236cd275cf1cfdee31",
+  "owned_process_exit": 0,
+  "elapsed_seconds": 0.6260894169681706,
+  "status": "blocked",
+  "expected_terminal_rejection": true,
+  "request_count": 1,
+  "inventories": [
+    {
+      "tool_names": [
+        "functions.exec",
+        "functions.wait",
+        "functions.request_user_input",
+        "functions.request_user_input_async",
+        "clock.sleep",
+        "collaboration.followup_task",
+        "collaboration.interrupt_agent",
+        "collaboration.list_agents",
+        "collaboration.send_message",
+        "collaboration.spawn_agent",
+        "collaboration.wait_agent"
+      ],
+      "nested_text_declarations": [
+        "clock__curr_time",
+        "create_goal",
+        "discover",
+        "get_goal",
+        "list_files",
+        "list_mcp_resource_templates",
+        "list_mcp_resources",
+        "read_file",
+        "read_mcp_resource",
+        "sha256",
+        "update_goal"
+      ],
+      "unexpected_tools": [
+        "clock.sleep",
+        "collaboration.followup_task",
+        "collaboration.interrupt_agent",
+        "collaboration.list_agents",
+        "collaboration.send_message",
+        "collaboration.spawn_agent",
+        "collaboration.wait_agent",
+        "functions.exec",
+        "functions.request_user_input",
+        "functions.request_user_input_async",
+        "functions.wait"
+      ],
+      "missing_direct_broker_tools": [
+        "discover",
+        "list_files",
+        "read_file",
+        "sha256"
+      ]
+    }
+  ],
+  "warnings": [
+    "Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`."
+  ],
+  "live_transport_gate": "open",
+  "configured_endpoint_loopback": true,
+  "outbound_network_independently_monitored": false,
+  "model_outputs": 0,
+  "tool_dispatch_tested": false,
+  "descendant_teardown_verified": false,
+  "analysis_note": "Reviewed retained request; no second host run. Earlier result.json and result-reanalyzed.json are superseded analyses, preserved unchanged."
+}

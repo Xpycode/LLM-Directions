@@ -1,0 +1,43 @@
+{
+  "status": "inspection-only",
+  "live_transport_gate": "open",
+  "executable": "/Users/sim/.codex/packages/standalone/releases/0.163.0-aarch64-apple-darwin/bin/codex",
+  "version": "codex-cli 0.163.0",
+  "executable_sha256": "8813367285524ac798dd96d1b071aea30d58708c7226fd236cd275cf1cfdee31",
+  "request_count": 1,
+  "tool_names": [],
+  "unexpected_tools": [],
+  "missing_broker_tools": [
+    "discover",
+    "list_files",
+    "read_file",
+    "sha256"
+  ],
+  "completion": {
+    "method": "turn/completed",
+    "params": {
+      "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+      "turn": {
+        "id": "01a146ca-998c-7261-a6a2-5717eed540a5",
+        "rootTurnId": "01a146ca-998c-7261-a6a2-5717eed540a5",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "failed",
+        "error": {
+          "message": "{\"error\":{\"message\":\"local transport probe: intentional rejection\",\"type\":\"invalid_request_error\",\"code\":\"probe_stop\"}}",
+          "codexErrorInfo": "other",
+          "additionalDetails": null,
+          "misalignment": null
+        },
+        "startedAt": 1792189045,
+        "completedAt": 1792189045,
+        "durationMs": 6
+      }
+    },
+    "emittedAtMs": 1792189045139
+  },
+  "remote_provider_requests": 0,
+  "model_outputs": 0,
+  "owned_process_exit": 0,
+  "elapsed_seconds": 0.6260894169681706
+}

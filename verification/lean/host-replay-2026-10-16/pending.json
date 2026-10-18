@@ -1,0 +1,212 @@
+[
+  {
+    "run": "claude-baseline-routing-Directions-globals-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-routing-Directions-repo-only-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-routing-Magpie-globals-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-routing-Magpie-repo-only-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-routing-App-Websites-globals-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-routing-App-Websites-repo-only-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-consumer-Magpie-globals-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-consumer-Magpie-repo-only-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-consumer-App-Websites-globals-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-baseline-consumer-App-Websites-repo-only-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S19-root-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S19-docs-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S20-root-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S20-docs-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S21-root-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S21-docs-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S22-root-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S22-docs-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S23-root-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-S23-docs-v2-r1",
+    "status": "incomplete",
+    "exit_code": 1,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-routing-Directions-globals-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-routing-Directions-repo-only-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-routing-Magpie-globals-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-routing-Magpie-repo-only-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-routing-App-Websites-globals-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-routing-App-Websites-repo-only-v3",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-consumer-Magpie-globals-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-consumer-Magpie-repo-only-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-consumer-App-Websites-globals-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  },
+  {
+    "run": "claude-final-consumer-App-Websites-repo-only-v2",
+    "status": "not-run",
+    "exit_code": null,
+    "reason": "Claude provider HTTP429 usage_limit_reached",
+    "retry": "Fresh fixture; preserve existing evidence and fixed host/model/effort. Do not repeat completed rows."
+  }
+]

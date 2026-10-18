@@ -85,6 +85,29 @@ Archive-dependent tests explicitly skip when the pinned historical archive is un
 
 ## Remaining gates
 
+The [October 17 actual-CLI probe](transport-validation.md) found a tool-surface/configuration
+blocker. It does not close any live-provider or adapter acceptance gate.
+
+The [supported broker-only policy](host-policy.md) now defines exact registry/schema and dispatch
+requirements. The diagnostic enforces its advertisement subset; no live host is admitted and the
+remaining gates below are unchanged.
+
+**October 17 user direction: live transport validation before any pilot.** Keep this gate open
+until the actual adapter has retained passing evidence for every item below. Protocol/schema
+inspection and inert-host replay are preparation, not live-transport acceptance. Passing this
+gate permits a pilot proposal; it does not authorize a pilot or provider/model requests.
+
+- Actual host discovery and response envelopes enter the broker's call/UTF-8 byte accounting,
+  including errors, repeated reads and separately counted parallel invocations.
+- Native shell, write, app, web and delegation paths are disabled in the actual host; the confined
+  broker is the only tool execution path. A prompt asking the model to avoid tools is insufficient.
+- Cap, timeout, disconnect and provider failures stop the batch without retry/fallback, retain
+  partial evidence and verify owned-process teardown.
+- Exact executable/version and effective model/effort/settings are recorded; any mismatch with
+  the reviewed proposal is disclosed before launch.
+- Actual launch verifies the frozen input/tool/schema/scoring manifest and rejects tampering
+  before any provider request. Historical manifests and evidence remain unchanged.
+
 There is no live Codex adapter. Actual host discovery/envelope accounting, disablement of native
 tools, provider failure mapping, settings/version checks and manifest enforcement at actual launch
 must be integrated and checked before requesting a pilot. The inert transport cannot establish

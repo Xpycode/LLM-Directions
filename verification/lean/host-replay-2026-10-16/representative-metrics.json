@@ -1,0 +1,842 @@
+[
+  {
+    "host": "codex",
+    "source": "baseline",
+    "scenario": "S01",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 12105,
+      "min": 12105,
+      "max": 12105
+    },
+    "retrieved_bytes": {
+      "median": 17174,
+      "min": 17174,
+      "max": 17174
+    },
+    "tool_calls": {
+      "median": 9,
+      "min": 9,
+      "max": 9
+    },
+    "elapsed_seconds": {
+      "median": 16.959,
+      "min": 15.435,
+      "max": 17.45
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "final",
+    "scenario": "S01",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 11029,
+      "min": 11029,
+      "max": 11029
+    },
+    "retrieved_bytes": {
+      "median": 20195,
+      "min": 20195,
+      "max": 20195
+    },
+    "tool_calls": {
+      "median": 9,
+      "min": 9,
+      "max": 9
+    },
+    "elapsed_seconds": {
+      "median": 19.834,
+      "min": 16.633,
+      "max": 23.296
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "baseline",
+    "scenario": "S02",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 12105,
+      "min": 12105,
+      "max": 12105
+    },
+    "retrieved_bytes": {
+      "median": 3719,
+      "min": 3719,
+      "max": 3719
+    },
+    "tool_calls": {
+      "median": 4,
+      "min": 4,
+      "max": 5
+    },
+    "elapsed_seconds": {
+      "median": 17.062,
+      "min": 13.139,
+      "max": 17.745
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 1,
+      "min": 1,
+      "max": 1
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "final",
+    "scenario": "S02",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 11029,
+      "min": 11029,
+      "max": 11029
+    },
+    "retrieved_bytes": {
+      "median": 4277,
+      "min": 4277,
+      "max": 4277
+    },
+    "tool_calls": {
+      "median": 6,
+      "min": 5,
+      "max": 6
+    },
+    "elapsed_seconds": {
+      "median": 21.388,
+      "min": 16.553,
+      "max": 77.487
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 1,
+      "min": 1,
+      "max": 1
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "baseline",
+    "scenario": "S03",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 12105,
+      "min": 12105,
+      "max": 12105
+    },
+    "retrieved_bytes": {
+      "median": 28602,
+      "min": 28406,
+      "max": 28678
+    },
+    "tool_calls": {
+      "median": 19,
+      "min": 19,
+      "max": 19
+    },
+    "elapsed_seconds": {
+      "median": 41.729,
+      "min": 38.974,
+      "max": 59.284
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 3,
+      "min": 3,
+      "max": 3
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "final",
+    "scenario": "S03",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 11029,
+      "min": 11029,
+      "max": 11029
+    },
+    "retrieved_bytes": {
+      "median": 26429,
+      "min": 26429,
+      "max": 28911
+    },
+    "tool_calls": {
+      "median": 19,
+      "min": 18,
+      "max": 20
+    },
+    "elapsed_seconds": {
+      "median": 39.022,
+      "min": 38.297,
+      "max": 39.747
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 3,
+      "min": 3,
+      "max": 4
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "baseline",
+    "scenario": "S04",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 12105,
+      "min": 12105,
+      "max": 12105
+    },
+    "retrieved_bytes": {
+      "median": 48269,
+      "min": 47884,
+      "max": 50188
+    },
+    "tool_calls": {
+      "median": 30,
+      "min": 28,
+      "max": 31
+    },
+    "elapsed_seconds": {
+      "median": 44.785,
+      "min": 42.998,
+      "max": 47.908
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 5,
+      "min": 5,
+      "max": 5
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "final",
+    "scenario": "S04",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 11029,
+      "min": 11029,
+      "max": 11029
+    },
+    "retrieved_bytes": {
+      "median": 54352,
+      "min": 51197,
+      "max": 55210
+    },
+    "tool_calls": {
+      "median": 34,
+      "min": 28,
+      "max": 34
+    },
+    "elapsed_seconds": {
+      "median": 60.538,
+      "min": 46.688,
+      "max": 61.632
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 5,
+      "min": 5,
+      "max": 5
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "baseline",
+    "scenario": "S05",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 12105,
+      "min": 12105,
+      "max": 12105
+    },
+    "retrieved_bytes": {
+      "median": 49732,
+      "min": 49391,
+      "max": 68643
+    },
+    "tool_calls": {
+      "median": 36,
+      "min": 34,
+      "max": 40
+    },
+    "elapsed_seconds": {
+      "median": 70.701,
+      "min": 66.34,
+      "max": 71.467
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 8,
+      "min": 8,
+      "max": 8
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "codex",
+    "source": "final",
+    "scenario": "S05",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 11029,
+      "min": 11029,
+      "max": 11029
+    },
+    "retrieved_bytes": {
+      "median": 58581,
+      "min": 52705,
+      "max": 65082
+    },
+    "tool_calls": {
+      "median": 40,
+      "min": 38,
+      "max": 41
+    },
+    "elapsed_seconds": {
+      "median": 74.626,
+      "min": 65.773,
+      "max": 104.95
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 8,
+      "min": 8,
+      "max": 8
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "baseline",
+    "scenario": "S01",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19693,
+      "min": 19693,
+      "max": 19693
+    },
+    "retrieved_bytes": {
+      "median": 9164,
+      "min": 9164,
+      "max": 9164
+    },
+    "tool_calls": {
+      "median": 10,
+      "min": 10,
+      "max": 10
+    },
+    "elapsed_seconds": {
+      "median": 13.361,
+      "min": 13.167,
+      "max": 14.113
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "final",
+    "scenario": "S01",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19518,
+      "min": 19518,
+      "max": 19518
+    },
+    "retrieved_bytes": {
+      "median": 12581,
+      "min": 2440,
+      "max": 15913
+    },
+    "tool_calls": {
+      "median": 10,
+      "min": 9,
+      "max": 11
+    },
+    "elapsed_seconds": {
+      "median": 12.652,
+      "min": 12.178,
+      "max": 13.415
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 1
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "baseline",
+    "scenario": "S02",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19693,
+      "min": 19693,
+      "max": 19693
+    },
+    "retrieved_bytes": {
+      "median": 354,
+      "min": 354,
+      "max": 566
+    },
+    "tool_calls": {
+      "median": 5,
+      "min": 5,
+      "max": 6
+    },
+    "elapsed_seconds": {
+      "median": 8.823,
+      "min": 8.414,
+      "max": 9.115
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 1,
+      "min": 1,
+      "max": 1
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "final",
+    "scenario": "S02",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19518,
+      "min": 19518,
+      "max": 19518
+    },
+    "retrieved_bytes": {
+      "median": 1535,
+      "min": 1535,
+      "max": 1535
+    },
+    "tool_calls": {
+      "median": 4,
+      "min": 4,
+      "max": 4
+    },
+    "elapsed_seconds": {
+      "median": 9.515,
+      "min": 8.429,
+      "max": 11.22
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 1,
+      "min": 1,
+      "max": 1
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "baseline",
+    "scenario": "S03",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19693,
+      "min": 19693,
+      "max": 19693
+    },
+    "retrieved_bytes": {
+      "median": 23766,
+      "min": 18004,
+      "max": 23766
+    },
+    "tool_calls": {
+      "median": 15,
+      "min": 14,
+      "max": 16
+    },
+    "elapsed_seconds": {
+      "median": 27.023,
+      "min": 23.734,
+      "max": 33.383
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 3,
+      "min": 3,
+      "max": 4
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "final",
+    "scenario": "S03",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19518,
+      "min": 19518,
+      "max": 19518
+    },
+    "retrieved_bytes": {
+      "median": 15292,
+      "min": 15139,
+      "max": 15292
+    },
+    "tool_calls": {
+      "median": 15,
+      "min": 14,
+      "max": 15
+    },
+    "elapsed_seconds": {
+      "median": 30.36,
+      "min": 24.831,
+      "max": 33.461
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 3,
+      "min": 3,
+      "max": 3
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 1,
+      "min": 0,
+      "max": 1
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "baseline",
+    "scenario": "S04",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19693,
+      "min": 19693,
+      "max": 19693
+    },
+    "retrieved_bytes": {
+      "median": 46508,
+      "min": 34832,
+      "max": 52315
+    },
+    "tool_calls": {
+      "median": 20,
+      "min": 20,
+      "max": 21
+    },
+    "elapsed_seconds": {
+      "median": 32.229,
+      "min": 31.716,
+      "max": 32.712
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 5,
+      "min": 5,
+      "max": 5
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "final",
+    "scenario": "S04",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19518,
+      "min": 19518,
+      "max": 19518
+    },
+    "retrieved_bytes": {
+      "median": 41495,
+      "min": 41481,
+      "max": 41495
+    },
+    "tool_calls": {
+      "median": 24,
+      "min": 24,
+      "max": 25
+    },
+    "elapsed_seconds": {
+      "median": 33.077,
+      "min": 30.887,
+      "max": 33.332
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 5,
+      "min": 5,
+      "max": 5
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "baseline",
+    "scenario": "S05",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19693,
+      "min": 19693,
+      "max": 19693
+    },
+    "retrieved_bytes": {
+      "median": 29062,
+      "min": 29062,
+      "max": 38498
+    },
+    "tool_calls": {
+      "median": 24,
+      "min": 24,
+      "max": 24
+    },
+    "elapsed_seconds": {
+      "median": 41.234,
+      "min": 33.493,
+      "max": 44.186
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 7,
+      "min": 6,
+      "max": 8
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  },
+  {
+    "host": "claude",
+    "source": "final",
+    "scenario": "S05",
+    "n": 3,
+    "initial_configured_bytes": {
+      "median": 19518,
+      "min": 19518,
+      "max": 19518
+    },
+    "retrieved_bytes": {
+      "median": 67740,
+      "min": 41518,
+      "max": 67993
+    },
+    "tool_calls": {
+      "median": 31,
+      "min": 28,
+      "max": 33
+    },
+    "elapsed_seconds": {
+      "median": 54.959,
+      "min": 49.382,
+      "max": 61.511
+    },
+    "tool_errors": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "unique_files_changed": {
+      "median": 8,
+      "min": 6,
+      "max": 8
+    },
+    "reviewed_unnecessary_questions": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "validation_review": "Per-run independent findings distinguish required readback from redundant validation; repeated reads alone are not redundant validation."
+  }
+]

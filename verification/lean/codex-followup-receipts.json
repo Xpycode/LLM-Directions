@@ -1,0 +1,120 @@
+{
+  "date": "2026-10-16",
+  "method": "Executed Python hashlib.sha256; archived preserved files compared byte-for-byte with original UTF-8 fixture inputs. ZIP CRC and whole-archive SHA-256 verified.",
+  "scope": "Local evidence correction and source provenance only; no model replay or host acceptance. Original archive, model outputs, frozen sources, oracles and final-source-manifest.json unchanged.",
+  "archive": {
+    "path": "/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS/.archive/e1-2026-10-16-q0geNh/raw-evidence.zip",
+    "bytes": 17273808,
+    "sha256": "0e9f37857a9ba97dd90257b7213a59f9abbeea121f96064b306f8e605230e74b",
+    "crc_pass": true
+  },
+  "preservation_receipts": [
+    {
+      "source": "docs/IMPLEMENTATION_PLAN.md",
+      "archive_member": "runs/codex-final-S19-docs-v2-r1/project/migration/pre-resume-docs--IMPLEMENTATION_PLAN.md",
+      "bytes": 153,
+      "computed_sha256": "27217032a0e27a5e742b487361ba696832a86012b7916221cd03832f977f08c6",
+      "model_recorded_sha256": "bb867d687b893f49f6c30d0ba13502fb7d2f922c8130b6cd22f3c08b1c01fa20",
+      "recorded_hash_matches": false,
+      "matches_fixture_original": true
+    },
+    {
+      "source": "docs/PROJECT_STATE.md",
+      "archive_member": "runs/codex-final-S19-docs-v2-r1/project/migration/pre-resume-docs--PROJECT_STATE.md",
+      "bytes": 212,
+      "computed_sha256": "cb85250ab30f50d5dbc9abf08b80c9f4d960898c17ac7bde64e5e4ff8453ad16",
+      "model_recorded_sha256": "cb85250ab30f50d5dbc9abf08b80c9f4d960898c17ac7bde64e5e4ff8453ad16",
+      "recorded_hash_matches": true,
+      "matches_fixture_original": true
+    },
+    {
+      "source": "docs/TASKS.md",
+      "archive_member": "runs/codex-final-S19-docs-v2-r1/project/migration/pre-resume-docs--TASKS.md",
+      "bytes": 33,
+      "computed_sha256": "075e7c9781e20b0deb6551e6804554503e5dce0de3fd6a1ab91ecbaa7075b0b6",
+      "model_recorded_sha256": "075e7c9781e20b0deb6551e6804554503e5dce0de3fd6a1ab91ecbaa7075b0b6",
+      "recorded_hash_matches": true,
+      "matches_fixture_original": true
+    },
+    {
+      "source": "migration/checkpoint.md",
+      "archive_member": "runs/codex-final-S19-docs-v2-r1/project/migration/pre-resume-migration--checkpoint.md",
+      "bytes": 140,
+      "computed_sha256": "2fdc9348c1bd2bcf27f2ae9cb24897055194414bc1245693f305126193c868df",
+      "model_recorded_sha256": "2fdc9348c1bd2bcf27f2ae9cb24897055194414bc1245693f305126193c868df",
+      "recorded_hash_matches": true,
+      "matches_fixture_original": true
+    },
+    {
+      "source": "migration/original-TASKS.md",
+      "archive_member": "runs/codex-final-S19-docs-v2-r1/project/migration/original-TASKS.md",
+      "bytes": 27,
+      "computed_sha256": "77d7ce2799d761b96700a51d6a2953b11bf89ed7f58d5759a138be3a2d91bec9",
+      "model_recorded_sha256": "77d7ce2799d761b96700a51d6a2953b11bf89ed7f58d5759a138be3a2d91bec9",
+      "recorded_hash_matches": true,
+      "matches_fixture_original": true
+    },
+    {
+      "source": "docs/sessions/2026-10-16.md",
+      "archive_member": "runs/codex-final-S19-docs-v2-r1/project/migration/pre-resume-docs--sessions--2026-10-16.md",
+      "bytes": 181,
+      "computed_sha256": "bcc9f519eec1420854db414ff0f1da19fca243e0e4e7728d9e78001bd8c57a29",
+      "model_recorded_sha256": "84372344b38e75ddc95882087675cfda322ef2d891c069ac27490536f47eb7d8",
+      "recorded_hash_matches": false,
+      "matches_fixture_original": true
+    },
+    {
+      "source": "docs/sessions/_index.md",
+      "archive_member": "runs/codex-final-S19-docs-v2-r1/project/migration/pre-resume-docs--sessions--_index.md",
+      "bytes": 109,
+      "computed_sha256": "4a1912e3186771135d2c0ba94777d1c8ffab37f402b0383dcb50b5a0c7b25dc6",
+      "model_recorded_sha256": "4a1912e3186771135d2c0ba94777d1c8ffab37f402b0383dcb50b5a0c7b25dc6",
+      "recorded_hash_matches": true,
+      "matches_fixture_original": true
+    }
+  ],
+  "source_changes": {
+    "02_mental-model.md": {
+      "before_bytes": 6890,
+      "before_sha256": "009f23d8818cf87bd4b9dcf414c998ba8541485df8b5bb13fbbed22121f4f26c",
+      "after_bytes": 6895,
+      "after_sha256": "271e12a0cee331fa0034beb06527acc43df620b1fed51135a6f4a7c969912d7f",
+      "byte_delta": 5
+    },
+    "34_testing.md": {
+      "before_bytes": 25850,
+      "before_sha256": "3bef7ce6565afd611dad2d8716535a5dd6138933d2e9b2139eee4775ff96a235",
+      "after_bytes": 26233,
+      "after_sha256": "32bd0c71edc2b805126687e917e4ba5b47dec29b4f6df0608009a06f4471d92d",
+      "byte_delta": 383
+    },
+    "reference/task-state.md": {
+      "before_bytes": 3332,
+      "before_sha256": "878ec6461a54882dc8de55cdfaefedb0b62074671ee019f9ccae5971335dbbcc",
+      "after_bytes": 3717,
+      "after_sha256": "be09b1073bf7f5e893a579b9611e0bfdb5dc0be778170df2a17a85b95d6c9a9b",
+      "byte_delta": 385
+    },
+    "scripts/gen-directions-index.sh": {
+      "before_bytes": 9780,
+      "before_sha256": "6b4cbb95b64a3300479f8edf2885d20a8d8066da0d6243ddcc62c9b2dcd3a62f",
+      "after_bytes": 9964,
+      "after_sha256": "d72a514166a29a6ff9ccf7382084bc6e37c3d945a339d31d53fd0680276b304d",
+      "byte_delta": 184
+    },
+    "CODEX-GLOBAL-TEMPLATE.md": {
+      "before_bytes": 6781,
+      "before_sha256": "1b7da4ee51f943ab3552a3901f1ebbced16cbfb5e9d5a62358d86582fd4ed312",
+      "after_bytes": 6966,
+      "after_sha256": "8da16ffe2e65762fcc6b3101be8091a727486a7878d941e574301523cb5b4676",
+      "byte_delta": 185
+    },
+    "CLAUDE-GLOBAL-TEMPLATE.md": {
+      "before_bytes": 17760,
+      "before_sha256": "a5154425194707887f3d58e39265bf82fd84903b7efe66395857cad0f1aee32c",
+      "after_bytes": 17945,
+      "after_sha256": "4eb71864da6552fb4cc50d663172d3677b9a744971c86d6e26b9dfc964240168",
+      "byte_delta": 185
+    }
+  }
+}

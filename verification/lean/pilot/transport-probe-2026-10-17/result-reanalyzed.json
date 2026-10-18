@@ -1,0 +1,68 @@
+{
+  "status": "blocked",
+  "live_transport_gate": "open",
+  "executable": "/Users/sim/.codex/packages/standalone/releases/0.163.0-aarch64-apple-darwin/bin/codex",
+  "version": "codex-cli 0.163.0",
+  "executable_sha256": "8813367285524ac798dd96d1b071aea30d58708c7226fd236cd275cf1cfdee31",
+  "request_count": 1,
+  "tool_names": [
+    "exec",
+    "wait",
+    "request_user_input",
+    "request_user_input_async",
+    "sleep",
+    "followup_task",
+    "interrupt_agent",
+    "list_agents",
+    "send_message",
+    "spawn_agent",
+    "wait_agent"
+  ],
+  "unexpected_tools": [
+    "exec",
+    "followup_task",
+    "interrupt_agent",
+    "list_agents",
+    "request_user_input",
+    "request_user_input_async",
+    "send_message",
+    "sleep",
+    "spawn_agent",
+    "wait",
+    "wait_agent"
+  ],
+  "completion": {
+    "method": "turn/completed",
+    "params": {
+      "threadId": "01a146ca-9985-7e40-82e7-1db1743458c3",
+      "turn": {
+        "id": "01a146ca-998c-7261-a6a2-5717eed540a5",
+        "rootTurnId": "01a146ca-998c-7261-a6a2-5717eed540a5",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "failed",
+        "error": {
+          "message": "{\"error\":{\"message\":\"local transport probe: intentional rejection\",\"type\":\"invalid_request_error\",\"code\":\"probe_stop\"}}",
+          "codexErrorInfo": "other",
+          "additionalDetails": null,
+          "misalignment": null
+        },
+        "startedAt": 1792189045,
+        "completedAt": 1792189045,
+        "durationMs": 6
+      }
+    },
+    "emittedAtMs": 1792189045139
+  },
+  "remote_provider_requests": 0,
+  "model_outputs": 0,
+  "owned_process_exit": 0,
+  "elapsed_seconds": 0.6260894169681706,
+  "missing_direct_broker_tools": [
+    "discover",
+    "list_files",
+    "read_file",
+    "sha256"
+  ],
+  "analysis_note": "Reanalyzed retained additional_tools inventory; broker declarations are nested in exec description, not direct tools. Advertisement does not prove dispatch capability. RPC warning says disabled Code Mode fails closed. No second host run."
+}

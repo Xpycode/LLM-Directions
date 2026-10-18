@@ -1,5 +1,7 @@
 # Project State
 
+**Last updated:** 2026-10-18
+
 > **Lean digest — target <50 lines.** Current state + a short changelog, then pointers to detail
 > files. History lives in `decisions.md` and `sessions/_index.md`, not here.
 
@@ -11,31 +13,42 @@
 - **Phase:** implementation — lean-efficiency execution authorized October 16.
   <!-- Phase changed: 2026-10-16 -->
 - **Focus:** make Directions leaner while preserving useful planning, evidence and work-preservation rules.
-- **Next:** E1 matched host acceptance using isolated
-  authenticated test profiles; the isolated Claude probe reports Not logged in.
-- **Execution:** [lean-efficiency plan](specs/directions-lean-efficiency-plan.md), E1 blocked:
-  16/16 local tasks validated; isolated authenticated host replay and byte tradeoffs remain open.
-- **Current handoff:** [lean execution Resume](sessions/2026-10-16.md#resume--lean-efficiency-execution).
+- **Next:** start fresh tool sessions for normal work; review remaining E1 gaps before selecting
+  further acceptance tests. No host batch or other-Mac deployment is scheduled.
+- **Size decision:** user accepted the presented standalone, arrival and reuse-guidance increases;
+  [scope](decisions.md#2026-10-17---accept-the-reviewed-instruction-size-increases). Runtime effects remain open.
+- **Pilot detour parked:** registry experiments and the unsent upstream draft are retained as
+  evidence, not prerequisites for local maintenance. No external submission is requested.
+- **October 17 constraint:** live transport validation must pass before any pilot; fake-host
+  results do not satisfy this gate or authorize provider requests.
+- **Execution:** [lean-efficiency plan](specs/directions-lean-efficiency-plan.md), LE01–LE16 complete;
+  status/reuse follow-ups validated/committed; E1 awaits host evidence and remaining tradeoffs.
+- **Current handoff:** [local rollout](sessions/2026-10-17.md#resume--local-rollout)
+  supersedes prior pickup; [rollout evidence](verification/lean/rollout-2026-10-17/README.md).
 - **Deferred Mac-control:** [plan](IMPLEMENTATION_PLAN.md) Wave 1 / task 1.3 and Gate A remain incomplete.
   User set restart aside on October 16; do not resume restart/recovery work as the next-session default.
   Preserve the unresolved marker, successful acquisition, failed transactions and observation journals.
-- **Continuing backlog:** exercise shared Codex workflows in consumer projects and refine the ten
-  new entry points from real use; broader lifecycle-hook migration remains evidence-gated.
+- **Continuing backlog:** exercise refreshed workflows in consumer projects; broader lifecycle-hook
+  migration remains evidence-gated. Legacy project state and open gates were preserved.
 - **Acceptance:** [local integration](verification/lean/integration.md) and
   [host gate](verification/lean/host-acceptance.md) separate verified fixtures from unobserved behavior.
-  Standalone/complex-path byte increases need an explicit tradeoff before rollout.
-  No live deployment, consumer migration, desktop control or push performed.
+  Presented source-size increases accepted; runtime regressions and unlisted tradeoffs remain open.
+  Both tools deployed locally; 110 consumer roots routed to master, legacy guide bytes retained.
+  October 17 rollout involved no desktop control, provider test, commit, push or other-Mac deployment.
+- **October 18 cleanup:** fresh-build launch exception deployed to both tools and committed/pushed.
+  Retained evidence checkpoint: [verification](verification/lean/cleanup-2026-10-18.md).
+  E1 and parked scopes remain open; no new provider test or consumer migration.
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
-- **2026-10-16** — Implemented lean routing, canonical task state, conditional logging and safer validation; local fixtures pass, host acceptance remains open.
+- **2026-10-17** — Accepted listed size increases, deployed both tools and migrated instruction routing in 110 projects with verified backups; state/history preserved. Earlier status/reuse cleanup validated; E1 open.
+- **2026-10-16** — Implemented and independently reviewed local runner/preparation; 31 tests and frozen fake-host replay pass. Live transport, E1 and byte decisions remain open; Claude deferred.
 - **2026-09-17** — Kept the existing model setup after reviewing MultiVibe; integrated three unindexed logs, preserving original conflict snapshots.
 - **2026-09-10** — Native evidence capture and fresh-process reload passed; preserved the inventory library for restart and prepared retained-evidence inspection.
 - **2026-09-10** — Fixed shared runtime selection and reviewed opt-in kernel inventory; native read-only check passed with marker unchanged. Fresh acquisition prepared.
-- **2026-09-10** — Kernel-inventory prototype passed 19 tests and independent review; reproduced a shared-lock directory gap that blocks live integration.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build 🔶 — source implemented; acceptance incomplete.
-- **Readiness:** Features 🔶 · UI/Polish N/A · Testing 🔶 · Docs ✅ · Distribution ⚪ (lean changes not deployed).
+- **Readiness:** Features 🔶 · UI/Polish N/A · Testing 🔶 · Docs ✅ · Distribution 🔶 (local rollout authorized; host acceptance open).
 - **Tracked progress:** lean-efficiency 16/16 plus E1 pending; deferred Mac-control plan 2/25 = 8%.
 
 ## Detail (read only if needed)
@@ -128,4 +141,4 @@ October 16 planning direction above; retain them as evidence, not current execut
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-10-16.*
+*Last updated: 2026-10-18.*

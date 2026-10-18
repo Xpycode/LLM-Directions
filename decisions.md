@@ -20,6 +20,70 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
+### 2026-10-17 - Deploy locally and migrate consumer instruction routing
+
+**Context:** User accepted the presented instruction-size tradeoffs, asked whether existing
+projects inherit updates, then explicitly requested “deploy and migrate then.” The local master
+has completed source changes but still-open host acceptance. Consumer discovery found dirty
+trees, missing local Git metadata and legacy universal guide copies.
+
+**Alternatives:** wait for E1 before any installation; rewrite/delete all inherited documentation;
+or deploy the requested local source and migrate routing while preserving consumer content.
+
+**Decision:** Perform the explicitly requested rollout on this Mac for both tools. Add missing
+tool entry points, append canonical-master routing to existing instructions, and replace only
+the byte-identical generic placeholder agent files. Retain verified original backups and all
+legacy guide/state/history bytes; preserve project-specific constraints and current user limits.
+
+**Rationale:** Shared-master routing gives existing projects current procedures without unsafe
+deletion of unique guide additions, unrelated dirty changes or unverified task-state reconciliation.
+Deployment is an explicit user choice while acceptance remains incomplete, not evidence that it passed.
+
+**Consequences:** [Rollout evidence](verification/lean/rollout-2026-10-17/README.md) records both local
+deployments, 110 consumer roots and 261 instruction changes. New tool sessions are required to
+reload installation state. Existing copies remain historical references; no physical copy cleanup
+or legacy state-schema reconciliation is claimed. No other-Mac deployment, provider batch,
+desktop control, commit or push follows. E1, runtime regressions and the deferred Claude rows remain open.
+
+### 2026-10-17 - Accept the reviewed instruction-size increases
+
+**Context:** Local lean-efficiency work is complete, with smaller combined global/project entries
+but larger standalone entries and some conditional procedures. Corrected-host effects remain unobserved.
+
+**Decision:** User explicitly accepts the presented source-size tradeoffs: standalone Codex +558
+bytes and Claude +1,483 bytes; arrival load set +1,909 bytes; execution/log reuse guidance +989
+bytes. Retain the documented discovery, preservation and reuse safeguards.
+
+**Consequences:** These specific source-size increases no longer need a user decision. This is
+not acceptance of historical runtime regressions, a guarantee of instruction adherence, E1
+completion, or authorization to deploy, migrate consumers or resume parked host testing.
+Other unlisted size changes are not implicitly accepted. New sessions use installed global
+instructions plus project instructions; Codex's Directions skill reads the live master, whereas
+Claude's installed command copies require refreshing. Legacy conflicting project guidance needs
+targeted review, not automatic rewriting. E1 and the thirty deferred Claude observations remain open.
+
+### 2026-10-17 - Admit pilot hosts only under an exact broker registry
+
+**Context:** The isolated Codex 0.163.0 rejection probe advertised native helpers and Code Mode
+wrappers while its broker tools were behind disabled Code Mode. Registration and feature flags
+alone did not establish a usable confined tool surface for the proposed read-only pilot.
+
+**Options:** accept advertised but disabled helpers; account for arbitrary native/wrapper paths;
+or require four direct broker functions and reject every other path.
+
+**Decision:** Adopt [directions-broker-only-v1](verification/lean/pilot/host-policy.md), the exact
+direct registry with matching schemas and no equivalent-accounting exception. Admission also
+requires independent dispatch, isolation, accounting, manifest and failure/teardown evidence.
+
+**Rationale:** Four typed callbacks have a finite boundary the broker can inspect. Empty discovery,
+prompt compliance and a filesystem sandbox do not prove that host-internal alternatives are absent.
+Changing policy to fit an observed wrapper would conceal the missing confinement evidence.
+
+**Consequences:** No live host configuration is admitted today. The existing probe is rejected,
+and the strengthened diagnostic checks advertisement only. E1 stays open. Find a supported registry
+control before adapter integration; an alternate host/authentication design or wider tool contract
+requires separate review. No provider request, pilot or deployment follows from this decision.
+
 ### 2026-10-16 - Lean workflow authority and proportionality contracts (LE06)
 
 **Context:** The approved efficiency plan needs one task-state authority and consistent lifecycle
