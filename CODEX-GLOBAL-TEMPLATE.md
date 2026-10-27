@@ -34,14 +34,16 @@ These instructions apply to Codex sessions using this Codex home. This file is d
 
 ## Working defaults
 
-- **Fresh-build launch authorization (October 18, 2026):** after successfully producing a fresh
-  runnable app build for user testing, automatically launch the exact fresh artifact. The user
-  excludes this launch from desktop control; this supersedes older wording that prohibited
-  automatic fresh-build launches. Quitting or relaunching existing instances, clicks, keystrokes,
-  window/Space manipulation, clipboard changes and live app-profile replacement still require
-  explicit permission. Do not launch failed builds or intermediate test-runner builds. If an
-  existing instance prevents launching the fresh artifact, report that and provide user-operated
-  steps. Report the full artifact path and actual launch result. Newer explicit limits prevail.
+- **Fresh-build handoff authorization (October 27, 2026):** after successfully producing a fresh
+  runnable app build for user testing, launch the exact fresh artifact without asking again.
+  If replacement is needed, gracefully quit only the identified instance of the target app,
+  confirm it exited, then launch and verify the running executable path and version against the
+  fresh artifact. Stop if the app is busy, refuses to quit, or presents an unsaved-work prompt;
+  never force quit or dismiss the prompt. This supersedes the October 18 launch-only restriction
+  for this handoff. Failed builds, intermediate test-runner builds, app-hosted tests, clicks,
+  keystrokes, window/Space manipulation, clipboard changes and live app-profile replacement are
+  outside this permission. Report the full artifact path and verified quit/launch result. Newer
+  no-control or keep-running instructions prevail. Procedure: `reference/log/app-handoff.md`.
 - Inspect relevant files and current behavior before proposing or implementing a change.
 - Preserve dirty-worktree changes and compare overlapping diffs before editing.
 - Match validation to the files touched; do not claim a check passed unless it actually ran.

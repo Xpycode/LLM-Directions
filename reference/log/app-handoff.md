@@ -3,6 +3,21 @@
 Apply when this session produced a runnable build, launched an app, or has an unresolved app/test
 recovery obligation. Otherwise skip. A successful build requires a handoff; it grants no control.
 
+**Standing fresh-build handoff authorization — October 27, 2026:** the user approved gracefully
+quitting only the target app, launching its successful fresh build, and verifying the running
+version, stopping if the app is busy, refuses to quit, or asks about unsaved work. This extends
+the October 18 launch permission; do not ask again for actions already inside this scope.
+After a successful runnable build for user testing, identify the exact artifact and any existing
+target instance. If replacement is needed, request normal quit only for that identified instance,
+confirm exit, then launch the exact fresh artifact. Stop on active work (such as an export), a
+quit refusal/timeout or save prompt; never force quit, discard work, or answer the prompt.
+Verify the running executable path and version against the fresh artifact and report the actual
+result; an open command succeeding alone does not prove the new version is running.
+This permission excludes failed/intermediate test builds, app-hosted tests, installation,
+unrelated apps, simulated input, window/Space manipulation, clipboard and live-profile changes.
+Newer no-control or keep-running instructions override it. It does not reopen deferred recovery
+or test scopes. Decision: [standing build handoff](../../decisions.md#2026-10-27---authorize-graceful-fresh-build-handoff).
+
 **Current explicit user scope governs every action.** A newer no-control restriction overrides
 older automatic quit/relaunch preferences. Without explicit permission for the specific target and
 actions, do not launch, quit, kill or relaunch apps, manipulate windows/Spaces, simulate input, or
@@ -39,7 +54,7 @@ still covers that exact recovery action. An unresolved obligation is not permiss
 For every successful runnable build, give the **full absolute containing-folder path** as visible,
 copyable text for Finder's Go to Folder, plus the exact artifact name and validation result. For
 example: folder `/Users/sim/Builds/Example/Release`, app `Example.app` (illustrative paths only;
-substitute the verified build location). Under no-control scope, provide user-operated launch/quit
+substitute the verified build location). When current scope excludes the standing handoff, provide user-operated launch/quit
 steps and say that the build was not launched. Never substitute a relative path, `~`, or a hidden
 link target for the visible absolute folder path.
 

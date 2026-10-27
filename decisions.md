@@ -20,6 +20,30 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
+### 2026-10-27 - Authorize graceful fresh-build handoff
+
+**Context:** Reviewing Penumbra and Aloft logs confirmed repeated testing burden and an extra
+approval round when an existing app prevented launching a fresh build. The October 18 standing
+permission covered launch but explicitly excluded quitting an existing instance.
+
+**Decision:** The user answered **“yes”** to: “should standing permission include gracefully
+quitting only the target app, launching its successful fresh build, and verifying the running
+version—stopping if the app is busy, refuses to quit, or asks about unsaved work?” Apply this
+standing scope across both tools when handing off an authorized successful runnable build for
+user testing. Identify the exact target, confirm graceful exit before replacement, and verify
+the running executable path and version against the fresh artifact; do not ask again within scope.
+
+**Rationale:** Remove repeated permission exchanges from routine rebuild handoffs while protecting
+active work and preserving the user's limits on other desktop control.
+
+**Consequences:** Stop on active work, a quit refusal/timeout or save prompt; no force quit or
+prompt dismissal. No failed/intermediate test builds, app-hosted testing, installation, unrelated
+app control, simulated input, window/Space manipulation, clipboard or live-profile changes are
+authorized by this decision. Newer no-control/keep-running instructions prevail. The shared
+[handoff procedure](reference/log/app-handoff.md) owns details. This does not resume Mac-control
+recovery or host acceptance. Shortcut-preference routing and testing/diagnostics improvements
+remain proposed; the answer approves the handoff policy only.
+
 ### 2026-10-17 - Deploy locally and migrate consumer instruction routing
 
 **Context:** User accepted the presented instruction-size tradeoffs, asked whether existing

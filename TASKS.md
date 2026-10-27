@@ -9,6 +9,13 @@
 <!-- Ideas and future work. Added by /spec deep, user input, or discovered during development. -->
 <!-- Priority: top = highest, bottom = lowest -->
 
+- [ ] Reconcile confirmed guidance contradictions from the October 27 Reddit review: retired
+  context-zone references/unexplained drift threshold in `53_llm-failure-modes.md`, hard compaction
+  percentage in `CLAUDE-GLOBAL-TEMPLATE.md`, and blanket baseline/new-test wording in
+  `35_ai-code-quality.md`; also reconcile consumer-local cookbook routing in `commands/cookbook.md`.
+  Interview identified testing burden and lost preferences; cleanup selection remains pending.
+  Use existing owners. [Instruction evidence](sessions/2026-10-27.md#reddit-instruction-review) and
+  [connections evidence](sessions/2026-10-27.md#reddit-connections-review).
 - [ ] 2.2 Implement private IPC and client identity.
 - [ ] 2.3 Implement request queue and human decision transitions.
 - [ ] 2.4 Implement countdown, deadlines, and liveness.
@@ -50,6 +57,16 @@
 
 ## Inbox
 
+- [ ] 2026-10-27 — Continue selection after the interview and recent-log scan, using the
+  [instruction review](sessions/2026-10-27.md#reddit-instruction-review) and
+  [connections review](sessions/2026-10-27.md#reddit-connections-review): test integrity,
+  current-vs-intended behavior, lesson promotion, flexible batching, cross-project recall,
+  diagnostics-first debugging, and optional capture/client access. User prioritizes testing burden
+  in Penumbra/Aloft and the missed spelled-out-shortcuts preference. Reconcile existing accepted
+  evidence into finite batches and expose the established preference to both tools; selection of
+  these changes is pending. Only graceful fresh-build handoff was approved and deployed.
+  Follow the [current handoff](sessions/2026-10-27.md#resume--after-build-handoff-approval);
+  retain MCP-context and untrusted-content observations for triage.
 - [ ] 2026-10-16 — Investigate one Claude E1 `status full` response that read master decisions
   when fixture decisions were absent. Codex reported “Not found” correctly; preserve the isolated
   observation before changing guidance. Evidence: `claude-final-S15-root-v2-r1` in

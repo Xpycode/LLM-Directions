@@ -1,5 +1,10 @@
 # Session History — Archive
 
+<!-- Moved from live index on 2026-10-27; original row retained verbatim. -->
+| Date | Focus | Outcome | Log |
+|------|-------|---------|-----|
+| 2026-07-11 | Evaluate `claude-octopus` for the Directions framework; extract anything reusable without bloat | Cloned + subagent-analyzed it (348 md / 429 sh, v9.52.0): `/octo:` commands are thin shells coercing Claude into a ~2,900-line multi-vendor `orchestrate.sh` (codex/gemini/qwen), consensus inseparable from paid CLIs; its own `debate.sh` concedes agreement≠correctness → **rejected wholesale**. Extracted the one transferable idea (`config/blind-spots/`): a keyword→prompt library injecting the perspectives an LLM structurally forgets. Reimplemented lean as **cookbook #159** — 9-entry seed from OUR OWN gotcha docs (20_/21_/22_/38_/61_/32_/29_/36_ + #62/#147/#153/#158) + a ~15-line jq matcher. Verified: JSON parses, all cross-refs resolve, matcher tested across 6 cases (caught+fixed a jq scoping bug; tightened `actor`→`\bactor\b`). Gitignored `.claude/logs/`. Committed `8a8cb91`, pushed with pending `ac08ab5`; in sync. | [log](2026-07-11.md) |
+
 Older rows moved out of [`_index.md`](_index.md) (2026-07-02, 2026-08-20, 2026-08-30) to cap that file's size. This file
 is append-only history — not read by any command in the normal flow. Same table format as the
 live index; outcome cells here were **not** re-condensed (kept verbatim from before the split).

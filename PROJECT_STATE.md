@@ -1,6 +1,6 @@
 # Project State
 
-**Last updated:** 2026-10-18
+**Last updated:** 2026-10-27
 
 > **Lean digest — target <50 lines.** Current state + a short changelog, then pointers to detail
 > files. History lives in `decisions.md` and `sessions/_index.md`, not here.
@@ -13,8 +13,9 @@
 - **Phase:** implementation — lean-efficiency execution authorized October 16.
   <!-- Phase changed: 2026-10-16 -->
 - **Focus:** make Directions leaner while preserving useful planning, evidence and work-preservation rules.
-- **Next:** start fresh tool sessions for normal work; review remaining E1 gaps before selecting
-  further acceptance tests. No host batch or other-Mac deployment is scheduled.
+- **Next:** select shortcut-preference routing and a finite testing/diagnostics workflow from
+  the interview findings. Graceful fresh-build handoff approved and deployed locally to both tools;
+  other recommendations remain pending. No host batch or other-Mac deployment is scheduled.
 - **Size decision:** user accepted the presented standalone, arrival and reuse-guidance increases;
   [scope](decisions.md#2026-10-17---accept-the-reviewed-instruction-size-increases). Runtime effects remain open.
 - **Pilot detour parked:** registry experiments and the unsent upstream draft are retained as
@@ -23,7 +24,7 @@
   results do not satisfy this gate or authorize provider requests.
 - **Execution:** [lean-efficiency plan](specs/directions-lean-efficiency-plan.md), LE01–LE16 complete;
   status/reuse follow-ups validated/committed; E1 awaits host evidence and remaining tradeoffs.
-- **Current handoff:** [local rollout](sessions/2026-10-17.md#resume--local-rollout)
+- **Current handoff:** [after build-handoff approval](sessions/2026-10-27.md#resume--after-build-handoff-approval)
   supersedes prior pickup; [rollout evidence](verification/lean/rollout-2026-10-17/README.md).
 - **Deferred Mac-control:** [plan](IMPLEMENTATION_PLAN.md) Wave 1 / task 1.3 and Gate A remain incomplete.
   User set restart aside on October 16; do not resume restart/recovery work as the next-session default.
@@ -41,11 +42,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-10-27** — Reviewed testing burden and lost preferences in Penumbra/Aloft logs; user approved graceful fresh-build replacement, deployed to both tools. Other improvements and acceptance/recovery gates remain open; earlier Git integration/push complete.
 - **2026-10-17** — Accepted listed size increases, deployed both tools and migrated instruction routing in 110 projects with verified backups; state/history preserved. Earlier status/reuse cleanup validated; E1 open.
 - **2026-10-16** — Implemented and independently reviewed local runner/preparation; 31 tests and frozen fake-host replay pass. Live transport, E1 and byte decisions remain open; Claude deferred.
 - **2026-09-17** — Kept the existing model setup after reviewing MultiVibe; integrated three unindexed logs, preserving original conflict snapshots.
 - **2026-09-10** — Native evidence capture and fresh-process reload passed; preserved the inventory library for restart and prepared retained-evidence inspection.
-- **2026-09-10** — Fixed shared runtime selection and reviewed opt-in kernel inventory; native read-only check passed with marker unchanged. Fresh acquisition prepared.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build 🔶 — source implemented; acceptance incomplete.
 - **Readiness:** Features 🔶 · UI/Polish N/A · Testing 🔶 · Docs ✅ · Distribution 🔶 (local rollout authorized; host acceptance open).
@@ -141,4 +142,4 @@ October 16 planning direction above; retain them as evidence, not current execut
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-10-18.*
+*Last updated: 2026-10-27.*

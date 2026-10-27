@@ -16,14 +16,16 @@ implementation” or “next wave”) use the master `commands/execute.md` proce
 dependency, fresh-context delegation and validation rules; continue ready work within the user's
 authorized scope without renewed task/wave permission. Explicit user limits prevail.
 
-**Fresh-build launch authorization (October 18, 2026):** after successfully producing a fresh
-runnable app build for user testing, automatically launch the exact fresh artifact. The user
-excludes this launch from desktop control; this supersedes older wording that prohibited
-automatic fresh-build launches. Quitting or relaunching existing instances, clicks, keystrokes,
-window/Space manipulation, clipboard changes and live app-profile replacement still require
-explicit permission. Do not launch failed builds or intermediate test-runner builds. If an
-existing instance prevents launching the fresh artifact, report that and provide user-operated
-steps. Report the full artifact path and actual launch result. Newer explicit limits prevail.
+**Fresh-build handoff authorization (October 27, 2026):** after successfully producing a fresh
+runnable app build for user testing, launch the exact fresh artifact without asking again.
+If replacement is needed, gracefully quit only the identified instance of the target app,
+confirm it exited, then launch and verify the running executable path and version against the
+fresh artifact. Stop if the app is busy, refuses to quit, or presents an unsaved-work prompt;
+never force quit or dismiss the prompt. This supersedes the October 18 launch-only restriction
+for this handoff. Failed builds, intermediate test-runner builds, app-hosted tests, clicks,
+keystrokes, window/Space manipulation, clipboard changes and live app-profile replacement are
+outside this permission. Report the full artifact path and verified quit/launch result. Newer
+no-control or keep-running instructions prevail. Procedure: `reference/log/app-handoff.md`.
 
 ---
 
@@ -228,8 +230,9 @@ See `[LOCAL_DIRECTIONS_PATH]/36_ui-changes-protocol.md` for full protocol and ex
 ### Xcode Build Behavior
 
 Before builds or tests, read `[LOCAL_DIRECTIONS_PATH]/34_testing.md` and inspect startup effects.
-Build permission does not authorize app control. Quit, install or launch only within explicit
-target/action scope; newer no-control and keep-running instructions prevail.
+Apply the standing fresh-build handoff authorization above when it covers the target and actions;
+other app control or installation needs its own scope. Newer no-control and keep-running
+instructions prevail.
 After a successful runnable build, follow `[LOCAL_DIRECTIONS_PATH]/reference/log/app-handoff.md`:
 give the exact artifact name and full absolute containing-folder path for Finder's Go to Folder.
 Without control permission, provide user-operated steps and report that no launch occurred.
