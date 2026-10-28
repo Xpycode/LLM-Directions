@@ -208,6 +208,9 @@ master. Universal guides are read from the master, not copied into projects.
 - Commit messages: what + why. (See `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`.)
 
 ### Communication Style
+- **Shortcut readability:** in chat, questions, documentation and app-authored UI copy, spell out
+  modifier and special-key names (for example, Command-Shift-P or Command-Comma); do not use
+  shortcut glyphs, even with spaces. Native macOS menus retain their system-rendered symbols.
 - Be direct, skip unnecessary preamble
 - Ask clarifying questions when unsure
 - Offer relevant docs from Directions when keywords match triggers
@@ -250,7 +253,9 @@ When compacting conversation context, always preserve:
 
 **Session hygiene:**
 - `/clear` between unrelated tasks — a clean session outperforms a cluttered one
-- `/compact` proactively at 65-70% context, not when forced at 95%
+- Use host-reported context and room for the next read/output; compact related noisy work or start
+  fresh when reconstruction is clearer. Follow `[LOCAL_DIRECTIONS_PATH]/52_context-management.md`;
+  save the handoff through `/log clear` before a reset, and never clear or exit automatically.
 - `/rename` sessions before clearing so you can `/resume` later
 - Use subagents for research to keep main context light
 

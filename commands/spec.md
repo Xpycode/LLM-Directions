@@ -31,6 +31,50 @@ If `MODEL` is Sonnet/Haiku, **nudge once then continue** (don't gate — a mis-t
 Already Opus/Fable → say nothing.
 <!-- CLAUDE-ONLY:END -->
 
+## New-project assessment
+
+For a whole new project or a substantial uncommitted expansion, use this assessment before
+technical discovery, scaffolding or a build plan, including natural-language requests to start
+something new. Skip it for routine fixes, adding Directions to existing work, and resuming approved
+implementation. Reuse the user's stated choices and existing answers; ask only what is missing,
+one question at a time. Do not reopen a settled choice without new evidence or changed scope.
+
+1. **Outcome:** What do you want to accomplish, and what would make it worthwhile? Personal use,
+   publishing/selling, learning, enjoyment and craft are valid purposes. Preserve the intended
+   finish line; do not substitute a personal-use prototype for a requested commercial release.
+2. **Pain:** Think of the last time this came up. What did you use, what was unsatisfactory, and
+   how often does that happen? Ask about its cost where useful; learning or craft need no pain story.
+3. **Alternatives:** Could an existing app, configuration, small script or improvement to one of
+   your projects solve enough of it? Use known alternatives first; research only a decision-relevant
+   gap. Building may itself be the benefit for learning or enjoyment.
+4. **Investment:** What is the smallest result that achieves your purpose, and how much time,
+   attention and ongoing maintenance is it worth before reconsidering? This is an investment limit,
+   not a promised completion estimate.
+5. **Competing commitments:** If this starts now, what gets less attention, and is that intentional?
+   Include non-project commitments when relevant; no portfolio inventory or fixed work-in-progress cap.
+
+Recommend **use existing / improve existing / bounded experiment / build now / park**, with a brief
+reason. The user chooses; an explicit choice already supplied needs no renewed approval. For use
+existing or park, end without scaffolding, a full spec or implementation backlog. For improve
+existing, route to that project and its scoped change. For an experiment, plan only that experiment.
+Continue build discovery within the chosen scope; assessment alone does not authorize implementation.
+
+For substantial work whose usefulness is uncertain, identify the critical benefit assumption,
+the smallest representative check, expected observation and what result would change the decision.
+Distinguish usefulness from technical feasibility; a working import need not improve the real task.
+Learning can use demonstrated understanding, without market-demand evidence. Reuse the check's
+resource limit and stop/replan fields in `55_spec-template.md`; an inconclusive check remains unresolved.
+Further investigation needs a plausible decision-changing result within the remaining limit.
+
+Record a reconsideration trigger: failed critical assumption, investment limit or material scope
+expansion. At that trigger, compare remaining benefit/cost with alternatives and current assets and
+obligations; continue, simplify, replace or park with a reason. Past effort alone is not a reason to
+continue. Stop the affected approach or expansion, while unrelated authorized ready work continues.
+
+Keep the conclusion once in the existing spec's problem/solution fields, linking a consequential
+decision if already recorded. If no spec is warranted, summarize in the conversation or an existing
+session/decision record; do not create a project or a separate commitment tracker to store a rejection.
+
 ## Workflow journey and feasibility (all modes)
 
 Before substantial workflow implementation, establish one concrete user journey: source/input →
@@ -59,10 +103,12 @@ with the spec reference, and confirm: *"Spec created. Next: resolve open questio
 
 ## Mode: discovery  (adds the old `/interview` — for whole projects / big unknowns)
 
-Multi-phase discovery with triangulation. One question at a time; don't solve during discovery — understand.
+Start with the **New-project assessment** when its trigger applies; honor its selected route before
+continuing below. Multi-phase discovery with triangulation: understand before choosing technical
+solutions. One question at a time; reuse known answers throughout.
 
 1. **Scope** — the one thing it must do (one sentence) · how we'll know it works · what's explicitly NOT in scope.
-2. **Explore** — always ask the six core questions, then branch on the answers:
+2. **Explore** — establish the six core answers, asking only for gaps, then branch:
    | # | Question | Informs |
    |---|---|---|
    | 1 | Who uses it? | complexity level |
@@ -74,11 +120,13 @@ Multi-phase discovery with triangulation. One question at a time; don't solve du
    Follow-up doc-flags: images/video → flag `21_coordinate-systems.md`; macOS + outside-sandbox/startup →
    `22_macos-platform.md`; for distribution → notarization/sandboxing (`61_distribution-notarization.md`);
    complex UI → `20_swiftui-gotchas.md`.
-3. **Triangulate** — cross-check for contradictions (e.g. "just for me" + complex = scope-creep risk;
-   web app + native file access = architecture mismatch). If found: *"[X] and [Y] seem to conflict — clarify?"*
-4. **Synthesize** — write `specs/[feature-name].md` (Overview / User Stories / Acceptance Criteria /
-   Technical Considerations / Edge Cases / Out of Scope); set PROJECT_STATE funnel to `define` + note
-   doc flags; map answers to tech via `04_architecture-decisions.md`.
+3. **Triangulate** — cross-check requirements against the intended outcome and investment limit
+   (e.g. scope exceeds the chosen limit, or a web app needs unsupported native file access).
+   Personal use plus complexity is not itself a contradiction. If found:
+   *"[X] and [Y] seem to conflict — clarify?"*
+4. **Synthesize** — write `specs/[feature-name].md` using `55_spec-template.md`, carrying the assessment
+   conclusion once when applicable; set PROJECT_STATE funnel to `define` + note doc flags; map answers
+   to tech via `04_architecture-decisions.md`.
 5. **Validate** — read back a 3-point summary + the acceptance criteria; correct and re-triangulate if needed.
 6. **TASKS.md** — extract actionable tasks from the acceptance criteria into the task tracker's
    Backlog (`docs/TASKS.md` in an installed project; root `TASKS.md` in the Directions master). Create

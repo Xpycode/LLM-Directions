@@ -1,5 +1,10 @@
 # Project Setup
 
+First distinguish a new commitment from adding Directions to existing work. For a genuinely new
+project, even with draft notes or a README already present, follow `commands/spec.md` → **New-project
+assessment** before any setup writes and honor its selected route. Reuse prior decisions; adopting
+Directions for existing work does not reopen them. Then detect files for the selected setup below.
+
 Run the project detection flow (this file is the full flow; global tool instructions carry only
 the sentinel check and route here):
 
@@ -8,7 +13,10 @@ the sentinel check and route here):
    master template; in Claude Code, create a missing root `CLAUDE.md`. Never overwrite an existing
    entry point. Report what was added, then report status.
 2. Check if `/docs` folder exists without Directions structure, or scattered `.md` files → **Existing docs** (below)
-3. Otherwise → **New project** (below)
+3. Existing implementation without those docs → scaffold only the project-specific Directions
+   files below using inspected context; ask only for documentation gaps. Missing Directions files
+   do not make existing work a new commitment. Preserve code/layout and skip the new-project assessment.
+4. Otherwise → **New project** (below)
 
 ## Existing docs: migrate or skip
 
@@ -39,10 +47,12 @@ If they choose Migrate:
 
 ## New project
 
-> "This looks like a new project. What are you building? (One sentence is fine - I'll ask follow-up questions.)"
-
-Then offer to set up Directions; if yes, scaffold (below), run the discovery interview (read
-`00_base.md` from the master on demand for the system overview), and finish with:
+Before scaffolding, read `commands/spec.md` and follow **New-project assessment**, reusing answers
+and choices already supplied. Honor its route: use existing or park ends setup; improve existing
+returns to that project; an experiment gets only its bounded setup. For build now, continue discovery
+and set up Directions within the user's authorized scope; ask about setup only if not already requested.
+Carry the conclusion into the existing spec fields and scaffold below only for the selected scope.
+Read `00_base.md` on demand for the system overview. After actual project setup, finish with:
 > "✓ **Setup complete!** Your project is ready.
 >
 > **Quick start:**
@@ -84,7 +94,10 @@ to that master's `commands/<name>.md`; topical guidance uses the appropriate mas
 Resolve conditional `reference/…` paths from that same verified master, not the consumer directory.
 If the master is unavailable, report the missing guidance rather than using stale local mirrors.
 
-**Important:** For new projects, after scaffolding those files and running the interview, **always create the project folder structure** (read `13_folder-structure.md` from the master on demand). The actual code always lives in `01_Project/` (the one exception is framework web apps — code at repo root):
+**For a selected new build:** after discovery, create the project folder structure (read
+`13_folder-structure.md` from the master on demand). A bounded experiment gets only the structure it
+needs; use-existing/park outcomes get none. The actual code lives in `01_Project/` (the one exception
+is framework web apps — code at repo root):
 - macOS/iOS: `01_Project/`, `02_Design/Exports/`, `03_Screenshots/`, `04_Exports/`
 - Web (no-build/Strato): `01_Project/` (code + lftp deploy stage), `02_Design/`, `03_Scripts/migrations/`, `04_Data/`
 - Web (framework/Vercel): scaffold the framework at the repo root, add `02_Design/`, `03_Scripts/`, `04_Data/` alongside

@@ -21,6 +21,26 @@ After the discovery interview, use this guide to determine:
 
 ---
 
+## Operating Limits
+
+Before choosing storage or processing patterns, establish the limits that affect the actual
+user journey. Reuse known interview answers; ask only about gaps that could change the design.
+
+- **Volume:** typical and largest expected file counts, file sizes or record counts.
+- **Responsiveness:** acceptable wait time and whether work needs progress reporting.
+- **Resources:** memory budget and a bound on simultaneous operations.
+- **Data ownership:** authoritative source and acceptable age of cached or synced data.
+- **Interruption:** what cancellation, failure or restart leaves behind; whether work resumes,
+  retries safely or rolls back.
+
+For an importer, for example: can it process files incrementally within the memory budget,
+limit concurrent reads and recover after cancellation without duplicating or losing data?
+Record consequential limits and unknowns in the project's spec or decisions. Use a bounded
+feasibility check only when an unknown could change the architecture; do not add infrastructure
+for hypothetical scale.
+
+---
+
 ## Platform Decisions
 
 ### "What platform?"
@@ -315,6 +335,7 @@ After the interview, you should know:
 - [ ] Networking needs (none/API/real-time)
 - [ ] UI structure (single view/navigation/tabs/split)
 - [ ] Heavy processing needs (affects concurrency approach)
+- [ ] Relevant operating limits and interruption behavior (reuse known answers)
 - [ ] Distribution method (personal/notarized/App Store)
 
 ---

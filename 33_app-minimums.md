@@ -335,7 +335,9 @@ standard ones means the system menu items, Settings scene, and Help all wire up 
 - In onboarding / first-run tips
 - In README
 
-> Write shortcuts as words (Command-Comma), not glyphs — house style.
+> **Shortcut readability:** in chat, questions, documentation and app-authored UI copy, spell out
+> modifier and special-key names (for example, Command-Shift-P or Command-Comma); do not use
+> shortcut glyphs, even with spaces. Native macOS menus retain their system-rendered symbols.
 
 ### About Window
 

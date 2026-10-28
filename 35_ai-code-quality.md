@@ -62,7 +62,12 @@ Feature interactions grow as: `2^n - 1 - n`
 
 ## AI-Specific Testing Requirements
 
-### 1. Edge Case Generation (Mandatory)
+Use `34_testing.md` for proportional test selection, startup effects and evidence requirements.
+Assess the changed behavior and its risks; the prompts below are review aids, not a requirement
+to add a test for every listed possibility or rerun unrelated checks. Required acceptance remains open
+until its evidence exists.
+
+### 1. Edge Case Assessment
 
 After any AI implementation, explicitly ask:
 
@@ -87,7 +92,7 @@ For each edge case, do we:
 - Document the expected behavior?
 ```
 
-### 2. Error Path Testing (Mandatory)
+### 2. Error Path Assessment
 
 AI code often has optimistic error handling. Require:
 
@@ -100,7 +105,8 @@ For each path:
 3. What does the user see?
 4. Is it logged?
 
-Generate tests for each error path.
+Add focused tests for relevant error paths where risk or complexity warrants them;
+reuse valid existing coverage and record any remaining verification gap.
 ```
 
 ### 3. The "What If It's Wrong" Audit
@@ -204,18 +210,20 @@ Request human code review when:
 
 ### Before AI Modifies Existing Code
 
-1. **Snapshot current behavior**
+1. **Establish relevant current behavior**
    ```
    Before modifying [file/function]:
-   1. List all current test cases
-   2. Run tests, confirm passing
-   3. Document expected behavior
+   1. Inspect affected code, callers and existing tests; batch independent reads
+   2. Run relevant baseline checks when needed to distinguish pre-existing failures
+   3. Record actual behavior, intended requirements and any relevant existing failures
    ```
 
 2. **After modification, verify:**
-   - All existing tests still pass
-   - New tests cover the change
-   - No unintended behavior changes
+   - Run checks for changed behavior and affected integrations; broaden for shared contracts or risk
+   - Add or update tests when they protect meaningful behavior; trivial reversible edits may use inspection
+   - Compare failures with baseline evidence; do not require unrelated repairs or hide new regressions
+   - Repeat checks when changed code, failures or unresolved concerns justify it; preserve valid results
+   - Keep unperformed required acceptance explicit; a focused pass does not establish release readiness
 
 ### The "Break It" Test
 
@@ -229,7 +237,7 @@ This code was just modified. Try to break it:
 3. What happens under load?
 4. What happens with slow/failing dependencies?
 
-Generate tests for each scenario.
+Choose discriminating checks for plausible affected scenarios; automate when the risk warrants it.
 ```
 
 ---
@@ -238,11 +246,13 @@ Generate tests for each scenario.
 
 ### Before Commit
 
+Apply checks appropriate to the changed files under `34_testing.md`; documentation-only edits do
+not need an app build. Record pre-existing failures and blocked/not-run checks with their impact.
+
 ```
-[ ] Build succeeds
-[ ] Tests pass (including new tests)
-[ ] Edge cases tested (see list above)
-[ ] Error paths tested
+[ ] Applicable build/checks pass; failures and verification gaps are identified
+[ ] Relevant tests pass; new or updated coverage added where warranted
+[ ] Affected edge cases and error paths verified in proportion to risk
 [ ] No debug code left
 [ ] LOC check (not over budget)
 ```
@@ -297,13 +307,15 @@ Provide specific recommendations.
 
 **Symptom:** Claude builds something, but it's not what you wanted.
 
-**Fix:** Always start with the interview. 10 minutes of questions saves hours of rework.
+**Fix:** Use `commands/spec.md` for new or uncertain scope; reuse known requirements and skip a new
+interview for routine fixes or approved implementation.
 
 ### Mistake 2: One Giant Feature
 
 **Symptom:** Working for days, nothing works yet.
 
-**Fix:** 30-minute phases. If you can't test it, it's too big.
+**Fix:** Plan independently verifiable outcomes under `commands/make-plan.md`. Split by coupling,
+risk and validation needs rather than a fixed duration.
 
 ### Mistake 3: Trusting Single AI Review
 

@@ -12,6 +12,12 @@ LOAD: full
 
 ## Phase 1: Project Creation
 
+Before creating files, follow `commands/spec.md` → **New-project assessment**, including for
+natural-language new-project requests. Reuse known answers and choices. Use existing or park ends
+this checklist; improve existing returns to that project; an experiment gets only its bounded scope.
+Proceed below for a selected new build. Adding Directions to existing work or resuming approved
+implementation does not require this assessment again.
+
 ### Xcode Setup
 
 - [ ] Create new Xcode project (App or Package)
@@ -374,12 +380,12 @@ Before shipping, verify baseline features are in place. See **33_app-minimums.md
 
 ## First Day Workflow
 
-1. **Create project** with this checklist open
-2. **Set up CLAUDE.md and/or AGENTS.md** for the coding tools you use
-3. **Create directory structure**
-4. **Make initial commit** ("Initial project structure")
-5. **Start spec interview** for first feature
-6. **Plan in phases** (<30 min each)
+1. **Assess the new commitment** via `commands/spec.md`, then follow its selected route
+2. **Continue discovery** for a selected build, preserving the intended finish line
+3. **Create project and directory structure** within that scope
+4. **Set up CLAUDE.md and/or AGENTS.md** for the coding tools you use
+5. **Make initial commit** ("Initial project structure")
+6. **Plan verifiable outcomes** with dependencies and scope per `commands/make-plan.md`
 7. **Implement, review, verify, commit**
 
 ---

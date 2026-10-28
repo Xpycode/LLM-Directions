@@ -3,13 +3,22 @@
 > **Completed tasks archive.** Used for progress calculation.
 
 ## Stats
-- **Total archived:** 8
-- **Last updated:** 2026-09-05
+- **Total archived:** 9
+- **Last updated:** 2026-10-28
 
 ## Completed
 
 <!-- Newest at top. Added by /log when tasks complete. -->
 <!-- Format: - [x] Task description (YYYY-MM-DD) -->
+
+- [x] Reconcile confirmed guidance contradictions from the October 27 Reddit review (2026-10-28).
+  Removed retired context-zone/drift thresholds in `53_llm-failure-modes.md`, fixed compaction
+  percentage in `CLAUDE-GLOBAL-TEMPLATE.md`, blanket baseline/new-test wording in
+  `35_ai-code-quality.md`, and consumer-local cookbook routing in `commands/cookbook.md`.
+  Existing `52_context-management.md`, `34_testing.md` and master ownership are authoritative.
+  Also clarified legitimate user instructions versus injection in retrieved content.
+  [Source review and checks](sessions/2026-10-28.md#guidance-contradiction-cleanup).
+  Source-only completion; no deployment/runtime acceptance, E1 or recovery gate closure.
 
 - [x] Mac Control 1.1: Inventory actual clients and backends (2026-09-05)
   - [Environment evidence](verification/mac-control/environment.md): local versions, identity hints,

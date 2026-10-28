@@ -10,6 +10,10 @@ LOAD: full
 
 > **Release flow:** Run `/check ship` → covers feature baselines (updates, logging, UI polish) and code quality (this file)
 
+Apply `34_testing.md` for finite verification, valid-evidence reuse and test effects. Checklist review
+does not require rerunning every passed case: name affected behavior or unresolved risk before a repeat.
+Required checks of the actual release artifact remain necessary; missing evidence stays open.
+
 ---
 
 ## Pre-Release Checklist
@@ -261,27 +265,33 @@ Based on analysis of code reviews, these issues appear most frequently:
 ### User Workflow Testing
 
 ```
-For each feature:
-1. Start from clean state
+For each affected journey requiring verification:
+1. Use the case's defined state/data (isolated clean state when needed)
 2. Perform the user action
 3. Verify the result
-4. Restart the app
-5. Verify persistence
-6. Try edge cases (empty, maximum, invalid)
+4. If persistence is relevant, restart within authorized test scope and verify the persisted result
+5. Check relevant edge cases (empty, maximum, invalid)
 ```
 
 ---
 
 ## Severity Guide
 
+Classify findings by demonstrated impact, relevant risk and agreed requirements. Visual presentation
+and accessibility can determine whether an intended user can complete a core task; neither is
+automatically low severity. Required aesthetic quality also belongs in the acceptance criteria.
+
 | Severity | Definition | Example |
 |----------|------------|---------|
 | **Critical** | Will crash or corrupt data | Force unwrap of nil, race condition on save |
-| **High** | Significant malfunction | Error swallowed, memory leak |
+| **High** | Core task blocked or significant malfunction | Save control inaccessible to intended users, failed save hidden by swallowed error |
 | **Medium** | Degraded experience | Missing loading state, slow performance |
-| **Low** | Minor issue | Style inconsistency, missing accessibility |
+| **Low** | Minor issue outside required acceptance criteria | Optional style refinement that does not impair the task |
 
-**Rule:** Ship with 0 Critical, 0 High. Medium/Low can wait.
+**Rule:** Ship with 0 Critical, 0 High and evidence that required acceptance/release gates pass.
+Medium/Low findings may be deferred only when they do not violate those requirements. Required
+security, privacy, data-integrity, accessibility and distribution obligations remain in scope;
+missing checks are unresolved evidence. Use `62_final-stretch-triage.md` for release dispositions.
 
 ---
 

@@ -36,7 +36,10 @@ Report blocked/not-run cases separately; a clean code review does not close manu
 Review the diff across perspectives, measure health, report a verdict.
 
 1. **Collect** — `git diff --cached` (staged), `git diff HEAD` (all), or `git diff main...HEAD` (branch).
-   List the changed files + what changed.
+   List the changed files + what changed. Identify the requested behavior and applicable acceptance
+   criteria from the task, spec or user instruction; compare them with the integrated behavior and
+   available evidence. Reuse established requirements. Missing evidence is unverified; ambiguous
+   requirements are unknown, not permission to invent scope or approve compliance.
 2. **Multi-perspective pass** — read each changed file through five lenses:
    | Lens | Asks |
    |---|---|
@@ -44,10 +47,19 @@ Review the diff across perspectives, measure health, report a verdict.
    | Security | Hardcoded secrets? Unvalidated input? Auth on protected paths? Internal detail in errors? |
    | Quality | Duplication? File > 400 lines / function > 50 / nesting > 3-4? Magic numbers? Dead/commented code? |
    | Test coverage | New code tested? Error paths covered? Edge cases (empty/nil/max/concurrent)? |
-   | Architecture | Fits existing patterns? Technical debt introduced? |
+   | Architecture | Fits recorded decisions? Clear responsibilities and interfaces? Complexity contained or spread among callers? |
+
+   For difficult changes or recurring maintenance pain, trace the affected user problem through
+   the relevant callers and boundaries. Consult existing decisions and available change history
+   to focus on repeatedly troublesome areas; frequent edits alone do not establish a defect.
+   When proposing an abstraction change, explain what complexity it hides or removes and what
+   callers must then handle. Prefer the smallest change that addresses the demonstrated problem;
+   absent a concrete gap, retain the design. Keep this within the existing review scope.
 3. **AI-typical smells** (recently-changed files) — happy-path bias (every `if` has an `else`/handling;
    network + file ops have failure paths), verbosity (near-duplicate impls, abstractions used once),
-   unguarded `print()` in production paths. **Verify `print(`/`try?` in context** — OK inside
+   unguarded `print()` in production paths. Single-use abstractions are candidates for inspection,
+   not automatic removal; consider the boundary and caller responsibilities above.
+   **Verify `print(`/`try?` in context** — OK inside
    `#if DEBUG` / `#Preview` / `Logger` / CLI output; a flag is only a flag once context confirms it.
 4. **Health metrics** (on request or for a "codebase feels bloated" check):
    `find . -name '*.swift' -not -path './.build/*' | xargs wc -l | tail -1` (LOC), file count, top-10
@@ -58,8 +70,13 @@ Review the diff across perspectives, measure health, report a verdict.
    Critical (must fix before commit): crash / security / data-loss — `file:line`
    Important (fix soon): missing error handling, untested paths
    Minor (note): style, small refactors    ·    Nitpick: ignore
+   Requested behavior: ✅ Met · ⚠️ Gaps found · ❔ Unverified/unknown
+   Implementation quality: ✅ Sound · ⚠️ Needs work · ❔ Unverified
    Verdict: ✅ Approved · ⚠️ Needs work · 🚫 Blocked (security)
    ```
+   Keep both assessments in this same report, citing evidence or concrete gaps for each. Approve
+   only when requested behavior is met and implementation quality is sound; otherwise explain the
+   remaining gap or evidence needed. This adds no separate review round or mandatory new tests.
    A security finding is always Critical — **STOP and fix before any commit.** SwiftUI specifics
    (`20_swiftui-gotchas.md`): view bodies < 100 lines, clear state ownership, no heavy compute in body.
    Reference: `35_ai-code-quality.md`.
@@ -76,16 +93,20 @@ Production readiness + baseline features, as an audit — not a 40-question walk
    not a same-version Debug build or stale archive, when test effects are authorized; otherwise
    leave artifact acceptance open and supply the finite user-operated batch. Capture every gap; **do not fix mid-pass** (#62
    Rule 1).
-3. **Triage into three buckets** honestly (most "seems off" items are 2 or 3 wearing bucket-1 clothes):
+3. **Triage into three buckets** using `62_final-stretch-triage.md` Rule 2; judge demonstrated impact,
+   relevant risk and agreed requirements, including visual quality/accessibility when required:
    | Bucket | Definition | Default |
    |---|---|---|
-   | **1 — Ship-blocker** | crash, data loss, core feature broken | fix before ship |
-   | **2 — Should-fix** | annoying but survivable | fix if cheap, else v1.1 |
-   | **3 — Polish** | nobody will notice | v1.1 |
-   A large bucket 3 is good — it means the worst thing left is cosmetic.
-4. **Present one table** grouped by bucket + a summary line: "X/Y passed · N ship-blockers · [ready once
-   bucket 1 clears]". If there's no written "done for v1" line yet, propose one (#62 Rule 8) — it is
-   what gives bucket 3 permission to wait. The audit is read-only until the user approves capture.
+   | **1 — Ship-blocker** | core task blocked, crash/data loss, or unmet required release criterion | resolve before ship |
+   | **2 — Should-fix** | demonstrated degradation within required acceptance criteria | fix within agreed scope, else defer |
+   | **3 — Polish** | optional refinement beyond agreed requirements | defer |
+   An inaccessible core control can be a blocker; an unmet required aesthetic outcome is not optional
+   polish. Missing acceptance evidence remains blocked/not-run, not a pass or a presumed defect.
+4. **Present one table** grouped by bucket + a summary line: "X/Y passed · N ship-blockers · N required
+   checks blocked/not-run". Declare ready only when required acceptance and release gates pass.
+   If there's no written "done for v1" line yet, propose one (#62 Rule 8) preserving the intended
+   outcome and applicable obligations. Defer optional additions once acceptance passes unless scope
+   changes. The audit is read-only until the user approves capture.
    Ask one explicit question covering the whole batch: *"Capture these dispositions? Bucket 1 → active
    plan, Bucket 2/3 → `TASKS.md` Backlog tagged v1.1, unconfirmed observations → Inbox."* After approval,
    report what was recorded and restate the active focus.

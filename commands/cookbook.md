@@ -9,19 +9,24 @@ The cookbook is **split**, not a monolith:
 - **`cookbook/NNN-*.md`** — one file per pattern. Each starts with an H1 title, then a
   `**Tags:**` line (searchable keywords), then the full write-up + code.
 - **`PATTERNS-COOKBOOK.md`** — a lean **router index**: one row per pattern
-  (`| # | File | one-line summary |`). It is loaded on every trigger, so it must stay small.
+  (`| # | File | one-line summary |`). Search it on demand and keep it small.
   **Never paste full patterns or code into it.**
 
-**Location** (auto-detect):
-- Master repo: `./PATTERNS-COOKBOOK.md` + `./cookbook/` (root)
-- Installed projects: `./docs/PATTERNS-COOKBOOK.md` + `./docs/cookbook/`
+**Location:** the cookbook lives only in the Directions master, including when invoked from a
+consumer project. Resolve `<master>` from the Directions adapter or the managed instructions'
+`Local master:` value; in this repository, its root is the master. Verify it contains
+`commands/cookbook.md`, `PATTERNS-COOKBOOK.md` and `cookbook/`. If unavailable, report the missing
+master and ask for its location; do not substitute consumer copies or create a replacement cookbook.
+Expand `<master>` to an absolute path before reading or writing. All cookbook paths below are
+relative to that master; source-project code and extraction credits remain in their own project.
 
 ## Looking a pattern up (grep-first — never read the whole index)
 
 1. Grep the index for a keyword, then read only the matching file:
-   `grep -i '<keyword>' PATTERNS-COOKBOOK.md` → open the `cookbook/NNN-*.md` in the row's link.
+   `rg -i -- '<keyword>' '<master>/PATTERNS-COOKBOOK.md'` → open the matching file under
+   `<master>/cookbook/` from the row's link.
 2. Or grep the files' `**Tags:**` lines directly, skipping the index:
-   `grep -ril '<keyword>' cookbook/`
+   `rg -n -i -- '^\*\*Tags:\*\*.*<keyword>' '<master>/cookbook/'`
 
 Read **only** the one matching file. Do not load `PATTERNS-COOKBOOK.md` wholesale.
 
@@ -56,7 +61,7 @@ Rescan `~/ProgrammingProjects` for new reusable patterns not yet captured.
 
 ### `/cookbook search <query>`
 
-`grep -i '<query>'` the index, and `grep -ril '<query>' cookbook/` the files' Tags lines; present
+Use the absolute-path `rg` searches above for the index and files' Tags lines; present
 the matching rows and read the top file(s).
 
 ## When to add a pattern

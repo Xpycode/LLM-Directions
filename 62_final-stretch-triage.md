@@ -10,7 +10,7 @@ LOAD: when a project is "nearly done" but won't close out, when the stream of "t
 
 # Final-Stretch Triage
 
-**In the final stretch, your job is to manage a queue, not to chase symptoms. Visible ≠ important.**
+**Use the agreed outcome, evidence and task impact to decide what remains before release.**
 
 The last 10% (often really the last 1%) drags because the bottleneck shifts. Early on, the work is
 *building*. At the end, the work is *triage and specification* — the AI still fixes fast, but the
@@ -21,26 +21,26 @@ to write better fixes.
 
 ## The core trap
 
-A misaligned button feels urgent because you see it every time you open the app. It is almost never a
-ship-blocker. The eye snags on it, the brain files it as critical, but it is just *visible*. Most
-"off" feelings are bucket 2 or 3 (below) wearing bucket-1 clothing. The exhaustion is from treating
-cosmetic items with crash-level urgency.
+A visible issue can be optional refinement, a failed visual requirement or an obstacle to a core
+task. Establish which before assigning priority. An inaccessible control can block completion even
+when the app does not crash; deliberate aesthetic quality can be part of the agreed outcome.
+New optional improvements should not silently move that finish line.
 
 ---
 
 ## Rule 1: Capture, don't fix
 
-When testing surfaces "this seems off," **write it down and keep testing.** Do not switch into fix
-mode mid-pass.
+During the agreed finite acceptance batch, **capture findings before changing implementation**.
+Keep blocked/not-run cases explicit; do not extend the batch with every new observation.
 
 - Context-switching from *finding* to *fixing* is what makes the endgame feel infinite — you never
   complete a full pass.
-- One full testing pass → collect everything → triage the batch → then fix.
+- Complete the available cases in the agreed batch → triage findings → fix selected issues.
 - Route confirmed actionable findings into `TASKS.md` Backlog; route one-off or unconfirmed findings
   into `TASKS.md` Inbox. Do not put either into the current diff.
 
 ```
-FIND (full pass)  →  TRIAGE (whole batch)  →  FIX (by bucket)
+FIND (agreed batch)  →  TRIAGE (findings)  →  FIX (selected scope)
 ```
 
 ---
@@ -49,12 +49,14 @@ FIND (full pass)  →  TRIAGE (whole batch)  →  FIX (by bucket)
 
 | Bucket | Definition | Default action |
 | ------ | ---------- | -------------- |
-| **1 — Ship-blocker** | Crash, data loss, core feature broken | Fix before ship |
-| **2 — Should-fix** | Annoying but survivable | Fix if cheap, else v1.1 |
-| **3 — Polish** | Nobody will notice or care | v1.1 by default |
+| **1 — Ship-blocker** | Core task blocked, crash/data loss, or unmet required release criterion | Resolve before ship |
+| **2 — Should-fix** | Demonstrated degradation that still meets required acceptance criteria | Fix within agreed scope, else defer |
+| **3 — Polish** | Optional refinement beyond the agreed requirements | Defer by default |
 
-**Principle:** Bucket 3 is supposed to be large. That is the sign you built something with depth — a
-crooked button is the worst problem left.
+Classify by demonstrated impact, relevant risk and agreed requirements, not by whether the issue
+looks visual or technical. Required accessibility, security, privacy, data-integrity and distribution
+obligations remain release gates. A missing required check is unresolved evidence, not a pass or
+automatically a confirmed defect. The number of items in a bucket is not a quality target.
 
 ---
 
@@ -72,13 +74,18 @@ leverage here — use it.
 
 ---
 
-## Rule 4: Batch, then regression-pass
+## Rule 4: Verify the affected behavior
 
-Solo + AI means it is easy to fix ten things and quietly break two — the AI edits without holding full
-context.
+Use `34_testing.md` → **Finite user acceptance** to select a finite verification batch after fixes.
 
-- After each batch of fixes, re-run the core happy-path flow end to end.
-- "Fixed one, broke two" is the real reason late stage drags. The regression pass is non-optional.
+- Verify the original failure and affected behavior, including shared dependencies and relevant
+  failure paths. Run the core journey end to end when the change or unresolved integration risk
+  warrants it; a fix batch alone does not require repeating every accepted case.
+- Reuse valid evidence with source/artifact/configuration provenance. Name why a passed check needs
+  repeating: changed behavior or artifact, invalid configuration, missing evidence or a regression.
+- Required release-artifact checks still apply. Report passed, failed, blocked and not-run cases;
+  source/unit checks do not replace missing artifact or user acceptance. Preserve existing test and
+  app-control boundaries.
 
 ---
 
@@ -91,6 +98,7 @@ strategies.
 - **Visual pass:** one session, only spacing/alignment/typography.
 
 Batching by *type* of off-ness (not just into one list) makes each pass faster and less draining.
+Grouping does not determine severity; verify the combined journey when presentation affects behavior.
 
 ---
 
@@ -105,29 +113,31 @@ Batching by *type* of off-ness (not just into one list) makes each pass faster a
 
 ## Rule 7: A "weird stuff seen" inbox, separate from the backlog
 
-Not every "off" is real. Half are misremembered intended behavior or a one-off that never recurs.
+An observation may be a defect, an unclear expectation or an optional improvement. Keep its evidence
+and uncertainty visible until it can be classified.
 
 - Keep these observations in `TASKS.md` Inbox, separate from the actionable Backlog.
-- Let items sit ~a day before promoting them to the actionable backlog.
-- This filters out a surprising amount of noise for free.
+- Promote when evidence establishes an actionable issue; do not require an arbitrary waiting period
+  or dismiss a consequential report merely because it has occurred once.
 
 ---
 
 ## Rule 8: Define "done for v1" in writing — now
 
-The single highest-leverage move. Without a written line, "off" has no floor and polish expands to
-fill all available time.
+Write the intended outcome and required acceptance criteria before the final pass. Preserve personal,
+commercial, learning or craft goals; do not shrink the outcome just to declare completion.
 
 ```
 [App] v1 ships when:
-- [ ] X works without crashing
-- [ ] Y works without crashing
-- [ ] Z works without crashing
-Everything not on this list → v1.1 by default.
+- [ ] Intended users can complete X with the agreed result
+- [ ] Required behavior and visual/accessibility criteria have supporting evidence
+- [ ] Applicable security, privacy, data-integrity and distribution gates pass
+Optional additions beyond these requirements → later scope by default.
 ```
 
-**Principle:** v1.1 is a feature, not a failure. It exists to give you permission to *not* fix
-everything now. Startschwierigkeiten go there on purpose.
+Once required acceptance passes, defer optional refinements unless scope deliberately changes.
+New evidence of a required failure still needs triage; omission from a short v1 list does not waive
+an applicable obligation. Keep missing acceptance evidence open rather than declaring completion.
 
 ---
 

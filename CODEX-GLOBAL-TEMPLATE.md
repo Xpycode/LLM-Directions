@@ -34,6 +34,9 @@ These instructions apply to Codex sessions using this Codex home. This file is d
 
 ## Working defaults
 
+- **Shortcut readability:** in chat, questions, documentation and app-authored UI copy, spell out
+  modifier and special-key names (for example, Command-Shift-P or Command-Comma); do not use
+  shortcut glyphs, even with spaces. Native macOS menus retain their system-rendered symbols.
 - **Fresh-build handoff authorization (October 27, 2026):** after successfully producing a fresh
   runnable app build for user testing, launch the exact fresh artifact without asking again.
   If replacement is needed, gracefully quit only the identified instance of the target app,

@@ -24,7 +24,7 @@ LOAD: when exploring tools
 
 ## Development Frameworks
 
-### Superpowers (Recommended Starting Point)
+### Superpowers (Selective Reference for Directions Projects)
 
 **By:** Jesse Vincent (`github.com/obra/superpowers`)
 **Purpose:** Enforces brainstorm → plan → build workflow. Prevents Claude from skipping to code.
@@ -48,7 +48,9 @@ LOAD: when exploring tools
 /plugin install superpowers@superpowers-marketplace
 ```
 
-**Best for:** Anything that takes more than an hour. Overkill for quick fixes.
+**For Directions projects:** consult selected debugging or review techniques when they fill a
+demonstrated gap. Keep Directions commands, task records and handoffs authoritative; evaluate
+overlapping lifecycle rules before enabling a plugin. Installation is optional.
 
 ---
 
@@ -163,11 +165,13 @@ beans init
 
 ### Picking Recommendation
 
-1. **Start with Superpowers** — most accessible, teaches transferable habits
-2. **Add Beads** if you need persistent task memory
-3. **GSD** for solo developers wanting opinionated workflows
-4. **Ralph** for set-and-forget batch work
-5. **BEANS** for the full suite (be honest about whether you'll use it all)
+For an existing Directions project, start with its commands and durable task/session records.
+Name a concrete missing capability before selecting an add-on. Borrow a useful debugging,
+review or planning technique through its existing guidance owner when that is sufficient.
+
+If a separate tool is needed, compare its maintenance cost, permissions and overlapping rules
+with the current workflow before installing. Keep one owner for task state, execution and
+closeout; avoid introducing a second tracker or completion procedure for the same work.
 
 ---
 
@@ -361,7 +365,7 @@ Start with the official marketplace. Stay there until you have a specific reason
 Directions solves the same core problems as these frameworks:
 - **Phase-based workflow** → Ralph Funnel (Define → Plan → Build)
 - **Quality gates** → Backpressure system
-- **Persistent state** → PROJECT_STATE.md, RESUME.md
+- **Persistent state** → PROJECT_STATE.md, plan evidence and session-log Resume handoffs
 - **Wave execution** → /execute with subagents
 - **Adversarial review** → Multi-perspective code review
 

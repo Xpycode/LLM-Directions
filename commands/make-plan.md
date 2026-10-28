@@ -37,6 +37,10 @@ If already Opus/Fable, say nothing and proceed.
 ### Step 1: Scope (Define the Goal)
 
 Infer the goal from the request and existing spec. Ask what to build only when that is missing.
+For a whole new project or substantial uncommitted expansion, first follow `commands/spec.md` →
+**New-project assessment** and honor its selected route before writing a build plan. Reuse an
+existing conclusion; routine fixes and approved implementation do not need reassessment. Plan only
+the bounded check when an experiment is selected, carrying its limit and reconsideration trigger.
 
 If they have a spec already, read it. If not, run a quick interview:
 - What's the core functionality?
@@ -62,6 +66,16 @@ Compare the goal against existing code:
 Break the delta into independently verifiable outcomes. Size by coupling, risk and validation,
 not elapsed time. Keep a cohesive outcome together; split when a separate result or interface can
 be validated independently. Planning depth follows uncertainty, not a planning/execution ratio.
+
+For a feature, prefer a thin end-to-end outcome that can demonstrate useful behavior, such as
+importing one supported file through parsing, storage and display. Split supporting work when
+dependencies or exclusive ownership require it, and name the integration task that proves the
+outcome; a layer-only task is not the completed feature.
+
+For a refactor that must preserve working callers, stage it when needed: introduce a compatible
+new form, migrate callers, then remove the old form after verifying all affected callers and
+required behavior. Name dependencies, compatibility checks and the removal gate explicitly.
+Keep a small atomic refactor together when staging would add no safety or verification value.
 
 **Good tasks:**
 - Bounded outcome with named scope and dependencies

@@ -63,8 +63,11 @@ DEFINE ──gate──> PLAN ──gate──> BUILD
 ### Fresh Project (No Prior Sessions)
 
 1. **Read this file** (you're doing that now)
-2. **Run `/spec deep`** - Multi-phase discovery
-3. **Create project folder structure** per `13_folder-structure.md` (code always lives in `01_Project/`):
+2. **Read `commands/spec.md` and run discovery** — apply its **New-project assessment** before
+   scaffolding, reusing known answers. Use existing or park ends this flow; improve existing returns
+   to that project; an experiment gets only bounded setup. Existing work without prior Directions
+   sessions uses `commands/setup.md` and skips reassessment of approved work.
+3. **For a selected new build, create project folder structure** per `13_folder-structure.md` (code always lives in `01_Project/`):
    - macOS/iOS: `01_Project/`, `02_Design/`, `03_Screenshots/`, `04_Exports/`, `docs/sessions/`
    - Web (no-build/Strato): `01_Project/` (code + deploy stage), `02_Design/`, `03_Scripts/`, `04_Data/`, `docs/sessions/`
    - Web (framework/Vercel): code at repo root — the one `01_Project/` exception — with numbered folders alongside

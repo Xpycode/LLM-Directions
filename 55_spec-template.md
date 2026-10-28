@@ -29,6 +29,10 @@ The "70% Problem": Vibe coding gets you 70% there fast, but the last 30% becomes
 
 Create `specs/[feature-name].md` with this structure:
 
+For a new project or substantial uncommitted expansion, use `commands/spec.md` → **New-project
+assessment** first. Keep its conclusion in the fields below; omit conditional fields for routine
+work and link an existing decision rather than copying it. Use-existing/park outcomes need no spec.
+
 ```markdown
 # [Feature Name] Specification
 
@@ -41,13 +45,19 @@ Create `specs/[feature-name].md` with this structure:
 ## Problem Statement
 
 ### What problem does this solve?
-[One paragraph describing the pain point or opportunity]
+[Intended benefit: personal utility, release, learning, enjoyment or craft; smallest worthwhile outcome]
 
 ### Who has this problem?
 [User persona or context]
 
 ### How do they solve it today?
-[Current workaround or competing solution]
+[Current workaround/alternatives; a recent concrete shortcoming, frequency and cost where relevant]
+
+For a new commitment only (omit for routine work):
+
+- Choice and why now: [Selected approach and reason, or link to the existing decision]
+- Investment and trade-off: [Time/attention and maintenance worth spending; what gets less attention]
+- Reconsider when: [Critical assumption fails, investment limit reached or scope materially expands]
 
 ---
 
@@ -67,11 +77,14 @@ Create `specs/[feature-name].md` with this structure:
 3. Destination/output: [Where the result goes]
 4. Observable outcome: [What proves success to the user]
 
-### Feasibility Spike (when needed)
-- Observable result: [Evidence that resolves the uncertainty]
+### Usefulness or Feasibility Check (when needed)
+- Uncertainty: [Critical benefit assumption or technical feasibility question; distinguish the two]
+- Smallest check: [Representative task/data or demonstration of learning]
+- Observable result: [Expected observation and contrary result that would change the decision]
 - Agreed limit: [Scope/resources authorized for this experiment]
-- Stop/replan: [Failure or expansion condition; decide continue, simplify or park]
+- Stop/replan: [Failure, limit or expansion condition; decide continue, simplify, replace or park]
 - New subsystems: [Require a scoped decision before expansion]
+- Result: [Observation and decision, or not run; inconclusive evidence leaves the assumption unresolved]
 
 ---
 

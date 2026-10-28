@@ -131,25 +131,40 @@ recovery covered elsewhere in this doc.
 
 ### Debugging Workflow
 
-When something doesn't work:
+1. **Establish the failure.** Record the action, expected and observed result, frequency and
+   relevant source/build/configuration. Check the intended behavior against requirements and the
+   implementation; distinguish a product defect from a build, harness or environment failure.
 
-1. **Describe the symptom precisely**
-   - Bad: "It's broken"
-   - Good: "I tap the save button, nothing happens, no error appears"
+2. **Inspect available evidence first.** Read relevant existing logs, crash reports and build/test
+   results before adding instrumentation or asking the user to reproduce or paste output. Verify
+   actual locations and supported read commands from the project; examples are not proof that a
+   diagnostic exists. If access is denied or evidence is missing, report the specific gap and ask
+   only for the smallest useful excerpt or action. Avoid collecting secrets or unrelated data.
 
-2. **Ask Claude to add logging**
-   ```
-   Add diagnostic logging to trace what happens when I tap save.
-   Log the state before and after each step.
-   ```
+3. **Choose a bounded diagnostic batch.** State the question, the next discriminating check and
+   a short time/attempt budget appropriate to the problem. Prefer an existing failing case, small
+   fixture, saved trace or minimal harness when it exercises the reported behavior. For intermittent
+   failures, record observation conditions and a justified sample bound; absence in a sample is
+   not proof of a fix. Apply [34_testing.md](34_testing.md#test-types) before running checks:
+   inspected effects, isolation and current app-control authority still govern diagnostics.
 
-3. **Run and share the logs**
-   ```
-   Here's what the console shows: [paste logs]
-   What's going wrong?
-   ```
+4. **Test one hypothesis at a time.** Explain what evidence supports it, what result would refute
+   it and what the check will distinguish. Inspect the relevant component boundary; add narrow
+   temporary logging only when existing evidence cannot answer the question. Change one causal
+   variable at a time so the result can support or reject the hypothesis.
 
-4. **Document the fix** — if it was tricky, ask Claude to add a comment explaining WHY.
+5. **Stop or replan when the batch ends.** If the budget is exhausted, the same approach repeats
+   without new evidence, or the next action exceeds authorization, record what was learned,
+   rejected hypotheses and the remaining gap. Select a materially different check within scope,
+   replan broader work, or report the exact blocker. Do not silently restart the budget or hand
+   the user another equivalent testing loop; elapsed time does not grant more authority.
+
+6. **Fix and verify the reported behavior.** Make the smallest supported correction, rerun the
+   original failure and check affected behavior. Use [finite user acceptance](34_testing.md#finite-user-acceptance)
+   for remaining manual cases: reuse valid evidence and name why any passed case must repeat.
+   Keep failed, blocked and not-run checks explicit; source checks cannot close missing user or
+   artifact acceptance. Remove temporary instrumentation unless it has an ongoing diagnostic
+   purpose, and document a non-obvious cause or constraint in its existing project home.
 
 ### The "It Used to Work" Trap
 
