@@ -492,7 +492,7 @@ Must reassign the parent property to trigger updates.
 ## AGENTS.md Template
 
 ```markdown
-# [Project Name] — Codex Instructions
+# [Project Name] — Agent Instructions
 
 ## Project Context
 
@@ -504,7 +504,7 @@ Must reassign the parent property to trigger updates.
 
 ## Instruction Ownership
 
-- `AGENTS.md` is the Codex entry point; `CLAUDE.md` is the Claude Code entry point.
+- `AGENTS.md` is the entry point for Codex and Mistral Vibe; `CLAUDE.md` is the Claude Code entry point.
 - Keep stable project facts aligned, while keeping tool-specific behavior in its own entry point.
 - Keep task status/evidence in the selected plan; `docs/PROJECT_STATE.md` selects the plan and one
   current session-log handoff. `docs/TASKS.md` holds backlog/inbox and an Active plan link.
@@ -545,7 +545,7 @@ Run in this order where applicable:
 
 ## Usage Tips
 
-1. **Start with README plus the tool entry points you use** — `CLAUDE.md` for Claude Code and `AGENTS.md` for Codex
+1. **Start with README plus the tool entry points you use** — `CLAUDE.md` for Claude Code and `AGENTS.md` for Codex and Mistral Vibe
 2. **Add CHANGELOG early** — Track changes from the start
 3. **Add SECURITY.md if public** — Encourages responsible disclosure
 4. **Add PRIVACY.md for user-facing apps** — Builds trust

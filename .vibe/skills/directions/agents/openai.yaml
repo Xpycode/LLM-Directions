@@ -1,0 +1,7 @@
+interface:
+  display_name: "Directions"
+  short_description: "Specs, plans, execution, checks, state, and logs"
+  default_prompt: "Run status for this project using the shared Directions workflow."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,4 +1,4 @@
-# Codex Instructions for Directions
+# Agent Instructions for Directions
 
 ## Repository
 
@@ -8,7 +8,7 @@
 
 ## Instruction Ownership
 
-- `AGENTS.md` is the Codex entry point. `CLAUDE.md` or `CLAUDE-GLOBAL-TEMPLATE.md` is the Claude Code entry point.
+- `AGENTS.md` is the shared entry point for Codex and Mistral Vibe (Vibe reads `AGENTS.md` natively). `CLAUDE.md` or `CLAUDE-GLOBAL-TEMPLATE.md` is the Claude Code entry point.
 - Keep stable project facts such as stack, commands, and safety constraints aligned between tool entry points when both exist.
 - Keep tool-specific behavior in its own entry point. Do not require line-for-line parity.
 - Changing state belongs in `PROJECT_STATE.md`, `IMPLEMENTATION_PLAN.md`, specs, decisions, and session logs—not in an agent entry point.
@@ -16,15 +16,17 @@
 ## Directions Workflow
 
 - `commands/*.md` is the single procedural source of truth for Directions commands.
-- In Codex, use the `directions` skill and study the matching command file completely before acting.
+- In Codex and Mistral Vibe, use the `directions` skill and study the matching command file completely before acting.
 - Treat bare Directions requests such as `/status arrive`, `status arrive`, and `log clear` as skill
   invocations; users do not need to prefix them with `$directions`.
+- In Mistral Vibe, prefer slashless requests; Vibe built-in commands intercept `/status` and `/log`
+  before the model sees them.
 - Route requests to execute/resume an approved plan, including “continue implementation” and
   “next wave”, through `commands/execute.md`. Follow its dependency, fresh-context delegation and
   validation rules; continue ready work within authorized scope without renewed task/wave permission.
   Preserve explicit user limits. Small standalone fixes do not require a wave plan.
-- The thin adapter lives at `codex/skills/directions/SKILL.md`. Do not create translated or duplicated Codex command files.
-- Interpret Claude-specific UI, hooks, and state as Codex equivalents only when a reliable equivalent exists; disclose any fallback.
+- The thin adapters live at `codex/skills/directions/SKILL.md` (Codex) and `.vibe/skills/directions/SKILL.md` (Mistral Vibe). Do not create translated or duplicated command files.
+- Interpret Claude-specific UI, hooks, and state as the active tool's equivalents only when a reliable equivalent exists; disclose any fallback.
 
 ## Working Rules
 
@@ -60,6 +62,9 @@ Do not claim a build or test passed unless this repository actually provides and
 - `CLAUDE-GLOBAL-TEMPLATE.md` is rendered and deployed to a machine-local Claude configuration; edit the template, not the deployed copy.
 - `CODEX-GLOBAL-TEMPLATE.md` is rendered into a marked block in machine-local
   `$CODEX_HOME/AGENTS.md` (default `~/.codex/AGENTS.md`); edit the template, not the deployed block.
-- The Codex adapter intentionally reads the live shared command library so both tools use one workflow source.
+- `VIBE-GLOBAL-TEMPLATE.md` is rendered into a marked block in machine-local
+  `$VIBE_HOME/AGENTS.md` (default `~/.vibe/AGENTS.md`) by `deploy-vibe.sh`; edit the template, not
+  the deployed block.
+- The Codex and Vibe adapters intentionally read the live shared command library so all tools use one workflow source.
 - Universal docs are read on demand. Copies in consumer projects drift and must not be reintroduced.
 - Several files may already be modified by Syncthing or another session; unrelated changes belong to the user.

@@ -42,6 +42,7 @@ removes stale copies, it never adds them.
    - Codex → resolve the active Directions skill symlink, then the `Local master:` value in
      `$CODEX_HOME/AGENTS.md` (default `~/.codex/AGENTS.md`).
    - Claude Code → read `Local master:` from `~/.claude/CLAUDE.md`.
+   - Mistral Vibe → read `Local master:` from `$VIBE_HOME/AGENTS.md` (default `~/.vibe/AGENTS.md`).
    - Last fallback → `/Users/sim/ProgrammingProjects/0-DIRECTIONS/__DIRECTIONS` when it exists.
    Verify that the result contains `commands/` before continuing.
 2. **Inspect before pulling** — show `git -C <master> status --short` and the current branch. If the
@@ -53,14 +54,18 @@ removes stale copies, it never adds them.
      `AGENTS.md`).
    - Claude Code → run `bash <master>/redeploy.sh --dry-run`, show the result, then ask before running
      `bash <master>/redeploy.sh` because it updates `~/.claude`.
-   - If both tools are intentionally in use, offer both deployers; do not assume dual installation.
+   - Mistral Vibe → run `bash <master>/deploy-vibe.sh --dry-run`, show the result, then ask before
+     running `bash <master>/deploy-vibe.sh` because it updates the active Vibe home (`skills/` and
+     `AGENTS.md`).
+   - If multiple tools are intentionally in use, offer each deployer; do not assume multi-installation.
 5. **Clean a consumer project only when stale copies actually exist.** Preserve
    `docs/PROJECT_STATE.md`, `docs/decisions.md`, `docs/sessions/*`, `docs/glossary.md`, root
    `AGENTS.md`, and root `CLAUDE.md`. Show the exact copied universal files first. Remove them only
    from a clean tree and with confirmation, then offer the commit
    `chore(directions): drop copied universal docs — read on demand`.
 6. **Reload reminder** — if Codex global guidance, skills, or hooks changed, start a new Codex
-   session. If Claude commands, hooks, or plugin files changed, restart Claude Code.
+   session. If Claude commands, hooks, or plugin files changed, restart Claude Code. If Vibe global
+   guidance or skills changed, run `/reload` or start a new Vibe session.
 
 **Net effect:** one procedural source (the master) + thin tool adapters + a generated Index;
 consumer `docs/` folders hold only project-specific state. See `sessions/2026-06-08.md` for why

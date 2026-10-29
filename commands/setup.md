@@ -9,9 +9,9 @@ Run the project detection flow (this file is the full flow; global tool instruct
 the sentinel check and route here):
 
 1. Check if `docs/PROJECT_STATE.md` exists (Directions already set up) → preserve it, then ensure the
-   active tool's project entry point exists. In Codex, create a missing root `AGENTS.md` from the
-   master template; in Claude Code, create a missing root `CLAUDE.md`. Never overwrite an existing
-   entry point. Report what was added, then report status.
+   active tool's project entry point exists. In Codex or Mistral Vibe, create a missing root
+   `AGENTS.md` from the master template; in Claude Code, create a missing root `CLAUDE.md`. Never
+   overwrite an existing entry point. Report what was added, then report status.
 2. Check if `/docs` folder exists without Directions structure, or scattered `.md` files → **Existing docs** (below)
 3. Existing implementation without those docs → scaffold only the project-specific Directions
    files below using inspected context; ask only for documentation gaps. Missing Directions files
@@ -65,13 +65,13 @@ Read `00_base.md` on demand for the system overview. After actual project setup,
 The numbered universal guidance docs (gotchas, checklists, templates, references) are the **single
 source of truth in the Directions master repo** and are read **on demand** via the generated
 **Directions Index** in the active tool's global instructions (`$CODEX_HOME/AGENTS.md`, default
-`~/.codex/AGENTS.md`, for Codex; `~/.claude/CLAUDE.md` for Claude Code). **Do not copy them into the
-project.** Copies drift — an
+`~/.codex/AGENTS.md`, for Codex; `~/.claude/CLAUDE.md` for Claude Code; `$VIBE_HOME/AGENTS.md`,
+default `~/.vibe/AGENTS.md`, for Mistral Vibe). **Do not copy them into the project.** Copies drift — an
 already-set-up project never receives new house-style — which is exactly the flaw this avoids.
 
 `/setup` scaffolds **only project-specific files** (read the matching master template on demand):
 - `CLAUDE.md` — Claude Code project instructions, when Claude Code is in use; preserve an existing file
-- `AGENTS.md` — Codex project instructions, when Codex is in use; preserve an existing file
+- `AGENTS.md` — Codex and Mistral Vibe project instructions, when either is in use; preserve an existing file
 - `docs/PROJECT_STATE.md` — position digest and setup sentinel: Identity, Now (Focus/Next/Execution),
   Recent, and a Current handoff link. Do not copy the master's live project history or deferred work.
 - `docs/sessions/_index.md` — session history index
@@ -85,12 +85,14 @@ preservation/reconciliation; setup is not permission to bulk-migrate other proje
 
 Use the entry-point templates in `12_documentation-templates.md`. Keep stable project facts aligned
 between them, but keep tool-specific behavior separate. The live `commands/*.md` library remains the
-single workflow source: Claude Code invokes its deployed command adapter and Codex reaches the live
-files through the Directions skill. Do not copy or translate the command files into the project.
+single workflow source: Claude Code invokes its deployed command adapter; Codex and Mistral Vibe
+reach the live files through the Directions skill. Do not copy or translate the command files into
+the project.
 Write the resolved **absolute** `Local master:` path into generated project entry points; never leave
 a placeholder or rely on global installation. Without globals, resolve natural/slashless commands
 to that master's `commands/<name>.md`; topical guidance uses the appropriate master
-`CODEX-GLOBAL-TEMPLATE.md` or `CLAUDE-GLOBAL-TEMPLATE.md` for routing only, without installing it.
+`CODEX-GLOBAL-TEMPLATE.md`, `CLAUDE-GLOBAL-TEMPLATE.md`, or `VIBE-GLOBAL-TEMPLATE.md` for routing
+only, without installing it.
 Resolve conditional `reference/…` paths from that same verified master, not the consumer directory.
 If the master is unavailable, report the missing guidance rather than using stale local mirrors.
 
