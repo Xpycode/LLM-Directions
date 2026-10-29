@@ -509,6 +509,34 @@ let used  = total - free                            // NOT a per-volume "used" r
 
 ---
 
+## NSDirectoryEnumerator yields firmlink-resolved paths — your root URL does not
+
+**Symptom:** you enumerate files under a base URL and compare paths (prefix math, relative-path
+extraction); it works in the app (`~`-based paths) but breaks in tests using temp directories:
+`file.path.hasPrefix(root.path)` is false, ids come back as bare last-path-components.
+
+**Cause:** `FileManager.enumerator(at:)` returns URLs resolved through symlinks/firmlinks —
+`/var/folders/...` becomes `/private/var/folders/...`. Foundation's `resolvingSymlinksInPath()` and
+`standardizedFileURL` deliberately do **not** resolve the `/var` firmlink, so normalizing the root
+with them does not help. Only `realpath(3)` produces the enumerator's form.
+
+**Fix:** normalize the base path with `realpath` before comparing (verified 2026-10-29,
+LLM-UsageStatus Claude log aggregator):
+
+```swift
+private static func physicalPath(_ url: URL) -> String {
+    var buffer = [CChar](repeating: 0, count: Int(PATH_MAX))
+    guard realpath(url.path, &buffer) != nil else { return url.path }
+    return String(cString: buffer)
+}
+```
+
+Alternative: compute relative paths with URL component arithmetic against a root captured from the
+enumerator itself. `for case let url as URL in enumerator` iteration is also unavailable from
+async contexts (Swift 6) — collect via `enumerator.allObjects.compactMap { $0 as? URL }` instead.
+
+---
+
 ## Debugging Tools
 
 ### Disposable AppKit input targets and process identity
