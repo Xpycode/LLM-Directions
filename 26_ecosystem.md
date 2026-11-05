@@ -175,6 +175,29 @@ closeout; avoid introducing a second tracker or completion procedure for the sam
 
 ---
 
+## Website Design Tools to Evaluate
+
+### Caret Desktop — Optional Website Trial
+
+[Caret Desktop](https://github.com/precious112/caret-desktop) provides a visual design canvas
+backed by React files in `.caret/`. Its documented workflow uses an agent to sync designs into
+the website's actual framework; evaluate that translation rather than assuming direct editing
+of the production page. [Agent integration](https://github.com/precious112/caret-desktop/blob/main/docs/connect-an-agent.md)
+documents MCP access and managed design blocks in agent instruction files.
+
+For the next actively developed new or early-stage website, consider a one-page trial:
+
+1. Preserve current work and isolate the trial in a separate project copy or worktree.
+2. Design one representative page, then change its text, spacing and a component layout.
+3. Sync into the real website and inspect the diff, including changes to agent instructions.
+4. Check desktop/mobile behaviour, existing component reuse and the project's normal validation.
+5. Keep the tool only if visual iteration helps and the resulting source remains maintainable.
+
+Verify current setup requirements before trying it. Directions remains responsible for task state,
+review and acceptance. This is a candidate, not an adopted dependency or automatic installation.
+
+---
+
 ## Installed MCP Servers
 
 These are the MCP servers currently configured and active on this machine.

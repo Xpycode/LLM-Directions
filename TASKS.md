@@ -9,6 +9,12 @@
 <!-- Ideas and future work. Added by /spec deep, user input, or discovered during development. -->
 <!-- Priority: top = highest, bottom = lowest -->
 
+- [ ] 2026-11-05 — Consider a [Caret Desktop one-page trial](26_ecosystem.md#caret-desktop--optional-website-trial)
+  when a new or early-stage website is actively being developed. User suggested TheaterB in
+  `3-Websites` as a possible candidate, but is barely working there currently; wait for a real
+  website task rather than restarting it solely for the tool. No project selected or installation
+  performed. Assess visual iteration, sync quality, responsive behaviour and source maintainability.
+
 - [ ] Select remaining October 27 research improvements and observe the interview/completion guidance
   in natural use. Review against Directions and retired Oversight is complete; interview and subsequent
   completion-policy cleanup and bounded debugging are implemented in the master with static

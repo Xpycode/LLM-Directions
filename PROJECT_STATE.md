@@ -1,6 +1,6 @@
 # Project State
 
-**Last updated:** 2026-10-28
+**Last updated:** 2026-11-05
 
 > **Lean digest — target <50 lines.** Current state + a short changelog, then pointers to detail
 > files. History lives in `decisions.md` and `sessions/_index.md`, not here.
@@ -42,11 +42,11 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-11-05** — Recorded Caret Desktop as an optional one-page trial for future active website work; TheaterB is a possible candidate. No installation or project changes; existing acceptance and recovery gates remain open.
 - **2026-10-28** — Refined shortcuts, interview, testing, debugging, architecture and review/planning guidance; verified local installation. Recorded Codex as the primary tool. Source checks pass; runtime adherence and E1 remain open.
 - **2026-10-27** — Interview, completion and bounded-debugging guidance implemented and statically reviewed in the master, not deployed/committed. Earlier fresh-build policy deployed/pushed. Preference routing and acceptance/recovery gates remain open.
 - **2026-10-17** — Accepted listed size increases, deployed both tools and migrated instruction routing in 110 projects with verified backups; state/history preserved. Earlier status/reuse cleanup validated; E1 open.
 - **2026-10-16** — Implemented and independently reviewed local runner/preparation; 31 tests and frozen fake-host replay pass. Live transport, E1 and byte decisions remain open; Claude deferred.
-- **2026-09-17** — Kept the existing model setup after reviewing MultiVibe; integrated three unindexed logs, preserving original conflict snapshots.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build 🔶 — source implemented; acceptance incomplete.
 - **Readiness:** Features 🔶 · UI/Polish N/A · Testing 🔶 · Docs ✅ · Distribution 🔶 (local rollout authorized; host acceptance open).
@@ -138,8 +138,8 @@ October 16 planning direction above; retain them as evidence, not current execut
   Logs/checkpoint retain ignore rules. Native witness storage is machine-local and is not in Git.
   All approved windows ended. Recovery/clipboard and broader intervention proof remain pending.
 - Model fit: deep capability + high reasoning for recovery state/durability; active host setting not reliably visible.
-- 23 Backlog items (21 feature, one index-maintenance, one lean-efficiency review); 0 Inbox; Current Sprint 0/2 after archiving.
+- Current tracker: 24 Backlog items; 2 Inbox items. Selected-plan progress remains separate.
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-10-28.*
+*Last updated: 2026-11-05.*

@@ -10,6 +10,9 @@ LOAD: full
 
 *The problems you'll encounter when building websites with AI assistance.*
 
+For a new or early-stage website with active design work, consider the optional
+[Caret Desktop one-page trial](26_ecosystem.md#caret-desktop--optional-website-trial).
+
 ---
 
 ## The Big Five Web Issues
