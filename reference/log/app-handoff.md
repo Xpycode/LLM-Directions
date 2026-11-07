@@ -58,6 +58,38 @@ substitute the verified build location). When current scope excludes the standin
 steps and say that the build was not launched. Never substitute a relative path, `~`, or a hidden
 link target for the visible absolute folder path.
 
+## Preserve the artifact, not just its path
+
+A session log preserves a pointer; it does not preserve the app bundle. Keep candidates needed
+for later acceptance in a uniquely named, persistent, Git-ignored project build directory or a
+dedicated local builds directory. Do not leave the sole runnable handoff artifact in `/tmp`,
+`/private/tmp`, `$TMPDIR`, or disposable test storage. If building in temporary storage, preserve
+the complete bundle in the durable location and verify that destination before handing it off.
+Do not overwrite an existing candidate silently. Local ignored artifacts do not travel through
+Git; record the originating Mac and arrange a rebuild or explicit transfer for another Mac.
+
+Before logging a runnable handoff, verify the exact bundle exists and record its absolute path,
+version/build, executable SHA-256, signing identity, verification time and source/build evidence.
+Retain build commands, logs and result summaries needed to reproduce or assess the candidate.
+Keep pending user-acceptance state separate from successful compilation and launch.
+
+On resume, recheck artifact existence and identity **before** giving launch instructions or
+claiming the candidate is available. A saved PID or “left running” statement is historical:
+recheck the actual executable path when current running state matters. If the artifact is missing,
+say so; do not substitute an older installed app. Rebuild within the user's authorized scope,
+verify the replacement and update the current handoff while retaining the original history.
+These checks do not grant additional launch, quit or desktop-control permission.
+
+**Observed in Aloft, November 7, 2026:** the previous session was logged correctly and recorded
+a verified launch, but the candidate and other `/private/tmp/aloft*` workspaces were missing on
+resume. A boot that day was observed. Temporary cleanup was plausible, but the deleting event
+and same-Mac continuity were not established; do not report reboot cleanup as proven or blame
+the user for failing to log. The workflow defect was relying on temporary storage, compounded by
+repeating the saved path without verifying it. An unchanged-source rebuild into persistent
+project build storage passed signing checks and its sole running executable was verified.
+
+## Outstanding recovery
+
 Record unresolved cleanup/recovery in the session handoff even in plain mode: originating Mac,
 exact app/build and owned process identity if known, affected data/profile/clipboard state,
 original state or backup, original authorization and current limit/expiry, intended restoration
