@@ -24,15 +24,15 @@
 
 ## M1 Max
 
-**Verified:** 2026-07-29 · hostname `M1-Max`
+**Verified:** OS/Xcode rechecked 2026-11-15; signing recorded 2026-11-11; other rows retain their earlier dates. Hostname `M1-Max`.
 
 | Fact | State |
 |---|---|
 | Hardware | MacBook Pro, Apple M1 Max |
-| macOS | 27.0 beta (build 26A5388g) |
-| Xcode | 26.6 (build 17F113) |
+| macOS | 27.2 (build 26B5091g), checked 2026-11-15 |
+| Xcode | 27.2 (build 27B5019j), checked 2026-11-15 |
 | Signing: Developer ID Application | ✅ present (team FDMSRXXN73) — Release/notarized builds work |
-| Signing: Apple Development ("Mac Development") | ❌ **absent** — Debug builds needing a dev cert fail; use ad-hoc (`CODE_SIGN_IDENTITY="-"`) or `CODE_SIGNING_ALLOWED=NO`, don't stop |
+| Signing: Apple Development ("Mac Development") | Present (team H56HM4MMZS), recorded 2026-11-11; not rechecked 2026-11-15 |
 | AppProbe (UI automation) | ❌ not installed (no app, nothing on PATH) — fall back to AX-by-name automation (never coordinate clicks; display scaling breaks them) |
 | jq | ✅ (required by `hooks/install.sh` / `redeploy.sh`) |
 
@@ -42,6 +42,11 @@ the documented source path, checked app paths, and PATH. Nonprompting Accessibil
 listen/post preflights returned false for a Python child of the current sandboxed Codex shell;
 this does not establish another app's permission state. Signing identities were not rechecked.
 See [inventory and limitations](verification/mac-control/environment.md).
+
+**Targeted recheck 2026-11-11:** macOS build 26B5091g (Darwin 27.2); **Xcode 27.2 (27B5019j)**.
+`security find-identity -v -p codesigning` now lists **both** Developer ID Application
+(FDMSRXXN73) **and** Apple Development (H56HM4MMZS), superseding the July absence report.
+The November 15 cleanup confirmed OS/Xcode versions only; it did not rerun signing checks.
 
 **Known permission-classifier blocks on this Mac** (and the sanctioned way around them):
 - Compound identity probes (`cat X; hostname; sysctl …`) get blocked — run the pieces as

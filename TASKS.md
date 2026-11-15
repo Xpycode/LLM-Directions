@@ -9,6 +9,8 @@
 <!-- Ideas and future work. Added by /spec deep, user input, or discovered during development. -->
 <!-- Priority: top = highest, bottom = lowest -->
 
+- [ ] 2026-11-12 — Optional [lot-map trial](sessions/2026-11-12.md) during ordinary Claude Code work. Recheck a reviewed revision and host compatibility; compare two sessions for useful visibility, correct background/hook indicators and responsiveness. No installation or trial selected. Preserve Directions hooks/statusline and authoritative records.
+
 - [ ] 2026-11-05 — Consider a [Caret Desktop one-page trial](26_ecosystem.md#caret-desktop--optional-website-trial)
   when a new or early-stage website is actively being developed. User suggested TheaterB in
   `3-Websites` as a possible candidate, but is barely working there currently; wait for a real
@@ -25,12 +27,12 @@
   difficult changes and abstraction tradeoffs. Planning now distinguishes end-to-end feature
   outcomes from staged compatibility-preserving refactors. Claude's two later changed commands
   refreshed with verified backups; other commands, globals and settings preserved. Runtime
-  adherence and project tools remain pending. Prioritize natural-use observation in Codex, the
-  user's primary tool; it reads the shared command source directly.
+  adherence and project tools remain pending. Observe natural use in Claude Code and Codex equally
+  (user clarification November 12); Codex reads the shared command source directly.
   No workflow/service installation or Oversight revival is approved. Reuse the earlier findings.
   [Research](sessions/2026-10-27.md#gitstar-repository-review),
   [follow-up](sessions/2026-10-27.md#broader-top-100-and-oversight-review),
-  [pickup](sessions/2026-10-28.md#resume--codex-primary).
+  [pickup](sessions/2026-11-12.md#resume--equal-tool-use).
   The four confirmed context/testing/cookbook contradictions were reconciled in source October 28;
   [completed record](tasks-archive.md#completed). Runtime adherence remains unverified.
 - [ ] 2.2 Implement private IPC and client identity.
@@ -74,6 +76,17 @@
 
 ## Inbox
 
+- [ ] 2026-11-13 — Adopt **interactive artifact mockups** as a design-exploration step in other
+  projects (user: "we should do that more often"). Proven in QuickStatsPanel's ring-gauge
+  discussion: two parallel agents (web precedents/perception research + a codebase inventory of
+  the real data fields) fed a single-file HTML/SVG mockup with simulated live values and the actual
+  setting candidates as controls (size, overlay, colour mode, opacity, scale, scenario states),
+  published as a private claude.ai Artifact; the owner judged options by toggling instead of
+  reading prose. One headless-Chrome screenshot before publishing caught a real rendering bug.
+  Evidence: QuickStatsPanel `output/ring-gauges/ring-gauges.html`,
+  [artifact](https://claude.ai/artifact/WNNwTzTsSQDTR63E8YUj9g), QSP `docs/sessions/2026-11-13.md`.
+  Decide where it belongs (likely `36_ui-changes-protocol.md` "propose" step, `/spec` design
+  questions, or a cookbook pattern); no guidance changed yet.
 - [ ] 2026-10-27 — Continue selection after the interview and recent-log scan, using the
   [instruction review](sessions/2026-10-27.md#reddit-instruction-review) and
   [connections review](sessions/2026-10-27.md#reddit-connections-review): test integrity,

@@ -13,7 +13,7 @@
 - **Phase:** implementation — lean-efficiency execution authorized October 16.
   <!-- Phase changed: 2026-10-16 -->
 - **Focus:** make Directions leaner while preserving useful planning, evidence and work-preservation rules.
-- **Next:** use Codex, the user's primary tool, on a real task and observe the refreshed guidance.
+- **Next:** observe the refreshed guidance on real tasks in Claude Code and Codex, used equally.
   Codex reads shared master commands directly; local installation checks do not establish runtime
   adherence. Selected guidance changes are implemented; project-tool candidates remain unselected.
 - **Size decision:** user accepted the presented standalone, arrival and reuse-guidance increases;
@@ -24,7 +24,7 @@
   results do not satisfy this gate or authorize provider requests.
 - **Execution:** [lean-efficiency plan](specs/directions-lean-efficiency-plan.md), LE01–LE16 complete;
   status/reuse follow-ups validated/committed; E1 awaits host evidence and remaining tradeoffs.
-- **Current handoff:** [Codex-primary pickup](sessions/2026-10-28.md#resume--codex-primary)
+- **Current handoff:** [equal-tool pickup](sessions/2026-11-12.md#resume--equal-tool-use)
   supersedes prior pickup; [rollout evidence](verification/lean/rollout-2026-10-17/README.md).
 - **Deferred Mac-control:** [plan](IMPLEMENTATION_PLAN.md) Wave 1 / task 1.3 and Gate A remain incomplete.
   User set restart aside on October 16; do not resume restart/recovery work as the next-session default.
@@ -43,11 +43,10 @@
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
 - **2026-11-15** — Added and locally deployed shorter, plain-language replies for Codex, Claude and Vibe; preserved detail when needed. Runtime consistency and existing gates remain open.
+- **2026-11-12** — Evaluated lot-map as an optional Claude Code trial; nothing installed. User uses Claude Max (€100) and Codex (€100) equally, superseding the Codex-primary preference. Existing gates remain open.
 - **2026-11-05** — Recorded Caret Desktop as an optional one-page trial for future active website work; TheaterB is a possible candidate. No installation or project changes; existing acceptance and recovery gates remain open.
 - **2026-10-28** — Refined shortcuts, interview, testing, debugging, architecture and review/planning guidance; verified local installation. Recorded Codex as the primary tool. Source checks pass; runtime adherence and E1 remain open.
 - **2026-10-27** — Interview, completion and bounded-debugging guidance implemented and statically reviewed in the master, not deployed/committed. Earlier fresh-build policy deployed/pushed. Preference routing and acceptance/recovery gates remain open.
-- **2026-10-17** — Accepted listed size increases, deployed both tools and migrated instruction routing in 110 projects with verified backups; state/history preserved. Earlier status/reuse cleanup validated; E1 open.
-- **2026-10-16** — Implemented and independently reviewed local runner/preparation; 31 tests and frozen fake-host replay pass. Live transport, E1 and byte decisions remain open; Claude deferred.
 ## Progress
 - **Funnel:** Define ✅ · Plan ✅ · Build 🔶 — source implemented; acceptance incomplete.
 - **Readiness:** Features 🔶 · UI/Polish N/A · Testing 🔶 · Docs ✅ · Distribution 🔶 (local rollout authorized; host acceptance open).
