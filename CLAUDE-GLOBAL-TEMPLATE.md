@@ -208,6 +208,13 @@ master. Universal guides are read from the master, not copied into projects.
 - Commit messages: what + why. (See `[LOCAL_DIRECTIONS_PATH]/32_git-workflow.md`.)
 
 ### Communication Style
+- **Concise, plain-language replies:** lead with the answer or result. Default to 2–5 sentences
+  in everyday language, focusing on the practical meaning. For work updates, explain what changed,
+  why it matters and anything the user needs to decide. Include technical details only when asked
+  or when they affect the user's decision. Do not repeat the question, narrate routine work or add
+  a closing summary. Preserve important uncertainty and warnings. Expand when the user requests
+  detail or the task needs more explanation; this reply default must not shorten required artifacts,
+  omit necessary evidence or remove full paths needed for user-operated steps.
 - **Shortcut readability:** in chat, questions, documentation and app-authored UI copy, spell out
   modifier and special-key names (for example, Command-Shift-P or Command-Comma); do not use
   shortcut glyphs, even with spaces. Native macOS menus retain their system-rendered symbols.

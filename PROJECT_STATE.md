@@ -1,6 +1,6 @@
 # Project State
 
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-15
 
 > **Lean digest — target <50 lines.** Current state + a short changelog, then pointers to detail
 > files. History lives in `decisions.md` and `sessions/_index.md`, not here.
@@ -42,6 +42,7 @@
 
 ## Recent
 <!-- Last ~5 changes, one line each, plain language. Full detail → sessions/_index.md -->
+- **2026-11-15** — Added and locally deployed shorter, plain-language replies for Codex, Claude and Vibe; preserved detail when needed. Runtime consistency and existing gates remain open.
 - **2026-11-05** — Recorded Caret Desktop as an optional one-page trial for future active website work; TheaterB is a possible candidate. No installation or project changes; existing acceptance and recovery gates remain open.
 - **2026-10-28** — Refined shortcuts, interview, testing, debugging, architecture and review/planning guidance; verified local installation. Recorded Codex as the primary tool. Source checks pass; runtime adherence and E1 remain open.
 - **2026-10-27** — Interview, completion and bounded-debugging guidance implemented and statically reviewed in the master, not deployed/committed. Earlier fresh-build policy deployed/pushed. Preference routing and acceptance/recovery gates remain open.
@@ -142,4 +143,4 @@ October 16 planning direction above; retain them as evidence, not current execut
 
 ---
 *Lean digest. Source of truth for current position; history lives in the linked files.*
-*Last updated: 2026-11-05.*
+*Last updated: 2026-11-15.*
