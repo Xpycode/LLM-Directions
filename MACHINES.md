@@ -57,17 +57,17 @@ The November 15 cleanup confirmed OS/Xcode versions only; it did not rerun signi
 
 ## M4 Pro
 
-**Verified:** partial observation 2026-09-11 (ChargeMap); remaining inventory not checked.
+**Verified:** 2026-11-18 (MousePlus fresh clone); Mac appears reset since 2026-09-11 (macOS 27 beta → 15.8.1, no certs, no Directions label file). Hostname was `simpros-MacBook-Pro` (user renaming).
 
 | Fact | State |
 |---|---|
-| Hardware | Mac mini(?), Apple M4 Pro |
-| macOS | Observed 2026-09-11: 27.0 (26A5425a); not rechecked today |
-| Xcode | Observed 2026-09-11: 26.6 (17F113); not rechecked today |
-| Signing: Developer ID Application | ? |
-| Signing: Apple Development ("Mac Development") | ? |
-| AppProbe (UI automation) | ? (FSKit/system-extension spikes happened here — see `37` Rule 2 sources) |
-| jq | ? |
+| Hardware | MacBook Pro, Apple M4 Pro |
+| macOS | 15.8.1 (24H32) — 2026-11-18 |
+| Xcode | 26.3 (17C529) — 2026-11-18 |
+| Signing: Developer ID Application | ❌ absent — 2026-11-18 (0 valid identities) |
+| Signing: Apple Development ("Mac Development") | ❌ absent — 2026-11-18; manual-signing projects (team H56HM4MMZS) fail; build with `CODE_SIGNING_ALLOWED=NO` to compile-check only |
+| AppProbe (UI automation) | ❌ not in /Applications — 2026-11-18 |
+| jq | ✅ /usr/bin/jq — 2026-11-18 |
 
 **Observed 2026-09-11 (ChargeMap acceptance):** iOS 26.5 isolated-simulator UI checks,
 map tiles and actual Apple destination search passed; the prior M4 blank-map issue did not
