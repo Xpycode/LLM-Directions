@@ -68,6 +68,9 @@ The November 15 cleanup confirmed OS/Xcode versions only; it did not rerun signi
 | Signing: Apple Development ("Mac Development") | ❌ absent — 2026-11-18; manual-signing projects (team H56HM4MMZS) fail; build with `CODE_SIGNING_ALLOWED=NO` to compile-check only |
 | AppProbe (UI automation) | ❌ not in /Applications — 2026-11-18 |
 | jq | ✅ /usr/bin/jq — 2026-11-18 |
+| Atlas (helper UI testing) | ✅ 0.1.3, `/Applications/Atlas.app`, CLI `~/.local/bin/atlas` (not on PATH by default); helper `AppAtlas` uid 502; `atlas doctor` ready — 2026-11-21 |
+| Fast User Switching | needed for Atlas first sign-in (lock screen had no Switch User without it) — 2026-11-21 |
+| `~/ProgrammingProjects` | `chmod 700` so the Atlas helper cannot read projects — 2026-11-21 |
 
 **Observed 2026-09-11 (ChargeMap acceptance):** iOS 26.5 isolated-simulator UI checks,
 map tiles and actual Apple destination search passed; the prior M4 blank-map issue did not

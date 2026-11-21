@@ -57,7 +57,8 @@ Do not claim a build or test passed unless this repository actually provides and
   continuation. For topical guidance use `CODEX-GLOBAL-TEMPLATE.md`'s routing section only.
   Resolve shared `reference/...` links from this master root, not a consumer directory.
   Missing master guidance must be reported; never substitute copied consumer guides. Explicit
-  scope/no-agent/no-commit limits and the user's no-desktop-control preference still apply.
+  scope/no-agent/no-commit limits and the user's no-desktop-control preference still apply (the Atlas helper
+  authorization in the global templates covers only the hidden helper login).
 
 - `CLAUDE-GLOBAL-TEMPLATE.md` is rendered and deployed to a machine-local Claude configuration; edit the template, not the deployed copy.
 - `CODEX-GLOBAL-TEMPLATE.md` is rendered into a marked block in machine-local

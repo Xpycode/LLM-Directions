@@ -20,6 +20,25 @@ This file tracks the WHY behind technical and design decisions.
 
 ## Decisions
 
+### 2026-11-21 - Authorize interactive testing inside the Atlas helper
+
+**Context:** The no-desktop-control rule exists because up to ~10 parallel sessions would
+otherwise collide with each other and with the user. Atlas 0.1.3 (InsaneArts, MIT) provides a
+hidden second macOS login (AppAtlas) with its own screen, pointer, focus and clipboard, and its
+Claude Code/Codex plugin teaches every session to use it.
+
+**Decision:** The user chose “after UI changes”: sessions may use Atlas on their own after
+changing something visible in a Mac app, and whenever asked, inside the helper only.
+
+**Rationale:** Automates visual verification without touching the user's desktop; the shared
+helper serializes input.
+
+**Consequences:** The user's desktop rules and the fresh-build handoff are unchanged.
+App-hosted `xcodebuild test`, lock/switch/logout, `--allow-disrupt`, `ATLAS_ACTOR`, credentials
+and permission prompts stay excluded. `~/ProgrammingProjects` is owner-only so the helper cannot
+read projects. Watch for collisions on the one shared helper screen. Details: `34_testing.md`
+(Atlas helper).
+
 ### 2026-10-27 - Authorize graceful fresh-build handoff
 
 **Context:** Reviewing Penumbra and Aloft logs confirmed repeated testing burden and an extra

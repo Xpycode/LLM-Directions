@@ -63,6 +63,25 @@ launch permission unless the user has granted standing authorization for fresh-b
 Apply the October 27 graceful quit/launch/verification scope in `reference/log/app-handoff.md`
 without renewed permission when it covers the target and actions. It does not extend to app-hosted
 tests, intermediate test-runner builds or other desktop control; newer restrictions prevail.
+
+### Atlas helper (interactive testing off the user's desktop)
+
+Standing authorization (November 21, 2026; see the global templates): interactive checks may run
+in the hidden Atlas helper login (AppAtlas) without renewed permission, after a visible Mac-app
+change or when asked. Use the installed Atlas plugin skill for commands; this section sets scope.
+
+1. `atlas doctor` must report `"ready": true`; otherwise report it and give user-operated steps.
+   Never run `atlas init`, sudo or permission prompts yourself.
+2. Open the exact fresh artifact with `atlas open` (it copies the app in), and name it with
+   `--app` on every action. `~/ProgrammingProjects` is owner-only, so copy fixtures in; never
+   point the helper at live data, profiles, Keychain or credentials.
+3. One shared helper serves all sessions: keep each run finite, let Atlas queue input, and do
+   not interrupt another session's app or use `--allow-disrupt`.
+4. Evidence is an Atlas screenshot (or `atlas collect`ed file) of the claimed state.
+5. End with `atlas close --app NAME` / `atlas cleanup --apply` for what this task opened.
+
+Excluded: the user's desktop, `atlas switch`/`logout`/locking, `ATLAS_ACTOR`, and app-hosted
+`xcodebuild test`, which still launches on the user's desktop. Machine readiness: `MACHINES.md`.
 Keep verified project-specific safe/serial commands local. Examples below
 illustrate APIs, not permission to run them.
 

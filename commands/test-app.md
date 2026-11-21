@@ -23,7 +23,9 @@ default unless the action is already authorized. Respect newer user restrictions
 
 ## 2. Establish an available backend
 
-Inspect project instructions and local files/tool inventory for AppProbe or another supported
+Prefer Atlas when `atlas doctor` reports ready: interactive cases run in the hidden helper login
+under the standing Atlas authorization (`34_testing.md`, Atlas helper), not on the user's desktop.
+Otherwise inspect project instructions and local files/tool inventory for AppProbe or another supported
 backend. Verify its actual path/version and documented CLI/schema; inspect unknown startup effects
 before even running a check/discovery command. Do not presume a particular AppProbe checkout,
 hardcode an unverified invocation, or claim optional tooling is present.

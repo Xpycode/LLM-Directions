@@ -18,6 +18,9 @@ unrelated apps, simulated input, window/Space manipulation, clipboard and live-p
 Newer no-control or keep-running instructions override it. It does not reopen deferred recovery
 or test scopes. Decision: [standing build handoff](../../decisions.md#2026-10-27---authorize-graceful-fresh-build-handoff).
 
+Testing inside the hidden Atlas helper login is separately authorized (`34_testing.md`, Atlas
+helper) and is not a handoff: the user's desktop rules below still apply to everything else.
+
 **Current explicit user scope governs every action.** A newer no-control restriction overrides
 older automatic quit/relaunch preferences. Without explicit permission for the specific target and
 actions, do not launch, quit, kill or relaunch apps, manipulate windows/Spaces, simulate input, or
