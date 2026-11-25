@@ -64,7 +64,8 @@ The November 15 cleanup confirmed OS/Xcode versions only; it did not rerun signi
 | Hardware | MacBook Pro, Apple M4 Pro |
 | macOS | 15.8.1 (24H32) — 2026-11-18 |
 | Xcode | 26.3 (17C529) — 2026-11-18 |
-| Signing: Developer ID Application | ❌ absent — 2026-11-18 (0 valid identities) |
+| Signing: Developer ID Application | ✅ present (team FDMSRXXN73) — 2026-11-25; LaunchAway signed DMG built. Was absent 2026-11-18 |
+| Notarization | ✅ keychain profile `VideoSorter` works for any app (account-wide API key; use `NOTARY_PROFILE=VideoSorter`); no LaunchAway/MousePlus/DiskVerdict profiles, `99-AUTH` .p8 absent — 2026-11-25 |
 | Signing: Apple Development ("Mac Development") | ❌ absent — 2026-11-18; manual-signing projects (team H56HM4MMZS) fail; build with `CODE_SIGNING_ALLOWED=NO` to compile-check only |
 | AppProbe (UI automation) | ❌ not in /Applications — 2026-11-18 |
 | jq | ✅ /usr/bin/jq — 2026-11-18 |
