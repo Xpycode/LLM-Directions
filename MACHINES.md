@@ -35,6 +35,10 @@
 | Signing: Apple Development ("Mac Development") | Present (team H56HM4MMZS), recorded 2026-11-11; not rechecked 2026-11-15 |
 | AppProbe (UI automation) | ❌ not installed (no app, nothing on PATH) — fall back to AX-by-name automation (never coordinate clicks; display scaling breaks them) |
 | jq | ✅ (required by `hooks/install.sh` / `redeploy.sh`) |
+| Atlas (helper UI testing) | ✅ 0.1.3, CLI `~/.local/bin/atlas`; helper home `/Users/atlas`; `atlas doctor` ready — 2026-11-27. A SwiftUI quit-confirmation window could not be clicked through Atlas (`focus-changed`/`unlisted`, its buttons absent from `elements`); `atlas close --app` quits the app instead |
+| macOS 27.2 SDK (Xcode 27.2) | ⚠️ ignores `UIDesignRequiresCompatibility`: toolbar items get system glass capsules, so the App Shell flat toolbar does not hold in builds from this Mac. The M4 Pro's Xcode 26.3 builds with the macOS 26 SDK — 2026-11-28 (Waveform Cue build 11) |
+| Core Graphics/Core Text render hashes | Differ from the M4 Pro (macOS 15.8.1): pixel-hash baselines need a per-OS table — 2026-11-27 (Waveform Cue) |
+| House packages | Canonical `zPackages` is `~/ProgrammingProjects/1-macOS/zPackages` (git, has `AppShellKit`/`ProcessKit`); `~/ProgrammingProjects/zPackages` is a stale partial copy — 2026-11-27 |
 
 **Targeted recheck 2026-09-05:** macOS is now 27.0 (26A5421a); Xcode remains 26.6
 (17F113). Codex CLI 0.153.4 and Claude Code 2.1.260 are installed. AppProbe remains absent at
