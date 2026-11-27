@@ -72,6 +72,7 @@ The November 15 cleanup confirmed OS/Xcode versions only; it did not rerun signi
 | Atlas (helper UI testing) | ✅ 0.1.3, `/Applications/Atlas.app`, CLI `~/.local/bin/atlas` (not on PATH by default); helper `AppAtlas` uid 502; `atlas doctor` ready — 2026-11-21 |
 | Fast User Switching | needed for Atlas first sign-in (lock screen had no Switch User without it) — 2026-11-21 |
 | `~/ProgrammingProjects` | `chmod 700` so the Atlas helper cannot read projects — 2026-11-21 |
+| Ad-hoc Release + hardened runtime | ❌ will not launch when it embeds a third-party framework (Sparkle): library validation rejects it. Build a local Release with `CODE_SIGN_IDENTITY="Developer ID Application" CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=FDMSRXXN73` for launch tests — 2026-11-27 (QuickStatsPanel) |
 
 **Observed 2026-09-11 (ChargeMap acceptance):** iOS 26.5 isolated-simulator UI checks,
 map tiles and actual Apple destination search passed; the prior M4 blank-map issue did not
